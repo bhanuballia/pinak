@@ -25,3 +25,5 @@ svglib
 CairoSVG
 lxml
 pillow
+svgwrite
+cairocffi
