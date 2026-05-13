@@ -1,0 +1,27 @@
+# Core Web Server
+fastapi
+uvicorn
+python-dotenv
+requests
+
+# Database
+motor
+pymongo
+
+# Astrology & Calculations
+pyswisseph
+timezonefinder
+geopy
+h3
+numpy
+
+# AI & Google Services
+google-generativeai
+
+# PDF & Image Generation
+reportlab
+PyPDF2
+svglib
+CairoSVG
+lxml
+pillow
