@@ -1,4 +1,5 @@
 # api/main.py
+print("[STARTUP] Initializing Vedic Astrology API...")
 """
 FastAPI application wiring for the Vedic Astrology App.
 
@@ -88,8 +89,11 @@ app.include_router(marriage.router, prefix="/api/marriage", tags=["Marriage"])
 app.include_router(business.router, prefix="/api/business", tags=["Business"])
 app.include_router(health.router, prefix="/api/health", tags=["Health"])
 app.include_router(sadesati.router, prefix="/api/sade-sati", tags=["Sade Sati"])
+print("[STARTUP] Initializing routers...")
 app.include_router(family_health.router, prefix="/api/family-health", tags=["Family Health"])
+print("[STARTUP] Computing timezone cache...")
 TIMEZONE_CACHE = list_timezones_with_offsets()
+print(f"[STARTUP] Timezone cache ready with {len(TIMEZONE_CACHE)} entries.")
 
 app.add_middleware(
     CORSMiddleware,
