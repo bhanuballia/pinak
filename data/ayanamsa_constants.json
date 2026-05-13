@@ -1,0 +1,14 @@
+{
+  "LAHIRI": {
+    "id": "LAHIRI",
+    "description": "Lahiri (also known as Chitrapaksha Lahiri) - commonly used in Vedic astrology"
+  },
+  "FAGAN_BRADLEY": {
+    "id": "FAGAN_BRADLEY",
+    "description": "Fagan-Bradley ayanamsa"
+  },
+  "KRISHNAMURTI": {
+    "id": "KRISHNAMURTI",
+    "description": "Krishnamurti ayanamsa (KP)"
+  }
+}

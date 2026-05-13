@@ -1,0 +1,23 @@
+{
+    "include": [
+        "reports",
+        "core",
+        "charts",
+        "astronomy",
+        "ashtakavarga",
+        "shadbala",
+        "strength",
+        "utils",
+        "dasha"
+    ],
+    "exclude": [
+        "**/node_modules",
+        "**/__pycache__",
+        "venv"
+    ],
+    "venvPath": "D:/vedic-astrology-app",
+    "venv": "venv",
+    "pythonVersion": "3.11",
+    "typeCheckingMode": "basic",
+    "reportMissingImports": "error"
+}

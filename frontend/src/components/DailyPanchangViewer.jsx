@@ -1,0 +1,325 @@
+import React, { useState, useEffect } from 'react';
+import { fetchDailyPanchang } from '../services/api';
+
+const ProfessionalRoyaleClock = ({ time }) => {
+    const ghatiRotation = (time.total_ghati % 60) * 6;
+    const muhurtaRotation = (time.total_ghati / 2 % 30) * 12;
+
+    const symptoms = ["♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"];
+    const rashis = ["Mesh", "Vrishabh", "Mithun", "Kark", "Simha", "Kanya", "Tula", "Vrishchik", "Dhanu", "Makar", "Kumbh", "Meen"];
+
+    const swordPath = "polygon(50% 0%, 100% 20%, 80% 100%, 20% 100%, 0% 20%)";
+
+    return (
+        <div style={{
+            position: 'relative',
+            width: '340px',
+            height: '340px',
+            margin: '0 auto 50px',
+            userSelect: 'none'
+        }}>
+            {/* 3D Golden Brass Case */}
+            <div style={{
+                position: 'absolute',
+                inset: '-20px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #d4af37 0%, #f9f295 45%, #b8860b 100%)',
+                boxShadow: '0 30px 60px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.5)',
+                border: '4px solid #5c4033'
+            }}>
+                 <div style={{
+                     position: 'absolute',
+                     inset: '8px',
+                     borderRadius: '50%',
+                     border: '1px solid rgba(0,0,0,0.2)',
+                     boxShadow: 'inset 0 0 10px rgba(0,0,0,0.5)'
+                 }}></div>
+            </div>
+
+            {/* Main Dial Surface */}
+            <svg viewBox="0 0 400 400" style={{ width: '100%', height: '100%', filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))' }}>
+                <defs>
+                    <radialGradient id="royalDial" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                        <stop offset="0%" stopColor="#1e293b" />
+                        <stop offset="70%" stopColor="#0f172a" />
+                        <stop offset="100%" stopColor="#020617" />
+                    </radialGradient>
+                    <linearGradient id="solidGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#d4af37" />
+                        <stop offset="45%" stopColor="#fef3c7" />
+                        <stop offset="100%" stopColor="#92400e" />
+                    </linearGradient>
+                    <filter id="goldGlow">
+                        <feGaussianBlur stdDeviation="3" result="blur"/>
+                        <feComposite in="blur" in2="SourceGraphic" operator="over"/>
+                    </filter>
+                </defs>
+
+                <circle cx="200" cy="200" r="195" fill="url(#royalDial)" stroke="#1e293b" strokeWidth="2" />
+                
+                {[...Array(60)].map((_, i) => {
+                    const angle = (i * 6 * Math.PI) / 180;
+                    const rInner = i % 5 === 0 ? 172 : 182;
+                    const rOuter = 192;
+                    return (
+                        <line 
+                            key={i}
+                            x1={200 + rInner * Math.sin(angle)} 
+                            y1={200 - rInner * Math.cos(angle)}
+                            x2={200 + rOuter * Math.sin(angle)}
+                            y2={200 - rOuter * Math.cos(angle)}
+                            stroke={i % 5 === 0 ? "#d4af37" : "#334155"}
+                            strokeWidth={i % 5 === 0 ? 3 : 1}
+                        />
+                    );
+                })}
+
+                {rashis.map((r, i) => {
+                    const angle = (i * 30 * Math.PI) / 180;
+                    const rText = 145;
+                    const rIcon = 115;
+                    return (
+                        <g key={r}>
+                            <text 
+                                x={200 + rText * Math.sin(angle)} 
+                                y={200 - rText * Math.cos(angle)} 
+                                textAnchor="middle" 
+                                dominantBaseline="middle"
+                                fill="rgba(255,255,255,0.2)"
+                                fontSize="9"
+                                fontWeight="900"
+                                transform={`rotate(${i * 30}, ${200 + rText * Math.sin(angle)}, ${200 - rText * Math.cos(angle)})`}
+                                style={{ fontFamily: 'serif', letterSpacing: '1px' }}
+                            >
+                                {r.toUpperCase()}
+                            </text>
+                            <text
+                                x={200 + rIcon * Math.sin(angle)} 
+                                y={200 - rIcon * Math.cos(angle)}
+                                textAnchor="middle" 
+                                dominantBaseline="middle"
+                                fill="#d4af37"
+                                fontSize="22"
+                                filter="url(#goldGlow)"
+                            >
+                                {symptoms[i]}
+                            </text>
+                        </g>
+                    );
+                })}
+
+                <circle cx="200" cy="200" r="30" fill="#020617" stroke="#d4af37" strokeWidth="2" />
+                <text x="200" y="200" textAnchor="middle" dominantBaseline="middle" fill="#d4af37" fontSize="20" fontWeight="bold">ॐ</text>
+
+                <g style={{ transform: `rotate(${muhurtaRotation}deg)`, transformOrigin: '200px 200px', transition: 'transform 1s cubic-bezier(0.4, 0, 0.2, 1)' }}>
+                    <path d="M 192,200 L 200,60 L 208,200 Z" fill="url(#solidGold)" filter="url(#goldGlow)" />
+                    <circle cx="200" cy="200" r="10" fill="#d4af37" />
+                </g>
+
+                <g style={{ transform: `rotate(${ghatiRotation}deg)`, transformOrigin: '200px 200px', transition: 'transform 0.5s ease-out' }}>
+                    <path d="M 197,200 L 200,45 L 203,200 Z" fill="#ff4d00" stroke="#fcd34d" strokeWidth="0.5" />
+                    <circle cx="200" cy="200" r="6" fill="#ff4d00" />
+                </g>
+            </svg>
+
+            <div style={{
+                position: 'absolute',
+                bottom: '-25px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                width: '220px',
+                background: 'linear-gradient(to bottom, #1e293b, #020617)',
+                padding: '12px 20px',
+                borderRadius: '16px',
+                border: '1px solid rgba(212,175,55,0.4)',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+                textAlign: 'center',
+                zIndex: 50
+            }}>
+                <div style={{ fontSize: '10px', color: '#d4af37', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px', marginBottom: '8px' }}>
+                    Vedic Chronology
+                </div>
+                <div style={{ color: 'white', fontFamily: 'monospace', fontSize: '20px', fontWeight: 900, letterSpacing: '2px' }}>
+                    {String(time.ghati).padStart(2, '0')} : {String(time.pala).padStart(2, '0')} : {String(time.vipala).padStart(2, '0')}
+                </div>
+            </div>
+        </div>
+    );
+};
+
+const muhurtaNames = [
+    "Rudra", "Ahi", "Mitra", "Pitri", "Vasu", "Varaha", "Visvedeva", "Vidhi (Abhijit)", 
+    "Sutamukhi", "Puruhuta", "Vahini", "Naktanakara", "Varuna", "Aryaman", "Bhaga",
+    "Girisa", "Ajapada", "Ahir-Budhnya", "Pushya", "Aswini", "Yama", "Agni", 
+    "Vidhatr", "Kanda", "Aditi", "Jiva", "Visnu", "Dyumadgadyuti", "Samudra", "Brahma"
+];
+
+const getInterpretation = (mi, ghati, tithi, nak) => {
+    const name = muhurtaNames[mi-1] || "Unknown";
+    let advice = "A neutral time for standard activities.";
+    
+    if (mi === 8) advice = "The highly auspicious Mid-day Peak. Success in most ventures is likely.";
+    if (mi > 28) advice = "The sacred pre-dawn window. Ideal for spiritual practice and deep planning.";
+    if (mi >= 20 && mi <= 22) advice = "Yama/Agni Muhurtas. Exercise caution in communications and avoid conflicts.";
+    
+    return {
+        name,
+        stage: mi <= 15 ? "Solar Ascendancy (Day)" : "Lunar Dominance (Night)",
+        ghatiDesc: ghati < 30 ? "Day is Waxing towards Peak" : "Day is Waning towards Rest",
+        advice
+    };
+};
+
+export default function DailyPanchangViewer() {
+    const [data, setData] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const loadPanchang = async () => {
+            try {
+                let lat = 19.0760, lon = 72.8777, tz = 5.5;
+                const savedData = localStorage.getItem('worksheetData');
+                if (savedData) {
+                    const parsed = JSON.parse(savedData);
+                    if (parsed.basic_details) {
+                        lat = parsed.basic_details.lat || lat;
+                        lon = parsed.basic_details.lon || lon;
+                        tz = (new Date().getTimezoneOffset() / -60.0);
+                    }
+                }
+                const res = await fetchDailyPanchang(lat, lon, tz);
+                setData(res);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadPanchang();
+        const interval = setInterval(loadPanchang, 10000);
+        return () => clearInterval(interval);
+    }, []);
+
+    if (loading) return (
+        <div style={{ minHeight: '100vh', backgroundColor: '#020617', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '80px', height: '80px', border: '8px solid rgba(255,255,255,0.05)', borderRadius: '50%', position: 'relative' }}>
+                <div style={{ position: 'absolute', inset: '-8px', border: '8px solid #d4af37', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+            </div>
+            <p style={{ marginTop: '40px', color: '#d4af37', fontFamily: 'serif', letterSpacing: '4px', fontStyle: 'italic', fontWeight: 900, fontSize: '24px' }}>CALIBRATING...</p>
+            <style>{` @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } `}</style>
+        </div>
+    );
+
+    if (error) return <div style={{ minHeight: '100vh', padding: '40px', color: 'red' }}>Error: {error}</div>;
+
+    const interpretation = getInterpretation(
+        data.vedic_time.muhurta_index, 
+        data.vedic_time.total_ghati
+    );
+
+    return (
+        <div style={{ minHeight: '100vh', backgroundColor: '#020617', color: '#cbd5e1', fontFamily: 'serif', padding: '40px 20px' }}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '60px', alignItems: 'flex-start' }}>
+                    
+                    <div style={{ flex: '1 1 400px', textAlign: 'center' }}>
+                        <div style={{ padding: '60px 20px', background: 'rgba(15,23,42,0.6)', borderRadius: '60px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 40px 100px rgba(0,0,0,0.5)' }}>
+                            <h4 style={{ color: '#d4af37', fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '6px', marginBottom: '10px' }}>Ujjain Royal Observatory</h4>
+                            <h1 style={{ color: 'white', fontSize: '42px', fontWeight: 900, fontStyle: 'italic', marginBottom: '50px' }}>Vikramaditya Watch</h1>
+                            
+                            <ProfessionalRoyaleClock time={data.vedic_time} />
+
+                            <div style={{ marginTop: '60px', padding: '30px', background: 'rgba(212,175,55,0.05)', borderRadius: '30px', border: '1px solid rgba(212,175,55,0.1)', textAlign: 'left' }}>
+                                <div style={{ color: '#d4af37', fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px', marginBottom: '10px' }}>Cosmic Proclamation</div>
+                                <div style={{ color: 'white', fontSize: '20px', fontWeight: 900, marginBottom: '10px' }}>Current: {interpretation.name} Muhurta</div>
+                                <div style={{ fontSize: '14px', lineHeight: '1.6', color: '#94a3b8' }}>
+                                    <p style={{ marginBottom: '8px' }}>We are presently in the <strong>{interpretation.stage}</strong> cycle. {interpretation.ghatiDesc}.</p>
+                                    <p style={{ color: '#d4af37', fontWeight: 700 }}>Divine Advice: {interpretation.advice}</p>
+                                </div>
+                            </div>
+
+                            {/* New Educational Section */}
+                            <div style={{ marginTop: '30px', padding: '30px', background: 'rgba(30,41,59,0.3)', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'left' }}>
+                                <div style={{ color: '#64748b', fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '15px' }}>Divine Glossary</div>
+                                <div style={{ marginBottom: '15px' }}>
+                                    <div style={{ color: 'white', fontSize: '14px', fontWeight: 700, marginBottom: '4px' }}>What is a Muhurta?</div>
+                                    <div style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5' }}>A Muhurta is a unit of 48 minutes. There are exactly 30 Muhurtas in a Vedic day (sunrise to sunrise). Each Muhurta is ruled by a specific Deity and carries a unique energetic vibration.</div>
+                                </div>
+                                <div>
+                                    <div style={{ color: 'white', fontSize: '14px', fontWeight: 700, marginBottom: '4px' }}>What does Ghati Progress mean?</div>
+                                    <div style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5' }}>A 'Ghati' is 24 minutes. The clock tracks 60 Ghatis per day. 'Progress' shows how far we have traveled since the last Sunrise—the ultimate anchor of Vedic time.</div>
+                                </div>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '40px', paddingTop: '40px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                                <div>
+                                    <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 900, textTransform: 'uppercase' }}>Current Muhurta</div>
+                                    <div style={{ fontSize: '32px', color: 'white', fontWeight: 900 }}>#{data.vedic_time.muhurta_index}</div>
+                                </div>
+                                <div style={{ borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
+                                    <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 900, textTransform: 'uppercase' }}>Ghati Progress</div>
+                                    <div style={{ fontSize: '32px', color: '#d4af37', fontWeight: 900 }}>{data.vedic_time.total_ghati}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style={{ flex: '2 1 600px', display: 'flex', flexDirection: 'column', gap: '40px' }}>
+                         <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #020617 100%)', padding: '50px', borderRadius: '60px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '30px' }}>
+                             <div>
+                                <h1 style={{ fontSize: '64px', color: '#d4af37', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>{data.date}</h1>
+                                <p style={{ fontSize: '24px', color: '#64748b', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '4px', marginTop: '5px' }}>{data.day}</p>
+                             </div>
+                             <div style={{ background: 'rgba(0,0,0,0.5)', padding: '20px 40px', borderRadius: '30px', border: '1px solid rgba(255,191,0,0.1)', display: 'flex', gap: '40px' }}>
+                                 <div style={{ textAlign: 'center' }}>
+                                     <span style={{ fontSize: '9px', color: '#f97316', fontWeight: 900, textTransform: 'uppercase', display: 'block' }}>Sunrise</span>
+                                     <span style={{ fontSize: '20px', color: 'white', fontWeight: 900 }}>{data.sun_rise}</span>
+                                 </div>
+                                 <div style={{ textAlign: 'center' }}>
+                                     <span style={{ fontSize: '9px', color: '#64748b', fontWeight: 900, textTransform: 'uppercase', display: 'block' }}>Sunset</span>
+                                     <span style={{ fontSize: '20px', color: 'white', fontWeight: 900 }}>{data.sun_set}</span>
+                                 </div>
+                             </div>
+                         </div>
+
+                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+                             {[
+                                { label: "Tithi", value: data.tithi.tithi_name, icon: "🌓", color: "#60a5fa" },
+                                { label: "Nakshatra", value: data.nakshatra.nakshatra_name, icon: "🪐", color: "#a78bfa" },
+                                { label: "Yoga", value: data.yoga.yoga_name, icon: "🌀", color: "#34d399" },
+                                { label: "Karana", value: data.karana.karana_name, icon: "🛡️", color: "#fbbf24" }
+                             ].map((item, i) => (
+                                <div key={i} style={{ background: 'rgba(30,41,59,0.4)', padding: '40px', borderRadius: '50px', border: `1px solid ${item.color}22` }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                                        <span style={{ fontSize: '32px' }}>{item.icon}</span>
+                                        <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.2)', fontWeight: 900, textTransform: 'uppercase' }}>{item.label}</span>
+                                    </div>
+                                    <h3 style={{ fontSize: '32px', color: item.color, fontWeight: 900, margin: 0, fontStyle: 'italic' }}>{item.value}</h3>
+                                </div>
+                             ))}
+                         </div>
+
+                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
+                             <div style={{ background: 'linear-gradient(135deg, #064e3b 0%, #022c22 100%)', padding: '40px', borderRadius: '50px', border: '1px solid rgba(52,211,153,0.3)' }}>
+                                <span style={{ fontSize: '10px', color: '#34d399', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px' }}>Auspicious Hour</span>
+                                <h2 style={{ fontSize: '42px', color: 'white', fontWeight: 900, margin: '10px 0' }}>Abhijit Muhurta</h2>
+                                <p style={{ fontSize: '32px', color: '#10b981', fontWeight: 900 }}>{data.muhurtas.abhijit.start} - {data.muhurtas.abhijit.end}</p>
+                             </div>
+                             <div style={{ background: 'linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%)', padding: '40px', borderRadius: '50px', border: '1px solid rgba(239,68,68,0.3)' }}>
+                                <span style={{ fontSize: '10px', color: '#f87171', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px' }}>Inauspicious Rahu</span>
+                                <h2 style={{ fontSize: '42px', color: 'white', fontWeight: 900, margin: '10px 0' }}>Rahu Kaal</h2>
+                                <p style={{ fontSize: '32px', color: '#ef4444', fontWeight: 900 }}>{data.muhurtas.rahu_kaal.start} - {data.muhurtas.rahu_kaal.end}</p>
+                             </div>
+                         </div>
+
+                         <div style={{ textAlign: 'center', padding: '60px 0' }}>
+                             <button onClick={() => window.close()} style={{ padding: '24px 80px', borderRadius: '100px', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)', fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '5px' }}>Return to Workstation</button>
+                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

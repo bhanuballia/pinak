@@ -1,0 +1,214 @@
+import React, { useState, useEffect } from 'react';
+import { fetchCareerInsights, fetchPersonalCareerInsights } from '../services/api';
+
+export default function CareerViewer() {
+    const [insights, setInsights] = useState([]);
+    const [personalInsights, setPersonalInsights] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [filter, setFilter] = useState('All');
+    const [userData, setUserData] = useState(null);
+    const [isHindi, setIsHindi] = useState(false);
+
+    useEffect(() => {
+        const loadInsights = async () => {
+            try {
+                const params = new URLSearchParams(window.location.search);
+                const lang = params.get('lang');
+                setIsHindi(lang === 'hindi');
+
+                const uData = {
+                    name: params.get('name') || 'User',
+                    date: params.get('date'),
+                    time: params.get('time'),
+                    lat: params.get('lat'),
+                    lon: params.get('lon'),
+                    tz_offset: params.get('tz'),
+                    lang: lang || 'english'
+                };
+
+                const [general, personalRes] = await Promise.all([
+                    fetchCareerInsights(),
+                    uData.date && uData.lat && uData.lon 
+                      ? fetchPersonalCareerInsights(uData).catch(e => {
+                          console.error("Personal career analysis failed", e);
+                          return [];
+                        }) 
+                      : Promise.resolve([])
+                ]);
+
+                setInsights(general);
+                setPersonalInsights(personalRes);
+                if (uData.date) setUserData(uData);
+            } catch (err) {
+                console.error("Career insights fetch error:", err);
+                setError(`Connection Error: ${err.message || "Unknown Error"}`);
+            } finally {
+                setLoading(false);
+            }
+        };
+        loadInsights();
+    }, []);
+
+    const categories = ['All', ...new Set(insights.map(item => item.category))];
+    const filteredInsights = filter === 'All' ? insights : insights.filter(item => item.category === filter);
+
+    if (loading) {
+        return (
+            <div style={{ minHeight: '100vh', backgroundColor: '#0f172a', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ fontSize: '64px', marginBottom: '30px', animation: 'pulse 2s infinite' }}>💼</div>
+                <p style={{ color: '#fbbf24', fontFamily: 'serif', letterSpacing: '4px', fontStyle: 'italic', fontWeight: 900, fontSize: '24px', textTransform: 'uppercase' }}>
+                    {isHindi ? "पेशेवर नियति..." : "Calculating Destiny..."}
+                </p>
+                <style>{` @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.1); } } `}</style>
+            </div>
+        );
+    }
+
+    return (
+        <div style={{ minHeight: '100vh', backgroundColor: '#0f172a', color: '#cbd5e1', fontFamily: 'sans-serif', paddingBottom: '100px' }}>
+            {/* Premium Header */}
+            <div style={{ 
+                padding: '100px 40px', 
+                background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)', 
+                borderBottom: '1px solid rgba(255,255,255,0.1)',
+                position: 'relative',
+                overflow: 'hidden'
+            }}>
+                <div style={{ position: 'absolute', top: '-150px', right: '-150px', width: '500px', height: '500px', background: 'rgba(251, 191, 36, 0.05)', borderRadius: '50%', filter: 'blur(120px)' }}></div>
+                
+                <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '50px' }}>
+                    <div style={{ 
+                        width: '120px', 
+                        height: '120px', 
+                        borderRadius: '40px', 
+                        background: 'linear-gradient(to br, #fbbf24, #d97706)', 
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '60px',
+                        boxShadow: '0 0 50px rgba(217,119,6,0.3)',
+                        border: '1px solid rgba(251,191,36,0.5)'
+                    }}>💼</div>
+                    <div>
+                        <h1 style={{ fontSize: '64px', fontWeight: 900, color: 'white', margin: 0, tracking: '-1px' }}>
+                            {isHindi ? "वैदिक करियर मार्गदर्शक" : "Vedic Career Oracle"}
+                        </h1>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginTop: '10px' }}>
+                            <div style={{ width: '40px', height: '2px', background: '#fbbf24' }}></div>
+                            <p style={{ color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '8px', fontSize: '14px', fontWeight: 900 }}>
+                                {isHindi ? "व्यवसाय एवं सफलता ज्योतिष" : "Professional Karma • Success Mapping"}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Filter Bar */}
+            <div style={{ backgroundColor: 'rgba(15, 23, 42, 0.9)', backdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,0.05)', padding: '25px 0', position: 'sticky', top: 0, zIndex: 100 }}>
+                <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', gap: '15px', padding: '0 40px', overflowX: 'auto' }}>
+                    {categories.map(cat => (
+                        <button
+                            key={cat}
+                            onClick={() => setFilter(cat)}
+                            style={{
+                                padding: '12px 30px',
+                                borderRadius: '15px',
+                                background: filter === cat ? '#fbbf24' : 'rgba(255,255,255,0.05)',
+                                color: filter === cat ? '#78350f' : '#94a3b8',
+                                border: '1px solid rgba(255,255,255,0.1)',
+                                fontSize: '11px',
+                                fontWeight: 900,
+                                textTransform: 'uppercase',
+                                letterSpacing: '2px',
+                                cursor: 'pointer',
+                                transition: 'all 0.3s ease',
+                                whiteSpace: 'nowrap'
+                            }}
+                        >
+                            {cat}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <div style={{ maxWidth: '1200px', margin: '60px auto', padding: '0 40px' }}>
+                {personalInsights.length > 0 && (
+                    <section style={{ marginBottom: '80px' }}>
+                        <h2 style={{ fontSize: '32px', color: 'white', fontWeight: 900, marginBottom: '40px', display: 'flex', alignItems: 'center', gap: '20px' }}>
+                            <span style={{ width: '10px', height: '40px', background: '#fbbf24', borderRadius: '5px' }}></span>
+                            {isHindi ? "आपका व्यक्तिगत विश्लेषण" : "Your Personal Analysis"}
+                        </h2>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px' }}>
+                            {personalInsights.map((item, idx) => (
+                                <div key={idx} style={{ 
+                                    background: 'linear-gradient(135deg, rgba(30,41,59,0.5), rgba(15,23,42,0.5))', 
+                                    padding: '40px', 
+                                    borderRadius: '40px', 
+                                    border: '1px solid rgba(251,191,36,0.1)',
+                                    boxShadow: '0 20px 40px rgba(0,0,0,0.2)'
+                                }}>
+                                    <div style={{ fontSize: '40px', marginBottom: '20px' }}>{item.icon || '🚀'}</div>
+                                    <h3 style={{ fontSize: '22px', fontWeight: 900, color: 'white', marginBottom: '15px' }}>{item.title}</h3>
+                                    <p style={{ fontSize: '17px', color: '#94a3b8', lineHeight: '1.8' }}>{item.content}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                <section>
+                    <h2 style={{ fontSize: '32px', color: 'white', fontWeight: 900, marginBottom: '40px', display: 'flex', alignItems: 'center', gap: '20px' }}>
+                        <span style={{ width: '10px', height: '40px', background: 'rgba(255,255,255,0.1)', borderRadius: '5px' }}></span>
+                        {isHindi ? "करियर मार्गदर्शन" : "Career Insights"}
+                    </h2>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px' }}>
+                        {filteredInsights.map((item, idx) => (
+                            <div key={idx} style={{ 
+                                background: 'rgba(255,255,255,0.02)', 
+                                padding: '40px', 
+                                borderRadius: '40px', 
+                                border: '1px solid rgba(255,255,255,0.05)',
+                                transition: 'all 0.3s ease'
+                            }}>
+                                <span style={{ padding: '5px 12px', borderRadius: '10px', background: 'rgba(251,191,36,0.1)', color: '#fbbf24', fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', display: 'inline-block', marginBottom: '20px' }}>{item.category}</span>
+                                <h3 style={{ fontSize: '22px', fontWeight: 900, color: 'white', marginBottom: '15px' }}>{item.title}</h3>
+                                <p style={{ fontSize: '17px', color: '#64748b', lineHeight: '1.8' }}>{item.content}</p>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            </div>
+
+            {/* Footer */}
+            <div style={{ maxWidth: '800px', margin: '150px auto 0', textAlign: 'center', background: 'linear-gradient(to bottom, rgba(251,191,36,0.05), transparent)', padding: '80px 40px', borderRadius: '60px' }}>
+                <h3 style={{ fontSize: '28px', color: 'white', fontWeight: 900, marginBottom: '20px' }}>
+                    {isHindi ? "अपने कर्म का सम्मान करें" : "Respect Your Karma"}
+                </h3>
+                <p style={{ color: '#94a3b8', fontSize: '18px', fontStyle: 'italic', lineHeight: '1.7', marginBottom: '40px' }}>
+                    {isHindi 
+                      ? "\"ज्योतिष केवल संभावनाओं को दर्शाता है। आपकी सफलता आपके पुरुषार्थ और नैतिकता पर निर्भर करती है।\""
+                      : "\"Astrology map possibilities, but your effort (Purushartha) and ethics (Dharma) determine the final result.\""}
+                </p>
+                <button 
+                    onClick={() => window.close()} 
+                    style={{ 
+                        padding: '24px 80px', 
+                        borderRadius: '20px', 
+                        background: 'white', 
+                        color: '#0f172a', 
+                        border: 'none', 
+                        fontSize: '12px', 
+                        fontWeight: 900, 
+                        textTransform: 'uppercase', 
+                        letterSpacing: '4px', 
+                        cursor: 'pointer',
+                        boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
+                    }}
+                >
+                    {isHindi ? "वर्कस्टेशन पर लौटें" : "Return to Workstation"}
+                </button>
+            </div>
+        </div>
+    );
+}
