@@ -1,0 +1,5 @@
+pyswisseph
+redis
+flask
+flask-socketio
+numpy

@@ -91,9 +91,16 @@ const VimsopakaAssessment = ({ data }) => {
                       </td>
                       {VARGA_COLUMNS.map(col => {
                         const score = vb[col.key]?.[p] || 0;
+                        let colorClass = 'text-red-500';
+                        if (score >= 15) {
+                          colorClass = 'text-emerald-600';
+                        } else if (score >= 10) {
+                          colorClass = 'text-blue-800';
+                        }
+                        
                         return (
                           <td key={col.key} className="py-3 px-4 text-center">
-                            <div className="font-mono font-bold text-base text-slate-700">{score}</div>
+                            <div className={`font-mono font-bold text-base ${colorClass}`}>{score}</div>
                           </td>
                         );
                       })}

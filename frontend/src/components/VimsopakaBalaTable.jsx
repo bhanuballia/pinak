@@ -46,12 +46,17 @@ const VimsopakaBalaTable = ({ data }) => {
                 </td>
                 {PLANETS.map(p => {
                   const score = vimsopaka[row.key]?.[p] || 0;
-                  const isStrong = score >= 15;
-                  const isWeak = score < 10;
+                  
+                  let colorClass = 'text-red-500'; // Default to red for < 10
+                  if (score >= 15) {
+                    colorClass = 'text-emerald-600'; // Green for 15-20
+                  } else if (score >= 10) {
+                    colorClass = 'text-blue-800'; // Dark blue for 10-14
+                  }
                   
                   return (
                     <td key={p} className="py-3 px-2 text-center">
-                      <div className={`font-mono font-bold text-[14px] ${isStrong ? 'text-emerald-600' : isWeak ? 'text-red-500' : 'text-slate-800'}`}>
+                      <div className={`font-mono font-bold text-[14px] ${colorClass}`}>
                         {typeof score === 'number' ? score.toFixed(2) : score}
                       </div>
                     </td>

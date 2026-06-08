@@ -1,31 +1,14 @@
 import asyncio
-from motor.motor_asyncio import AsyncIOMotorClient
-import certifi
-import os
+from core.database import profiles_collection
 
-async def check_db():
-    mongo_uri = "mongodb+srv://bhanuiitgcs:bhanu361@vedicastro.ahwyvxo.mongodb.net/?appName=vedicastro"
-    client = AsyncIOMotorClient(
-        mongo_uri,
-        tlsCAFile=certifi.where(),
-        tls=True,
-        tlsAllowInvalidCertificates=True,
-        tlsAllowInvalidHostnames=True
-    )
-    
-    print("Listing all databases...")
-    dbs = await client.list_database_names()
-    print(f"Databases: {dbs}")
-    
-    for db_name in dbs:
-        if "Conjunction" in db_name:
-            db = client[db_name]
-            cols = await db.list_collection_names()
-            print(f"\nDatabase: {db_name} ({len(cols)} collections)")
-            if len(cols) < 50:
-                print(f"Collections: {sorted(cols)}")
-            else:
-                print(f"Sample collections: {sorted(cols)[:10]}...")
+async def main():
+    try:
+        count = await profiles_collection.count_documents({})
+        print(f"Total profiles: {count}")
+        async for doc in profiles_collection.find().limit(5):
+            print("Profile:", doc.get("name"), doc.get("date"), doc.get("time"))
+    except Exception as e:
+        print("Error:", e)
 
 if __name__ == "__main__":
-    asyncio.run(check_db())
+    asyncio.run(main())

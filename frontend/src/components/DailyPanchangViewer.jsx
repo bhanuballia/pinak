@@ -174,6 +174,7 @@ export default function DailyPanchangViewer() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedDate, setSelectedDate] = useState("");
 
     useEffect(() => {
         const loadPanchang = async () => {
@@ -188,7 +189,7 @@ export default function DailyPanchangViewer() {
                         tz = (new Date().getTimezoneOffset() / -60.0);
                     }
                 }
-                const res = await fetchDailyPanchang(lat, lon, tz);
+                const res = await fetchDailyPanchang(lat, lon, tz, selectedDate);
                 setData(res);
             } catch (err) {
                 setError(err.message);
@@ -197,10 +198,16 @@ export default function DailyPanchangViewer() {
             }
         };
 
+        setLoading(true);
         loadPanchang();
-        const interval = setInterval(loadPanchang, 10000);
-        return () => clearInterval(interval);
-    }, []);
+        
+        let interval;
+        // Only auto-refresh if looking at today's panchang
+        if (!selectedDate) {
+            interval = setInterval(loadPanchang, 10000);
+        }
+        return () => { if (interval) clearInterval(interval); };
+    }, [selectedDate]);
 
     if (loading) return (
         <div style={{ minHeight: '100vh', backgroundColor: '#020617', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
@@ -314,7 +321,20 @@ export default function DailyPanchangViewer() {
                              </div>
                          </div>
 
-                         <div style={{ textAlign: 'center', padding: '60px 0' }}>
+                         <div style={{ textAlign: 'center', padding: '40px 0 20px 0' }}>
+                             <label style={{ color: '#d4af37', marginRight: '15px', fontSize: '14px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px' }}>Check Panchang For:</label>
+                             <input 
+                                 type="date" 
+                                 value={selectedDate} 
+                                 onChange={(e) => setSelectedDate(e.target.value)} 
+                                 style={{ padding: '12px 20px', borderRadius: '30px', background: 'rgba(0,0,0,0.5)', color: 'white', border: '1px solid rgba(212,175,55,0.3)', fontFamily: 'inherit', fontSize: '16px', minWidth: '200px', colorScheme: 'dark' }} 
+                             />
+                             {selectedDate && (
+                                 <button onClick={() => setSelectedDate("")} style={{ marginLeft: '15px', padding: '12px 20px', borderRadius: '30px', background: 'rgba(239,68,68,0.2)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.5)', fontSize: '12px', fontWeight: 900, textTransform: 'uppercase' }}>Reset to Today</button>
+                             )}
+                         </div>
+
+                         <div style={{ textAlign: 'center', padding: '20px 0 60px 0' }}>
                              <button onClick={() => window.close()} style={{ padding: '24px 80px', borderRadius: '100px', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)', fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '5px' }}>Return to Workstation</button>
                          </div>
                     </div>

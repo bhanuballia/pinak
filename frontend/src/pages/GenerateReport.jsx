@@ -1,5 +1,5 @@
-// src/pages/GenerateReport.jsx
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import PlaceAutocomplete from "../components/PlaceAutocomplete";
 import ReportPreview from "../components/ReportPreview";
 
@@ -17,6 +17,7 @@ const formatOffset = (offset) => {
 };
 
 export default function GenerateReport() {
+  const { t } = useTranslation();
   const [name, setName] = useState("");
   const [date, setDate] = useState(""); // YYYY-MM-DD
   const [time, setTime] = useState(""); // HH:MM
@@ -77,24 +78,24 @@ export default function GenerateReport() {
       setDbStatus("Loading from database...");
       setShowProfilesModal(false);
       const fullProfile = await fetchProfileById(id);
-      
+
       // Populate form
       setName(fullProfile.name || "");
       setDate(fullProfile.date || "");
       setTime(fullProfile.time || "");
       setGender(fullProfile.gender || "Male");
       if (fullProfile.lat && fullProfile.lon) {
-         setLatLon({
-            lat: fullProfile.lat,
-            lon: fullProfile.lon,
-            display_name: fullProfile.location_name || "",
-         });
+        setLatLon({
+          lat: fullProfile.lat,
+          lon: fullProfile.lon,
+          display_name: fullProfile.location_name || "",
+        });
       }
       setTzOffset(fullProfile.tz_offset || 5.5);
-      
+
       // Auto-load report data if intact
       if (fullProfile.reportData) {
-         setReportData(fullProfile.reportData);
+        setReportData(fullProfile.reportData);
       }
       setDbStatus("Loaded profile from database successfully!");
       setTimeout(() => setDbStatus(""), 3000);
@@ -158,7 +159,7 @@ export default function GenerateReport() {
       };
 
       const detailedData = await fetchReportData(payload);
-      
+
       // These are now handled within assemble_report_data on the backend
       // So we don't need to fetch them separately and risk overwriting with empty defaults
       console.log("Detailed report data received:", {
@@ -173,17 +174,17 @@ export default function GenerateReport() {
       // Save to MongoDB
       setDbStatus("Archiving to MongoDB...");
       try {
-         await saveProfileToDB({
-             ...payload,
-             reportData: detailedData
-         });
-         await loadProfiles(); // refresh the list
-         setDbStatus("Saved securely to database!");
-         setTimeout(() => setDbStatus(""), 3000);
+        await saveProfileToDB({
+          ...payload,
+          reportData: detailedData
+        });
+        await loadProfiles(); // refresh the list
+        setDbStatus("Saved securely to database!");
+        setTimeout(() => setDbStatus(""), 3000);
       } catch (dbErr) {
-         setDbStatus("Generated, but could not save to DB.");
-         setTimeout(() => setDbStatus(""), 3000);
-         console.warn("DB save warn:", dbErr);
+        setDbStatus("Generated, but could not save to DB.");
+        setTimeout(() => setDbStatus(""), 3000);
+        console.warn("DB save warn:", dbErr);
       }
 
       const fileUrl = await createReport(payload);
@@ -244,6 +245,26 @@ export default function GenerateReport() {
     }
   };
 
+  const handleOpenHTMLReport = () => {
+    if (!reportData) {
+      setError("Please generate a report first.");
+      return;
+    }
+    try {
+      localStorage.setItem('htmlReportData', JSON.stringify(reportData));
+      const win = window.open('/?html_report=true', 'HTMLReportViewer', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+      if (win) {
+        win.focus();
+        if (win.location.search.includes('html_report=true')) {
+          win.location.reload();
+        }
+      }
+    } catch (e) {
+      console.error("LocalStorage save failed:", e);
+      setError("Failed to save report data. The data may be too large for your browser's local storage.");
+    }
+  };
+
   const handleOpenHoroscope = () => {
     if (!reportData) {
       setError("Please generate a report first.");
@@ -264,8 +285,28 @@ export default function GenerateReport() {
     }
   };
 
-  const handleOpenMuhurt = () => {
-    const win = window.open('/?muhurt=true', 'MuhurtCalculator', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no');
+  const handleOpenAdvancedMuhurt = () => {
+    const win = window.open('/?advanced_muhurt=true', 'AdvancedMuhurtaSearch', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenPrashna = () => {
+    const win = window.open('/?prashna=true', 'PrashnaEngine', 'width=1000,height=800,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenNadi = () => {
+    const win = window.open('/?nadi=true', 'NadiViewer', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenMantra = () => {
+    const win = window.open('/?mantra=true', 'MantraTracker', 'width=1000,height=800,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenSynastry = () => {
+    const win = window.open('/?synastry=true', 'SynastryDashboard', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no');
     if (win) win.focus();
   };
 
@@ -285,7 +326,7 @@ export default function GenerateReport() {
 
   const handleOpenFinance = () => {
     if (reportData) {
-      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch(e) {}
+      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch (e) { }
     }
     const params = new URLSearchParams({
       finance: 'true',
@@ -302,7 +343,7 @@ export default function GenerateReport() {
 
   const handleOpenMarriage = () => {
     if (reportData) {
-      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch(e) {}
+      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch (e) { }
     }
     const params = new URLSearchParams({
       marriage: 'true',
@@ -319,7 +360,7 @@ export default function GenerateReport() {
 
   const handleOpenBusiness = () => {
     if (reportData) {
-      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch(e) {}
+      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch (e) { }
     }
     const params = new URLSearchParams({
       business: 'true',
@@ -336,7 +377,7 @@ export default function GenerateReport() {
 
   const handleOpenHealth = () => {
     if (reportData) {
-      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch(e) {}
+      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch (e) { }
     }
     const params = new URLSearchParams({
       health: 'true',
@@ -353,7 +394,7 @@ export default function GenerateReport() {
 
   const handleOpenParentsHealth = () => {
     if (reportData) {
-      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch(e) {}
+      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch (e) { }
     }
     const params = new URLSearchParams({
       parents_health: 'true',
@@ -370,7 +411,7 @@ export default function GenerateReport() {
 
   const handleOpenSpouseHealth = () => {
     if (reportData) {
-      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch(e) {}
+      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch (e) { }
     }
     const params = new URLSearchParams({
       spouse_health: 'true',
@@ -387,7 +428,7 @@ export default function GenerateReport() {
 
   const handleOpenChildrenHealth = () => {
     if (reportData) {
-      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch(e) {}
+      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch (e) { }
     }
     const params = new URLSearchParams({
       children_health: 'true',
@@ -406,44 +447,44 @@ export default function GenerateReport() {
     <div className="min-h-screen bg-gray-50 p-6 relative">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-8 border border-gray-100">
         <div className="flex items-center justify-between mb-8">
-            <h1 className="text-3xl font-serif italic font-black text-indigo-900 tracking-wide">Generate Kundali</h1>
-            <div className="flex items-center gap-4">
-                {dbStatus && <div className="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded animate-pulse">{dbStatus}</div>}
-                
-                <button
-                    onClick={() => setShowProfilesModal(true)}
-                    className="bg-indigo-50 border border-indigo-200 text-indigo-700 px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-indigo-100 flex items-center gap-2"
-                >
-                    <span>🗄️</span> Database ({savedProfiles.length})
-                </button>
-            </div>
+          <h1 className="text-3xl font-serif italic font-black text-indigo-900 tracking-wide">{t('generate_kundali', 'Generate Kundali')}</h1>
+          <div className="flex items-center gap-4">
+            {dbStatus && <div className="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded animate-pulse">{dbStatus}</div>}
+
+            <button
+              onClick={() => setShowProfilesModal(true)}
+              className="bg-indigo-50 border border-indigo-200 text-indigo-700 px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-indigo-100 flex items-center gap-2"
+            >
+              <span>🗄️</span> Database ({savedProfiles.length})
+            </button>
+          </div>
         </div>
 
         {/* Database Modal */}
         {showProfilesModal && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-                <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 border border-indigo-100 max-h-[80vh] overflow-auto relative">
-                     <button onClick={() => setShowProfilesModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-black">✖</button>
-                     <h2 className="text-2xl font-serif font-bold text-indigo-900 mb-2">Saved Profiles</h2>
-                     <p className="text-xs uppercase tracking-widest text-gray-500 font-bold mb-6">MongoDB Archive</p>
-                     
-                     {savedProfiles.length === 0 ? (
-                         <div className="p-8 text-center text-gray-400 italic bg-gray-50 rounded-xl">No profiles found in the database.</div>
-                     ) : (
-                         <div className="space-y-3">
-                             {savedProfiles.map(p => (
-                                 <button key={p.id} onClick={() => loadSpecificProfile(p.id)} className="w-full text-left p-4 rounded-xl border border-indigo-50 hover:bg-indigo-50 hover:border-indigo-200 transition-all group flex justify-between items-center bg-white shadow-sm">
-                                      <div>
-                                          <div className="font-bold text-gray-800 text-lg group-hover:text-indigo-800">{p.name || "Unknown"}</div>
-                                          <div className="text-xs text-gray-500 mt-1">{p.date} • {p.time} • {p.location_name?.split(',')[0]}</div>
-                                      </div>
-                                      <div className="text-2xl opacity-10 group-hover:opacity-100 transition-opacity">☁️</div>
-                                 </button>
-                             ))}
-                         </div>
-                     )}
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 border border-indigo-100 max-h-[80vh] overflow-auto relative">
+              <button onClick={() => setShowProfilesModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-black">✖</button>
+              <h2 className="text-2xl font-serif font-bold text-indigo-900 mb-2">Saved Profiles</h2>
+              <p className="text-xs uppercase tracking-widest text-gray-500 font-bold mb-6">MongoDB Archive</p>
+
+              {savedProfiles.length === 0 ? (
+                <div className="p-8 text-center text-gray-400 italic bg-gray-50 rounded-xl">No profiles found in the database.</div>
+              ) : (
+                <div className="space-y-3">
+                  {savedProfiles.map(p => (
+                    <button key={p.id} onClick={() => loadSpecificProfile(p.id)} className="w-full text-left p-4 rounded-xl border border-indigo-50 hover:bg-indigo-50 hover:border-indigo-200 transition-all group flex justify-between items-center bg-white shadow-sm">
+                      <div>
+                        <div className="font-bold text-gray-800 text-lg group-hover:text-indigo-800">{p.name || "Unknown"}</div>
+                        <div className="text-xs text-gray-500 mt-1">{p.date} • {p.time} • {p.location_name?.split(',')[0]}</div>
+                      </div>
+                      <div className="text-2xl opacity-10 group-hover:opacity-100 transition-opacity">☁️</div>
+                    </button>
+                  ))}
                 </div>
+              )}
             </div>
+          </div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
@@ -494,7 +535,7 @@ export default function GenerateReport() {
 
           <div>
             <div className="text-sm text-gray-600">Birth place</div>
-            <PlaceAutocomplete onSelect={onPlaceSelected} />
+            <PlaceAutocomplete value={latLon?.display_name || ""} onSelect={onPlaceSelected} />
             {latLon && (
               <div className="mt-2 text-xs text-gray-500 space-y-1">
                 <div>
@@ -583,7 +624,7 @@ export default function GenerateReport() {
               disabled={isSubmitting}
               className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:opacity-60"
             >
-              {isSubmitting ? "Generating..." : "Generate & Download PDF"}
+              {isSubmitting ? t('generating', 'Generating...') : t('generate_pdf', 'Generate & Download PDF')}
             </button>
 
             {reportFileUrl && (
@@ -601,95 +642,82 @@ export default function GenerateReport() {
         </form>
 
         <div className="mt-6 space-y-4">
-          <div className="flex items-center justify-between border-b pb-2">
-            <h2 className="text-xl font-semibold text-gray-800">Preview Results</h2>
-            <div className="flex gap-2">
-              <button 
-                onClick={handleKnowIshtaDev}
-                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-purple-600 text-white shadow hover:bg-purple-700 flex items-center gap-2"
+          <div className="flex flex-col gap-3 border-b pb-4">
+            <div className="flex items-center justify-between">
+              <h2 className="text-xl font-semibold text-black">Preview Results</h2>
+              <div className="flex flex-wrap gap-2 justify-end">
+                <button
+                  onClick={handleOpenWorksheet}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-purple-600 text-black shadow hover:bg-purple-700 flex items-center gap-2"
+                >
+                  <span>✨</span> Open Interactive Worksheet
+                </button>
+                <button
+                  onClick={handleOpenHTMLReport}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-blue-600 text-black shadow hover:bg-blue-700 flex items-center gap-2"
+                >
+                  <span>🌐</span> Your Kundali (Detailed Report)
+                </button>
+                <button
+                  onClick={handleOpenHoroscope}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-amber-500 text-black shadow hover:bg-amber-600 flex items-center gap-2"
+                >
+                  <span>🌟</span> Daily/Monthly/Yearly Horoscope
+                </button>
+                <button
+                  onClick={handleKnowIshtaDev}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-indigo-600 text-black shadow hover:bg-indigo-700 flex items-center gap-2"
+                >
+                  <span>🖥️</span> Know Your Ishta Dev
+                </button>
+                <button
+                  onClick={handleOpenMatchmaking}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-pink-600 text-black shadow hover:bg-pink-700 flex items-center gap-2"
+                >
+                  <span>💏</span> Match Making
+                </button>
+                <button
+                  onClick={handleOpenAdvancedMuhurt}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-teal-600 text-black shadow hover:bg-teal-700 flex items-center gap-2"
+                >
+                  <span>✨</span> Advanced Muhurt Calculator
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-wrap gap-2 justify-end">
+              <button
+                onClick={handleOpenPrashna}
+                className="px-4 py-1.5 rounded-full text-[15px]  font-bold transition-all bg-amber-500 text-black shadow hover:bg-amber-600 flex items-center gap-2"
               >
-                <span>✨</span> Know Your Ishta Dev
+                <span>🔮</span> Ask Prashna
               </button>
-               <button 
-                onClick={handleOpenHoroscope}
-                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-amber-500 text-white shadow hover:bg-amber-600 flex items-center gap-2"
+              <button
+                onClick={handleOpenNadi}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-blue-600 text-black shadow hover:bg-blue-700 flex items-center gap-2"
               >
-                <span>🌟</span> Daily/Monthly/Yearly Horoscope
+                <span>📜</span> Nadi Astrology
               </button>
-              <button 
-                onClick={handleOpenWorksheet}
-                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-indigo-600 text-white shadow hover:bg-indigo-700 flex items-center gap-2"
+              <button
+                onClick={handleOpenMantra}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-teal-600 text-black shadow hover:bg-teal-700 flex items-center gap-2"
               >
-                <span>🖥️</span> Open Interactive Worksheet
+                <span>📿</span> Japa Mala (Mantras)
               </button>
-              <button 
-                onClick={handleOpenMatchmaking}
-                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-pink-600 text-white shadow hover:bg-pink-700 flex items-center gap-2"
+              <button
+                onClick={handleOpenSynastry}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-pink-600 text-black shadow hover:bg-pink-700 flex items-center gap-2"
               >
-                <span>💏</span> Match Making
+                <span>🔮</span> Synastry Matrix
               </button>
-              <button 
-                onClick={handleOpenMuhurt}
-                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-emerald-600 text-white shadow hover:bg-emerald-700 flex items-center gap-2"
-              >
-                <span>📅</span> Muhurt Calculator
-              </button>
-              <button 
-                onClick={handleOpenStudy}
-                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-sky-600 text-white shadow hover:bg-sky-700 flex items-center gap-2"
-              >
-                <span>📚</span> Study Guide
-              </button>
-              <button 
-                onClick={handleOpenFinance}
-                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-emerald-600 text-white shadow hover:bg-emerald-700 flex items-center gap-2"
-              >
-                <span>💰</span> Finance Guide
-              </button>
-              <button 
-                onClick={handleOpenMarriage}
-                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-rose-600 text-white shadow hover:bg-rose-700 flex items-center gap-2"
-              >
-                <span>💍</span> Marriage Guide
-              </button>
-              <button 
-                onClick={handleOpenBusiness}
-                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-amber-600 text-white shadow hover:bg-amber-700 flex items-center gap-2"
-              >
-                <span>💼</span> Business Guide
-              </button>
-              <button 
-                onClick={handleOpenHealth}
-                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-emerald-600 text-white shadow hover:bg-emerald-700 flex items-center gap-2"
-              >
-                <span>🏥</span> Health Guide
-              </button>
-              <button 
-                onClick={handleOpenParentsHealth}
-                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-sky-600 text-white shadow hover:bg-sky-700 flex items-center gap-2"
-              >
-                <span>👨‍👩‍👧</span> Parents Health Guide
-              </button>
-              <button 
-                onClick={handleOpenSpouseHealth}
-                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-fuchsia-600 text-white shadow hover:bg-fuchsia-700 flex items-center gap-2"
-              >
-                <span>💍</span> Spouse Health Guide
-              </button>
-              <button 
-                onClick={handleOpenChildrenHealth}
-                className="px-4 py-1.5 rounded-full text-xs font-bold transition-all bg-yellow-600 text-white shadow hover:bg-yellow-700 flex items-center gap-2"
-              >
-                <span>🧸</span> Childrens Health Guide
-              </button>
+
             </div>
           </div>
 
           <div className="space-y-4 animate-in fade-in duration-500">
-             <div>
-               <h3 className="text-lg font-medium text-gray-700 mb-2">PDF Document Preview</h3>
-               <ReportPreview fileUrl={reportFileUrl} />
-             </div>
+            <div>
+              <h3 className="text-lg font-medium text-gray-700 mb-2">PDF Document Preview</h3>
+              <ReportPreview fileUrl={reportFileUrl} />
+            </div>
           </div>
         </div>
       </div>

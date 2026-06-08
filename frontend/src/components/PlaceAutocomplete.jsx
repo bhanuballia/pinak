@@ -22,17 +22,24 @@ const formatOffset = (offset) => {
   return `UTC${sign}${hh}:${mm}`;
 };
 
-export default function PlaceAutocomplete({ onSelect }) {
-  const [query, setQuery] = useState("");
+export default function PlaceAutocomplete({ onSelect, value }) {
+  const [query, setQuery] = useState(value || "");
+
+  useEffect(() => {
+    if (value !== undefined) {
+      setQuery(value);
+    }
+  }, [value]);
   const [results, setResults] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const debounceRef = useRef(null);
   const cacheRef = useRef({});
+  const abortControllerRef = useRef(null);
 
   useEffect(() => {
     const trimmedQuery = query?.trim().toLowerCase();
-    if (!trimmedQuery || trimmedQuery.length < 3) {
+    if (!trimmedQuery || trimmedQuery.length < 2) {
       setResults([]);
       setOpen(false);
       return;
@@ -45,10 +52,17 @@ export default function PlaceAutocomplete({ onSelect }) {
     }
 
     if (debounceRef.current) clearTimeout(debounceRef.current);
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    const controller = new AbortController();
+    abortControllerRef.current = controller;
+
     debounceRef.current = setTimeout(async () => {
       setLoading(true);
       try {
-        const res = await searchPlaces(query);
+        const res = await searchPlaces(query, controller.signal);
         const finalResults = res || [];
         setResults(finalResults);
         cacheRef.current[trimmedQuery] = finalResults;
@@ -59,16 +73,20 @@ export default function PlaceAutocomplete({ onSelect }) {
           setOpen(false);
         }
       } catch (err) {
+        if (err.name === "AbortError") {
+          return;
+        }
         console.error("Place search failed", err);
         setResults([]);
         setOpen(false);
       } finally {
         setLoading(false);
       }
-    }, 400);
+    }, 250);
 
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current);
+      controller.abort();
     };
   }, [query]);
 

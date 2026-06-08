@@ -17,6 +17,10 @@ numpy
 
 # AI & Google Services
 google-generativeai
+firebase-admin
+
+# Background Tasks
+apscheduler
 
 # PDF & Image Generation
 reportlab

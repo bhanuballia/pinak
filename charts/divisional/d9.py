@@ -33,41 +33,60 @@ from astronomy.positions import get_all_planetary_positions
 from astronomy.ascendant import get_ascendant
 from charts.houses import compute_whole_sign_houses, get_house_number
 
-# 108 divisions in D9
-NAVAMSA_DIVISIONS = 108
-NAVAMSA_SIZE_DEG = 360.0 / NAVAMSA_DIVISIONS  # 3.3333333333333335
+SIGNS = [
+    "Aries",
+    "Taurus",
+    "Gemini",
+    "Cancer",
+    "Leo",
+    "Virgo",
+    "Libra",
+    "Scorpio",
+    "Sagittarius",
+    "Capricorn",
+    "Aquarius",
+    "Pisces"
+]
+
+MOVABLE = [0, 3, 6, 9]
+FIXED = [1, 4, 7, 10]
+DUAL = [2, 5, 8, 11]
+
+NAVAMSA_SIZE = 30.0 / 9.0
 
 
-def _navamsa_index_from_longitude(long_deg: float) -> int:
-    """Return navamsa index (0..107) for a given sidereal longitude (0..360)."""
-    long_deg = normalize_angle(long_deg)
-    idx = int(math.floor(long_deg / NAVAMSA_SIZE_DEG))
-    # Defensive clamp
-    if idx < 0:
-        idx = 0
-    if idx >= NAVAMSA_DIVISIONS:
-        idx = NAVAMSA_DIVISIONS - 1
-    return idx
+def calculate_d9_position(longitude):
+    longitude = longitude % 360.0
+    sign_index = int(longitude / 30.0)
+    deg_in_sign = longitude % 30.0
+    
+    # Refinement 1: Float boundary safety
+    navamsa_part = min(int(deg_in_sign / (30.0 / 9.0)), 8)
 
+    # Movable signs
+    if sign_index in MOVABLE:
+        start_sign = sign_index
+    # Fixed signs
+    elif sign_index in FIXED:
+        start_sign = (sign_index + 8) % 12
+    # Dual signs
+    else:
+        start_sign = (sign_index + 4) % 12
 
-def _navamsa_sign_from_navamsa_index(nav_idx: int) -> int:
-    """Convert navamsa index (0..107) -> navamsa sign index (0..11)."""
-    return nav_idx % 12
+    final_sign = (start_sign + navamsa_part) % 12
+    
+    # Professional Fix: Float safety for degree_inside
+    degree_inside_navamsa = min(
+        (deg_in_sign % (30.0 / 9.0)) * 9.0,
+        29.999999
+    )
 
-
-def d9_from_longitude(long_deg: float) -> Tuple[int, int, float]:
-    """
-    Return (navamsa_index 0..107, navamsa_sign_index 0..11, deg_inside 0..NAVAMSA_SIZE_DEG)
-    """
-    long_deg = long_deg % 360.0
-    idx = int(math.floor(long_deg / NAVAMSA_SIZE_DEG))
-    idx = min(max(idx, 0), NAVAMSA_DIVISIONS - 1)
-    sign_idx = idx % 12
-    start = idx * NAVAMSA_SIZE_DEG
-    deg_inside = long_deg - start
-    if deg_inside < 0:
-        deg_inside += NAVAMSA_SIZE_DEG
-    return idx, sign_idx, deg_inside
+    return {
+        "d9_sign_index": final_sign,
+        "d9_sign_name": SIGNS[final_sign],
+        "degree_inside_d9": round(degree_inside_navamsa, 4),
+        "navamsa_part": navamsa_part + 1
+    }
 
 
 def build_navamsa_positions(planet_positions: Dict[str, Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
@@ -81,21 +100,22 @@ def build_navamsa_positions(planet_positions: Dict[str, Dict[str, Any]]) -> Dict
 
     for planet, pdata in planet_positions.items():
         sid_lon = float(pdata["sidereal"]["lon"])
-        nav_idx = _navamsa_index_from_longitude(sid_lon)
-        nav_sign = _navamsa_sign_from_navamsa_index(nav_idx)
-        navamsa_start_deg = nav_idx * NAVAMSA_SIZE_DEG
-        lon_in_navamsa = normalize_angle(sid_lon - navamsa_start_deg)
-        # Ensure 0..NAVAMSA_SIZE_DEG
-        if lon_in_navamsa < 0:
-            lon_in_navamsa += NAVAMSA_SIZE_DEG
+        d9_info = calculate_d9_position(sid_lon)
+        natal_sign = int(sid_lon / 30.0)
 
         result[planet] = {
             "sidereal_lon": sid_lon,
-            "navamsa_index": nav_idx,
-            "navamsa_sign_index": nav_sign,
-            "lon_in_navamsa_deg": lon_in_navamsa,
+            "navamsa_sign_index": d9_info["d9_sign_index"],
+            "lon_in_navamsa_deg": d9_info["degree_inside_d9"],
+            "navamsa_part": d9_info["navamsa_part"],
+            "vargottama": natal_sign == d9_info["d9_sign_index"],
         }
-
+        
+    # Enforce exact Rahu/Ketu opposite placement in D9
+    if "Rahu" in result and "Ketu" in result:
+        result["Ketu"]["navamsa_sign_index"] = (result["Rahu"]["navamsa_sign_index"] + 6) % 12
+        result["Ketu"]["lon_in_navamsa_deg"] = result["Rahu"]["lon_in_navamsa_deg"]
+        
     return result
 
 
@@ -135,10 +155,10 @@ def build_navamsa_chart(
     # 3) Determine navamsa ascendant from main ascendant
     asc_data = get_ascendant(jd_ut, lat, lon, house_system=house_system)
     asc_deg = float(asc_data["ascendant_deg"])
-    asc_nav_idx = _navamsa_index_from_longitude(asc_deg)
-    asc_nav_sign = _navamsa_sign_from_navamsa_index(asc_nav_idx)
-    asc_nav_sign_name = get_sign_name(asc_nav_sign * 30.0)
-    nav_asc_deg = asc_nav_sign * 30.0  # 0° of navamsa ascendant sign
+    asc_d9 = calculate_d9_position(asc_deg)
+    asc_nav_sign = asc_d9["d9_sign_index"]
+    asc_nav_sign_name = asc_d9["d9_sign_name"]
+    nav_asc_deg = (asc_nav_sign * 30.0) + asc_d9["degree_inside_d9"]
 
     # 4) Group planets by navamsa sign
     signs = group_planets_by_navamsa_sign(nav_positions)
@@ -147,20 +167,18 @@ def build_navamsa_chart(
     whole_nav = compute_whole_sign_houses(nav_asc_deg)
     nav_cusps = whole_nav["cusps"]  # list [None, c1..c12]
 
-    # 6) Map planets into navamsa houses using nav_cusps
+    # 6) Professional whole-sign relative house mapping
     nav_houses_map: Dict[int, List[str]] = {i: [] for i in range(1, 13)}
     for planet, pdata in nav_positions.items():
-        nav_sign_idx = pdata["navamsa_sign_index"]
-        nav_sign_start = nav_sign_idx * 30.0
-        nav_full_lon = normalize_angle(nav_sign_start + pdata["lon_in_navamsa_deg"])
-        house_no = get_house_number(nav_full_lon, nav_cusps)
+        planet_sign = pdata["navamsa_sign_index"]
+        house_no = ((planet_sign - asc_nav_sign) % 12) + 1
         nav_houses_map[house_no].append(planet)
 
     # 7) Build output model
     model: Dict[str, Any] = {
         "style": style.lower(),
         "house_system": house_system,
-        "navamsa_size_deg": NAVAMSA_SIZE_DEG,
+        "navamsa_size_deg": NAVAMSA_SIZE,
         "ascendant_navamsa_index": asc_nav_sign,
         "ascendant_navamsa_sign": asc_nav_sign_name,
         "navamsa_ascendant_deg": nav_asc_deg,

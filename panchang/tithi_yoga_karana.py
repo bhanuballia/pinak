@@ -135,21 +135,39 @@ def compute_sunrise_sunset_for_date(date_local: datetime.date, lat: float, lon: 
     Uses Swiss Ephemeris Rise/Set routines to find UT times.
     Returns local datetime strings (ISO) for sunrise and sunset.
     """
-    # convert local date midnight to julian UT (approx) - assume local midnight shift
-    # find UT jd for 00:00 local = 00:00 - tz_offset
+    if not swe:
+        return {"sunrise_local": None, "sunset_local": None, "sunrise_jd_ut": None}
+
+    # Start looking from local midnight
     dt_local_mid = datetime.datetime.combine(date_local, datetime.time(0,0,0))
     dt_utc_mid = dt_local_mid - datetime.timedelta(hours=tz_offset_hours)
     jd_ut_mid = datetime_to_julian(dt_utc_mid)
+    
+    geopos = (lon, lat, 0.0)
+    
     try:
-        # swe.rise_trans returns sunrise in Julian Day UT for given body
-        # lon latitude order: geodetic long, lat
-        # Use swe.rise_trans with flag swe.CALC_RISE | swe.CALC_SET
-        # but swiss ephemeris python provides swe.rise_trans only in low-level API; use swe.rise_trans
-        # For reliability we'll call swe.rise_trans with sun id
-        # Build arguments
-        tret = swe.rise_trans(jd_ut_mid, swe.SUN, lon, lat, b'0', 0)  # placeholder, subject to local swisseph wrapper
-    except Exception:
-        # Fallback: return None (sunrise/sunset not available)
-        return {"sunrise_local": None, "sunset_local": None}
-    # NOTE: above call is platform dependent; leaving this as a best-effort wrapper.
-    return {"sunrise_local": None, "sunset_local": None}
+        # Sunrise: CALC_RISE. By default this uses the upper limb of the sun and standard refraction (Apparent Sunrise)
+        # Passing standard atmospheric pressure and temperature for refraction
+        res_rise, tret_rise = swe.rise_trans(jd_ut_mid, swe.SUN, swe.CALC_RISE, geopos, 1013.25, 15.0)
+        
+        sunrise_jd_ut = tret_rise[0]
+        
+        # Sunset: CALC_SET
+        res_set, tret_set = swe.rise_trans(jd_ut_mid, swe.SUN, swe.CALC_SET, geopos, 1013.25, 15.0)
+        
+        sunset_jd_ut = tret_set[0]
+        
+        sunrise_utc = julian_to_datetime(sunrise_jd_ut)
+        sunset_utc = julian_to_datetime(sunset_jd_ut)
+        
+        sunrise_local = sunrise_utc + datetime.timedelta(hours=tz_offset_hours)
+        sunset_local = sunset_utc + datetime.timedelta(hours=tz_offset_hours)
+        
+        return {
+            "sunrise_local": sunrise_local.isoformat(),
+            "sunset_local": sunset_local.isoformat(),
+            "sunrise_jd_ut": sunrise_jd_ut
+        }
+        
+    except Exception as e:
+        return {"sunrise_local": None, "sunset_local": None, "sunrise_jd_ut": None}

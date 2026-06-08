@@ -5,6 +5,7 @@ export default function AscendantAnalysis() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedPlanet, setSelectedPlanet] = useState(null);
+    const [isHindi, setIsHindi] = useState(false);
 
     useEffect(() => {
         const savedData = localStorage.getItem('worksheetData');
@@ -23,7 +24,28 @@ export default function AscendantAnalysis() {
     const planetsInFirst = houses[1]?.planets?.map(p => typeof p === 'object' ? p.name : p).filter(p => p !== 'Ascendant' && p !== 'L') || [];
 
     return (
-        <div className="min-h-screen bg-[#fafaf9] text-[#1c1917] font-serif p-8">
+        <div className="min-h-screen bg-[#fafaf9] text-[#1c1917] font-serif p-8 relative">
+            {/* Language Toggle Button */}
+            <button 
+                onClick={() => setIsHindi(!isHindi)}
+                style={{
+                    position: 'absolute',
+                    top: '20px',
+                    right: '20px',
+                    zIndex: 1000,
+                    background: 'rgba(255,255,255,0.8)',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    padding: '6px 12px',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    color: 'black',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+                }}
+            >
+                A / अ
+            </button>
             <div className="max-w-6xl mx-auto space-y-12">
                 {/* Header Section */}
                 <div className="text-center space-y-4 border-b border-stone-200 pb-16 relative">

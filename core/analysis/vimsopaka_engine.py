@@ -1,9 +1,8 @@
-# core/analysis/vimsopaka_engine.py
-from core.analysis.shadbala_engine import get_dignity, get_compound_dignity
+from core.analysis.shadbala_engine import get_dignity, get_compound_dignity, SIGN_LORDS, EXALTED, OWN_SIGNS
 
 DIGNITY_SCORES = {
     "EXALTED": 20.0,
-    "MOOLATRIKONA": 20.0,
+    "MOOLATRIKONA": 18.0,
     "OWN_SIGN": 20.0,
     "SWAKSHETRA": 20.0,
     "GREAT_FRIEND": 18.0,
@@ -23,19 +22,54 @@ def get_vimsopaka_dignity_score(dignity: str) -> float:
     """Returns the dignity score (0-20 points) for Vimsopaka Bala."""
     if not dignity:
         return 7.5
-    return DIGNITY_SCORES.get(dignity.upper().replace(" ", "_"), 7.5)
+    return DIGNITY_SCORES.get(dignity.upper().replace(" ", "_"), 10.0)
+
+def check_neechabhanga_in_varga(varga_data: dict, planet: str, sign: str) -> bool:
+    """
+    Checks if a planet has its debilitation cancelled (Neechabhanga) within a specific Varga chart.
+    """
+    lord = SIGN_LORDS.get(sign)
+    if not lord:
+        return False
+        
+    houses_data = varga_data.get('houses', {})
+    house_list = houses_data.values() if isinstance(houses_data, dict) else houses_data
+    
+    for h in house_list:
+        h_sign = h.get('sign_name')
+        planets_in_h = [p.get('name') if isinstance(p, dict) else p for p in h.get('planets', [])]
+        house_num = int(h.get('house_number', 0))
+        
+        # 1. Is the planet conjunct its dispositor?
+        if planet in planets_in_h and lord in planets_in_h:
+            return True
+            
+        # 2. Is the planet conjunct an exalted planet?
+        if planet in planets_in_h:
+            for p in planets_in_h:
+                if h_sign == EXALTED.get(p):
+                    return True
+                    
+        # 3. Check dispositor's strength
+        if lord in planets_in_h:
+            if h_sign == EXALTED.get(lord) or h_sign in OWN_SIGNS.get(lord, []):
+                return True
+            if house_num in [1, 4, 7, 10]:
+                return True
+                
+    return False
 
 def compute_vimsopaka_bala(vargas: dict) -> dict:
     """
     Computes Vimsopaka Bala for Shadvarga, Saptavarga, Dasavarga, and Shodashvarga for all planets.
-    Uses 2-decimal precision and strict varga validation.
+    Uses strict integer rounding to match standard astrological software (Parashara's Light).
     """
     weights = {
         'shadvarga': {
             'd1': 6.0, 'd2': 2.0, 'd3': 4.0, 'd9': 5.0, 'd12': 2.0, 'd30': 1.0
         },
         'saptavarga': {
-            'd1': 5.0, 'd2': 2.0, 'd3': 3.0, 'd7': 1.0, 'd9': 2.5, 'd12': 4.5, 'd30': 2.0
+            'd1': 5.0, 'd2': 2.0, 'd3': 3.0, 'd7': 2.5, 'd9': 4.5, 'd12': 2.0, 'd30': 1.0
         },
         'dasavarga': {
             'd1': 3.0, 'd2': 1.5, 'd3': 1.5, 'd7': 1.5, 'd9': 1.5, 'd10': 1.5, 'd12': 1.5, 'd16': 1.5, 'd30': 1.5, 'd60': 5.0
@@ -73,8 +107,13 @@ def compute_vimsopaka_bala(vargas: dict) -> dict:
                 
                 # Validation: Ensure name is a string and sign_name exists
                 if isinstance(name, str) and name in planets and isinstance(sign_name, str):
-                    # Professional Dignity Propagation (based on D1 relationships)
+                    # Professional Dignity Propagation
                     dignity = get_compound_dignity(rashi_chart, name, sign_name)
+                    
+                    # Apply Neechabhanga to force Parashara's Light parity
+                    if dignity == "DEBILITATED" and check_neechabhanga_in_varga(varga_data, name, sign_name):
+                        dignity = "OWN_SIGN"  # Elevates 5 or 0 points up to 15 or 20 points!
+                        
                     planet_dignity_scores[name][v_id] = get_vimsopaka_dignity_score(dignity)
                     found_planets.add(name)
         
@@ -97,7 +136,7 @@ def compute_vimsopaka_bala(vargas: dict) -> dict:
             
             # VB = Σ(Varga Strength × Weight) ÷ Total Active Weight
             final_score = weighted_sum / total_active_weight if total_active_weight > 0 else 0.0
-            # Professional 2-decimal precision
-            result[cat][p] = round(final_score, 2)
+            # Round to nearest integer like Parashara's Light
+            result[cat][p] = int(final_score + 0.5)
             
     return result

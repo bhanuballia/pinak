@@ -18,6 +18,8 @@ from matchmaking.risk_analysis.afflictions import analyze_planetary_afflictions
 from matchmaking.timing.marriage_timing import predict_marriage_timing
 from matchmaking.remedies.remedy_engine import get_marriage_remedies
 from matchmaking.ai.narrative_engine import generate_relationship_summary
+from matchmaking.bride_analysis import analyze_bride_chart
+from matchmaking.groom_analysis import analyze_groom_chart
 
 def run_marriage_matching(bride_data: Dict[str, Any], groom_data: Dict[str, Any]) -> Dict[str, Any]:
     """
@@ -74,6 +76,23 @@ def run_marriage_matching(bride_data: Dict[str, Any], groom_data: Dict[str, Any]
         toxic_warnings = [a["title"] for a in afflictions_data]
         ai_narrative = generate_relationship_summary(success_probability, guna_report.get("total_score", 0), toxic_warnings)
         
+        # 8. Enterprise Compatibility Engine Integration
+        from matchmaking.core.compatibility_engine import CompatibilityEngine
+        enterprise_engine = CompatibilityEngine()
+        
+        precomputed_reports = {
+            "guna_milan": guna_report,
+            "manglik": {"analysis": manglik_report},
+            "navamsa": d9_report,
+            "timing": {"favorable_years": marriage_years}
+        }
+        
+        enterprise_results = enterprise_engine.analyze(bride_data, groom_data, precomputed_reports)
+
+        # Merge the enterprise results with the legacy/existing results
+        bride_kundali_analysis = analyze_bride_chart(bride_data)
+        groom_kundali_analysis = analyze_groom_chart(groom_data)
+        
         return {
             "guna_milan": guna_report,
             "manglik": {
@@ -87,7 +106,9 @@ def run_marriage_matching(bride_data: Dict[str, Any], groom_data: Dict[str, Any]
                 "afflictions": afflictions_data
             },
             "bride_chart": bride_data.get("chart"),
+            "bride_d9_chart": bride_data.get("vargas", {}).get("d9"),
             "groom_chart": groom_data.get("chart"),
+            "groom_d9_chart": groom_data.get("vargas", {}).get("d9"),
             "timing": {
                 "favorable_years": marriage_years
             },
@@ -97,7 +118,10 @@ def run_marriage_matching(bride_data: Dict[str, Any], groom_data: Dict[str, Any]
             "summary": {
                 "status": guna_report.get("interpretation", "Average"),
                 "recommendation": ai_narrative["summary"]
-            }
+            },
+            "enterprise_analysis": enterprise_results,
+            "bride_kundali_analysis": bride_kundali_analysis,
+            "groom_kundali_analysis": groom_kundali_analysis
         }
     except Exception as e:
         print(f"[MARRIAGE ENGINE ERROR] {e}")

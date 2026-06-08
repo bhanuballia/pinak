@@ -1,0 +1,47 @@
+import React from "react";
+import ZodiacChart from "./ZodiacChart";
+
+export default function ChartView2({ data }) {
+    if (!data) return null;
+
+    const birthDataString = `${data.meta?.name || "Native"}   |   DOB: ${data.meta?.date || data.meta?.dob || ""}   |   TOB: ${data.meta?.time || data.meta?.tob || ""}   |   LOC: ${data.meta?.location || data.meta?.loc || ""}`;
+
+    const getHouses = (chart) => {
+        if (chart === 'd1') return data.charts?.houses || data.charts?.D1?.houses;
+        return data.vargas?.[chart]?.houses || data.charts?.[chart.toUpperCase()]?.houses;
+    };
+
+    const chartsToRender = [
+        { id: 'd1', title: 'Birth Chart' },
+        { id: 'd2', title: 'D2 Hora' },
+        { id: 'd4', title: 'D4 Chaturthamsha' },
+        { id: 'd7', title: 'D7 Saptamsha' },
+        { id: 'd12', title: 'D12 Dwadashamsha' },
+        { id: 'd16', title: 'D16 Shodashamsha' },
+        { id: 'd20', title: 'D20 Vimshamsha' },
+        { id: 'd24', title: 'D24 Chaturvimshamsha' },
+        { id: 'd30', title: 'D30 Trimshamsha' },
+    ];
+
+    return (
+        <div className="min-h-screen w-full bg-[#fff0d6] font-serif p-2 flex flex-col overflow-y-auto text-slate-800">
+            {/* Header */}
+            <div className="flex justify-between items-end border-b-2 border-indigo-900/80 pb-1 mb-2 px-2 text-[11px] font-black uppercase tracking-wider text-indigo-950 shrink-0">
+                <span>{birthDataString}</span>
+                <span>Astro Consult - Chart View 2</span>
+            </div>
+
+            <div className="flex-1 grid grid-cols-3 grid-rows-3 gap-2 pb-2 min-h-[900px]">
+                {chartsToRender.map((chart) => (
+                    <div key={chart.id} className="bg-[#fbf9f1] border-2 border-indigo-900/30 rounded-lg relative p-1 flex flex-col shadow-sm overflow-hidden h-full">
+                        <div className="flex-1 relative">
+                            <div className="absolute inset-0 flex items-center justify-center p-0">
+                                <ZodiacChart houses={getHouses(chart.id)} variant="legacy" defaultRect={true} scaleText={1.8} title={chart.title} />
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+}

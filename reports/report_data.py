@@ -109,6 +109,7 @@ from charts.renderers.event_forecast_renderer import render_event_forecast_grid
 from core.master_engine.master_controller import run_master_engine
 from core.predictions.event_detector import detect_events
 from core.cache.chart_cache import cache_chart, get_cached_chart
+from relationships.friendship_matrix import FriendshipMatrix
 
 def _planet_names(planets_list) -> list:
     """Safely extract planet name strings from a list that may contain dicts or strings."""
@@ -582,6 +583,15 @@ def summarize_dasha(jd_ut: float, chart: Dict[str, Any]) -> Dict[str, Any]:
         end_dt = julian_to_datetime(entry["end_jd"])
         entry["start_date"] = start_dt.strftime("%d/%m/%Y")
         entry["end_date"] = end_dt.strftime("%d/%m/%Y")
+        
+        # Enrich antardashas if present
+        if "antardashas" in entry:
+            for ad in entry["antardashas"]:
+                ad_start_dt = julian_to_datetime(ad["start_jd"])
+                ad_end_dt = julian_to_datetime(ad["end_jd"])
+                ad["start_date"] = ad_start_dt.strftime("%d/%m/%Y")
+                ad["end_date"] = ad_end_dt.strftime("%d/%m/%Y")
+                
         return entry
     dashas = [enrich(dict(d)) for d in dashas]
     current = dashas[0] if dashas else None
@@ -648,6 +658,16 @@ def assemble_report_data(
     moon_sign = get_sign_name(moon_lon)
     asc_sign = chart["ascendant_sign"]
     
+    rahu_lon = chart["planet_positions"]["Rahu"]["sidereal"]["lon"]
+    bb_diff = (moon_lon - rahu_lon) % 360
+    bb_lon = (rahu_lon + (bb_diff / 2)) % 360
+    bb_nak = compute_nakshatra_from_lon(bb_lon)
+    bhrigu_bindu = {
+        "lon": round(bb_lon, 4),
+        "sign": get_sign_name(bb_lon),
+        "nakshatra_name": bb_nak["nakshatra_name"]
+    }
+    
     # Calculate Dasha Start Planets based on Nakshatra
     nak_idx = panchang_data["nakshatra"]["nakshatra_index"] # 0-26
     
@@ -672,6 +692,24 @@ def assemble_report_data(
     strength = compute_shadbala_new(chart)
     yogas = detect_yogas(chart)
     
+    # Calculate SAV scores and Bhava Bala (Shastiamsa-mapped) for houses
+    try:
+        from ashtakavarga.classical import compute_ashtakavarga_classical
+        av_result = compute_ashtakavarga_classical(jd_ut, lat, lon)
+        sarva_scores = av_result.get("sarvashtakavarga", [])
+        
+        for h_num in range(1, 13):
+            h_key = str(h_num) if str(h_num) in chart["houses"] else h_num
+            if h_key in chart["houses"]:
+                if sarva_scores and len(sarva_scores) >= 12:
+                    chart["houses"][h_key]["sav_score"] = sarva_scores[h_num - 1]
+                
+                # Shastiamsa mapping from house strength (0-100 to ~300-600 range)
+                base_score = strength.get("houses", {}).get(h_num) or strength.get("houses", {}).get(str(h_num), 50)
+                chart["houses"][h_key]["bhava_bala"] = round(base_score * 7.0, 2)
+    except Exception as e:
+        print(f"[API WARN] Failed to calculate SAV and Bhava Bala: {e}")
+
     predictions = build_predictions(asc_sign)
     predictions = build_predictions(asc_sign)
     dasha = summarize_dasha(jd_ut, chart)
@@ -686,8 +724,18 @@ def assemble_report_data(
     formatted_dt = dt_local.strftime("%d/%m/%Y | %I:%M %p")
 
     # Define all requested vargas
-    varga_list = [1, 2, 3, 4, 7, 9, 10, 12, 16, 20, 24, 27, 30, 40, 45, 60]
+    varga_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 16, 20, 24, 27, 30, 40, 45, 60]
     vargas = {}
+    
+    # 1. Specialized D10 Build (Iyer Method)
+    from charts.divisional.d10 import build_d10_chart
+    vargas["d10"] = build_d10_chart(
+        jd_ut, lat, lon, 
+        house_system="W", 
+        style="north"
+    )
+
+    # 2. Other Vargas
     for d in varga_list:
         vargas[f"d{d}"] = build_varga_chart(
             d, jd_ut, lat, lon, 
@@ -755,6 +803,7 @@ def assemble_report_data(
         "chart": chart,
         "vargas": vargas, # All 16 vargas included here
         "jd_ut": jd_ut,
+        "bhrigu_bindu": bhrigu_bindu,
     }
 
     # --- New Analytic Fields ---
@@ -784,12 +833,314 @@ def assemble_report_data(
     report_data["life_areas"] = life_areas
     report_data["ai_summary"] = ai_summary
     
+    # Planetary Relationships Integration
+    try:
+        planet_positions_map = {
+            p: {"house": data["house"], "sign": get_sign_name(data["sidereal"]["lon"])}
+            for p, data in chart["planet_positions"].items()
+            if p in ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"]
+        }
+        fm = FriendshipMatrix()
+        relationships = fm.calculate_all_relationships(planet_positions_map)
+        report_data["planetary_relationships"] = relationships
+    except Exception as e:
+        print(f"[API WARN] Failed to compute planetary relationships: {e}")
+        report_data["planetary_relationships"] = {}
+
+    # Shodashvarga Summary for Frontend Tables
+    try:
+        shodashvarga_keys = ['d1', 'd2', 'd3', 'd4', 'd7', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60']
+        PLANETS_LIST = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"]
+        shodashvarga_summary = {}
+        from core.analysis.shadbala_engine import get_compound_dignity
+        abbr_map = {
+            "EXALTED": "Exalt.", "MOOLATRIKONA": "Moolt.", "OWN_SIGN": "Own",
+            "GREAT_FRIEND": "Grt.Fr.", "FRIEND": "Frnd.", "NEUTRAL": "Neutr.",
+            "ENEMY": "Enemy", "GREAT_ENEMY": "Grt.En.", "DEBILITATED": "Debil."
+        }
+        for v_id in shodashvarga_keys:
+            v_data = vargas.get(v_id)
+            if not v_data: continue
+            
+            signs = {"Lagna": v_data.get("ascendant_sign", "")}
+            dignities = {}
+            for p in PLANETS_LIST:
+                v_pos = v_data.get("varga_positions", {}).get(p, {})
+                sign_name = v_pos.get("sign_name", "")
+                signs[p] = sign_name
+                
+                if sign_name:
+                    dig = get_compound_dignity(chart, p, sign_name)
+                    dignities[p] = abbr_map.get(dig, "Neutr.")
+                else:
+                    dignities[p] = ""
+                    
+            shodashvarga_summary[v_id] = {"signs": signs, "dignities": dignities}
+        report_data["shodashvarga_summary"] = shodashvarga_summary
+        
+        # Planetary Avasthas
+        def calc_avasthas(chart, d1_dignities, time_str):
+            try:
+                h, m = [int(x) for x in time_str.split(":")[:2]]
+                time_in_hours = h + m/60.0
+            except:
+                time_in_hours = 12.0
+            
+            ishta_ghati = int(max(0, (time_in_hours - 6.0) * 2.5))
+            if time_in_hours < 6:
+                ishta_ghati = int(((24 + time_in_hours) - 6.0) * 2.5)
+
+            moon_lon = chart["planet_positions"]["Moon"]["sidereal"]["lon"]
+            birth_nak = int(moon_lon / (360/27)) + 1
+            lagna_num = chart["ascendant_sign_index"] + 1
+            
+            planets_list = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"]
+            p_nums = {"Sun": 1, "Moon": 2, "Mars": 3, "Mercury": 4, "Jupiter": 5, "Venus": 6, "Saturn": 7, "Rahu": 8, "Ketu": 9}
+            
+            signs = {}
+            for p in planets_list:
+                lon = chart["planet_positions"][p]["sidereal"]["lon"]
+                signs[p] = int(lon / 30)
+                
+            avasthas = {}
+            for p in planets_list:
+                lon = chart["planet_positions"][p]["sidereal"]["lon"]
+                sign_idx = signs[p]
+                dig = d1_dignities.get(p, "Neutr.")
+                
+                # 1. Jagradadi
+                if dig in ["Exalt.", "Own"]: jagrad = "Jagrad\n(Wakefulness)"
+                elif dig in ["Grt.Fr.", "Frnd.", "Neutr."]: jagrad = "Swapna\n(Dreamful)"
+                else: jagrad = "Sushupti\n(State of sleep)"
+                
+                # 2. Baladi
+                deg = lon % 30
+                is_even = sign_idx % 2 != 0 
+                idx = int(deg / 6)
+                if is_even: idx = 4 - idx
+                baladi_names = ["Balavastha\n(Childhood)", "Kumaravastha\n(Adolescence)", "Yuvavastha\n(Adulthood)", "Vriddhavastha\n(Old age)", "Mrita\n(State of death)"]
+                baladi = baladi_names[idx] if idx < 5 else baladi_names[4]
+                
+                # 3. Lajjitadi
+                conjuncts = [other for other in planets_list if other != p and signs[other] == sign_idx]
+                lajjitadi_list = []
+                house = (sign_idx - chart["ascendant_sign_index"]) % 12 + 1
+                if house == 5 and any(m in conjuncts for m in ["Sun", "Saturn", "Mars", "Rahu", "Ketu"]):
+                    lajjitadi_list.append("Lajjit")
+                if dig in ["Exalt.", "Moolt."]: lajjitadi_list.append("Garvit")
+                if dig in ["Enemy", "Grt.En."] or "Saturn" in conjuncts: lajjitadi_list.append("Kshudit")
+                if sign_idx in [3, 7, 11]: lajjitadi_list.append("Trushit")
+                if dig in ["Frnd.", "Grt.Fr."] or "Jupiter" in conjuncts: lajjitadi_list.append("Mudit")
+                if "Sun" in conjuncts: lajjitadi_list.append("Kshobhit")
+                    
+                if not lajjitadi_list: lajjitadi = ""
+                else: lajjitadi = " ".join(list(set(lajjitadi_list)))
+                    
+                # 4. Deeptadi
+                deeptadi_map = {
+                    "Exalt.": "Deepta\n(Luminous)", "Moolt.": "Swastha\n(Stable)", "Own": "Swastha\n(Stable)",
+                    "Grt.Fr.": "Pramudita\n(Joyful)", "Frnd.": "Shanta\n(Quiescent)", "Neutr.": "Deena\n(Deficient)",
+                    "Enemy": "Dukhi\n(Tormented)", "Grt.En.": "Vikala\n(Crippled)", "Debil.": "Khala\n(Base)"
+                }
+                deeptadi = deeptadi_map.get(dig, "Deena\n(Deficient)")
+                
+                # 5. Shyanadi
+                p_num = p_nums[p]
+                nak_num = int(lon / (360/27)) + 1
+                nav_num = int(lon / (360/108)) % 9 + 1
+                s = (nak_num * p_num * nav_num) + ishta_ghati + birth_nak + lagna_num
+                s = s % 12
+                if s == 0: s = 12
+                
+                shyanadi_names = {
+                    1: "Shayana\n(Recumbent)", 2: "Upaveshana\n(Sitting)", 3: "Netrapani\n(Hands on eyes)",
+                    4: "Prakashana\n(Luminous)", 5: "Gamana\n(Going)", 6: "Agamana\n(Arriving)",
+                    7: "Sabhayam Vasti\n(In an assembly)", 8: "Agama\n(Returning)", 9: "Bhojana\n(Eating)",
+                    10: "Nritya Lipsa\n(Desirous of dancing)", 11: "Kautaka\n(Delight)", 12: "Nidra\n(Sleeping)"
+                }
+                
+                avasthas[p] = {
+                    "jagradadi": jagrad, "baladi": baladi, "lajjitadi": lajjitadi,
+                    "deeptadi": deeptadi, "shyanadi": shyanadi_names[s]
+                }
+            return avasthas
+            
+        report_data["planetary_avasthas"] = calc_avasthas(chart, shodashvarga_summary.get("d1", {}).get("dignities", {}), time)
+    except Exception as e:
+        print(f"[API WARN] Failed to compute shodashvarga_summary: {e}")
+        report_data["shodashvarga_summary"] = {}
+
+    # Aspects Data
+    try:
+        def calc_aspects_data(chart_obj):
+            planets_list = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"]
+            def get_lon(p):
+                return chart_obj["planet_positions"][p]["sidereal"]["lon"]
+            def calc_virupa(diff, p):
+                if 0 <= diff < 30: v = 0
+                elif 30 <= diff < 60: v = (diff - 30) / 2
+                elif 60 <= diff < 90: v = (diff - 60) + 15
+                elif 90 <= diff < 120: v = (120 - diff) / 2 + 30
+                elif 120 <= diff < 150: v = 150 - diff
+                elif 150 <= diff < 180: v = (diff - 150) * 2
+                elif 180 <= diff < 300: v = (300 - diff) / 2
+                else: v = 0
+                if p == "Mars":
+                    if 90 <= diff < 120: v = 150 - diff
+                    elif 210 <= diff < 240: v = 270 - diff
+                elif p in ["Jupiter", "Rahu", "Ketu"]:
+                    if 120 <= diff < 150: v = 180 - diff
+                    elif 240 <= diff < 270: v = 300 - diff
+                elif p == "Saturn":
+                    if 30 <= diff < 60: v = (diff - 30) * 2
+                    elif 60 <= diff < 90: v = 90 - diff / 2
+                    elif 270 <= diff < 300: v = (300 - diff) * 2
+                return max(0, int(round(v)))
+
+            def calc_fraction(diff, p):
+                house = int(diff // 30) + 1
+                frac = ""
+                if house in [3, 10]: frac = "1/4"
+                elif house in [5, 9]: frac = "1/2"
+                elif house in [4, 8]: frac = "3/4"
+                elif house == 7: frac = "4/4"
+                if p == "Mars" and house in [4, 8]: frac = "4/4"
+                elif p in ["Jupiter", "Rahu", "Ketu"] and house in [5, 9]: frac = "4/4"
+                elif p == "Saturn" and house in [3, 10]: frac = "4/4"
+                return frac
+
+            aspects_planets = []
+            for aspected in planets_list:
+                row = {"aspected": aspected, "lon": get_lon(aspected), "aspects": {}}
+                for aspecting in planets_list:
+                    if aspecting == aspected:
+                        row["aspects"][aspecting] = {"virupa": 0, "fraction": ""}
+                        continue
+                    diff = (get_lon(aspected) - get_lon(aspecting)) % 360
+                    row["aspects"][aspecting] = {"virupa": calc_virupa(diff, aspecting), "fraction": calc_fraction(diff, aspecting)}
+                aspects_planets.append(row)
+
+            aspects_bhavas = []
+            bhava_names = ["First", "Second", "Third", "Fourth", "Fifth", "Sixth", "Seventh", "Eighth", "Ninth", "Tenth", "Eleventh", "Twelfth"]
+            for h in range(1, 13):
+                h_lon = chart_obj["houses"][h].get("cusp_deg", 0)
+                if h_lon is None: h_lon = 0
+                row = {"aspected": bhava_names[h-1], "lon": h_lon, "aspects": {}}
+                for aspecting in planets_list:
+                    diff = (h_lon - get_lon(aspecting)) % 360
+                    row["aspects"][aspecting] = {"virupa": calc_virupa(diff, aspecting), "fraction": calc_fraction(diff, aspecting)}
+                aspects_bhavas.append(row)
+            return {"planets": aspects_planets, "bhavas": aspects_bhavas}
+            
+        report_data["aspects_data"] = calc_aspects_data(chart)
+    except Exception as e:
+        print(f"[API WARN] Failed to compute aspects_data: {e}")
+        report_data["aspects_data"] = {"planets": [], "bhavas": []}
+
+    # Ashtakavarga Reductions
+    try:
+        def calc_av_reductions(rashi_chart, av_chart_input, bhinna_breakdown):
+            planets_for_av = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Ascendant"]
+            reductions = {}
+            
+            # Identify which signs have planets (for Ekadhipatya and Graha Pinda)
+            # Only count Sun to Saturn for Ekadhipatya rules in standard BPHS
+            occupied_signs = set()
+            planet_signs = {}
+            for p, data in rashi_chart["planet_positions"].items():
+                s = get_sign_index(data["sidereal"]["lon"])
+                planet_signs.setdefault(s, []).append(p)
+                occupied_signs.add(s)
+            
+            rasi_mult = {0: 7, 1: 10, 2: 8, 3: 4, 4: 10, 5: 5, 6: 7, 7: 8, 8: 9, 9: 5, 10: 11, 11: 12}
+            graha_mult = {"Sun": 5, "Moon": 5, "Mars": 8, "Mercury": 5, "Jupiter": 10, "Venus": 7, "Saturn": 5}
+            
+            for p in planets_for_av:
+                if p not in bhinna_breakdown:
+                    continue
+                # Raw bindus per sign (0-11)
+                before = {}
+                for s in range(12):
+                    before[s] = sum(bhinna_breakdown[p][s].values()) if s in bhinna_breakdown[p] else 0
+                
+                # Trikona Reduction
+                trikona = {}
+                for trine in [[0, 4, 8], [1, 5, 9], [2, 6, 10], [3, 7, 11]]:
+                    v = [before[s] for s in trine]
+                    if 0 in v:
+                        for s in trine: trikona[s] = before[s]
+                    elif v[0] == v[1] == v[2]:
+                        for s in trine: trikona[s] = 0
+                    else:
+                        m = min(v)
+                        for s in trine: trikona[s] = before[s] - m
+                
+                # Ekadhipatya Reduction
+                ekadhipatya = dict(trikona)
+                pairs = [(0, 7), (1, 6), (2, 5), (8, 11), (9, 10)] # Mars, Venus, Mercury, Jupiter, Saturn
+                for s1, s2 in pairs:
+                    v1, v2 = ekadhipatya[s1], ekadhipatya[s2]
+                    p1, p2 = s1 in occupied_signs, s2 in occupied_signs
+                    
+                    if p1 and p2:
+                        pass # No reduction
+                    elif not p1 and not p2:
+                        if v1 == v2:
+                            ekadhipatya[s1] = ekadhipatya[s2] = 0
+                        else:
+                            m = min(v1, v2)
+                            ekadhipatya[s1] = ekadhipatya[s2] = m
+                    elif p1 and not p2:
+                        if v2 > v1: ekadhipatya[s2] = v1
+                        else: ekadhipatya[s2] = 0
+                    elif p2 and not p1:
+                        if v1 > v2: ekadhipatya[s1] = v2
+                        else: ekadhipatya[s1] = 0
+                
+                # Pindas
+                rashi_pinda = sum(ekadhipatya[s] * rasi_mult[s] for s in range(12))
+                graha_pinda = 0
+                for s in range(12):
+                    if s in planet_signs:
+                        for graha in planet_signs[s]:
+                            if graha in graha_mult:
+                                graha_pinda += ekadhipatya[s] * graha_mult[graha]
+                
+                reductions[p] = {
+                    "before": before,
+                    "trikona": trikona,
+                    "ekadhipatya": ekadhipatya,
+                    "rashi_pinda": rashi_pinda,
+                    "graha_pinda": graha_pinda,
+                    "sodhya_pinda": rashi_pinda + graha_pinda
+                }
+            return reductions
+
+        av_chart_input = {}
+        for p_name, p_data in chart["planet_positions"].items():
+            if p_name in ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn"]:
+                av_chart_input[p_name] = get_sign_index(p_data["sidereal"]["lon"])
+        av_chart_input["Ascendant"] = chart["ascendant_sign_index"]
+        
+        # Calculate reductions on the fly
+        from ashtakavarga import Bhinnashtakavarga
+        bhinna_calc = Bhinnashtakavarga().calculate(av_chart_input)
+        report_data["ashtakavarga"] = {
+            "bhinna_breakdown": bhinna_calc["breakdown"],
+            "bhinna": bhinna_calc["sums"]
+        }
+        report_data["av_reductions"] = calc_av_reductions(chart, av_chart_input, bhinna_calc["breakdown"])
+        
+    except Exception as e:
+        print(f"[API WARN] Failed to compute AV reductions: {e}")
+        report_data["av_reductions"] = {}
+
     # 3. Ultra Engine - Advanced Analysis
     ultra = build_ultra_predictions(chart, dasha, dosha, strength)
     report_data["ultra"] = ultra
     
     # 4. Supreme Engine - Ultimate AI-Powered Analysis
-    d9 = vargas.get("d9")  # Get Navamsa chart
+    d9 = vargas.get("d9")
     supreme = build_supreme_engine(chart, d9, strength, dosha, dasha)
     report_data["supreme"] = supreme
     report_data["ishta_devata"] = calculate_ishta_devata(chart, d9) if d9 else None
@@ -1258,6 +1609,15 @@ def assemble_report_data(
         dasha=dasha,
         strength=simple_strength
     )
+
+    # Inject rich planet effects
+    from core.knowledge.planet_house_text import planet_rich_interpretation
+    rich_effects = {}
+    for p_name in ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"]:
+        rich_effects[p_name] = {}
+        for h_num in range(1, 13):
+            rich_effects[p_name][h_num] = planet_rich_interpretation(p_name, h_num)
+    report_data["rich_planet_effects"] = rich_effects
 
     # 21. Life Oracle - Career, Marriage, Study, Business & Health Details
     try:

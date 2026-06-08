@@ -1,10 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import CompatibilityDashboard from '../../components/matchmaking/CompatibilityDashboard';
 import PlaceAutocomplete from '../../components/PlaceAutocomplete';
 
 const MatchmakingPage = () => {
   const [loading, setLoading] = useState(false);
   const [report, setReport] = useState(null);
+  const [wsAlert, setWsAlert] = useState(null);
+
+  useEffect(() => {
+    const ws = new WebSocket('ws://localhost:8000/ws/matchmaking/alerts');
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        setWsAlert(data);
+        setTimeout(() => setWsAlert(null), 3500);
+      } catch (e) {}
+    };
+    return () => ws.close();
+  }, []);
   
   const [brideData, setBrideData] = useState({ 
     title: 'Kumari',
@@ -135,7 +148,7 @@ const MatchmakingPage = () => {
                       <div className="space-y-2">
                          <label className="block text-[9px] font-black uppercase text-slate-400 mb-2 ml-1">Birth Location</label>
                          <div className="relative matchmaking-place-search">
-                            <PlaceAutocomplete onSelect={(place) => {
+                            <PlaceAutocomplete value={brideData.location_name || ""} onSelect={(place) => {
                                setBrideData({
                                   ...brideData,
                                   lat: place.lat,
@@ -202,7 +215,7 @@ const MatchmakingPage = () => {
                       <div className="space-y-2">
                          <label className="block text-[9px] font-black uppercase text-slate-400 mb-2 ml-1">Birth Location</label>
                          <div className="relative matchmaking-place-search">
-                            <PlaceAutocomplete onSelect={(place) => {
+                            <PlaceAutocomplete value={groomData.location_name || ""} onSelect={(place) => {
                                setGroomData({
                                   ...groomData,
                                   lat: place.lat,
@@ -252,6 +265,18 @@ const MatchmakingPage = () => {
             groomFullData={groomData}
             report={report} 
           />
+        </div>
+      )}
+
+      {wsAlert && (
+        <div className="fixed bottom-6 right-6 bg-indigo-900/90 backdrop-blur-md border border-indigo-500 rounded-2xl p-4 shadow-2xl z-50 animate-bounce flex items-start gap-4 max-w-sm">
+          <div className="text-2xl mt-1">📡</div>
+          <div>
+             <div className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-1">{wsAlert.event}</div>
+             <div className="text-sm text-indigo-50 leading-tight">
+               {wsAlert.data?.step || wsAlert.data?.status || (wsAlert.data?.final_score && `Analysis Complete! Score: ${Math.round(wsAlert.data.final_score)}`) || 'Processing...'}
+             </div>
+          </div>
         </div>
       )}
 

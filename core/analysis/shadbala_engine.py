@@ -7,6 +7,9 @@ Calculates Ishta and Kashta Phala for Vedic report analysis.
 
 from typing import Dict, Any, List
 from .utils import get_planet_house, get_sign_of_planet
+from shadbala.shadbala_engine import ShadbalaEngine
+from shadbala.shadbala_normalizer import normalize_score
+from shadbala.shadbala_ratio import calculate_ratio
 
 EXALTED = {
     "Sun": "Aries",
@@ -166,7 +169,7 @@ def get_compound_dignity(chart: Dict[str, Any], planet: str, sign: str) -> str:
     if natural_rel == "FRIEND":
         return "GREAT_FRIEND" if temp_rel == "FRIEND" else "NEUTRAL"
     if natural_rel == "ENEMY":
-        return "NEUTRAL" if temp_rel == "Friend" else "GREAT_ENEMY"
+        return "NEUTRAL" if temp_rel == "FRIEND" else "GREAT_ENEMY"
     
     # Natural is Neutral
     return "FRIEND" if temp_rel == "FRIEND" else "ENEMY"
@@ -207,6 +210,10 @@ def compute_detailed_strength(chart):
     Returns a dictionary of metrics for each planet.
     """
     results = {}
+    engine = ShadbalaEngine()
+    
+    # Calculate using the new rich Shadbala engine
+    engine_results = engine.compute(chart)
     
     for planet in PLANETS:
         house = get_planet_house(chart, planet)
@@ -214,39 +221,60 @@ def compute_detailed_strength(chart):
         
         if house is None or sign is None:
             results[planet] = {
-                "total_score": 0,
+                "total": 0.0,
+                "total_score": 0.0,
                 "dignity": "Unknown",
-                "ishta_phala": 0,
-                "kashta_phala": 0,
-                "dik_bala": 0
+                "ishta_phala": 0.0,
+                "kashta_phala": 0.0,
+                "dik_bala": 0.0,
+                "sthana": 0.0,
+                "dig": 0.0,
+                "kala": 0.0,
+                "cheshta": 0.0,
+                "naisargika": 0.0,
+                "drik": 0.0,
+                "house_contribution": 1
             }
             continue
             
-        # Positional Strength
-        pos_score = calculate_positional_strength(planet, sign, house)
+        metrics = engine_results.get(planet, {})
+        sthana = metrics.get("sthana", 0.0)
+        dig = metrics.get("dig", 0.0)
+        kala = metrics.get("kala", 0.0)
+        cheshta = metrics.get("cheshta", 0.0)
+        naisargika = metrics.get("naisargika", 0.0)
+        drik = metrics.get("drik", 0.0)
+        raw_total = metrics.get("total", 0.0)
         
-        # Directional Strength (Dik Bala)
-        dik_bala = 0
-        target_house = DIK_BALA_HOUSES.get(planet)
-        if target_house:
-            # Full strength at target house, loses strength at opposite
-            dist = abs(house - target_house)
-            if dist > 6: dist = 12 - dist
-            dik_bala = round(60 * (1 - dist/6), 2)
+        # Normalize raw total (in Virupas) to 0..10 Rupa range.
+        # Uses the normalizer mapping (max_score=610 maps to 10 Rupas, reflecting new classical ranges)
+        total_score = normalize_score(raw_total, max_score=610)
+        
+        # Calculate Classical BPHS Ratio
+        ratio_data = calculate_ratio(planet, raw_total)
+        
+        # Ishta/Kashta Phala based on sthana (positional strength, 0-60 range)
+        ishta, kashta = compute_ishta_kashta(planet, sthana)
+        
+        # Determine dignity (Natural + Temporary)
+        dignity = get_compound_dignity(chart, planet, sign)
+        if not dignity or dignity == "NEUTRAL":
+            dignity = get_dignity(planet, sign)
             
-        # Ishta/Kashta Phala
-        ishta, kashta = compute_ishta_kashta(planet, pos_score)
-        
-        # Final normalized score (roughly out of 100)
-        total_score = round((pos_score + dik_bala) / 1.5, 2)
-        
         results[planet] = {
             "total": total_score,
             "total_score": total_score,
-            "dignity": get_dignity(planet, sign),
+            "dignity": dignity,
             "ishta_phala": ishta,
             "kashta_phala": kashta,
-            "dik_bala": dik_bala,
+            "dik_bala": dig,
+            "sthana": sthana,
+            "dig": dig,
+            "kala": kala,
+            "cheshta": cheshta,
+            "naisargika": naisargika,
+            "drik": drik,
+            "ratio_data": ratio_data,
             "house_contribution": house
         }
         

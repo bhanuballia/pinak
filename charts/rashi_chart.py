@@ -13,17 +13,21 @@ from typing import Dict, Any, List, Optional
 from core.utils import get_sign_index, get_sign_name
 from astronomy.positions import get_all_planetary_positions
 from charts.houses import compute_houses
+from nakshatra.nakshatra_engine import NakshatraEngine
 
 
 def group_planets_by_sign(planet_positions: Dict[str, Dict[str, Any]]) -> Dict[int, List[Dict[str, Any]]]:
     sign_map: Dict[int, List[Dict[str, Any]]] = {i: [] for i in range(12)}
+    nak_engine = NakshatraEngine()
     for planet, data in planet_positions.items():
         sid = data["sidereal"]["lon"]
         sign_idx = get_sign_index(sid)
+        nak_info = nak_engine.calculate(sid)
         sign_map[sign_idx].append({
             "name": planet,
             "is_retrograde": data.get("is_retrograde", False),
-            "is_combust": data.get("is_combust", False)
+            "is_combust": data.get("is_combust", False),
+            "nakshatra": nak_info["nakshatra"]
         })
     return sign_map
 
@@ -31,13 +35,16 @@ def group_planets_by_sign(planet_positions: Dict[str, Dict[str, Any]]) -> Dict[i
 def group_planets_by_house(planet_positions: Dict[str, Dict[str, Any]], cusps: List[Optional[float]]) -> Dict[int, List[Dict[str, Any]]]:
     from charts.houses import get_house_number
     house_map: Dict[int, List[Dict[str, Any]]] = {i: [] for i in range(1, 13)}
+    nak_engine = NakshatraEngine()
     for planet, data in planet_positions.items():
         lon = data["sidereal"]["lon"]
         house = get_house_number(lon, cusps)
+        nak_info = nak_engine.calculate(lon)
         house_map[house].append({
             "name": planet,
             "is_retrograde": data.get("is_retrograde", False),
-            "is_combust": data.get("is_combust", False)
+            "is_combust": data.get("is_combust", False),
+            "nakshatra": nak_info["nakshatra"]
         })
     return house_map
 

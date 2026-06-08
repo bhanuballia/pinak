@@ -1,13 +1,138 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vedic Astrology App</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vedic Astrology App</title>
+</head>
+
+<body>
+  <style>
+    /* Wrapper that sticks to the right side of the screen */
+    .translate-wrapper {
+      position: fixed;
+      top: 50%;
+      right: 0;
+      transform: translateY(-50%);
+      z-index: 10000;
+      display: flex;
+      flex-direction: row-reverse;
+      align-items: center;
+    }
+
+    /* The vertical blue button */
+    .translate-btn {
+      background-color: hsl(34, 91%, 60%);
+      /* Blue */
+      color: #130a0a;
+      padding: 16px 8px;
+      border-radius: 8px 0 0 8px;
+      cursor: pointer;
+      box-shadow: -2px 0 6px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      font-family: sans-serif;
+      font-weight: bold;
+      letter-spacing: 1px;
+      transition: background-color 0.2s;
+    }
+
+    .translate-btn:hover {
+      background-color: #2563eb;
+    }
+
+    /* Vertical text */
+    .translate-text {
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      font-size: 16px;
+    }
+
+    /* The actual Google Translate container (hidden by default, expands on hover) */
+    .translate-content {
+      background: white;
+      padding: 10px;
+      border-radius: 8px 0 0 8px;
+      box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
+      margin-right: -100%;
+      /* Hide off-screen initially */
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+
+    /* Show the translate dropdown when hovering over the wrapper */
+    .translate-wrapper:hover .translate-content {
+      margin-right: 0;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Clean up the Google Translate default styling */
+    .goog-te-combo {
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      outline: none;
+      font-size: 14px;
+      font-family: sans-serif;
+      cursor: pointer;
+    }
+
+    .goog-logo-link {
+      display: none !important;
+    }
+
+    .goog-te-gadget {
+      color: transparent !important;
+      font-size: 0px !important;
+    }
+
+    .goog-te-banner-frame.skiptranslate {
+      display: none !important;
+    }
+
+    body {
+      top: 0px !important;
+    }
+  </style>
+
+  <!-- Hoverable Vertical Translate Tab -->
+  <div class="translate-wrapper">
+    <div class="translate-btn">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="m5 8 6 6"></path>
+        <path d="m4 14 6-6 2-3"></path>
+        <path d="M2 5h12"></path>
+        <path d="M7 2h1"></path>
+        <path d="m22 22-5-10-5 10"></path>
+        <path d="M14 18h6"></path>
+      </svg>
+      <span class="translate-text">Langague</span>
+    </div>
+    <div class="translate-content">
+      <div id="google_translate_element"></div>
+    </div>
+  </div>
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en',
+        includedLanguages: 'en,hi,bn,pa,ta,te,gu,mr',
+        layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript"
+    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>

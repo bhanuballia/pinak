@@ -1,7 +1,8 @@
 # charts/divisional/builder.py
 """
 Generalized Divisional (Varga) Chart Builder.
-Implements mathematical rules for D1, D2, D3, D4, D7, D9, D10, D12, D16, D20, D24, D27, D30, D40, D45, D60.
+D5, D6, D8, D11 delegate to modular BaseVargaCalculator-backed classes.
+All other charts are computed inline using classical Parashara rules.
 """
 from __future__ import annotations
 import math
@@ -48,27 +49,42 @@ def get_varga_sign(longitude: float, d_number: int) -> int:
         div = int(deg_in_sign // 7.5)
         return (sign_idx + (div * 3)) % 12
 
+    # D5 - Panchamsha (1/5) — classical odd/even sign rule (Aries / Libra start)
+    if d_number == 5:
+        from charts.divisional.d5_panchamsha import D5Panchamsha
+        return D5Panchamsha().calculate(lon)["sign_index"]
+
+    # D6 - Shashtamsha (1/6) — classical odd/even sign rule (Aries / Libra start)
+    if d_number == 6:
+        from charts.divisional.d6_shashtamsha import D6Shashtamsha
+        return D6Shashtamsha().calculate(lon)["sign_index"]
+
     # D7 - Saptamsa (1/7)
     if d_number == 7:
         # Odd sign: Start from sign itself. Even sign: Start from 7th from sign.
-        div = int(deg_in_sign // (30/7))
+        div = int(deg_in_sign // (30 / 7))
         start_sign = sign_idx if (sign_idx % 2 == 0) else (sign_idx + 6)
         return (start_sign + div) % 12
 
+    # D8 - Ashtamsha (1/8) — modality-based mapping (Ar/Sg/Le start)
+    if d_number == 8:
+        from charts.divisional.d8_ashtamsha import D8Ashtamsha
+        return D8Ashtamsha().calculate(lon)["sign_index"]
+
     # D9 - Navamsa (1/9)
     if d_number == 9:
-        # Fire: Ar, Earth: Cp, Air: Li, Water: Cn
-        group = sign_idx % 4
-        start_map = {0: 0, 1: 9, 2: 6, 3: 3}
-        div = int(deg_in_sign // (30/9))
-        return (start_map[group] + div) % 12
+        from charts.divisional.d9 import calculate_d9_position
+        return calculate_d9_position(lon)["d9_sign_index"]
 
     # D10 - Dasamsa (1/10)
     if d_number == 10:
-        # Odd sign: From sign itself. Even sign: From 9th from sign.
-        div = int(deg_in_sign // 3)
-        start_sign = sign_idx if (sign_idx % 2 == 0) else (sign_idx + 8)
-        return (start_sign + div) % 12
+        from core.astrology.divisional.d10.d10_iyer import D10Iyer
+        return D10Iyer().calculate(lon)["sign_index"]
+
+    # D11 - Rudramsha (1/11) — sequential mapping (starts from natal sign)
+    if d_number == 11:
+        from charts.divisional.d11_rudramsha import D11Rudramsha
+        return D11Rudramsha().calculate(lon)["sign_index"]
 
     # D12 - Dwadasamsa (1/12)
     if d_number == 12:
@@ -84,13 +100,11 @@ def get_varga_sign(longitude: float, d_number: int) -> int:
         div = int(deg_in_sign // (30/16))
         return (start_map[group] + div) % 12
 
-    # D20 - Vimsamsa (1/20)
+    # D20 - Vimsamsa (1/20) — modular registry call
     if d_number == 20:
-        # Moveable: Ar, Fixed: Sg, Dual: Leo
-        group = sign_idx % 3
-        start_map = {0: 0, 1: 8, 2: 4}
-        div = int(deg_in_sign // 1.5)
-        return (start_map[group] + div) % 12
+        from core.astrology.divisional.varga_registry import get_varga_calculator
+        calc = get_varga_calculator(20)
+        return calc.calculate(lon)["sign_index"] if calc else sign_idx
 
     # D24 - Chaturvimsamsa (1/24)
     if d_number == 24:
@@ -99,52 +113,46 @@ def get_varga_sign(longitude: float, d_number: int) -> int:
         div = int(deg_in_sign // 1.25)
         return (start_sign + div) % 12
 
-    # D27 - Saptavimsamsa (1/27)
+    # D27 - Saptavimsamsa (1/27) — modular registry call
     if d_number == 27:
-        # Ar, Cn, Li, Cp for groups
-        group = sign_idx % 4
-        start_map = {0: 0, 1: 3, 2: 6, 3: 9}
-        div = int(deg_in_sign // (30/27))
-        return (start_map[group] + div) % 12
+        from core.astrology.divisional.varga_registry import get_varga_calculator
+        calc = get_varga_calculator(27)
+        return calc.calculate(lon)["sign_index"] if calc else sign_idx
 
     # D30 - Trimsamsa (1/30)
     if d_number == 30:
         # Odd: 5 Ar, 5 Ta, 8 Sg, 7 Ge, 5 Aq
         # Even: 5 Cp, 7 Vi, 8 Pi, 5 Li, 5 Sc
         d = deg_in_sign
-        if (sign_idx % 2 == 0): # Odd
-            if d < 5: return 0 # Ar
-            if d < 10: return 1 # Ta
-            if d < 18: return 8 # Sg
-            if d < 25: return 2 # Ge
-            return 10 # Aq
-        else: # Even
-            if d < 5: return 9 # Cp
-            if d < 12: return 5 # Vi
-            if d < 20: return 11 # Pi
-            if d < 25: return 6 # Li
-            return 7 # Sc
+        if (sign_idx % 2 == 0): # Odd sign
+            if d < 5: return 0  # Aries (Mars)
+            if d < 10: return 10 # Aquarius (Saturn)
+            if d < 18: return 8  # Sagittarius (Jupiter)
+            if d < 25: return 2  # Gemini (Mercury)
+            return 6             # Libra (Venus)
+        else: # Even sign
+            if d < 5: return 1   # Taurus (Venus)
+            if d < 12: return 5  # Virgo (Mercury)
+            if d < 20: return 11 # Pisces (Jupiter)
+            if d < 25: return 9  # Capricorn (Saturn)
+            return 7             # Scorpio (Mars)
 
-    # D40 - Khavedamsa (1/40)
+    # D40 - Khavedamsa (1/40) — modular registry call
     if d_number == 40:
-        # Odd: Ar, Even: Li
-        start_sign = 0 if (sign_idx % 2 == 0) else 6
-        div = int(deg_in_sign // 0.75)
-        return (start_sign + div) % 12
+        from core.astrology.divisional.varga_registry import get_varga_calculator
+        calc = get_varga_calculator(40)
+        return calc.calculate(lon)["sign_index"] if calc else sign_idx
 
-    # D45 - Akshavedamsa (1/45)
+    # D45 - Akshavedamsa (1/45) — modular registry call
     if d_number == 45:
-        # Moveable: Ar, Fixed: Leo, Dual: Sg
-        group = sign_idx % 3
-        start_map = {0: 0, 1: 4, 2: 8}
-        div = int(deg_in_sign // (2.0/3.0))
-        return (start_map[group] + div) % 12
+        from core.astrology.divisional.varga_registry import get_varga_calculator
+        calc = get_varga_calculator(45)
+        return calc.calculate(lon)["sign_index"] if calc else sign_idx
 
     # D60 - Shastiamsa (1/60)
     if d_number == 60:
-        # Start from sign itself
-        div = int(deg_in_sign // 0.5)
-        return (sign_idx + div) % 12
+        from charts.divisional.d60 import D60Shastiamsa
+        return D60Shastiamsa().calculate(lon)["sign_index"]
 
     return sign_idx # Fallback to D1
 

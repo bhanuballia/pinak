@@ -8,14 +8,16 @@ export default function CareerViewer() {
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('All');
     const [userData, setUserData] = useState(null);
-    const [isHindi, setIsHindi] = useState(false);
+    const [isHindi, setIsHindi] = useState(() => {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('lang') === 'hindi';
+    });
 
     useEffect(() => {
+        setLoading(true);
         const loadInsights = async () => {
             try {
                 const params = new URLSearchParams(window.location.search);
-                const lang = params.get('lang');
-                setIsHindi(lang === 'hindi');
 
                 const uData = {
                     name: params.get('name') || 'User',
@@ -24,7 +26,7 @@ export default function CareerViewer() {
                     lat: params.get('lat'),
                     lon: params.get('lon'),
                     tz_offset: params.get('tz'),
-                    lang: lang || 'english'
+                    lang: isHindi ? 'hindi' : 'english'
                 };
 
                 const [general, personalRes] = await Promise.all([
@@ -48,7 +50,7 @@ export default function CareerViewer() {
             }
         };
         loadInsights();
-    }, []);
+    }, [isHindi]);
 
     const categories = ['All', ...new Set(insights.map(item => item.category))];
     const filteredInsights = filter === 'All' ? insights : insights.filter(item => item.category === filter);
@@ -66,7 +68,28 @@ export default function CareerViewer() {
     }
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#0f172a', color: '#cbd5e1', fontFamily: 'sans-serif', paddingBottom: '100px' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: '#0f172a', color: '#cbd5e1', fontFamily: 'sans-serif', paddingBottom: '100px', position: 'relative' }}>
+            {/* Language Toggle Button */}
+            <button 
+                onClick={() => setIsHindi(!isHindi)}
+                style={{
+                    position: 'absolute',
+                    top: '20px',
+                    right: '20px',
+                    zIndex: 1000,
+                    background: 'rgba(255,255,255,0.8)',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    padding: '6px 12px',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    color: 'black',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+                }}
+            >
+                A / अ
+            </button>
             {/* Premium Header */}
             <div style={{ 
                 padding: '100px 40px', 

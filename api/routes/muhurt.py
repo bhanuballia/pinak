@@ -64,8 +64,11 @@ CEREMONY_RULES = {
 }
 
 from panchang.tithi_yoga_karana import TITHI_NAMES, NAKS
-from astronomy.positions import get_sun_moon_sidereal
+from astronomy.positions import get_sun_moon_sidereal, get_all_planetary_positions
 from astronomy.sidereal import set_ayanamsa
+from astronomy.ascendant import get_ascendant_from_datetime
+from astronomy.sun_calculations import calculate_noaa_sunrise_sunset
+from api.routes.panchang import calculate_muhurta_periods
 
 @router.post("/calculate")
 async def calculate_muhurt(payload: Dict = Body(...)):
@@ -206,6 +209,172 @@ async def calculate_muhurt(payload: Dict = Body(...)):
             })
             
         return {"ceremony": ceremony, "dates": results}
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/search_advanced")
+async def search_advanced_muhurt(payload: Dict = Body(...)):
+    """
+    Advanced Muhurta Search Engine.
+    Filters days based on ceremony rules, Tara Bala, and Chandra Bala.
+    Then scans auspicious days for the optimal Lagna (empty 8th house, avoiding Rahu Kaal).
+    """
+    try:
+        set_ayanamsa()
+        
+        start_date_str = payload["start_date"] # YYYY-MM-DD
+        end_date_str = payload.get("end_date") # YYYY-MM-DD
+        days_to_check = int(payload.get("days", 30))
+        
+        start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d")
+        if end_date_str:
+            end_date = datetime.datetime.strptime(end_date_str, "%Y-%m-%d")
+            duration = (end_date - start_date).days + 1
+            if duration > 0:
+                days_to_check = min(duration, 60) # cap at 60 days
+                
+        tz = float(payload.get("tz", 5.5))
+        lat = float(payload.get("lat", 28.6139))
+        lon = float(payload.get("lon", 77.2090))
+        ceremony = payload.get("ceremony", "Marriage")
+        rules = CEREMONY_RULES.get(ceremony, CEREMONY_RULES["Marriage"])
+        
+        user_profile = payload.get("user_profile", {})
+        natal_moon_lon = user_profile.get("moon_lon")
+        natal_moon_rashi = int(natal_moon_lon // 30.0) if natal_moon_lon is not None else None
+        natal_nak_index = int(natal_moon_lon // 13.333333) % 27 if natal_moon_lon is not None else None
+
+        TITHI_DEG = 12.0
+        NAK_DEG = 13.333333333333334
+        
+        base_jd_ut = datetime_to_julian(start_date.replace(hour=12) - datetime.timedelta(hours=tz))
+        
+        valid_days = []
+        
+        # Phase A: Day Level Filtration
+        for i in range(days_to_check):
+            jd_ut = base_jd_ut + i
+            current_day = start_date + datetime.timedelta(days=i)
+            
+            pos = get_sun_moon_sidereal(jd_ut)
+            sun_lon, moon_lon = pos["Sun"], pos["Moon"]
+            
+            elong = (moon_lon - sun_lon) % 360.0
+            tithi_index = int(elong // TITHI_DEG)
+            tithi_val = (tithi_index % 15) + 1
+            
+            nak_index = int(moon_lon // NAK_DEG) % 27
+            nak_name = NAKS[nak_index]
+            weekday = current_day.weekday()
+            
+            # Base Rules
+            if nak_name not in rules["nakshatras"] or tithi_val not in rules["tithis"] or weekday not in rules["days"]:
+                continue
+                
+            # Tara Bala
+            if natal_nak_index is not None:
+                tara_diff = (nak_index - natal_nak_index) % 27
+                # Group into 9 Taras (0=Janma, 1=Sampat, 2=Vipat, 3=Kshema, 4=Pratyak, 5=Sadhaka, 6=Vadha, 7=Mitra, 8=Ati Mitra)
+                tara_idx = tara_diff % 9
+                if tara_idx in [2, 4, 6]: # Vipat, Pratyak, Vadha are inauspicious
+                    continue
+            
+            # Chandra Bala
+            if natal_moon_rashi is not None:
+                moon_rashi = int(moon_lon // 30.0)
+                house_from_rashi = (moon_rashi - natal_moon_rashi + 12) % 12 + 1
+                if house_from_rashi in [4, 8, 12]:
+                    continue
+                    
+            valid_days.append(current_day)
+            
+        # Phase B & C: Time Level Filtration & Scoring
+        muhurtas = []
+        
+        for v_day in valid_days:
+            # Get Sunrise and Sunset
+            rise_time, set_time = calculate_noaa_sunrise_sunset(v_day.date(), lat, lon, tz)
+            if not rise_time or not set_time:
+                continue
+                
+            # Get Rahu Kaal
+            periods = calculate_muhurta_periods(rise_time, set_time)
+            rahu_start_str = periods["rahu_kaal"]["start"]
+            rahu_end_str = periods["rahu_kaal"]["end"]
+            
+            # Convert Rahu Kaal strings back to datetime for comparison
+            rahu_start = datetime.datetime.strptime(f"{v_day.strftime('%Y-%m-%d')} {rahu_start_str}", "%Y-%m-%d %I:%M %p")
+            rahu_end = datetime.datetime.strptime(f"{v_day.strftime('%Y-%m-%d')} {rahu_end_str}", "%Y-%m-%d %I:%M %p")
+            
+            # Scan from sunrise to sunset in 30 minute intervals
+            current_time = rise_time
+            while current_time < set_time:
+                end_time = current_time + datetime.timedelta(minutes=30)
+                mid_time = current_time + datetime.timedelta(minutes=15)
+                
+                # Check Rahu Kaal overlap
+                if (current_time < rahu_end and end_time > rahu_start):
+                    current_time += datetime.timedelta(minutes=30)
+                    continue
+                
+                # Get Ascendant at mid_time
+                asc_data = get_ascendant_from_datetime(mid_time, lat, lon, tz)
+                asc_sign_index = asc_data["ascendant_sign_index"]
+                
+                # Compute all planets to check 8th house
+                mid_utc = mid_time - datetime.timedelta(hours=tz)
+                mid_jd = datetime_to_julian(mid_utc)
+                planets = get_all_planetary_positions(mid_jd)
+                
+                eighth_house_sign = (asc_sign_index + 7) % 12
+                eighth_house_empty = True
+                
+                for p_name, p_data in planets.items():
+                    if p_name in ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"]:
+                        p_sign = int(p_data["sidereal"]["lon"] // 30.0)
+                        if p_sign == eighth_house_sign:
+                            eighth_house_empty = False
+                            break
+                            
+                if eighth_house_empty:
+                    # Calculate exact Tithi and Nakshatra at this time
+                    moon_lon_mid = planets["Moon"]["sidereal"]["lon"]
+                    sun_lon_mid = planets["Sun"]["sidereal"]["lon"]
+                    elong_mid = (moon_lon_mid - sun_lon_mid) % 360.0
+                    tithi_index_mid = int(elong_mid // 12.0)
+                    tithi_val_mid = (tithi_index_mid % 15) + 1
+                    paksha_mid = "Shukla" if tithi_index_mid < 15 else "Krishna"
+                    tithi_name_exact = f"{paksha_mid} {tithi_val_mid}"
+                    nak_name_exact = planets["Moon"]["nakshatra"]["name"]
+
+                    score = 80
+                    
+                    # Merge consecutive intervals
+                    if muhurtas and muhurtas[-1]["end_time"] == current_time.isoformat() and muhurtas[-1]["score"] == score:
+                        muhurtas[-1]["end_time"] = end_time.isoformat()
+                        current_reason = f"Empty 8th House from {asc_data['ascendant_sign']} Lagna"
+                        if current_reason not in muhurtas[-1]["reasons"]:
+                            muhurtas[-1]["reasons"][0] = "Empty 8th House from Auspicious Lagnas"
+                    else:
+                        muhurtas.append({
+                            "start_time": current_time.isoformat(),
+                            "end_time": end_time.isoformat(),
+                            "score": score,
+                            "nakshatra": nak_name_exact,
+                            "tithi": tithi_name_exact,
+                            "reasons": [f"Empty 8th House from {asc_data['ascendant_sign']} Lagna", "Excellent Tara/Chandra Bala"]
+                        })
+                    
+                current_time += datetime.timedelta(minutes=30)
+                
+        # Sort by score descending and take top 3
+        muhurtas.sort(key=lambda x: x["score"], reverse=True)
+        top_muhurtas = muhurtas[:3]
+        
+        return {"top_muhurtas": top_muhurtas}
+        
     except Exception as e:
         import traceback
         print(traceback.format_exc())

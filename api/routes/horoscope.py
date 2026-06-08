@@ -12,11 +12,14 @@ from astronomy.positions import get_all_planetary_positions
 
 router = APIRouter()
 
+from charts.divisional.builder import get_varga_sign
+
 @router.get("/positions")
 def positions(
     date: str = Query(..., description="YYYY-MM-DD"),
     time: str = Query("00:00:00", description="HH:MM[:SS]"),
-    tz_offset: float = Query(0.0, description="Timezone offset in hours (east positive)")
+    tz_offset: float = Query(0.0, description="Timezone offset in hours (east positive)"),
+    varga: int = Query(1, description="D-chart number")
 ):
     try:
         dt = datetime.datetime.fromisoformat(date + " " + time)
@@ -26,7 +29,16 @@ def positions(
     # convert to UTC by subtracting tz_offset
     dt_utc = dt - datetime.timedelta(hours=float(tz_offset))
     jd = datetime_to_julian(dt_utc)
-    return {"jd_ut": jd, "positions": get_all_planetary_positions(jd)}
+    
+    pos = get_all_planetary_positions(jd)
+    if varga > 1:
+        for p_name, p_data in pos.items():
+            lon = p_data.get("sidereal", {}).get("lon")
+            if lon is not None:
+                v_sign = get_varga_sign(float(lon), varga)
+                p_data["sidereal"]["sign_index"] = v_sign
+
+    return {"jd_ut": jd, "positions": pos}
 
 @router.get("/current_grid")
 def current_grid(

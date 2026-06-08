@@ -1,9 +1,30 @@
 import React, { useState, useEffect } from "react";
 import ZodiacChart from "./ZodiacChart";
 import ShadbalaChart from "./ShadbalaChart";
+import AshtakavargaViewer from "./AshtakavargaViewer";
 import PlanetaryRemediesViewer from "./PlanetaryRemediesViewer";
 import VimsopakaAssessment from "./VimsopakaAssessment";
+import DashaDashboard from "../pages/DashaDashboard";
+import VimshottariTable from "./VimshottariTable";
+import VimshottariLifeTable from "./VimshottariLifeTable";
+import VimshottariGridTimeline from "./VimshottariGridTimeline";
 import { PLANET_IN_SIGN_EFFECTS } from '../data/planetInSign';
+import CareerHeatmap from './d10/CareerHeatmap';
+import PromotionMeter from './d10/PromotionMeter';
+import CareerAlerts from './d10/CareerAlerts';
+import WealthActivation from './d10/WealthActivation';
+import TransitTimeControl from './worksheet/TransitTimeControl';
+import PanchPakshiTable from './PanchPakshiTable';
+import PlanetaryRelationshipsViewer from "./PlanetaryRelationshipsViewer";
+import KPChartViewer from "./KPChartViewer";
+import AsthavargaReduction from "./AsthavargaReduction";
+import BhinnastaVarga from "./BhinnastaVarga";
+import AspectsSummary from "./AspectsSummary";
+import KrishanaMurthyChart from "./KrishanaMurthyChart";
+import KrishanaMurthySignificators from "./KrishanaMurthySignificators";
+import ShodashvargaSummary from "./ShodashvargaSummary";
+import BhriguBinduAnalysis from "./BhriguBinduAnalysis";
+
 const BulletInterpretation = ({ text, colorClass = "text-slate-600" }) => {
   if (!text) return null;
   const points = text.split(/(?<=\.)\s+|\n+/).filter(p => p.trim());
@@ -224,7 +245,7 @@ const GEMSTONES = {
   "Saturn": { name: "Blue Sapphire", hindi: "Neelam", color: "#3b82f6", bg: "from-blue-50 to-blue-100", border: "border-blue-200", text: "text-blue-800" },
 };
 
-const SUN_HOUSE_INTERPRETATIONS = {
+export const SUN_HOUSE_INTERPRETATIONS = {
   1: "Sun in 1st house gives you a bright personality and a brilliant mind. Considering the Sun is the actual soul significator, you feel it is your right to be on the throne and deserve the power and the top-spot. When Sun is in 1st house, you feel like it is must for you to be on the top spot and that you deserve to own it without making any efforts. In the professional space, you shall feel as if you are victorious and should be respected for it. You will feel that you can be successful as a self-employed individual and would rule your kingdom. You will know how to impress others and control their actions. You like to lead others and show them the best path for their journey. You may become a politician or hold a high position in the government.",
   2: "Your Sun is placed in the 2nd house, you tend to flaunt your family history with pride. You have a lean physique, and your speech becomes authoritative and royal. You will be blessed with financial success and become fond of collecting gold and jewelry. A well-placed Sun will make you support your family. It helps you achieve your desired goals, so that you and your family flourish with prosperity and abundance. It will also give you a magnetic voice that influences the crowds, and make you fond of food and politics. However, if the Sun is afflicted, it could create disharmony in your marital life, and sour the relationship with children as well as the in-laws due to your ego.",
   3: "The Sun in the 3rd house makes you extremely courageous and empowered. Your ego lies in your communication, and you have a lot of physical and mental strength. This placement of the Sun makes you inquisitive, and gives you an inclination toward creative fields, such as becoming a writer, singer, a fitness coach, or a politician. A well-placed Sun makes you fond of travelling and the performing arts. It grants you wisdom and courage and will keep you kind and supportive toward your siblings. However, if the Sun is afflicted, it will make you distant from your siblings and could give you a loose character.",
@@ -239,7 +260,7 @@ const SUN_HOUSE_INTERPRETATIONS = {
   12: "The placement of the Sun in the 12th house may grant you enlightenment. It elevates your imagination, and gives you psychic powers. You make a lot of political connections and might work and settle abroad. Your relationship with your father will be somewhat strained, and you could have a big ego. A well-placed Sun can make you a successful politician, or a leading businessman dealing in foreign goods. However, if the Sun is afflicted, it can lead to difficult situations like a jail sentence, hospitalization, insomnia, addiction, and separation in relationships.",
 };
 
-const MARS_HOUSE_INTERPRETATIONS = {
+export const MARS_HOUSE_INTERPRETATIONS = {
   1: "Mars in 1st house makes you highly energetic as well as aggressive. It puts you in leadership positions and gives you a lot of responsibilities. It gives you a strong physique with a reddish skin tone. This placement of Mars will make you action-oriented and give you excellent endurance and high stamina. It will help you think out of the box when it comes to strategizing. However, if Mars is afflicted, it will ignite jealousy, promote anger without any purpose, and trigger blood- and skin-related issues. A combust Mars will channelize your aggression inwards, creating frustration and stealing limelight from you.",
   2: "Mars in 2nd house gives you a passion to accumulate wealth and possessions by hook or crook. This placement is not ideal for family harmony and could give you a harsh speech, which may disturb your relationships. A well-placed Mars will enhance your professional network and widen your business. It will also give you multiple sources of income. However, if Mars is afflicted, it will trigger anger on family members and create health issues related to indigestion or acidity. You could also face difficulty in conceiving. If Mars is combust, it can make you dishonest and could bring you humiliation.",
   3: "Mars in 3rd house brings you immense energy to multitask and makes your communication filterless. It makes you courageous, but also gives you an aggressive nature and an impatient attitude. It could also disturb your relationship with your siblings. This Mars gives you the capacity to think out of the box, which will benefit you professionally. It will also give you a love for traveling and adventure. However, if Mars is afflicted, you might get caught in controversies and become too adventurous, which may increase the chances of risks and accidents. If Mars is combust, it aggravates your inner anger and resentment. It will also give you inappropriate communication that may create problems from time to time.",
@@ -254,7 +275,7 @@ const MARS_HOUSE_INTERPRETATIONS = {
   12: "Mars in 12th house will give you a secretive nature, and you will try to suppress your emotions. You may constantly travel abroad for work where your energy will be more productive. A well-placed Mars will make you productive and you will be able to achieve success in your career as well as in your spiritual goals. If Mars is afflicted, you will waste your energy in job hopping and most of the events in your life, including your marriage, will be delayed—because of which you may feel frustrated from time to time. It may also cause accidents. If Mars is combust, it will give additional struggles and obstacles, and you will not be committed toward your partner.",
 };
 
-const MERCURY_HOUSE_INTERPRETATIONS = {
+export const MERCURY_HOUSE_INTERPRETATIONS = {
   1: "Mercury in the first house helps you reveal your communication skills to the world and makes you fluent in multiple languages. It also blesses you with an artistic and philosophical mind. However, even though you are clever and intelligent, you will be restless and hop on from one thing to another multiple times a day. You will be a multitasker and can become a successful businessman or a salesperson. A well-placed Mercury keeps you thrilled and excited. It will make you attractive, flexible, and fun loving. If Mercury is afflicted, it will make you self-centered and fickle-minded. It will also give relationship issues.",
   2: "Mercury in the second house blesses you with humor, intelligence, and knowledge. It makes you efficient when it comes to public speaking and influencing the masses. You will be an excellent salesman and will also have a melodious voice. A well-placed Mercury will make you clever and intelligent and give you excellent marketing skills. However, if Mercury is afflicted, it will make you stubborn and egoistic. It may also bring financial losses in business, as you may not be able to deliver as per the demands of customers.",
   3: "Mercury in the third house makes you multi-talented and highly efficient when it comes to work. You have excellent communication skills, which make you successful in various fields, including counseling, marketing, and singing. Being a natural motivational speaker, you can inspire crowds and, thus, run a successful business by keeping your employees motivated. A well-placed Mercury will give you exceptional writing skills and the ability to express yourself skillfully. You may even have multiple careers at a time. You will apply your logical thinking and be successful in your profession. However, if Mercury is afflicted, you will become calculative and will think only about your monetary benefits all the time. You will make relations with people in order to gain from them, and may not have any emotional attachment with your friends.",
@@ -269,7 +290,7 @@ const MERCURY_HOUSE_INTERPRETATIONS = {
   12: "Mercury in the twelfth house makes you well educated and gives you a philosophical mindset. It also sparks your interest in esoteric learning. You will have a strong psychic ability and will be able to communicate with supernatural entities. This position of Mercury will make you secretive, shy and an introvert. A well-placed Mercury will help you travel a lot and settle abroad. You will also be wealthy and will be able to spend lavishly. However, if Mercury is afflicted, it will make you arrogant and tobacco. You will have scarcity of money, and your decisions could be hasty and immature, leading to huge losses. Your fertility and love life will also be adversely affected.",
 };
 
-const VENUS_HOUSE_INTERPRETATIONS = {
+export const VENUS_HOUSE_INTERPRETATIONS = {
   1: "Venus in the first house gives you a sensuous and magnetic personality. You look much younger than your actual age and your libido is high. You care a lot about your appearance, and will be a fitness freak. You may also have artistic talents and a caring nature. A well-placed Venus will give you pleasant speech and make you popular with the opposite sex. However, if Venus is afflicted, it may cause fertility issues, your self-love could turn into selfishness, and you will likely become materialistic.",
   2: "Venus in the second house makes you fond of collecting jewelry and clothes. You will also be conscious about your savings. Your speech will be elegant and you're likely to become a profound singer, public speaker, or a cosmetologist. A well-placed Venus will bless you with good family relationships, and grant you wealth through family businesses. You will have an exclusive palate and will be fond of trying new delicacies. Your wealth will multiply post marriage. However, if Venus is afflicted, you could lose your ancestral wealth and may face infertility issues. You will also become greedy for material possessions.",
   3: "Venus in the third house blesses you with mesmerizing communication skills and an attractive personality. It also makes you a miser and makes you average-looking. You will not be determined and hardworking, which could make you suffer professionally as well as in personal life. A well-placed Venus will give you the opportunity to travel a lot. It will make you presentable and well dressed. However, if Venus is afflicted, it will give you sudden ups and downs in personal as well as professional life. You may become very dramatic, and your life could be full of trauma.",
@@ -284,7 +305,7 @@ const VENUS_HOUSE_INTERPRETATIONS = {
   12: "Venus in twelfth house will grant you imaginative powers and can help you become a renowned artist. You will have high expectations from your spouse and never be satisfied in one relationship. This placement of Venus gives you utmost bed pleasures and happiness through intimacy from a very early age. A well-placed Venus will give you an attractive personality and make your life pleasurable. You will also live a long life with your spouse. However, if Venus is afflicted, you will be dissatisfied with your spouse and may not be loyal to them. You will also be a spendthrift and take loans to fulfill your desires.",
 };
 
-const MOON_HOUSE_INTERPRETATIONS = {
+export const MOON_HOUSE_INTERPRETATIONS = {
   1: "प्रथम भाव में स्थित चंद्रमा आपको एक राजसी व्यक्तित्व और आकर्षक आभा प्रदान करता है जो लोगों को आकर्षित करती है। आपका सामाजिक दायरा व्यापक होगा और आपमें स्वाभाविक कलात्मक प्रतिभा के साथ-साथ भावनात्मक स्वास्थ्य भी होगा। आपका जीवन आपकी माता के इर्द-गिर्द घूमता है और आप स्वभाव से ही स्नेहशील और पालन-पोषण करने वाले व्यक्ति हैं। आप भावनात्मक रूप से बुद्धिमान हैं और धन एवं सुख-सुविधाओं का आनंद लेते हैं। हालांकि, नकारात्मक स्थिति में स्थित चंद्रमा आपको अलगाव, अवसाद और कुछ मानसिक स्वास्थ्य समस्याओं का कारण बन सकता है। यदि चंद्रमा अस्त हो, तो यह भ्रम, बार-बार मनोदशा में परिवर्तन और भावनात्मक रूप से थका हुआ महसूस करने का कारण बन सकता है। इसका प्रभाव आपकी माता के खराब स्वास्थ्य के रूप में भी दिख सकता है। प्रसिद्ध गायिका मैडोना और अभिनेता राज कपूर प्रथम भाव में स्थित चंद्रमा के प्रभाव में जन्मे हैं।",
   2: "दूसरे भाव में चंद्रमा होने से आपको आर्थिक स्वतंत्रता, भावनात्मक जुड़ाव और पारिवारिक मूल्यों एवं परंपराओं के प्रति झुकाव प्राप्त होता है, जो अक्सर आपको पारिवारिक विरासत को आगे बढ़ाने के लिए प्रेरित करता है। यह आपको कलात्मक व्यक्तित्व और रहस्यवाद में रुचि के साथ-साथ प्रबल मानसिक क्षमता भी प्रदान करता है। आपके पास पर्याप्त बचत है और आप एक चतुर निवेशक हैं। आपको ठंडे पेय पसंद हैं और आप स्वभाव से खाने-पीने के शौकीन हैं। आपका अपने परिवार के साथ गहरा भावनात्मक बंधन है। आपका जीवनसाथी कुछ बातों को गुप्त रख सकता है। हालांकि, यदि आपकी जन्म कुंडली में चंद्रमा पीड़ित है, तो आपकी संपत्ति में उतार-चढ़ाव आ सकता है और आप भौतिकवाद की ओर आकर्षित हो सकते हैं, साथ ही भावनात्मक अशांति और वैवाहिक जीवन में परेशानी का सामना कर सकते हैं। यदि चंद्रमा अस्त है, तो इससे आर्थिक असुरक्षा, धन संकट और वैवाहिक समस्याएं उत्पन्न हो सकती हैं। प्रसिद्ध व्यवसायी मुकेश अंबानी और रैपर जे-जेड द्वितीय भाव में स्थित चंद्रमा के प्रभाव में पैदा हुए हैं।",
   3: "जब चंद्रमा तीसरे भाव में स्थित होता है, तो यह आमतौर पर आपको सक्रिय और जिज्ञासु मन, यात्रा की प्रबल इच्छा और पड़ोसियों और भाई-बैनों के साथ सौहार्दपूर्ण संबंध प्रदान करता है। आप अक्सर आय के कई स्रोतों का आनंद लेते हैं और लेखन, संचार और विपणन कौशल में निपुण होते हैं। कुंडली में अनुकूल स्थिति वाला या सकारात्मक चंद्रमा आपको भाग्यशाली और प्रभावशाली बनाता है, और आपको आध्यात्मिक गुरु या योगी बनने की क्षमता प्रदान करता है। हालांकि, नकारात्मक चंद्रमा आपको बेचैनी, ध्यान भटकने, बार-बार नौकरी बदलने, आर्थिक अस्थिरता और वैवाहिक समस्याओं का सामना करने के लिए प्रेरित करता है। यदि चंद्रमा अस्त हो, तो यह आपको आलसी बना सकता है, आपके मन में नकारात्मक सोच पैदा कर सकता है और आपको विश्वास संबंधी समस्याएं हो सकती हैं। प्रसिद्ध व्यवसायी एलोन मस्क और अभिनेता अक्षय कुमार तीसरे भाव में स्थित चंद्रमा के प्रभाव में पैदा हुए हैं।",
@@ -298,7 +319,7 @@ const MOON_HOUSE_INTERPRETATIONS = {
 };
 
 
-const JUPITER_HOUSE_INTERPRETATIONS = {
+export const JUPITER_HOUSE_INTERPRETATIONS = {
   1: "स्वभाव आपको समाज में सम्मान और लोकप्रियता दिलाता है और लोग आपके अच्छे कर्मों, ईमानदारी और निस्वार्थ व्यवहार की प्रशंसा करते हैं। कुंडली में अच्छी स्थिति में स्थित बृहस्पति आपको भीड़ से अलग बनाता है और आपको गहन मानसिक शक्ति, आत्मविश्वास, करुणा और आध्यात्मिक झुकाव प्रदान करता है। हालांकि, यदि आपकी कुंडली में बृहस्पति पीड़ित है, तो आप अनजाने में दूसरों को दुख पहुंचा सकते हैं या अत्यधिक मददगार बन सकते हैं। अस्त बृहस्पति भाग्य की कमी ला सकता है और ज्ञान प्राप्त करना चुनौतीपूर्ण हो सकता है। प्रसिद्ध भारतीय क्रिकेटर एमएस धोनी और अमेरिकी राष्ट्रपति बराक ओबामा प्रथम भाव में स्थित बृहस्पति के प्रभाव में पैदा हुए थे।",
   2: "द्वितीय भाव में बृहस्पति आपको प्रभावशाली व्यक्तित्व और आकर्षक वाणी प्रदान करता है। यह स्थिति आपको समृद्ध बनाती है और नेतृत्व की भूमिकाओं के लिए उपयुक्त बनाती है। आपके शत्रु कमजोर हो जाते हैं और आपको सरकार से लाभ प्राप्त होता है। अच्छी स्थिति में स्थित बृहस्पति आपको एक अच्छा लेखक या मधुर वाणी वाला ज्योत",
   4: "चौथे भाव में बृहस्पति का होना बहुत शुभ होता है और इससे आपको विरासत में मिली संपत्ति और सुख-सुविधओं की भरपूर प्राप्ति होती है। आपका अपने परिवार, विशेषकर अपनी माता के साथ घनिष्ठ संबंध है। आपके परिवार के सदस्य भावनात्मक और आर्थिक दोनों तरह से आपका सहयोग करते हैं। अनुकूल स्थिति में स्थित बृहस्पति आपको लाभदायक अचल संपत्ति सौदे करने में मदद करता है और आपको प्रबल अंतर्ज्ञान शक्ति प्रदान करता है। हालांकि, यदि बृहस्पति पीड़ित हो, तो यह आपको कठोर और चालाक बना देगा और आपको अत्यधिक मिलनसार स्वभाव देगा। अस्त बृहस्पति आपकी प्रगति को धीमा कर देगा और आपके भाग्य में कमी लाएगा। भारत के प्रसिद्ध प्रधानमंत्री नरेंद्र मोदी और अभिनेता सलमान खान का जन्म चौथे भाव में स्थित बृहस्पति के प्रभाव में हुआ था।",
@@ -312,7 +333,7 @@ const JUPITER_HOUSE_INTERPRETATIONS = {
   12: "बारहवें भाव में बृहस्पति आपको विदेश से अवसर दिलाएगा और आपको अत्यधिक आध्यात्मिक और धार्मिक बनाएगा। यह आपके मोक्ष का कारण बन सकता है और आपको जीवन के उस सत्य के करीब लाएगा जिसकी आप तलाश कर रहे हैं। कभी-कभी आपको अस्पतालों पर खर्च करना पड़ सकता है और आपके कुल खर्चे बढ़ सकते हैं। अच्छी स्थिति में स्थित बृहस्पति आपके आध्यात्मिक ज्ञान का विस्तार करेगा और आपको मोक्ष के मार्ग पर ले जाएगा। हालांकि, यदि बृहस्पति पीड़ित है, तो यह हानि, अस्पताल में भर्ती होने की आवश्यकता वाली स्वास्थ्य समस्याएं और आपके शत्रुओं से नुकसान ला सकता है। अस्त बृहस्पति ईश्वर से आपके संबंध को बाधित कर सकता है, जिससे आप निराश महसूस कर सकते हैं।",
 };
 
-const RAHU_HOUSE_INTERPRETATIONS = {
+export const RAHU_HOUSE_INTERPRETATIONS = {
   1: "प्रथम भाव में राहु आपकी बुद्धि को बढ़ाता है और आपको हाजिरजवाब बनाता है। यह आपको शीघ्र धन प्राप्ति और धन में अचानक वृद्धि का आशीर्वाद देगा। हालांकि, यह आपको कुछ अवांछित आदतें और अव्यवस्था की भावना भी दे सकता है। अच्छी स्थिति में राहु होने से आपकी अंतर्ज्ञान शक्ति तेज होती है और आप तुरंत नए विचार उत्पन्न कर पाते हैं। यह आपको एक आकर्षक व्यक्तित्व प्रदान करता है जो दूसरों को आकर्षित करता है। हालांकि, यदि राहु पीड़ित हो, तो आप सफलता प्राप्त करने के लिए अनैतिक तरीकों का सहारा ले सकते हैं; आप चिड़चिड़े भी हो जाएंगे और दूसरों को नीचा समझेंगे। प्रसिद्ध आविष्कारक निकोला टेस्ला और लेखक चार्ल्स डिकेंस का जन्म प्रथम भाव में राहु के प्रभाव में हुआ था।",
   2: "द्वितीय भाव में राहु होने से आपको अपने करियर और विरासत दोनों के माध्यम से धनवान बनना निश्चित है। आपका अपने परिवार से गहरा संबंध रहेगा, लेकिन आधिकारिक प्रतिबद्धताओं के कारण आपको उनसे दूरी बनानी पड़ सकती है। अच्छी स्थिति में स्थित राहु आपको समाज में अच्छे संपर्क और संबंध दिलाएगा और आपको अपने पूर्वजों के प्रति गहरी श्रद्धा प्रदान करेगा। हालांकि, यदि राहु पीड़ित हो, तो यह आपको खर्चीला बना देगा और आप कानूनी परेशानियों में भी पड़ सकते हैं। प्रसिद्ध अभिनेता सलमान खान और संगीतकार रवि शंकर का जन्म द्वितीय भाव में राहु के प्रभाव में हुआ था।",
   3: "तीसरे भाव में राहु होने से आपका भविष्य मीडिया से जुड़े किसी पेशे में होगा, क्योंकि आपके पास उत्कृष्ट संचार कौशल होगा। आप छोटी-छोटी यात्राओं पर भी जाएंगे, जिनसे आपको विकास के अवसर मिलेंगे। अच्छी स्थिति में राहु होने से आप एकाग्र और समर्पित रहेंगे, जिससे आपको अत्यधिक सफलता मिलेगी। जरूरत पड़ने पर आप साहस और वीरता का प्रदर्शन करेंगे और इसके लिए आपकी सराहना भी होगी। हालांकि, यदि राहु पीड़ित हो, तो यह आपको स्वार्थी बना सकता है और चोट या दुर्घटना का कारण बन सकता है। आपको आर्थिक नुकसान भी हो सकता है। प्रसिद्ध क्रिकेटर विराट कोहली और गायक माइकल जैक्सन का जन्म तीसरे भाव में स्थित राहु के प्रभाव में हुआ था।",
@@ -327,7 +348,7 @@ const RAHU_HOUSE_INTERPRETATIONS = {
   12: "बारहवें भाव में राहु आपके करियर को गति देगा and विदेशी संपर्कों के कारण आपकी समृद्धि में वृद्धि करेगा। आपका प्रेम जीवन अच्छा रहेगा, लेकिन छोटी-छोटी बातों पर गलतफहमियों के कारण वैवाहिक जीवन में परेशानी आ सकती है। आप अपनी कमाई से अधिक खर्च करने की प्रवृत्ति भी रख सकते हैं। अच्छी स्थिति में स्थित राहु आपको दान-पुण्य करने and निस्वार्थ बनने के लिए प्रेरित करेगा। हालांकि, यदि राहु पीड़ित है, तो यह अनावश्यक खर्चों को जन्म दे सकता है जिससे आर्थिक समस्याएं उत्पन्न हो सकती हैं। कुछ स्वास्थ्य संबंधी समस्याएं भी आपको परेशान कर सकती हैं।",
 };
 
-const KETU_HOUSE_INTERPRETATIONS = {
+export const KETU_HOUSE_INTERPRETATIONS = {
   1: "प्रथम भाव में केतु होने से आपको एक आकर्षक व्यक्तित्व के साथ-साथ एक रहस्यमय आभा भी मिलती है। यह आपको सामाजिक रूप से बहुत लोकप्रिय बनाता है, लेकिन साथ ही आपको अंतर्मुखी भी बनाए रखता है। आपको रोमांच की ओर झुकाव रहेगा और आप नई-नई गतिविधियों को आजमाना चाहेंगे जो आपको रोमांचित करती हैं। आपका आध्यात्मिक पक्ष प्रबल है जो आपको नैतिकता की भावना प्रदान करता है और आपके चरित्र को मजबूत बनाता है। अच्छी स्थिति में स्थित केतु आपको सत्यवादी और शक्तिशाली बनाता है। आप समाज में प्रसिद्ध हैं और आपकी छवि अच्छी है। हालांकि, यदि केतु पीड़ित है, तो यह आपके जीवनसाथी के लिए स्वास्थ्य संबंधी समस्याएं ला सकता है और आपको लालची और स्वार्थी बना सकता है। आपका साहसिक स्वभाव कभी-कभी आपको खतरे में डाल सकता है। प्रसिद्ध भारतीय समाजसेवी नीता अंबानी और परम पावन दलाई लामा का जन्म प्रथम भाव में केतु के प्रभाव में हुआ था।",
   2: "द्वितीय भाव में केतु आपको गुप्त विद्याओं की ओर आकर्षित करता है और उत्कृष्ट संचार कौशल प्रदान करता है। जब चीजें आपके अनुरूप नहीं होतीं, तो आप कभी-कभी थोड़े कठोर हो सकते हैं। आप अच्छी खासी संपत्ति अर्जित कर सकते हैं और अपने कार्यस्थल पर उच्च पद प्राप्त कर सकते हैं, जिससे आपको बहुत सम्मान मिलेगा। अच्छी स्थिति में स्थित केतु आपको अपने करियर से संबंधित विकास के भरपूर अवसर प्रदान करता है। यह आपके ज्ञान और बुद्धि को भी बढ़ाता है। हालांकि, यदि केतु पीड़ित है, तो यह आपको असभ्य बना सकता है, जिससे समाज में आपकी छवि को नुकसान पहुंच सकता है। आपको परिवार के सदस्यों के साथ भी कुछ समस्याओं का सामना करना पड़ सकता है। प्रसिद्ध ब्रिटिश राजपरिवार की सदस्य लेडी डायना और अभिनेता रजनीकांत का जन्म द्वितीय भाव में केतु के प्रभाव में हुआ था।",
   3: "तीसरे भाव में केतु होने से आप असाधारण रूप से मेहनती, साहसी और साहसिक स्वभाव के बन जाते हैं। आप आध्यात्मिक गतिविधियों में लीन हो सकते हैं जिससे आपको मानसिक शांति मिलेगी और आपको किसी दूसरे धर्म का जीवनसाथी मिल सकता है। अच्छी स्थिति में स्थित केतु आपको अच्छे करियर के अवसर प्रदान करता है जहाँ आप उच्च पद प्राप्त कर सकते हैं। आप मीडिया से संबंधित व्यवसायों की ओर भी आकर्षित होंगे, जो आपके लिए अत्यंत उपयुक्त होंगे। हालांकि, यदि केतु पीड़ित हो तो संतान संबंधी समस्याएं उत्पन्न हो सकती हैं और वैवाहिक जीवन में चुनौतियां आ सकती हैं। प्रसिद्ध नेता किम जोंग उन और अभिनेता रिचर्ड विल्सन का जन्म तीसरे भाव में स्थित केतु के प्रभाव में हुआ था।",
@@ -342,7 +363,7 @@ const KETU_HOUSE_INTERPRETATIONS = {
   12: "बारहवें भाव में केतु मोक्ष और आध्यात्मिक जागृति के लिए उत्तम माना जाता है। यह आपको सांसारिक बंधनों से मुक्त करने में सहायक है।"
 };
 
-const SATURN_HOUSE_INTERPRETATIONS = {
+export const SATURN_HOUSE_INTERPRETATIONS = {
   1: "प्रथम भाव में शनि होने से आप कम उम्र में ही अनुशासित और परिपक्व हो जाते हैं। आप जिम्मेदार और भरोसेमंद होंगे। निष्पक्ष निर्णय लेने के कारण आप एक सफल वकील या न्यायाधीश बन सकते हैं। आपका विवाह विलंबित होगा, लेकिन आपका जीवनसाथी बुद्धिमान और वफादार होगा। अनुकूल स्थिति में स्थित शनि आपको व्यावहारिक और तार्किक दृष्टिकोण प्रदान करेगा और आपको अपने माता-पिता के प्रति कर्तव्यनिष्ठ बनाएगा। आप दृढ़ निश्चयी और विश्वसनीय होंगे, साथ ही आपका मन और शरीर भी मजबूत होगा। हालांकि, यदि शनि पीड़ित हो, तो यह आपको आलसी और निराश बना सकता है। आपके वैवाहिक जीवन में भी कलह उत्पन्न हो सकती है। प्रसिद्ध गायिका ब्रिटनी स्पीयर्स और सम्राट अकबर का जन्म प्रथम भाव में शनि के प्रभाव में हुआ था।",
   2: "द्वितीय भाव में शनि 35 वर्ष की आयु के बाद ही आपकी आर्थिक स्थिति में सहायक होता है। यह बचपन में संघर्षों के कारण आपके पोषण को भी सीमित कर सकता है। आप जीवन में उतार-चढ़ाव दोनों देखेंगे, जो आपको बुद्धिमान और व्यावहारिक बनाएगा। अनुकूल स्थिति में स्थित शनि आपको महत्वाकांक्षी और मेहनती बनाता है और आर्थिक मामलों में जल्दबाजी में निर्णय लेने से रोकता है। हालांकि, यदि शनि पीड़ित है, तो यह आपको माता-पिता के प्यार से वंचित कर सकता है क्योंकि वे बहुत सख्त होंगे। यह आपको पेशेवर मोर्चे पर भी बहुत संघर्षों के कारण क्रोधित और निराश कर सकता है। प्रसिद्ध अभिनेता रजनीकांत और व्यवसायी मुकेश अंबानी का जन्म द्वितीय भाव में शनि के प्रभाव में हुआ था।",
   3: "तीसरे भाव में शनि होने से भाई-बहनों के साथ आपके संबंध सुखद और दुखद दोनों हो सकते हैं और एक चीज़ पर ध्यान केंद्रित करना मुश्किल हो सकता है। शनि की यह स्थिति आपको शर्मीला और अंतर्मुखी बनाती है। यह आपके प्रेम संबंधों को भी सीमित कर सकती है, इसीलिए आप अरेंज मैरिज को चुनेंगे। अच्छी स्थिति में स्थित शनि आपको पेशेवर रवैया देगा और आपको शांत और संयमित बनाएगा। आप जल्दबाजी में निर्णय नहीं लेंगे और अच्छे श्रोता भी बनेंगे। हालांकि, यदि शनि पीड़ित है, तो आप नकारात्मक विचारों से घिरे रहेंगे और अनावश्यक भय का शिकार होंगे। यह आपको निराशावादी रवैया भी दे सकता है। प्रसिद्ध व्यवसायी स्टीव जॉब्स और अभिनेता ब्रैड पिट का जन्म तीसरे भाव में शनि के प्रभाव में हुआ था।",
@@ -363,15 +384,24 @@ const CELL_CONTENTS = [
   { id: "d2", label: "D2 - Hora Chart", category: "Charts" },
   { id: "d3", label: "D3 - Drekkana Chart", category: "Charts" },
   { id: "d4", label: "D4 - Chaturthamsha", category: "Charts" },
+  { id: "d5", label: "D5 - Panchamsha Chart", category: "Charts" },
+  { id: "d6", label: "D6 - Shashtamsha Chart", category: "Charts" },
   { id: "d7", label: "D7 - Saptamsha Chart", category: "Charts" },
+  { id: "d8", label: "D8 - Ashtamsha Chart", category: "Charts" },
   { id: "d9", label: "D9 - Navamsha Chart", category: "Charts" },
   { id: "d10", label: "D10 - Dashamsha Chart", category: "Charts" },
+  { id: "d11", label: "D11 - Rudramsha Chart", category: "Charts" },
   { id: "d12", label: "D12 - Dwadashamsha", category: "Charts" },
   { id: "d16", label: "D16 - Shodashamsha", category: "Charts" },
+  { id: "d20", label: "D20 - Vimsamsa Chart", category: "Charts" },
   { id: "d24", label: "D24 - Chaturvimshamsha", category: "Charts" },
+  { id: "d27", label: "D27 - Bhamsa Chart", category: "Charts" },
   { id: "d30", label: "D30 - Trimshamsha", category: "Charts" },
+  { id: "d40", label: "D40 - Khavedamsa Chart", category: "Charts" },
+  { id: "d45", label: "D45 - Akshavedamsa", category: "Charts" },
   { id: "d60", label: "D60 - Shashtiamsha", category: "Charts" },
   { id: "transit_compare", label: "Transit Compare", category: "Charts" },
+  { id: "transit_compare2", label: "Compare Transit 2", category: "Charts" },
   { id: "planets_table", label: "Pl-Tables", category: "Tables" },
   { id: "panchang", label: "Panchang", category: "Tables" },
   { id: "dignity", label: "Dignity", category: "Tables" },
@@ -380,11 +410,21 @@ const CELL_CONTENTS = [
   { id: "chaturshitisama", label: "Chaturshitisama", category: "Dasha" },
   { id: "numerical", label: "Numerology", category: "Misc" },
   { id: "shadbala", label: "Shadbala Chart", category: "Charts" },
+  { id: "ashtakavarga", label: "Ashtakavarga", category: "Charts" },
+  { id: "ashtakavarga_reduction", label: "Ashtakavarga Reduction", category: "Charts" },
+  { id: "bhinnastavarga", label: "Bhinnastavarga", category: "Charts" },
+  { id: "krishnamurthy_chart", label: "Krishana Murthy Chart", category: "Charts" },
+  { id: "krishnamurthy_significators", label: "KP Significators", category: "Tables" },
+  { id: "shodashvarga_summary", label: "Shodashvarga Summary", category: "Tables" },
+  { id: "aspects_summary", label: "Aspects Summary", category: "Tables" },
   { id: "gemstones", label: "Ratna", category: "Misc" },
   { id: "transit_gemstones", label: "Gochar Ratna", category: "Misc" },
   { id: "transit", label: "Today-Gochar", category: "Charts" },
   { id: "current_positions", label: "Current Planet Position", category: "Charts" },
   { id: "vimsopaka", label: "Vimsopaka Bala", category: "Tables" },
+  { id: "panch_pakshi", label: "Panch Pakshi", category: "Misc" },
+  { id: "relationships", label: "Relationships", category: "Misc" },
+  { id: "kp", label: "Krishnamurti Chart", category: "Misc" },
   { id: "empty", label: "Empty Cell", category: "System" }
 ];
 
@@ -478,66 +518,70 @@ const NAVAMSA_PLANET_DESCRIPTIONS = {
   }
 };
 
-const DASHAMSHA_INTRO = `The D-10 (Dashamsha) chart, a division of the 10th house, is primarily analyzed to determine career path, success, and professional reputation. To read it, verify the 10th lord and Lagna (Ascendant) strength in D-10.
+const DASHAMSHA_INTRO = `The Dashamsha (D10) chart is the ultimate engine for Professional Career Karma and Success analysis. Our system uses the authentic "Iyer Method" (Seshadri Iyer style) where counting for even signs starts from the 9th house, providing high-precision Parashari results. 
 
-Dasamsa Chart, also known as D-10 chart is a mixture of two words- Dasham and Amsa, stands for the tenth division of the Rashi Chart. Whether it is about career opportunities, seeking a suitable profession or guidance on professional challenges, D10 chart provides you with accurate and precise information, guiding you towards a fulfilling and successful career.
-
-Analysis of D10 chart with the birth chart can give you a thorough understanding of one’s career path. This chart will help you make informed decisions about your career and navigate your professional life with great clarity. The reading of D10 Chart is important as it reveals the chances of job and the amount of achievement one is expecting in their life.`;
+Dashamsha reveals not just your job title, but your authority, reputation, and professional destiny. Whether you are built for Corporate Leadership (Job) or Entrepreneurship (Business), D10 uncovers the "Natal Promise" that transits and dashas then activate.`;
 
 const DASHAMSHA_PLANET_DESCRIPTIONS = {
   Sun: {
-    title: "Sun in Dasamsa Chart",
-    description: "Sun will guide you in the right direction to get a successful career through your honest efforts and hard work. You will get courage and intelligence to work on your desired projects with the placement of Sun in D10 chart. You will be rewarded with great financial return and implement new ways to achieve success in your career. Sun in Dasamsa gives you status and recognition at work and guides you in the best direction to achieve it in your life. Sun will give you decision-making ability and make you able to take the right decision at the right time. The placement of Sun in different houses will decide your career path, challenges and success.",
+    title: "Sun in D10: Authority & Rank",
+    description: "Sun in D10 represents your 'Professional Identity' and recognition. A strong Sun suggests leadership roles, government connections, and the ability to command respect. It indicates whether you possess the executive aura required for high-level management or administrative authority.",
     icon: "☀️",
     color: "orange"
   },
   Moon: {
-    title: "Moon in Dasamsa Chart",
-    description: "The Moon represents the root of your birth and its position in different houses gives an insight into where your life force and rejuvenation will begin. Moon gives you the intelligence and wisdom to implement new things and ideas, helping in your career growth. The Moon in D10 chart holds a crucial role in shaping your career and make you able to take the right decision at the right time. This position will ensure that you will get good productivity at the workplace through your hard work and efforts.",
+    title: "Moon in D10: Emotional Growth",
+    description: "The Moon reveals your 'Workplace Intelligence' and mental satisfaction in your career. It shows how you adapt to professional changes and your relationship with colleagues. A well-placed Moon indicates a profession involving public care, hospitality, or creative visualization.",
     icon: "🌙",
     color: "blue"
   },
   Mars: {
-    title: "Mars in Dasamsa Chart",
-    description: "With Mars, you will be able to deal with every situation using your strong intellectual ability and wisdom. It is not only about your physical fitness, but it also suggests mental fineness with proper training and challenges. Mars in Dasamsa forces you to learn new skills to strengthen your mind and achieve success in career and personal life. Well-placed Mars in D10 Chart will give you strength to take new initiative in your life and keep you protected from challenges on the career front. Whereas when Mars is afflicted, it will create chaos due to your hasty decisions.",
+    title: "Mars in D10: Professional Drive",
+    description: "Mars is the engine of 'Professional Ambition'. It shows your competitive spirit and ability to handle high-pressure environments. In D10, Mars indicates technical skills, engineering potential, and the courage to take independent initiatives in business.",
     icon: "🔴",
     color: "red"
   },
   Mercury: {
-    title: "Mercury in Dasamsa Chart",
-    description: "Mercury will give you intelligence and courage to deal with challenges. It also rewards you with a focused approach to get good financial standing. When Mercury is placed in D10 chart, it makes you capable of working in the right way to enhance your skills and make new connections to gain name and fame. You will take a new initiative and work with a large team, thanks to the blessings of Mercury in D10 chart. You will get clarity over the areas and sectors to do well on the career front. Afflicted Mercury in Dasamsa will cause obstacles in making new connections on the professional front. You may lack support to make the right decision at the right time.",
+    title: "Mercury in D10: Business Acumen",
+    description: "Mercury governs your 'Professional Strategy' and communication skills. It reveals your aptitude for business, trade, and technology. A strong Mercury in Dashamsha is the hallmark of a successful entrepreneur or a high-performing consultant.",
     icon: "🟢",
     color: "emerald"
   },
   Jupiter: {
-    title: "Jupiter in Dasamsa Chart",
-    description: "Jupiter is known for growth, positivity, expansion, support, and hope. When it is placed in Dasamsa, it will reward you with career growth, business expansion and support from colleagues and partners. Jupiter in Dasamsa will give you the right suggestions, support and guidance from elders. Strong Jupiter in D10 chart will give you a supportive boss and with the blessings of father and grandparents, you will do well on the professional front. Afflicted Jupiter will force you to make wrong decisions in haste and make you clueless to find any solution when needed.",
+    title: "Jupiter in D10: Professional Wisdom",
+    description: "Jupiter represents 'Career Growth' and guidance. It reveals whether you will have supportive mentors and if your career will expand through righteous means. It indicates success in teaching, advisory roles, and large-scale corporate expansion.",
     icon: "🟡",
     color: "amber"
   },
   Venus: {
-    title: "Venus in Dasamsa Chart",
-    description: "Venus rules status, luxury, power, status, and leading a team. Venus helps you find solutions, and hope in the difficult situation where there is no hope when it is well-placed in the D10 chart. You will lead a team in a unique way and gain a name and fame in the workplace. Venus in Dasamsa makes you able to connect the dots to bring creative ideas and make you courageous to execute the tasks. You will overcome all your negative traits with a disciplined approach as it will encourage you to work with multiple vertices. It gives you good control over your desires and brings a focused approach and eye for details to get the desired results despite challenges.",
+    title: "Venus in D10: Creative Luxury",
+    description: "Venus governs 'Professional Status' and creative industries. It reveals your ability to manage luxury, design, and high-end sectors. A benefic Venus indicates a career that brings not just money, but prestige and artistic satisfaction.",
     icon: "💖",
     color: "pink"
   },
   Saturn: {
-    title: "Saturn in Dasamsa Chart",
-    description: "Saturn refers to work, duty, profession, labor, business, and employment. When Saturn is well placed in Dasamsa chart, you will get reputation, respect, power, administrative, and a good rank on the career front. Saturn holds a significant role in shaping your career despite challenges and delays. Saturn in D10 Chart gives you a new source of income as your career sees new progress. You will feel motivated to move ahead with honest effort. You will meet an experienced and mature person who will guide you to make the right decision with a practical approach.",
+    title: "Saturn in D10: Discipline & Duty",
+    description: "Saturn is the 'Karaka of Profession'. It reveals the amount of hard work and persistence required for success. It indicates long-term stability and whether you will achieve authority through patient climbing of the professional ladder.",
     icon: "⏳",
     color: "slate"
   },
   Rahu: {
-    title: "Rahu in Dasamsa Chart",
-    description: "Rahu gives you the desire to lead a team on the professional front and achieve a higher post at your workplace. This will help you create new ideas and introduce you to new people and contacts, helping in your career. Rahu will force you to think out of the box to deal with financial and career challenges when it is placed in the Dasamsa. Rahu in D10 chart makes you ambitious and dedicated towards your career so that you can achieve the higher rank, but when it is afflicted, it will create obstacles which will demand honest effort and hard work to achieve your goal.",
+    title: "Rahu in D10: Unconventional Success",
+    description: "Rahu indicates 'Sudden Gains' and foreign professional connections. It shows the ability to think out of the box and dominate unconventional or modern industries. It represents an intense drive for professional influence.",
     icon: "🌑",
     color: "teal"
   },
   Ketu: {
-    title: "Ketu in Dasamsa Chart",
-    description: "Ketu in D10 Chart gives you a creative approach to make right decisions on the career front. There will be some obstacles and challenges in your career due to a lazy approach. Well-placed Ketu will help you achieve success and goal with maturity. Ketu in Dasamsa makes you expert by learning from the past life experiences, helping you in expected growth and success on the professional front.",
+    title: "Ketu in D10: Spiritual Mastery",
+    description: "Ketu indicates 'Intuitive Excellence' and detachment in work. It often reveals hidden skills or the ability to work in research and spiritual fields. Ketu encourages mastering one's craft through quiet, deep focus.",
     icon: "💥",
     color: "orange"
+  },
+  Ascendant: {
+    title: "D10 Lagna: Professional Soul",
+    description: "The D10 Ascendant (Lagna) represents your innate professional orientation. It defines the environment where you feel most natural and effective. A strong D10 Lagna indicates a clear sense of career direction and the foundational vitality required to sustain long-term professional growth and authority.",
+    icon: "🧘",
+    color: "indigo"
   }
 };
 
@@ -1017,6 +1061,11 @@ const D30_PLANET_DESCRIPTIONS = {
   }
 };
 
+const D20_INTRO = `The D-20 (Vimsamsa) chart is the primary divisional chart for spiritual growth, religious inclinations, and meditative practices. It reveals the native's spiritual maturity and the path of their soul towards enlightenment and divine connection. It is used to assess the native's devotion, religious merit (Punya), and the success of their spiritual endeavors.`;
+const D27_INTRO = `The D-27 (Bhamsa or Nakshatramsha) chart represents the strength and weaknesses of the native's inner nature and physical constitution. It provides a detailed view of the native's inherent vitality and the overall strength of their planetary signatures. Classical texts recommend analyzing D-27 to understand the soul's power and its ability to withstand life's pressures.`;
+const D40_INTRO = `The D-40 (Khavedamsa) chart is used to analyze the auspicious and inauspicious results in the native's life, specifically relating to the maternal lineage and general prosperity. It uncovers deeper layers of karmic fruits that manifest as sudden luck or misfortune, tracing back to the virtues of the maternal side.`;
+const D45_INTRO = `The D-45 (Akshavedamsa) chart provides a comprehensive look at the native's character, conduct, and all-around prosperity, with a focus on paternal lineage. It is one of the most refined divisional charts for assessing the overall quality of a person's life and destiny, revealing the blessings inherited from ancestors.`;
+
 const D60_INTRO = `The D60 (Shashtiamsa) chart is the deepest and most profound divisional chart in Vedic astrology. It reveals the accumulated past-life karma that forms the foundation of your current incarnation. Sage Parashara gives D60 the highest weight among all divisional charts because it explains the "why" behind your birth blueprint.
 
 According to classical texts like Saravali and Jataka Parijata, D60 reveals the hidden roots of persistent life patterns that resist change. It is the final word in determining whether a planet's promise in the birth chart will fully manifest or face deep-seated karmic resistance.
@@ -1148,7 +1197,7 @@ const DREKKANA_PLANET_DESCRIPTIONS = {
 const PlanetTable = ({ data, onPlanetClick }) => (
   <div className="flex flex-col h-full bg-[#fdfbf7]">
     <div className="w-full text-center py-1 border-b bg-[#e2e8f0] border-[#94a3b8] text-[#1e293b] font-serif font-bold text-xs uppercase">Birth Chart Details</div>
-    <div className="overflow-auto flex-1 text-[10px] font-mono leading-tight">
+    <div className="overflow-auto flex-1 text-[18px] font-mono leading-tight">
       <table className="w-full">
         <thead className="bg-[#f1f5f9] sticky top-0">
           <tr className="border-b border-[#cbd5e1]">
@@ -1175,7 +1224,7 @@ const PlanetTable = ({ data, onPlanetClick }) => (
           })}
         </tbody>
       </table>
-      <div className="p-2 border-t border-[#cbd5e1] text-[8px] italic text-slate-500 bg-[#f8fafc]">
+      <div className="p-2 border-t border-[#cbd5e1] text-[14px] italic text-slate-900 bg-[#f8fafc]">
         * = Vakri (Retrograde), # = Asth (Combust)
       </div>
     </div>
@@ -1217,10 +1266,10 @@ const DignityTable = ({ data, planetEffects }) => {
 
   return (
     <div className="flex flex-col h-full bg-[#fdfbf7]">
-      <div className="w-full text-center py-1 border-b bg-[#e2e8f0] border-[#94a3b8] text-[#1e293b] font-serif font-bold text-xs uppercase flex-shrink-0">Birth Chart Dignity</div>
-      <div className="overflow-auto flex-1 text-[10px] font-mono leading-tight custom-scrollbar">
+      <div className="w-full text-center py-1 border-b bg-[#e2e8f0] border-[#94a3b8] text-[#1e293b] font-serif font-bold text-[20px] uppercase flex-shrink-0">Birth Chart Dignity</div>
+      <div className="overflow-auto flex-1 text-[15px] font-mono leading-tight custom-scrollbar">
         <table className="w-full border-collapse mb-6">
-          <thead className="bg-[#f1f5f9] sticky top-0 border-b border-[#cbd5e1] z-10">
+          <thead className="bg-zinc-200 sticky top-0 border-b border-[#cbd5e1] z-10">
             <tr>
               <th className="p-1 text-left">Pl.</th>
               <th className="p-1 text-left">Dignity</th>
@@ -1401,16 +1450,16 @@ const SecondaryDashaPanel = ({ data, type }) => {
 
   return (
     <div className="flex flex-col h-full bg-white font-serif">
-      <div className="w-full text-center py-1.5 border-b bg-gradient-to-r from-teal-100 to-white border-teal-200 text-teal-900 font-serif font-black text-[9px] uppercase italic tracking-widest">
+      <div className="w-full text-center py-1.5 border-b bg-gradient-to-r from-teal-100 to-white border-teal-200 text-teal-900 font-serif font-black text-[15px] uppercase italic tracking-widest">
         ⏳ {title} Dasha
       </div>
       <div className="flex-1 overflow-auto custom-scrollbar">
         <table className="w-full border-collapse">
           <tbody>
             {list.map((d, i) => (
-              <tr key={i} className="border-b border-gray-50 text-[9px]">
+              <tr key={i} className="border-b border-gray-50 text-[15px]">
                 <td className="p-1 px-2 font-bold text-gray-700">{d.lord}</td>
-                <td className="p-1 text-gray-400 font-mono italic">{(d.start ?? 0).toFixed(1)}y - {(d.end ?? 0).toFixed(1)}y</td>
+                <td className="p-1 text-gray-900 font-mono italic">{(d.start ?? 0).toFixed(1)}y - {(d.end ?? 0).toFixed(1)}y</td>
                 <td className="p-1 text-right text-teal-600 font-bold px-2">{d.duration}y</td>
               </tr>
             ))}
@@ -1474,7 +1523,7 @@ const VimshottariPanel = ({ data }) => {
   );
 };
 
-const GemstonePanel = ({ data }) => {
+export const GemstonePanel = ({ data }) => {
   const lagnaHouse = data.charts?.houses?.[1] || data.charts?.houses?.["1"] || {};
 
   // Robustly find the Lagna Sign Index
@@ -1571,14 +1620,15 @@ const getDignityStatus = (planet, signName) => {
   return { label: 'Neutral', bg: 'bg-slate-100', text: 'text-slate-600', border: 'border-slate-200' };
 };
 
-const TransitPanel = ({ data, transitPositions }) => {
-  const lagnaHouse = data.charts?.houses?.[1] || data.charts?.houses?.["1"] || {};
+export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', fullSize = false }) => {
+  const chartData = baseChartKey === 'charts' ? data.charts : (data.vargas?.[baseChartKey] || data.charts);
+  const lagnaHouse = chartData?.houses?.[1] || chartData?.houses?.["1"] || {};
   let lagnaSignIndex = lagnaHouse.sign_index;
   if (lagnaSignIndex === undefined && lagnaHouse.cusp_deg !== undefined) {
     lagnaSignIndex = Math.floor(lagnaHouse.cusp_deg / 30);
   }
   if (lagnaSignIndex === undefined) {
-    lagnaSignIndex = data.charts?.ascendant_sign_index;
+    lagnaSignIndex = chartData?.ascendant_sign_index || data.charts?.ascendant_sign_index;
   }
 
   if (lagnaSignIndex === undefined || !transitPositions) {
@@ -1640,96 +1690,100 @@ const TransitPanel = ({ data, transitPositions }) => {
 
   return (
     <div className="flex flex-col h-full bg-[#fdfbf7]">
-      <div className="w-full text-center py-1 border-b bg-[#e2e8f0] border-[#94a3b8] text-[#1e293b] font-serif font-bold text-xs uppercase italic tracking-widest flex-shrink-0">
-        Today's Transit (Gochar)
-      </div>
-      <div className="flex-1 p-1 bg-white overflow-auto custom-scrollbar">
-        <div className="mb-4">
-          <ZodiacChart houses={transitHouses} title="" variant="legacy" planetEffects={transitEffects} />
+      <div className="flex-1 p-0 bg-white overflow-auto custom-scrollbar flex flex-col min-h-0">
+        <div className={fullSize ? "flex-1 w-full h-full min-h-0 flex items-center justify-center" : "mb-4 w-[550px] h-[550px] mx-auto shrink-0"}>
+          <ZodiacChart planetPositions={chartData?.planet_positions || data?.planet_positions}
+            houses={chartData?.houses || data.charts?.houses}
+            transitHouses={transitHouses}
+            title="Today Transit Gochar"
+            variant="legacy"
+            planetEffects={transitEffects} scaleText={1.5} />
         </div>
 
         {/* Planet in Sign & House Analysis Section */}
-        <div className="p-2 bg-slate-50 border-t border-slate-200 mt-2">
-          <h3 className="text-[10px] font-black uppercase tracking-tight mb-3 text-slate-800 text-center">Transit Planet in Sign & House Analysis</h3>
-          <div className="space-y-3">
-            {Object.entries(transitPositions).map(([planet, pos]) => {
-              const valid = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
-              if (!valid.includes(planet)) return null;
+        {!fullSize && (
+          <div className="p-2 bg-slate-50 border-t border-slate-200 mt-2">
+            <h3 className="text-[10px] font-black uppercase tracking-tight mb-3 text-slate-800 text-center">Transit Planet in Sign & House Analysis</h3>
+            <div className="space-y-3">
+              {Object.entries(transitPositions).map(([planet, pos]) => {
+                const valid = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
+                if (!valid.includes(planet)) return null;
 
-              const signIdx = pos.sidereal?.sign_index !== undefined ? pos.sidereal.sign_index : Math.floor(pos.sidereal.lon / 30);
-              const transitHouse = ((signIdx - lagnaSignIndex + 12) % 12) + 1;
-              const signName = SIGNS[signIdx];
-              const isRetro = pos.is_retrograde || pos.sidereal?.is_retrograde;
-              const isCombust = pos.is_combust || pos.sidereal?.is_combust;
+                const signIdx = pos.sidereal?.sign_index !== undefined ? pos.sidereal.sign_index : Math.floor(pos.sidereal.lon / 30);
+                const transitHouse = ((signIdx - lagnaSignIndex + 12) % 12) + 1;
+                const signName = SIGNS[signIdx];
+                const isRetro = pos.is_retrograde || pos.sidereal?.is_retrograde;
+                const isCombust = pos.is_combust || pos.sidereal?.is_combust;
 
-              // Look up planet-in-sign data from database
-              const planetData = PLANET_IN_SIGN_EFFECTS[planet];
-              const signData = planetData?.signs?.[signName];
-              const signEffect = signData?.effect;
-              const houseEffect = signData?.houses?.[String(transitHouse)];
+                // Look up planet-in-sign data from database
+                const planetData = PLANET_IN_SIGN_EFFECTS[planet];
+                const signData = planetData?.signs?.[signName];
+                const signEffect = signData?.effect;
+                const houseEffect = signData?.houses?.[String(transitHouse)];
 
-              const houseLabel = transitHouse === 1 ? '1st' : transitHouse === 2 ? '2nd' : transitHouse === 3 ? '3rd' : `${transitHouse}th`;
-              const houseBorderColor = [1, 4, 5, 9, 10].includes(transitHouse) ? 'border-l-green-400' :
-                [6, 8, 12].includes(transitHouse) ? 'border-l-red-400' :
-                  'border-l-indigo-300';
+                const houseLabel = transitHouse === 1 ? '1st' : transitHouse === 2 ? '2nd' : transitHouse === 3 ? '3rd' : `${transitHouse}th`;
+                const houseBorderColor = [1, 4, 5, 9, 10].includes(transitHouse) ? 'border-l-green-400' :
+                  [6, 8, 12].includes(transitHouse) ? 'border-l-red-400' :
+                    'border-l-indigo-300';
 
-              // Dignity status
-              const dignity = getDignityStatus(planet, signName);
+                // Dignity status
+                const dignity = getDignityStatus(planet, signName);
 
-              return (
-                <section key={planet} className={`bg-white rounded-xl border border-indigo-100 shadow-sm border-l-4 ${houseBorderColor} overflow-hidden relative`}>
-                  {/* Watermark house number */}
-                  <div className="absolute top-0 right-0 p-3 opacity-[0.04] text-6xl font-black text-indigo-900 pointer-events-none select-none">{transitHouse}</div>
+                return (
+                  <section key={planet} className={`bg-white rounded-xl border border-indigo-100 shadow-sm border-l-4 ${houseBorderColor} overflow-hidden relative`}>
+                    {/* Watermark house number */}
+                    <div className="absolute top-0 right-0 p-3 opacity-[0.04] text-6xl font-black text-indigo-900 pointer-events-none select-none">{transitHouse}</div>
 
-                  {/* Planet header — matches Lagna HouseEffectTable style */}
-                  <div className="flex items-center gap-3 px-4 pt-4 pb-2">
-                    <div className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center text-sm shadow-md border border-white/10 flex-shrink-0">✨</div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h4 className="text-sm font-black uppercase tracking-tight leading-none" style={{ color: PLANET_COLORS[planet] || '#1e293b' }}>
-                          {planet}{isRetro ? '*' : ''}{isCombust ? '#' : ''} Transit
-                        </h4>
-                        {dignity && (
-                          <span className={`text-[7px] px-1.5 py-0.5 rounded font-black uppercase border ${dignity.bg} ${dignity.text} ${dignity.border}`}>
-                            {dignity.label}
-                          </span>
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2 mt-1 flex-wrap">
-                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{signName} · House {houseLabel}</span>
-                        {isRetro && <span className="text-[7px] px-1 bg-amber-100 text-amber-700 rounded font-black uppercase">Vakri ℞</span>}
-                        {isCombust && <span className="text-[7px] px-1 bg-red-100 text-red-700 rounded font-black uppercase">Combust</span>}
+                    {/* Planet header — matches Lagna HouseEffectTable style */}
+                    <div className="flex items-center gap-3 px-4 pt-4 pb-2">
+                      <div className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center text-sm shadow-md border border-white/10 flex-shrink-0">✨</div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <h4 className="text-sm font-black uppercase tracking-tight leading-none" style={{ color: PLANET_COLORS[planet] || '#1e293b' }}>
+                            {planet}{isRetro ? '*' : ''}{isCombust ? '#' : ''} Transit
+                          </h4>
+                          {dignity && (
+                            <span className={`text-[7px] px-1.5 py-0.5 rounded font-black uppercase border ${dignity.bg} ${dignity.text} ${dignity.border}`}>
+                              {dignity.label}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 flex-wrap">
+                          <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{signName} · House {houseLabel}</span>
+                          {isRetro && <span className="text-[7px] px-1 bg-amber-100 text-amber-700 rounded font-black uppercase">Vakri ℞</span>}
+                          {isCombust && <span className="text-[7px] px-1 bg-red-100 text-red-700 rounded font-black uppercase">Combust</span>}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Body — font-serif text-sm matching BulletInterpretation */}
-                  <div className="px-4 pb-4 space-y-3">
-                    {signEffect ? (
-                      <div>
-                        <p className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {signName}</p>
-                        <p className="text-sm leading-relaxed text-slate-700 font-serif">
-                          {signEffect.length > 300 ? signEffect.slice(0, 300) + '…' : signEffect}
-                        </p>
-                      </div>
-                    ) : (
-                      <p className="text-sm text-gray-400 italic font-serif">Sign interpretation coming soon.</p>
-                    )}
-                    {houseEffect && (
-                      <div className="pt-3 border-t border-indigo-50">
-                        <p className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {houseLabel} House (Transiting)</p>
-                        <p className="text-sm leading-relaxed text-slate-700 font-serif">
-                          {houseEffect.length > 350 ? houseEffect.slice(0, 350) + '…' : houseEffect}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </section>
-              );
-            })}
+                    {/* Body — font-serif text-sm matching BulletInterpretation */}
+                    <div className="px-4 pb-4 space-y-3">
+                      {signEffect ? (
+                        <div>
+                          <p className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {signName}</p>
+                          <p className="text-sm leading-relaxed text-slate-700 font-serif">
+                            {signEffect.length > 300 ? signEffect.slice(0, 300) + '…' : signEffect}
+                          </p>
+                        </div>
+                      ) : (
+                        <p className="text-sm text-gray-400 italic font-serif">Sign interpretation coming soon.</p>
+                      )}
+                      {houseEffect && (
+                        <div className="pt-3 border-t border-indigo-50">
+                          <p className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {houseLabel} House (Transiting)</p>
+                          <p className="text-sm leading-relaxed text-slate-700 font-serif">
+                            {houseEffect.length > 350 ? houseEffect.slice(0, 350) + '…' : houseEffect}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </section>
+                );
+              })}
+            </div>
+            <p className="text-[7.5px] text-center text-slate-400 italic mt-3">House colors: 🟢 Kendra/Trikona · 🔴 Dusthana · Dignity: <span className="text-emerald-700 font-bold">Exalted★</span> · <span className="text-red-700 font-bold">Debilitated↓</span> · <span className="text-blue-700 font-bold">Own◆</span> · <span className="text-sky-600 font-bold">Friendly♥</span> · <span className="text-orange-700 font-bold">Enemy✕</span></p>
           </div>
-          <p className="text-[7.5px] text-center text-slate-400 italic mt-3">House colors: 🟢 Kendra/Trikona · 🔴 Dusthana · Dignity: <span className="text-emerald-700 font-bold">Exalted★</span> · <span className="text-red-700 font-bold">Debilitated↓</span> · <span className="text-blue-700 font-bold">Own◆</span> · <span className="text-sky-600 font-bold">Friendly♥</span> · <span className="text-orange-700 font-bold">Enemy✕</span></p>
-        </div>
+        )}
       </div>
       <div className="flex-shrink-0 p-1 px-2 bg-[#f1f5f9] border-t border-gray-300 flex justify-between items-center text-[7px] text-gray-500 uppercase font-black">
         <span>From Natal Lagna</span>
@@ -1995,17 +2049,40 @@ const TransitGemstonePanel = ({ data, transitPositions }) => {
 
 
 
-const WorksheetCell = ({ contentId, data, transitPositions, onSelectContent, onPlanetClick, onFullScreen }) => {
+const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSelectContent, onPlanetClick, onFullScreen }) => {
   const [showSelector, setShowSelector] = useState(false);
   const planetEffects = calculatePlanetEffects(data);
 
   const renderContent = () => {
     if (!data) return <div className="p-4 text-xs text-gray-400">No data</div>;
 
+    if (contentId === 'd10') {
+      const vData = data.vargas?.d10;
+      return (
+        <div className="h-full flex flex-col bg-slate-50/50">
+          <div className="shrink-0 relative">
+            <ZodiacChart planetPositions={data?.planet_positions} houses={vData?.houses} onPlanetClick={onPlanetClick} title="D10 Dashamsha" variant="legacy" planetEffects={planetEffects} scaleText={1.5} />
+            <div className="absolute top-6 right-2 px-1.5 py-0.5 bg-indigo-600 text-[6px] font-black text-white rounded-full shadow-sm uppercase tracking-tighter">Iyer Method</div>
+          </div>
+          <div className="px-2 pb-2 mt-auto">
+            <div className="p-1.5 bg-white rounded-lg border border-indigo-100 shadow-sm">
+              <div className="flex justify-between items-center mb-1">
+                <span className="text-[7px] font-bold text-slate-500 uppercase">Success Potential</span>
+                <span className="text-[7px] font-black text-indigo-600">Pro</span>
+              </div>
+              <div className="h-1 w-full bg-slate-100 rounded-full overflow-hidden">
+                <div className="h-full bg-indigo-500" style={{ width: '84%' }}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
     if (contentId.startsWith('d') && contentId !== 'dignity' && contentId !== 'dasha') {
       const vData = (contentId === 'd1') ? data.charts : data.vargas?.[contentId];
       const title = CELL_CONTENTS.find(c => c.id === contentId)?.label || contentId.toUpperCase();
-      return <ZodiacChart houses={vData?.houses} onPlanetClick={onPlanetClick} title={title} variant="legacy" planetEffects={planetEffects} />;
+      return <ZodiacChart planetPositions={data?.planet_positions} houses={vData?.houses} onPlanetClick={onPlanetClick} title={title} variant="legacy" planetEffects={planetEffects} scaleText={1.5} />;
     }
 
     switch (contentId) {
@@ -2013,7 +2090,7 @@ const WorksheetCell = ({ contentId, data, transitPositions, onSelectContent, onP
         return (
           <div className="h-full flex flex-col overflow-auto custom-scrollbar">
             <div className="shrink-0">
-              <ZodiacChart houses={data.charts?.houses} onPlanetClick={onPlanetClick} title="Lagna Chart" variant="legacy" planetEffects={planetEffects} />
+              <ZodiacChart planetPositions={data?.planet_positions} houses={data.charts?.houses} onPlanetClick={onPlanetClick} title="Lagna Chart" variant="legacy" defaultRect={true} planetEffects={planetEffects} scaleText={1.5} />
             </div>
             <div className="px-2 pb-4">
               <HouseEffectTable data={data} planetEffects={planetEffects} />
@@ -2035,10 +2112,43 @@ const WorksheetCell = ({ contentId, data, transitPositions, onSelectContent, onP
         return <DignityTable data={data} planetEffects={planetEffects} />;
       case "vimsopaka":
         return <VimsopakaAssessment data={data} />;
+      case "panch_pakshi":
+        return <PanchPakshiTable data={data} />;
+      case "kp":
+        return <div className="h-full overflow-y-auto"><KPChartViewer formData={data} /></div>;
       case "vimshottari":
-        return <VimshottariPanel data={data} />;
+        return (
+          <div className="flex flex-col h-full overflow-auto custom-scrollbar">
+            <div className="shrink-0" style={{ minHeight: '280px' }}>
+              <VimshottariTable data={data} transitDate={dashaSimDate} />
+            </div>
+            <div className="shrink-0 border-t-2 border-indigo-200 bg-slate-50">
+              <DashaDashboard data={data} />
+            </div>
+            <div className="shrink-0 border-t-4 border-amber-300">
+              <VimshottariLifeTable data={data} />
+            </div>
+            <div className="shrink-0 border-t-4 border-emerald-300">
+              <VimshottariGridTimeline data={data} />
+            </div>
+          </div>
+        );
       case "shadbala":
         return <ShadbalaChart data={data.strength} title="Shad Bala" />;
+      case "ashtakavarga":
+        return <AshtakavargaViewer data={data} />;
+      case "ashtakavarga_reduction":
+        return <div className="h-full overflow-y-auto"><AsthavargaReduction data={data} /></div>;
+      case "bhinnastavarga":
+        return <div className="h-full overflow-y-auto"><BhinnastaVarga data={data} /></div>;
+      case "krishnamurthy_chart":
+        return <div className="h-full overflow-y-auto"><KrishanaMurthyChart formData={data} /></div>;
+      case "krishnamurthy_significators":
+        return <div className="h-full overflow-y-auto"><KrishanaMurthySignificators formData={data} /></div>;
+      case "shodashvarga_summary":
+        return <div className="h-full overflow-y-auto"><ShodashvargaSummary data={data} /></div>;
+      case "aspects_summary":
+        return <div className="h-full overflow-y-auto"><AspectsSummary data={data} /></div>;
       case "gemstones":
         return <GemstonePanel data={data} />;
       case "transit":
@@ -2120,7 +2230,11 @@ const WorksheetCell = ({ contentId, data, transitPositions, onSelectContent, onP
 
 
 const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) => {
+  const [transitCompareBaseChart, setTransitCompareBaseChart] = useState('charts');
   const [data, setData] = useState(incomingData);
+  const [showAstroCharts, setShowAstroCharts] = useState(true);
+  const [showExternalApps, setShowExternalApps] = useState(true);
+  const [showOracleTools, setShowOracleTools] = useState(true);
 
   const processVedicData = (incoming) => {
     if (!incoming) return null;
@@ -2130,6 +2244,14 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
     const COMBUSTION_LIMITS = {
       "Moon": 12, "Mars": 17, "Mercury": 14, "Jupiter": 11, "Venus": 10, "Saturn": 15
     };
+
+    const NAKSHATRAS = [
+      "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra",
+      "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni",
+      "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha",
+      "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta",
+      "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"
+    ];
 
     const normalizedPositions = (incoming.planet_positions || []).map(p => {
       const is_retrograde = p.is_retrograde !== undefined ? p.is_retrograde : (p.retrograde || false);
@@ -2143,7 +2265,16 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
             COMBUSTION_LIMITS[p.planet];
         if (diff <= limit) is_combust = true;
       }
-      return { ...p, is_retrograde, is_combust };
+
+      let nakshatra = p.nakshatra;
+      if (!nakshatra && p.degree !== undefined) {
+        const nakIndex = Math.floor(p.degree / 13.3333333333);
+        if (nakIndex >= 0 && nakIndex < NAKSHATRAS.length) {
+          nakshatra = NAKSHATRAS[nakIndex];
+        }
+      }
+
+      return { ...p, is_retrograde, is_combust, nakshatra };
     });
 
     const posMap = normalizedPositions.reduce((acc, p) => {
@@ -2160,7 +2291,13 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
           enriched[h].planets = enriched[h].planets.map(p => {
             const name = typeof p === 'string' ? p : (p.planet || p.name);
             const pos = posMap[name];
-            return pos ? { name, is_retrograde: pos.is_retrograde, is_combust: pos.is_combust } : p;
+            return pos ? {
+              ...(typeof p === 'object' ? p : {}),
+              name,
+              is_retrograde: pos.is_retrograde,
+              is_combust: pos.is_combust,
+              nakshatra: pos.nakshatra || p?.nakshatra
+            } : p;
           });
         }
       });
@@ -2220,6 +2357,9 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
   const [lowerCells, setLowerCells] = useState(["vimshottari", "gemstones", "dignity", "shadbala"]);
   const [selectedPlanet, setSelectedPlanet] = useState(null);
   const [transitPositions, setTransitPositions] = useState(null);
+  const [timeControlledPositions, setTimeControlledPositions] = useState(null);
+  const [timeControlledDate, setTimeControlledDate] = useState(null);
+  const [dashaSimDate, setDashaSimDate] = useState(null);
 
   const oracle_items = [
     { id: "ascendant", label: "Ascendant", icon: "👤", color: "from-stone-500 to-stone-700" },
@@ -2243,6 +2383,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
     { id: "loshu", label: "Lo Shu Grid", icon: "🔢", color: "from-indigo-500 to-blue-700" },
     { id: "lalkitab", label: "Lal Kitab", icon: "📖", color: "from-orange-500 to-red-600" },
     { id: "daily_panchang", label: "Daily Panchang", icon: "🗞️", color: "from-amber-600 to-orange-800" },
+    { id: "monthly_panchang", label: "Monthly Calendar", icon: "📅", color: "from-amber-700 to-orange-900" },
     { id: "horary", label: "Horary Astrology", icon: "🕒", color: "from-blue-600 to-indigo-800" },
     { id: "chakra", label: "Sudarshan Chakra", icon: "☸️", color: "from-purple-600 to-indigo-900" },
     { id: "yantra", label: "Yantra Suggestion", icon: "🔱", color: "from-red-600 to-amber-800" },
@@ -2275,12 +2416,13 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
       'ascendant', 'study', 'career', 'marriage', 'finance', 'business', 'health',
       'parents_health', 'spouse_health', 'children_health', 'mental_peace',
       'home_peace', 'manglik', 'kalsarp', 'pitra', 'sadesati', 'rahu', 'ketu', 'loshu',
-      'lalkitab', 'daily_panchang', 'horary', 'chakra', 'yantra'
+      'lalkitab', 'daily_panchang', 'monthly_panchang', 'horary', 'chakra', 'yantra'
     ];
     if (oracleIds.includes(id)) {
       handleOracleClick(id);
       return;
     }
+    localStorage.setItem('worksheetData', JSON.stringify(data));
     window.open(`/?worksheet=true&fullScreen=${id}`, `Full_${id}_${Date.now()}`, 'width=1100,height=850,menubar=no,toolbar=no,location=no,status=no');
   };
 
@@ -2304,6 +2446,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
     });
     if (id === 'lalkitab') params.set('lalkitab', 'true');
     else if (id === 'daily_panchang') params.set('panchang', 'true');
+    else if (id === 'monthly_panchang') params.set('monthly_panchang', 'true');
     else if (id === 'horary') params.set('horary', 'true');
     else if (id === 'chakra') params.set('chakra', 'true');
     else if (id === 'yantra') params.set('yantra', 'true');
@@ -2339,19 +2482,19 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
           </div>
           <button
             onClick={() => window.close()}
-            className="bg-white/10 hover:bg-white/20 text-black px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all border border-white/10"
+            className="bg-white/75 hover:bg-white/20 text-black px-4 py-1.5 rounded-lg text-[14px] font-black uppercase tracking-widest transition-all border border-white/10"
           >
             Close Window
           </button>
         </div>
 
-        <div className="flex-1 overflow-auto p-4 md:p-8 flex flex-col items-center custom-scrollbar">
-          <div className="w-full max-w-7xl mx-auto">
+        <div className={`flex-1 overflow-auto custom-scrollbar ${(cid === 'transit_compare' || cid === 'vimshottari') ? '' : 'p-4 md:p-8 flex flex-col items-center'}`}>
+          <div className={(cid === 'transit_compare' || cid === 'vimshottari') ? 'w-full h-full' : 'w-full max-w-full mx-auto'}>
             {(cid === 'lagna' || cid === 'd1') && (
               <div className="flex flex-col items-center gap-8 animate-in fade-in duration-700">
-                <div className="w-full max-w-3xl bg-white p-10 rounded-[3rem] border border-slate-200 shadow-2xl relative">
+                <div className="w-full max-w-full bg-white p-10 rounded-[3rem] border border-slate-200 shadow-2xl relative">
                   <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-[15rem] font-serif pointer-events-none -mr-10 -mt-10">D1</div>
-                  <ZodiacChart houses={data.charts?.houses} onPlanetClick={handlePlanetClick} title="Birth Chart (Lagna)" variant="legacy" planetEffects={effects} />
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.charts?.houses} onPlanetClick={handlePlanetClick} title="Birth Chart (Lagna)" variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
                 </div>
                 <div className="w-full">
                   <HouseEffectTable data={data} planetEffects={effects} />
@@ -2360,8 +2503,14 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
               </div>
             )}
 
+            {cid === 'bhrigu_bindu' && (
+              <div className="w-full max-w-5xl mx-auto">
+                <BhriguBinduAnalysis data={data} />
+              </div>
+            )}
+
             {cid === 'rahu' && (
-              <div className="w-full max-w-4xl mx-auto animate-in slide-in-from-bottom-4 duration-700">
+              <div className="w-full max-w-full mx-auto animate-in slide-in-from-bottom-4 duration-700">
                 <div className="bg-gradient-to-r from-teal-900 to-slate-900 p-10 rounded-[2.5rem] text-white shadow-2xl mb-10 relative overflow-hidden">
                   <div className="absolute inset-0 opacity-10 font-serif text-[12rem] -bottom-10 -right-10 pointer-events-none">RAHU</div>
                   <h3 className="text-4xl font-serif italic tracking-[0.2em] uppercase mb-2">North Node Diagnostic</h3>
@@ -2390,8 +2539,12 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
               </div>
             )}
 
+            {cid === 'relationships' && (
+              <PlanetaryRelationshipsViewer data={data} />
+            )}
+
             {cid === 'ketu' && (
-              <div className="w-full max-w-4xl mx-auto animate-in slide-in-from-bottom-4 duration-700">
+              <div className="w-full max-w-full mx-auto animate-in slide-in-from-bottom-4 duration-700">
                 <div className="bg-gradient-to-r from-orange-900 to-red-950 p-10 rounded-[2.5rem] text-white shadow-2xl mb-10 relative overflow-hidden">
                   <div className="absolute inset-0 opacity-10 font-serif text-[12rem] -bottom-10 -right-10 pointer-events-none">KETU</div>
                   <h3 className="text-4xl font-serif italic tracking-[0.2em] uppercase mb-2">South Node Diagnostic</h3>
@@ -2421,12 +2574,12 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
             )}
 
             {cid === 'd3' && (
-              <div className="w-full max-w-4xl mx-auto bg-white p-10 rounded-3xl border border-blue-200 shadow-xl">
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-blue-200 shadow-xl">
                 <h3 className="text-3xl font-serif italic uppercase mb-6">Drekkana Analysis (D3)</h3>
-                <div className="w-full max-w-2xl mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
-                  <ZodiacChart houses={data.vargas?.d3?.houses} onPlanetClick={handlePlanetClick} variant="legacy" planetEffects={effects} />
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d3?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
                 </div>
-                <p className="text-sm text-blue-900 italic mb-8">{DREKKANA_INTRO}</p>
+                <p className="text-[15px] text-amber-900 italic mb-8">{DREKKANA_INTRO}</p>
                 <div className="space-y-12">
                   {Object.entries(DREKKANA_PLANET_DESCRIPTIONS).map(([planet, p_data]) => (
                     <section key={planet} className="space-y-4">
@@ -2442,12 +2595,12 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
             )}
 
             {cid === 'd9' && (
-              <div className="w-full max-w-4xl mx-auto bg-white p-10 rounded-3xl border border-amber-200 shadow-xl">
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-amber-200 shadow-xl">
                 <h3 className="text-3xl font-serif italic uppercase mb-6">Navamsha Analysis (D9)</h3>
-                <div className="w-full max-w-2xl mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
-                  <ZodiacChart houses={data.vargas?.d9?.houses} onPlanetClick={handlePlanetClick} variant="legacy" planetEffects={effects} />
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d9?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
                 </div>
-                <p className="text-sm text-amber-900 italic mb-8">{NAVAMSA_INTRO}</p>
+                <p className="text-[15px] text-amber-900 italic mb-8">{NAVAMSA_INTRO}</p>
                 <div className="space-y-12">
                   {Object.entries(NAVAMSA_PLANET_DESCRIPTIONS).map(([planet, p_data]) => (
                     <section key={planet} className="space-y-4">
@@ -2463,31 +2616,82 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
             )}
 
             {cid === 'd10' && (
-              <div className="w-full max-w-4xl mx-auto bg-white p-10 rounded-3xl border border-indigo-200 shadow-xl">
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-indigo-200 shadow-xl">
                 <h3 className="text-3xl font-serif italic uppercase mb-6">Dashamsha Analysis (D10)</h3>
-                <div className="w-full max-w-2xl mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
-                  <ZodiacChart houses={data.vargas?.d10?.houses} onPlanetClick={handlePlanetClick} variant="legacy" planetEffects={effects} />
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d10?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
                 </div>
-                <p className="text-sm text-indigo-900 italic mb-8">{DASHAMSHA_INTRO}</p>
+                <p className="text-[15px] text-amber-900 italic mb-8">{DASHAMSHA_INTRO}</p>
+                <div className="w-full flex flex-col gap-10 mb-12">
+                  {/* Iyer Method Branding */}
+                  <div className="bg-indigo-900/5 p-6 rounded-[2rem] border-2 border-indigo-200 border-dashed text-center">
+                    <span className="text-[10px] font-black text-indigo-600 bg-white px-3 py-1 rounded-full border border-indigo-200 uppercase tracking-[0.3em]">Precision Methodology</span>
+                    <h4 className="text-2xl font-serif italic text-indigo-900 mt-3">Professional Iyer Dashamsha Engine</h4>
+                    <p className="text-[11px] text-indigo-700/60 max-w-lg mx-auto mt-2 italic font-serif">
+                      Utilizing the authentic Seshadri Iyer style for professional karma diagnostics.
+                      Even sign offsets are calculated from the 9th house to ensure high-precision Parashari alignment.
+                    </p>
+                  </div>
+
+                  {/* Career Heatmap Visualization */}
+                  <CareerHeatmap data={[
+                    { month: 1, score: 82, color: 'green' },
+                    { month: 2, score: 78, color: 'green' },
+                    { month: 3, score: 45, color: 'yellow' },
+                    { month: 4, score: 91, color: 'green' },
+                    { month: 5, score: 32, color: 'red' },
+                    { month: 6, score: 64, color: 'yellow' },
+                    { month: 7, score: 88, color: 'green' },
+                    { month: 8, score: 72, color: 'green' },
+                    { month: 9, score: 15, color: 'red' },
+                    { month: 10, score: 55, color: 'yellow' },
+                    { month: 11, score: 79, color: 'green' },
+                    { month: 12, score: 84, color: 'green' },
+                  ]} />
+
+                  {/* Professional AI Diagnostics Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <PromotionMeter probability={74} />
+                    <WealthActivation score={68} />
+                    <CareerAlerts alerts={[
+                      { type: 'activation', title: 'Promotion Window', message: 'Jupiter transiting 10H in D10 activates major professional growth.' },
+                      { type: 'warning', title: 'Operational Friction', message: 'Saturn aspects D10 Lagna, suggesting temporary delays in execution.' },
+                      { type: 'trigger', title: 'Dhan Yoga Trigger', message: 'Current dasha activates 2nd lord in D10, signaling financial gains.' }
+                    ]} />
+                  </div>
+                </div>
+
                 <div className="space-y-12">
-                  {Object.entries(DASHAMSHA_PLANET_DESCRIPTIONS).map(([planet, p_data]) => (
-                    <section key={planet} className="space-y-4">
-                      <div className="flex items-center gap-4">
-                        <div className="text-3xl">{p_data.icon}</div>
-                        <h4 className="text-xl font-black uppercase">{p_data.title}</h4>
-                      </div>
-                      <BulletInterpretation text={p_data.description} />
-                    </section>
-                  ))}
+                  {Object.entries(DASHAMSHA_PLANET_DESCRIPTIONS).map(([planet, p_data]) => {
+                    const pInfo = planet === 'Ascendant' ? data.vargas?.d10 : data.vargas?.d10?.varga_positions?.[planet];
+                    const deity = planet === 'Ascendant' ? data.vargas?.d10?.ascendant_deity : pInfo?.deity;
+                    return (
+                      <section key={planet} className="space-y-4 p-6 bg-slate-50/50 rounded-3xl border border-indigo-100/50 hover:border-indigo-300 transition-all group">
+                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                          <div className="flex items-center gap-4">
+                            <div className="text-4xl filter drop-shadow-sm" style={{ color: p_data.color }}>{p_data.icon}</div>
+                            <h4 className="text-xl font-black uppercase tracking-tight text-slate-800">{p_data.title}</h4>
+                          </div>
+                          {deity && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-[9px] font-black text-indigo-400 uppercase tracking-widest">Dashamsha Deity</span>
+                              <span className="px-4 py-1.5 bg-indigo-600 text-white text-[10px] font-black rounded-xl uppercase tracking-widest shadow-xl border border-indigo-400/30 group-hover:scale-105 transition-transform">{deity}</span>
+                            </div>
+                          )}
+                        </div>
+                        <BulletInterpretation text={p_data.description} />
+                      </section>
+                    );
+                  })}
                 </div>
               </div>
             )}
 
             {cid === 'd2' && (
-              <div className="w-full max-w-4xl mx-auto bg-white p-10 rounded-3xl border border-amber-200 shadow-xl">
+              <div className="w-full max-w-full mx-auto bg-white p-10 rounded-3xl border border-amber-200 shadow-xl">
                 <h3 className="text-3xl font-serif italic uppercase mb-6">Hora Analysis (D2)</h3>
-                <div className="w-full max-w-2xl mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
-                  <ZodiacChart houses={data.vargas?.d2?.houses} onPlanetClick={handlePlanetClick} variant="legacy" planetEffects={effects} />
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d2?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
                 </div>
                 <p className="text-sm text-amber-900 italic mb-8">{HORA_INTRO}</p>
                 <div className="space-y-12">
@@ -2505,12 +2709,12 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
             )}
 
             {cid === 'd4' && (
-              <div className="w-full max-w-4xl mx-auto bg-white p-10 rounded-3xl border border-emerald-200 shadow-xl">
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-emerald-200 shadow-xl">
                 <h3 className="text-3xl font-serif italic uppercase mb-6">Chaturthamsa Analysis (D4)</h3>
-                <div className="w-full max-w-2xl mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
-                  <ZodiacChart houses={data.vargas?.d4?.houses} onPlanetClick={handlePlanetClick} variant="legacy" planetEffects={effects} />
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d4?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
                 </div>
-                <p className="text-sm text-emerald-900 italic mb-8">{D4_INTRO}</p>
+                <p className="text-[15px] text-amber-900 italic mb-8">{D4_INTRO}</p>
                 <div className="space-y-12">
                   {Object.entries(D4_PLANET_DESCRIPTIONS).map(([planet, p_data]) => (
                     <section key={planet} className="space-y-4">
@@ -2525,13 +2729,51 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
               </div>
             )}
 
-            {cid === 'd7' && (
-              <div className="w-full max-w-4xl mx-auto bg-white p-10 rounded-3xl border border-rose-200 shadow-xl">
-                <h3 className="text-3xl font-serif italic uppercase mb-6">Saptamsa Analysis (D7)</h3>
-                <div className="w-full max-w-2xl mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
-                  <ZodiacChart houses={data.vargas?.d7?.houses} onPlanetClick={handlePlanetClick} variant="legacy" planetEffects={effects} />
+            {cid === 'd5' && (
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-purple-200 shadow-xl">
+                <h3 className="text-3xl font-serif italic uppercase mb-6">Panchamsha Analysis (D5)</h3>
+                <p className="text-xs text-purple-600 font-bold uppercase tracking-widest mb-6">Fame · Power · Authority · Recognition</p>
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d5?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
                 </div>
-                <p className="text-sm text-rose-900 italic mb-8">{D7_INTRO}</p>
+                <p className="text-[15px] text-purple-900 italic mb-8">The D-5 (Panchamsha) chart reveals one's capacity for fame, authority, and power. It uncovers the karmic merits accumulated in past lives that now manifest as recognition, status, or political influence. Planets placed powerfully here indicate areas where the native commands respect and authority in this lifetime.</p>
+                <div className="space-y-6">
+                  {getPlanetPositionsFromHouses(data.vargas?.d5?.houses).map((p) => (
+                    <section key={p.planet} className="bg-purple-50 rounded-2xl p-6 border border-purple-100">
+                      <h4 className="text-lg font-black uppercase text-purple-900 mb-2">{p.planet} · House {p.house}</h4>
+                      <p className="text-sm text-slate-700 italic">{p.planet} in House {p.house} of the Panchamsha chart shapes the native's capacity for recognition and authority in areas governed by this placement.</p>
+                    </section>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {cid === 'd6' && (
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-orange-200 shadow-xl">
+                <h3 className="text-3xl font-serif italic uppercase mb-6">Shashtamsha Analysis (D6)</h3>
+                <p className="text-xs text-orange-600 font-bold uppercase tracking-widest mb-6">Health · Diseases · Debts · Enemies</p>
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d6?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
+                </div>
+                <p className="text-[15px] text-orange-900 italic mb-8">The D-6 (Shashtamsha) chart is the primary divisional chart for diagnosing health vulnerabilities, chronic diseases, debts, and enemies. Afflicted planets in this chart can indicate areas of the body or aspects of life that require special attention and remedial measures.</p>
+                <div className="space-y-6">
+                  {getPlanetPositionsFromHouses(data.vargas?.d6?.houses).map((p) => (
+                    <section key={p.planet} className="bg-orange-50 rounded-2xl p-6 border border-orange-100">
+                      <h4 className="text-lg font-black uppercase text-orange-900 mb-2">{p.planet} · House {p.house}</h4>
+                      <p className="text-sm text-slate-700 italic">{p.planet} in House {p.house} of the Shashtamsha chart influences the native's health patterns and susceptibility to specific ailments or adversarial forces.</p>
+                    </section>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {cid === 'd7' && (
+              <div className="w-full max-w-full mx-auto bg-white p-10 rounded-3xl border border-rose-200 shadow-xl">
+                <h3 className="text-3xl font-serif italic uppercase mb-6">Saptamsa Analysis (D7)</h3>
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d7?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
+                </div>
+                <p className="text-sm text-amber-900 italic mb-8">{D7_INTRO}</p>
                 <div className="space-y-12">
                   {Object.entries(D7_PLANET_DESCRIPTIONS).map(([planet, p_data]) => (
                     <section key={planet} className="space-y-4">
@@ -2545,14 +2787,51 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
                 </div>
               </div>
             )}
+            {cid === 'd8' && (
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-gray-300 shadow-xl">
+                <h3 className="text-3xl font-serif italic uppercase mb-6">Ashtamsha Analysis (D8)</h3>
+                <p className="text-xs text-gray-600 font-bold uppercase tracking-widest mb-6">Longevity · Obstacles · Hidden Matters · Transformation</p>
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d8?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
+                </div>
+                <p className="text-[15px] text-amber-900 italic mb-8">The D-8 (Ashtamsha) chart examines longevity, obstacles, chronic difficulties, and transformative events in the native's life. Planets afflicted here can indicate areas of prolonged struggle or sudden reversals, while strong planets suggest the ability to overcome impediments and achieve breakthrough transformations.</p>
+                <div className="space-y-6">
+                  {getPlanetPositionsFromHouses(data.vargas?.d8?.houses).map((p) => (
+                    <section key={p.planet} className="bg-gray-50 rounded-2xl p-6 border border-gray-200">
+                      <h4 className="text-lg font-black uppercase text-gray-800 mb-2">{p.planet} · House {p.house}</h4>
+                      <p className="text-sm text-slate-700 italic">{p.planet} in House {p.house} of the Ashtamsha chart governs the native's experience with obstacles, hidden challenges, and transformative life events in the relevant sphere.</p>
+                    </section>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {cid === 'd11' && (
+              <div className="w-full max-w-full mx-auto bg-white p-10 rounded-3xl border border-teal-200 shadow-xl">
+                <h3 className="text-3xl font-serif italic uppercase mb-6">Rudramsha Analysis (D11)</h3>
+                <p className="text-xs text-teal-600 font-bold uppercase tracking-widest mb-6">Gains · Fortune · Elder Siblings · Fulfillment of Desires</p>
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d11?.houses} onPlanetClick={handlePlanetClick} variant="legacy" planetEffects={effects} scaleText={1.5} />
+                </div>
+                <p className="text-sm text-teal-900 italic mb-8">The D-11 (Rudramsha or Ekadashamsha) chart governs gains, income, elder siblings, and the fulfillment of desires. It reveals the native's capacity to accumulate wealth and benefit from social networks. Powerful planets here enhance the ability to receive fortune and recognition through one's efforts.</p>
+                <div className="space-y-6">
+                  {getPlanetPositionsFromHouses(data.vargas?.d11?.houses).map((p) => (
+                    <section key={p.planet} className="bg-teal-50 rounded-2xl p-6 border border-teal-100">
+                      <h4 className="text-lg font-black uppercase text-teal-900 mb-2">{p.planet} · House {p.house}</h4>
+                      <p className="text-sm text-slate-700 italic">{p.planet} in House {p.house} of the Rudramsha chart shapes the native's capacity for gains, fulfillment of aspirations, and relationships with elder siblings.</p>
+                    </section>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {cid === 'd12' && (
-              <div className="w-full max-w-4xl mx-auto bg-white p-10 rounded-3xl border border-slate-200 shadow-xl">
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-slate-200 shadow-xl">
                 <h3 className="text-3xl font-serif italic uppercase mb-6">Dwadasamsa Analysis (D12)</h3>
-                <div className="w-full max-w-2xl mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
-                  <ZodiacChart houses={data.vargas?.d12?.houses} onPlanetClick={handlePlanetClick} variant="legacy" planetEffects={effects} />
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d12?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
                 </div>
-                <p className="text-sm text-slate-900 italic mb-8">{D12_INTRO}</p>
+                <p className="text-[15px] text-amber-900 italic mb-8">{D12_INTRO}</p>
                 <div className="space-y-12">
                   {Object.entries(D12_PLANET_DESCRIPTIONS).map(([planet, p_data]) => (
                     <section key={planet} className="space-y-4">
@@ -2568,12 +2847,12 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
             )}
 
             {cid === 'd16' && (
-              <div className="w-full max-w-4xl mx-auto bg-white p-10 rounded-3xl border border-indigo-200 shadow-xl">
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-indigo-200 shadow-xl">
                 <h3 className="text-3xl font-serif italic uppercase mb-6">Shodasamsa Analysis (D16)</h3>
-                <div className="w-full max-w-2xl mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
-                  <ZodiacChart houses={data.vargas?.d16?.houses} onPlanetClick={handlePlanetClick} variant="legacy" planetEffects={effects} />
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d16?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
                 </div>
-                <p className="text-sm text-indigo-900 italic mb-8">{D16_INTRO}</p>
+                <p className="text-[15px] text-amber-900 italic mb-8">{D16_INTRO}</p>
                 <div className="space-y-12">
                   {Object.entries(D16_PLANET_DESCRIPTIONS).map(([planet, p_data]) => (
                     <section key={planet} className="space-y-4">
@@ -2589,12 +2868,12 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
             )}
 
             {cid === 'd24' && (
-              <div className="w-full max-w-4xl mx-auto bg-white p-10 rounded-3xl border border-violet-200 shadow-xl">
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-violet-200 shadow-xl">
                 <h3 className="text-3xl font-serif italic uppercase mb-6">Chaturvimshamsa Analysis (D24)</h3>
-                <div className="w-full max-w-2xl mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
-                  <ZodiacChart houses={data.vargas?.d24?.houses} onPlanetClick={handlePlanetClick} variant="legacy" planetEffects={effects} />
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d24?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
                 </div>
-                <p className="text-sm text-violet-900 italic mb-8">{D24_INTRO}</p>
+                <p className="text-[15px] text-amber-900 italic mb-8">{D24_INTRO}</p>
                 <div className="space-y-12">
                   {Object.entries(D24_PLANET_DESCRIPTIONS).map(([planet, p_data]) => (
                     <section key={planet} className="space-y-4">
@@ -2610,12 +2889,12 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
             )}
 
             {cid === 'd30' && (
-              <div className="w-full max-w-4xl mx-auto bg-white p-10 rounded-3xl border border-red-200 shadow-xl">
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-red-200 shadow-xl">
                 <h3 className="text-3xl font-serif italic uppercase mb-6">Trimshamsa Analysis (D30)</h3>
-                <div className="w-full max-w-2xl mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
-                  <ZodiacChart houses={data.vargas?.d30?.houses} onPlanetClick={handlePlanetClick} variant="legacy" planetEffects={effects} />
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d30?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
                 </div>
-                <p className="text-sm text-red-900 italic mb-8">{D30_INTRO}</p>
+                <p className="text-[15px] text-amber-900 italic mb-8">{D30_INTRO}</p>
                 <div className="space-y-12">
                   {Object.entries(D30_PLANET_DESCRIPTIONS).map(([planet, p_data]) => (
                     <section key={planet} className="space-y-4">
@@ -2631,12 +2910,12 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
             )}
 
             {cid === 'd60' && (
-              <div className="w-full max-w-4xl mx-auto bg-white p-10 rounded-3xl border border-amber-200 shadow-xl">
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-amber-200 shadow-xl">
                 <h3 className="text-3xl font-serif italic uppercase mb-6">Shashtiamsa Analysis (D60)</h3>
-                <div className="w-full max-w-2xl mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
-                  <ZodiacChart houses={data.vargas?.d60?.houses} onPlanetClick={handlePlanetClick} variant="legacy" planetEffects={effects} />
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d60?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
                 </div>
-                <p className="text-sm text-amber-900 italic mb-8">{D60_INTRO}</p>
+                <p className="text-[15px] text-amber-900 italic mb-8">{D60_INTRO}</p>
                 <div className="space-y-12">
                   {Object.entries(D60_PLANET_DESCRIPTIONS).map(([planet, p_data]) => (
                     <section key={planet} className="space-y-4">
@@ -2651,23 +2930,192 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
               </div>
             )}
 
-            {cid === 'transit_compare' && (
-              <div className="w-full max-w-7xl mx-auto flex flex-col gap-8">
-                <div className="bg-gradient-to-r from-blue-900 to-slate-900 p-8 rounded-3xl text-white shadow-2xl flex justify-between items-center">
-                  <h3 className="text-4xl font-serif italic tracking-widest uppercase">Transit Diagnostic Matrix</h3>
-                  <div className="text-right">
-                    <div className="text-2xl font-black text-amber-500">{new Date().toLocaleDateString()}</div>
-                    <p className="text-xs opacity-60">Today's Positions</p>
-                  </div>
+            {cid === 'd20' && (
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-indigo-200 shadow-xl">
+                <h3 className="text-3xl font-serif italic uppercase mb-6">Vimsamsa Analysis (D20)</h3>
+                <p className="text-xs text-indigo-600 font-bold uppercase tracking-widest mb-6">Spiritual Growth · Meditation · Worship · Religious Merit</p>
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d20?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
                 </div>
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl">
-                    <h4 className="text-xl font-black mb-6 uppercase italic">Natal Lagna Chart</h4>
-                    <ZodiacChart houses={data.charts?.houses} variant="legacy" planetEffects={effects} />
+                <p className="text-[15px] text-amber-900 italic mb-8">{D20_INTRO}</p>
+                <div className="space-y-6">
+                  {getPlanetPositionsFromHouses(data.vargas?.d20?.houses).map((p) => (
+                    <section key={p.planet} className="bg-indigo-50 rounded-2xl p-6 border border-indigo-100">
+                      <h4 className="text-lg font-black uppercase text-indigo-900 mb-2">{p.planet} · House {p.house}</h4>
+                      <p className="text-sm text-slate-700 italic">{p.planet} in House {p.house} of the Vimsamsa chart influences the native's spiritual journey and religious inclinations in areas governed by this placement.</p>
+                    </section>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {cid === 'd27' && (
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-amber-200 shadow-xl">
+                <h3 className="text-3xl font-serif italic uppercase mb-6">Bhamsa Analysis (D27)</h3>
+                <p className="text-xs text-amber-600 font-bold uppercase tracking-widest mb-6">Inner Strength · Vitality · Soul Power · General Well-being</p>
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d27?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
+                </div>
+                <p className="text-[15px] text-amber-900 italic mb-8">{D27_INTRO}</p>
+                <div className="space-y-6">
+                  {getPlanetPositionsFromHouses(data.vargas?.d27?.houses).map((p) => (
+                    <section key={p.planet} className="bg-amber-50 rounded-2xl p-6 border border-amber-100">
+                      <h4 className="text-lg font-black uppercase text-amber-900 mb-2">{p.planet} · House {p.house}</h4>
+                      <p className="text-sm text-slate-700 italic">{p.planet} in House {p.house} of the Bhamsa chart governs the native's inner vitality and resilience in this sphere of life.</p>
+                    </section>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {cid === 'd40' && (
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-teal-200 shadow-xl">
+                <h3 className="text-3xl font-serif italic uppercase mb-6">Khavedamsa Analysis (D40)</h3>
+                <p className="text-xs text-teal-600 font-bold uppercase tracking-widest mb-6">Auspicious Results · Maternal Lineage · General Prosperity · Luck</p>
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d40?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
+                </div>
+                <p className="text-[15px] text-amber-900 italic mb-8">{D40_INTRO}</p>
+                <div className="space-y-6">
+                  {getPlanetPositionsFromHouses(data.vargas?.d40?.houses).map((p) => (
+                    <section key={p.planet} className="bg-teal-50 rounded-2xl p-6 border border-teal-100">
+                      <h4 className="text-lg font-black uppercase text-teal-900 mb-2">{p.planet} · House {p.house}</h4>
+                      <p className="text-sm text-slate-700 italic">{p.planet} in House {p.house} of the Khavedamsa chart uncovers deeper layers of karmic fruits and prosperity inherited through the maternal line.</p>
+                    </section>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {cid === 'd45' && (
+              <div className="w-full max-w-full mx-auto bg-zinc-200 p-10 rounded-3xl border border-slate-300 shadow-xl">
+                <h3 className="text-3xl font-serif italic uppercase mb-6">Akshavedamsa Analysis (D45)</h3>
+                <p className="text-xs text-slate-600 font-bold uppercase tracking-widest mb-6">Character · Destiny · Paternal Lineage · All-around Prosperity</p>
+                <div className="w-full max-w-full mx-auto mb-10 bg-white p-6 rounded-[2rem] border border-slate-50 shadow-md">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.vargas?.d45?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
+                </div>
+                <p className="text-[15px] text-amber-900 italic mb-8">{D45_INTRO}</p>
+                <div className="space-y-6">
+                  {getPlanetPositionsFromHouses(data.vargas?.d45?.houses).map((p) => (
+                    <section key={p.planet} className="bg-slate-100 rounded-2xl p-6 border border-slate-200">
+                      <h4 className="text-lg font-black uppercase text-slate-900 mb-2">{p.planet} · House {p.house}</h4>
+                      <p className="text-sm text-slate-700 italic">{p.planet} in House {p.house} of the Akshavedamsa chart shapes the native's character and overall life quality through ancestral blessings.</p>
+                    </section>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {(cid === 'transit_compare' || cid === 'transit_compare2') && (
+              <div style={{ width: '100%', maxWidth: '100%', display: 'flex', gap: 0, minHeight: 'calc(100vh - 80px)', alignItems: 'stretch' }}>
+                {/* ── Left sidebar: Time Control Engine ── */}
+                {cid === 'transit_compare' && (
+                  <div style={{
+                    width: 260, flexShrink: 0,
+                    background: 'linear-gradient(180deg, #e5e9f1ff 0%, #f3f2faff 100%)',
+                    borderRight: '1px solid rgba(99,102,241,0.25)',
+                    padding: '12px 10px',
+                    overflowY: 'auto',
+                  }}>
+                    <TransitTimeControl
+                      lat={data?.basic_details?.lat || 28.6}
+                      lon={data?.basic_details?.lon || 77.2}
+                      onTransitChange={(positions, dt) => {
+                        setTimeControlledPositions(positions);
+                        setTimeControlledDate(dt);
+                      }}
+                    />
                   </div>
-                  <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-xl">
-                    <h4 className="text-xl font-black mb-6 uppercase italic">Current Transit</h4>
-                    <TransitPanel data={data} transitPositions={transitPositions} />
+                )}
+
+                {/* ── Right: Combined chart + analysis ── */}
+                <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
+                  {/* Header strip */}
+                  <div style={{
+                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%)',
+                    borderRadius: 14, padding: '14px 20px', marginBottom: 16,
+                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                    boxShadow: '0 4px 24px rgba(0,0,0,0.35)',
+                  }}>
+                    <div>
+                      <h3 style={{ color: '#e0e7ff', fontSize: 18, fontWeight: 900, fontStyle: 'italic', letterSpacing: '0.08em', textTransform: 'uppercase', margin: 0 }}>
+                        Transit Diagnostic Matrix
+                      </h3>
+                      <p style={{ color: '#6366f1', fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', margin: '3px 0 0', textTransform: 'uppercase' }}>
+                        Inner: Janma (Birth) · Outer: Gochar (Transit)
+                      </p>
+                    </div>
+                    {cid === 'transit_compare2' && (
+                      <div className="flex items-center gap-2">
+                        <label className="text-white text-xs font-bold uppercase">Base Chart:</label>
+                        <select
+                          className="bg-indigo-900 text-white text-xs p-1 rounded border border-indigo-700 outline-none"
+                          value={transitCompareBaseChart}
+                          onChange={(e) => setTransitCompareBaseChart(e.target.value)}
+                        >
+                          <option value="charts">D1 (Lagna)</option>
+                          <option value="d2">D2 (Hora)</option>
+                          <option value="d3">D3 (Drekkana)</option>
+                          <option value="d4">D4 (Chaturthamsha)</option>
+                          <option value="d5">D5 (Panchamsha)</option>
+                          <option value="d7">D7 (Saptamsha)</option>
+                          <option value="d9">D9 (Navamsha)</option>
+                          <option value="d10">D10 (Dashamsha)</option>
+                          <option value="d12">D12 (Dwadashamsha)</option>
+                          <option value="d16">D16 (Shodashamsha)</option>
+                          <option value="d20">D20 (Vimshamsha)</option>
+                          <option value="d24">D24 (Chaturvimshamsha)</option>
+                          <option value="d27">D27 (Saptavimshamsha)</option>
+                          <option value="d30">D30 (Trimshamsha)</option>
+                          <option value="d40">D40 (Khavedamsha)</option>
+                          <option value="d45">D45 (Akshavedamsha)</option>
+                          <option value="d60">D60 (Shashtiamsha)</option>
+                        </select>
+                      </div>
+                    )}
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: 16, fontWeight: 900, color: '#fbbf24' }}>
+                        {timeControlledDate ? timeControlledDate.toLocaleDateString('hi-IN') : new Date().toLocaleDateString('hi-IN')}
+                      </div>
+                      <p style={{ fontSize: 9, color: '#475569', margin: '2px 0 0' }}>
+                        {timeControlledDate ? timeControlledDate.toLocaleTimeString() : 'Real-time'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Combined Janma + Gochar double-ring chart */}
+                  <div style={{
+                    background: '#fff', borderRadius: 20, padding: 20,
+                    border: '1px solid #e2e8f0', boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                    marginBottom: 16,
+                  }}>
+                    {cid === 'transit_compare2' ? (
+                      <div className="flex flex-col xl:flex-row gap-6 items-start justify-center">
+                        <div className="w-full xl:w-[320px] bg-slate-900 rounded-xl p-4 shrink-0 shadow-lg border border-slate-700">
+                          <TransitTimeControl
+                            lat={data?.basic_details?.lat || 28.6}
+                            lon={data?.basic_details?.lon || 77.2}
+                            onTransitChange={(positions, dt) => {
+                              setTimeControlledPositions(positions);
+                              setTimeControlledDate(dt);
+                            }}
+                          />
+                        </div>
+                        <div className="flex-1 w-full min-w-0 max-w-full">
+                          <TransitPanel
+                            data={data}
+                            transitPositions={timeControlledPositions || transitPositions}
+                            baseChartKey={cid === 'transit_compare2' ? transitCompareBaseChart : 'charts'}
+                          />
+                        </div>
+                      </div>
+                    ) : (
+                      <TransitPanel
+                        data={data}
+                        transitPositions={timeControlledPositions || transitPositions}
+                        baseChartKey={cid === 'transit_compare2' ? transitCompareBaseChart : 'charts'}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
@@ -2681,12 +3129,56 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
               if (cid === 'shodashottari') return <div className="p-10"><SecondaryDashaPanel data={data} type="shodashottari" /></div>;
               if (cid === 'chaturshitisama') return <div className="p-10"><SecondaryDashaPanel data={data} type="chaturshitisama" /></div>;
               if (cid === 'dignity') return <div className="p-10"><DignityTable data={data} planetEffects={effects} /></div>;
-              if (cid === 'vimshottari') return <div className="p-10"><VimshottariPanel data={data} /></div>;
+              if (cid === 'vimshottari') return (
+                <div style={{ width: '100%', maxWidth: '100%', display: 'flex', gap: 0, height: 'calc(100vh - 56px)', alignItems: 'stretch' }}>
+                  {/* ── Left sidebar: Time Control Engine ── */}
+                  <div style={{
+                    width: 260, flexShrink: 0,
+                    background: 'linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%)',
+                    borderRight: '1px solid rgba(99,102,241,0.25)',
+                    padding: '12px 10px',
+                    overflowY: 'auto',
+                  }}>
+                    <TransitTimeControl
+                      lat={data?.basic_details?.lat || 28.6}
+                      lon={data?.basic_details?.lon || 77.2}
+                      onTransitChange={(positions, dt) => {
+                        setDashaSimDate(dt);
+                      }}
+                    />
+                  </div>
+
+                  {/* ── Right side: Vimshottari Table/Dashboard ── */}
+                  <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', background: '#fff' }}>
+                    <div className="shrink-0" style={{ minHeight: '420px', flex: 1 }}>
+                      <VimshottariTable data={data} transitDate={dashaSimDate} />
+                    </div>
+                    <div className="shrink-0 border-t-4 border-indigo-300">
+                      <DashaDashboard data={data} />
+                    </div>
+                    <div className="shrink-0 border-t-4 border-amber-300">
+                      <VimshottariLifeTable data={data} />
+                    </div>
+                    <div className="shrink-0 border-t-4 border-emerald-300">
+                      <VimshottariGridTimeline data={data} />
+                    </div>
+                  </div>
+                </div>
+              );
               if (cid === 'shadbala') return <div className="p-10"><ShadbalaChart data={data.strength} /></div>;
+              if (cid === 'ashtakavarga') return <div className="h-[600px] overflow-hidden"><AshtakavargaViewer data={data} /></div>;
+              if (cid === 'ashtakavarga_reduction') return <div className="w-full h-full overflow-y-auto bg-white p-4"><AsthavargaReduction data={data} /></div>;
+              if (cid === 'bhinnastavarga') return <div className="w-full h-full overflow-y-auto bg-white p-4"><BhinnastaVarga data={data} /></div>;
+              if (cid === 'krishnamurthy_chart') return <div className="w-full h-full overflow-y-auto bg-white p-4"><KrishanaMurthyChart formData={data} /></div>;
+              if (cid === 'krishnamurthy_significators') return <div className="w-full h-full overflow-y-auto bg-white p-4"><KrishanaMurthySignificators formData={data} /></div>;
+              if (cid === 'shodashvarga_summary') return <div className="w-full h-full overflow-y-auto bg-white p-4"><ShodashvargaSummary data={data} /></div>;
+              if (cid === 'aspects_summary') return <div className="w-full h-full overflow-y-auto bg-white p-4"><AspectsSummary data={data} /></div>;
               if (cid === 'gemstones') return <div className="p-10"><GemstonePanel data={data} /></div>;
               if (cid === 'transit_gemstones') return <div className="p-10"><TransitGemstonePanel data={data} transitPositions={transitPositions} /></div>;
               if (cid === 'transit') return <div className="p-10"><TransitPanel data={data} transitPositions={transitPositions} /></div>;
-              if (cid === 'vimsopaka') return <div className="p-10 w-full max-w-4xl mx-auto"><VimsopakaAssessment data={data} /></div>;
+              if (cid === 'vimsopaka') return <div className="p-10 w-full max-w-full mx-auto"><VimsopakaAssessment data={data} /></div>;
+              if (cid === 'panch_pakshi') return <div className="p-8 w-full max-w-[95%] mx-auto"><PanchPakshiTable data={data} /></div>;
+              if (cid === 'kp') return <div className="w-full h-full overflow-y-auto bg-white"><KPChartViewer formData={data} /></div>;
               return null;
             })()}
           </div>
@@ -2732,7 +3224,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#f1f5f9] font-serif overflow-hidden">
+    <div className="flex flex-col min-h-screen h-auto bg-[#f1f5f9] font-serif overflow-y-auto overflow-x-hidden w-full">
       <style>{`
         button, button span, button div, button p, button h4 {
           color: black !important;
@@ -2757,29 +3249,130 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
             <p className="text-[9px] opacity-70 uppercase font-sans tracking-tighter mt-1">Astro Consult : Legacy Workstation</p>
           </div>
 
-          <div className="hidden lg:flex ml-4 pl-4 border-l border-white/20 flex-1 min-w-0 overflow-hidden">
-            <div className="flex flex-wrap gap-1">
-              <button
-                onClick={() => handleMaximizeInNewWindow('transit_compare')}
-                className="bg-gradient-to-r from-amber-500 to-orange-600 text-black px-2.5 py-1 rounded-lg text-[8.5px] font-black shadow-md transition-all flex items-center gap-1 uppercase tracking-tight"
-              >
-                🔄 Compare Transit
-              </button>
-              <button
-                onClick={handleOpenMatchmaking}
-                className="bg-gradient-to-r from-rose-500 to-pink-600 text-black px-2.5 py-1 rounded-lg text-[8.5px] font-black shadow-md transition-all flex items-center gap-1 uppercase tracking-tight border border-rose-400/30"
-              >
-                💏 Match Making
-              </button>
-              {CELL_CONTENTS.filter(c => c.category !== "System" && c.id !== "transit_compare").map(c => (
-                <button
-                  key={c.id}
-                  onClick={() => handleMaximizeInNewWindow(c.id)}
-                  className="text-[8px] font-sans font-bold uppercase tracking-tight text-black/75 hover:text-black hover:bg-white/20 px-2 py-1 rounded-md border border-black/30 transition-all bg-white/5"
-                >
-                  {c.label.split(' - ')[0]}
+          <div className="ml-8 hidden lg:block relative group/content z-[100]">
+            <button className="bg-indigo-300 text-white px-4 py-2 rounded-xl text-[14px] font-bold shadow-lg outline-none cursor-pointer tracking-wider border border-indigo-700 hover:bg-orange-400 transition-colors flex items-center gap-2">
+              ⚙️ SELECT CONTENT (POP-OUT) <span className="text-[10px]">▼</span>
+            </button>
+
+            <div className="absolute top-full left-0 mt-2 w-56 bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/content:opacity-100 group-hover/content:visible transition-all duration-200 py-2">
+
+              {/* Astro Chart Item */}
+              <div className="relative group/astro">
+                <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between transition-colors">
+                  Astro Chart <span className="text-[10px]">▶</span>
                 </button>
-              ))}
+                <div className="absolute top-0 left-full ml-1 w-48 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/astro:opacity-100 group-hover/astro:visible transition-all duration-200 py-2">
+                  <button onClick={() => window.open('/?classic_layout=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View</button>
+                  <button onClick={() => window.open('/?classic_layout_2=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View 2</button>
+                  <button onClick={() => window.open('/?classic_layout_3=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View 3</button>
+                  <button onClick={() => window.open('/?classic_layout_4=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View 4</button>
+                  <button onClick={() => window.open('/?chart_view_1=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Chart View 1</button>
+                  <button onClick={() => window.open('/?chart_view_2=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Chart View 2</button>
+                  <button onClick={() => window.open('/?chart_view_3=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Chart View 3</button>
+                  <button onClick={() => window.open('/?lordships=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Lordships</button>
+                  <button onClick={() => window.open('/?varga_sign_chart=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Varga Sign Chart</button>
+                  <button onClick={() => window.open('/?bala_strengths=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Bala Strengths</button>
+                  <button onClick={() => window.open('/?bhavbala=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Bhavbala</button>
+                  <button onClick={() => window.open('/?gochara_wheel=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Gochar Wheel</button>
+                  <button onClick={() => window.open('/?gochara_wheel_1=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Gochar Wheel 1</button>
+                  <button onClick={() => window.open('/?nakshatra_dasha=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Nakshatra Dasha</button>
+                  <button onClick={() => window.open('/?rashi_dashas=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Rashi Dashas</button>
+                  <button onClick={() => window.open('/?lagnas=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Lagnas</button>
+                  <button onClick={() => window.open('/?jaimini_karakas=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Jaimini Karakas</button>
+                  <button onClick={() => window.open('/?sbc_dashboard=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Sarvatobhadra Dashboard</button>
+                  <button onClick={() => window.open('/?bhrigu_bindu=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Bhrigu Bindu</button>
+                  <button onClick={() => window.open('/?d108=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">D108</button>
+                  <button onClick={() => window.open('/?ayanamsha=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Ayanamsha</button>
+                  <button onClick={() => window.open('/?sanghatta=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Sanghatta</button>
+                  <button onClick={() => window.open('/?karaka=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Karakas</button>
+                  <button onClick={() => window.open('/?tithi=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Tithi Pravesha</button>
+                </div>
+              </div>
+
+              {/* Varga Charts Item */}
+              <div className="relative group/varga">
+                <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between transition-colors">
+                  Varga Charts <span className="text-[10px]">▶</span>
+                </button>
+                <div className="absolute top-0 left-full ml-1 w-48 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/varga:opacity-100 group-hover/varga:visible transition-all duration-200 py-2">
+                  {['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60'].map(v => (
+                    <button
+                      key={v}
+                      onClick={() => handleMaximizeInNewWindow(v)}
+                      className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors"
+                    >
+                      {v.toUpperCase()} Chart
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Other Worksheets Item */}
+              <div className="relative group/other">
+                <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between border-t border-indigo-50 transition-colors">
+                  Other Worksheets <span className="text-[10px]">▶</span>
+                </button>
+                <div className="absolute top-0 left-full ml-1 w-56 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/other:opacity-100 group-hover/other:visible transition-all duration-200 py-2">
+                  {CELL_CONTENTS.filter(c => c.category !== "System" && c.id !== "transit_compare" && !['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60'].includes(c.id)).map(c => (
+                    <button
+                      key={c.id}
+                      onClick={() => handleMaximizeInNewWindow(c.id)}
+                      className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight"
+                    >
+                      {c.label.split(' - ')[0]}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* External Apps Item */}
+              <div className="relative group/external">
+                <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between border-t border-indigo-50 transition-colors">
+                  External Apps <span className="text-[10px]">▶</span>
+                </button>
+                <div className="absolute top-0 left-full ml-1 w-56 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/external:opacity-100 group-hover/external:visible transition-all duration-200 py-2">
+                  {[
+                    { label: "Compare Transit", action: () => window.open('/?transit_compare=true', '_blank') },
+                    { label: "Compare Transit 2", action: () => window.open('/?transit_compare2=true', '_blank') },
+                    { label: "Solar Return", action: () => window.open('/?solar_return=true', '_blank') },
+                    { label: "Daily Solar", action: () => window.open('/?daily_solar=true', '_blank') },
+                    { label: "Annual Varshaphala", action: () => window.open('/?annual_varshaphala=true', '_blank') },
+                    { label: "Adv. Nakshatra", action: () => window.open('/?advanced_nakshatra=true', '_blank') },
+                    { label: "Animated Transits", action: () => window.open('/?animated_transits=true', '_blank') },
+                    { label: "Navamsha Ages", action: () => window.open('/?navamsha_ages=true', '_blank') },
+                    { label: "KP Chart", action: () => window.open('/?kp_chart=true', '_blank') },
+                    { label: "Sunrise Chart", action: () => window.open('/?sunrise_chart=true', '_blank') },
+                    { label: "Match Making", action: handleOpenMatchmaking }
+                  ].map((app, i) => (
+                    <button
+                      key={i}
+                      onClick={app.action}
+                      className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight"
+                    >
+                      {app.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Oracle Tools Item */}
+              <div className="relative group/oracle">
+                <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between border-t border-indigo-50 transition-colors">
+                  Oracle Tools <span className="text-[10px]">▶</span>
+                </button>
+                <div className="absolute top-0 left-full ml-1 w-56 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/oracle:opacity-100 group-hover/oracle:visible transition-all duration-200 py-2">
+                  {oracle_items.map(item => (
+                    <button
+                      key={item.id}
+                      onClick={() => handleOracleClick(item.id)}
+                      className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight flex items-center gap-2"
+                    >
+                      <span className="text-sm">{item.icon}</span> {item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
             </div>
           </div>
         </div>
@@ -2795,53 +3388,53 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
         </div>
       </div>
 
-      <div className="flex-1 overflow-hidden p-1.5 bg-[#d1d5db] flex flex-col gap-1.5">
-        <div className="flex gap-1.5 h-1/2">
+      <div className="w-full flex-1 p-4 bg-[#d1d5db] flex flex-col gap-4 min-h-[650px] overflow-y-auto">
+        <div className="flex gap-4 h-[500px] shrink-0">
           {/* User Profile Column */}
-          <div className="w-[20%] bg-[#fdfbf7] rounded-xl border border-gray-300 shadow-inner flex flex-col overflow-hidden shrink-0">
+          <div className="w-[30%] bg-[#fdfbf7] rounded-xl border border-gray-300 shadow-inner flex flex-col overflow-hidden shrink-0">
             <div className="bg-indigo-900 py-1.5 px-3">
-              <span className="text-[9px] font-black uppercase text-white tracking-widest">User Profile</span>
+              <span className="text-[12px] font-black uppercase text-white tracking-widest">User Profile</span>
             </div>
             <div className="flex-1 p-3 flex flex-col gap-3.5 bg-gradient-to-b from-white to-indigo-50/30 overflow-y-auto custom-scrollbar">
               <div className="space-y-0.5">
-                <p className="text-[7px] font-black uppercase text-slate-400 tracking-tighter">Full Name</p>
-                <p className="text-[11px] font-bold text-indigo-950 truncate leading-none">{profileInfo.name}</p>
+                <p className="text-[12px] font-black uppercase text-black tracking-tighter">Full Name</p>
+                <p className="text-[14px] font-bold text-indigo-950 truncate leading-none">{profileInfo.name}</p>
               </div>
               <div className="space-y-0.5">
-                <p className="text-[7px] font-black uppercase text-slate-400 tracking-tighter">Date of Birth</p>
-                <p className="text-[10px] font-bold text-slate-800 leading-none">{profileInfo.dob}</p>
+                <p className="text-[12px] font-black uppercase text-black tracking-tighter">Date of Birth</p>
+                <p className="text-[14px] font-bold text-slate-800 leading-none">{profileInfo.dob}</p>
               </div>
               <div className="space-y-0.5">
-                <p className="text-[7px] font-black uppercase text-slate-400 tracking-tighter">Birth Location</p>
-                <p className="text-[10px] font-bold text-slate-800 leading-none truncate">{profileInfo.location}</p>
+                <p className="text-[12px] font-black uppercase text-black tracking-tighter">Birth Location</p>
+                <p className="text-[14px] font-bold text-slate-800 leading-none truncate">{profileInfo.location}</p>
               </div>
               <div className="grid grid-cols-2 gap-2 pt-1">
                 <div className="space-y-0.5 group relative">
                   <div className="flex justify-between items-start">
                     <div>
-                      <p className="text-[7px] font-black uppercase text-slate-400 tracking-tighter">Moon Sign</p>
-                      <p className="text-[10px] font-bold text-blue-700 leading-none mt-0.5">{profileInfo.moonSign}</p>
+                      <p className="text-[12px] font-black uppercase text-black tracking-tighter">Moon Sign</p>
+                      <p className="text-[14px] font-bold text-blue-700 leading-none mt-0.5">{profileInfo.moonSign}</p>
                     </div>
                     <button
                       onClick={() => window.open('/?moonSign=true', '_blank')}
-                      className="bg-blue-100 hover:bg-blue-200 text-blue-800 rounded px-1.5 py-0.5 text-[6px] font-bold uppercase tracking-wider border border-blue-200 shadow-sm transition-colors"
+                      className="bg-blue-100 hover:bg-blue-200 text-blue-800 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider border border-blue-200 shadow-sm transition-colors"
                     >
                       Analyze
                     </button>
                   </div>
                 </div>
                 <div className="space-y-0.5">
-                  <p className="text-[7px] font-black uppercase text-slate-400 tracking-tighter">Sun Sign</p>
-                  <p className="text-[10px] font-bold text-red-600 leading-none">{profileInfo.sunSign}</p>
+                  <p className="text-[12px] font-black uppercase text-black tracking-tighter">Sun Sign</p>
+                  <p className="text-[14px] font-bold text-red-600 leading-none">{profileInfo.sunSign}</p>
                 </div>
               </div>
               <div className="space-y-0.5 border-t border-indigo-100 pt-2">
-                <p className="text-[7px] font-black uppercase text-slate-400 tracking-tighter">Birth Nakshatra</p>
-                <p className="text-[11px] font-black text-emerald-700 leading-none uppercase tracking-tighter">{profileInfo.nakshatra}</p>
+                <p className="text-[12px] font-black uppercase text-black tracking-tighter">Birth Nakshatra</p>
+                <p className="text-[14px] font-black text-emerald-700 leading-none uppercase tracking-tighter">{profileInfo.nakshatra}</p>
               </div>
               <div className="space-y-0.5 border-t border-indigo-100 pt-2 flex justify-between items-center">
                 <div>
-                  <p className="text-[7px] font-black uppercase text-slate-400 tracking-tighter">Sade Sati Status</p>
+                  <p className="text-[12px] font-black uppercase text-black tracking-tighter">Sade Sati Status</p>
                   {(() => {
                     const SIGNS_LIST = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
                     const moonIdx = SIGNS_LIST.indexOf(profileInfo.moonSign);
@@ -2854,7 +3447,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
 
                       let status = "Inactive";
                       let phase = "";
-                      let color = "text-emerald-600";
+                      let color = "text-emeral-600";
 
                       if (saturnSignIdx === s12) { status = "Active"; phase = "Rising"; color = "text-amber-600"; }
                       else if (saturnSignIdx === s1) { status = "Active"; phase = "Peak"; color = "text-red-600"; }
@@ -2862,7 +3455,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
 
                       return (
                         <div className="flex flex-col">
-                          <span className={`text-[10px] font-black ${color} leading-none`}>{status}</span>
+                          <span className={`text-[13px] font-black ${color} leading-none`}>{status}</span>
                           {phase && <span className="text-[7px] font-bold text-slate-400 uppercase mt-0.5">{phase} Phase</span>}
                         </div>
                       );
@@ -2872,7 +3465,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
                 </div>
                 <button
                   onClick={() => window.open('/?sadesati_report=true', '_blank')}
-                  className="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 rounded px-1.5 py-0.5 text-[6px] font-bold uppercase tracking-wider border border-indigo-200 shadow-sm transition-colors"
+                  className="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider border border-indigo-200 shadow-sm transition-colors"
                 >
                   Analyze
                 </button>
@@ -2881,21 +3474,20 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
           </div>
 
           <div className="flex-1 bg-[#fdfbf7] rounded-xl border border-gray-300 shadow-inner overflow-hidden relative group">
-            <div className="absolute top-2 left-2 z-10 px-3 py-1 bg-white/80 backdrop-blur rounded-lg border border-slate-200 shadow-sm">
-              <span className="text-[10px] font-black uppercase text-indigo-900">Main Birth Chart (D1)</span>
-            </div>
-            <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+            <div className="absolute top-1 right-32 opacity-0 group-hover:opacity-100 transition-opacity z-10">
               <button onClick={() => handleMaximizeInNewWindow('d1')} className="bg-gray-800/80 text-black rounded p-1 text-[10px] shadow hover:bg-black hover:text-white">⛶</button>
             </div>
-            <div className="h-full flex flex-col pt-8 overflow-auto custom-scrollbar">
-              <ZodiacChart houses={data.charts?.houses} onPlanetClick={handlePlanetClick} variant="legacy" planetEffects={planetEffects} />
+            <div className="h-full flex flex-col overflow-auto custom-scrollbar">
+              <ZodiacChart planetPositions={data?.planet_positions} houses={data.charts?.houses} onPlanetClick={handlePlanetClick} variant="legacy" title="Main Birth Chart (D1)" defaultRect={true} planetEffects={planetEffects} scaleText={1.5} hideLegend={true} />
               <div className="px-4 pb-4">
                 <HouseEffectTable data={data} planetEffects={planetEffects} />
                 <ConjunctionAnalysis houses={data.charts?.houses} />
               </div>
             </div>
           </div>
+        </div>
 
+        <div className="flex gap-4 h-[500px] shrink-0">
           <div className="flex-1 bg-[#fdfbf7] rounded-xl border border-gray-300 shadow-inner overflow-hidden relative group flex flex-col">
             <div className="absolute top-2 left-2 z-20 px-3 py-1 bg-white/80 backdrop-blur rounded-lg border border-slate-200 shadow-sm flex items-center gap-2">
               <span className="text-[10px] font-black uppercase text-indigo-900">Alternative Vargas View</span>
@@ -2918,7 +3510,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
                 const vPos = getPlanetPositionsFromHouses(vData?.houses);
                 return (
                   <>
-                    <ZodiacChart houses={vData?.houses} onPlanetClick={handlePlanetClick} variant="legacy" planetEffects={planetEffects} />
+                    <ZodiacChart planetPositions={data?.planet_positions} houses={vData?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={planetEffects} scaleText={1.5} />
                     <div className="px-4 pb-4">
                       <HouseEffectTable data={data} planetEffects={planetEffects} customPositions={vPos} />
                       <ConjunctionAnalysis houses={vData?.houses} />
@@ -2988,13 +3580,14 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
           </div>
         </div>
 
-        <div className="grid grid-cols-4 gap-1.5 h-1/2">
+        <div className="grid grid-cols-4 gap-2 h-[450px] shrink-0">
           {lowerCells.map((cid, idx) => (
             <WorksheetCell
               key={idx}
               contentId={cid}
               data={data}
               transitPositions={transitPositions}
+              dashaSimDate={dashaSimDate}
               planetEffects={planetEffects}
               onSelectContent={(newCid) => {
                 const newCells = [...lowerCells];
@@ -3008,46 +3601,200 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
         </div>
       </div>
 
-      <div className="bg-[#e3f2fd] shrink-0 shadow-2xl">
-        <div
-          className="flex gap-3 px-3 py-2 overflow-x-auto"
-          style={{ scrollbarWidth: "thin", scrollbarColor: "#fbbf24 #1a237e" }}
-        >
-          {oracle_items.map(item => (
-            <button
-              key={item.id}
-              onClick={() => handleOracleClick(item.id)}
-              className="flex flex-col items-center group transition-all shrink-0"
-              title={item.label}
-            >
-              <span className="text-xl group-hover:scale-125 transition-transform">{item.icon}</span>
-              <span className="text-[8px] font-black uppercase text-white/60 group-hover:text-amber-400 whitespace-nowrap">{item.label}</span>
-            </button>
-          ))}
-          <p className="text-[9px] text-white/40 italic uppercase self-center pl-4 pr-2 shrink-0 border-l border-white/10 ml-2">
-            Astro Consult को अपना समय देने के लिए "धन्यवाद" ।
-          </p>
-        </div>
-      </div>
+      {/* --- UNIFIED CONTROL DASHBOARD (BOTTOM) --- */}
+      <div className="bg-slate-100 shrink-0 shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.5)] border-t border-slate-700 flex flex-col z-50">
 
-      {selectedPlanet && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
-          <div className="w-full max-w-lg bg-white shadow-2xl rounded-2xl overflow-hidden">
-            <div className="flex items-center justify-between p-4 bg-[#1a237e] text-white">
-              <h4 className="text-lg font-serif italic">{selectedPlanet.name} Details</h4>
-              <button onClick={() => setSelectedPlanet(null)} className="text-black hover:text-white text-2xl leading-none">&times;</button>
+        {/* Row 1: Astro Charts */}
+        <div className="px-4 py-2 border-b border-slate-300 flex flex-col gap-2">
+          <div className="flex items-center gap-2 cursor-pointer hover:bg-slate-200/50 p-1 rounded-md transition-colors w-full" onClick={() => setShowAstroCharts(!showAstroCharts)}>
+            <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Astro Charts</span>
+            <span className="text-[9px] font-bold text-slate-500 ml-auto">{showAstroCharts ? '▼ HIDE' : '▶ SHOW'}</span>
+          </div>
+          {showAstroCharts && (
+            <div className="flex flex-wrap items-center gap-3 pt-1 pb-2">
+              <button onClick={() => window.open('/?classic_layout=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">🏛️</span> Classic View
+              </button>
+              <button onClick={() => window.open('/?classic_layout_2=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">🖥️</span> Classic View 2
+              </button>
+              <button onClick={() => window.open('/?classic_layout_3=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">📊</span> Classic View 3
+              </button>
+              <button onClick={() => window.open('/?classic_layout_4=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">🔮</span> Classic View 4
+              </button>
+              <button onClick={() => window.open('/?chart_view_1=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">📐</span> Chart View 1
+              </button>
+              <button onClick={() => window.open('/?chart_view_2=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">📐</span> Chart View 2
+              </button>
+              <button onClick={() => window.open('/?chart_view_3=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">📐</span> Chart View 3
+              </button>
+              <button onClick={() => window.open('/?lordships=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">👑</span> Lordship
+              </button>
+              <button onClick={() => window.open('/?varga_sign_chart=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">📊</span> Varga Sign Chart
+              </button>
+              <button onClick={() => window.open('/?bala_strengths=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">💪</span> Bala strengths
+              </button>
+              <button onClick={() => window.open('/?bhavbala=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">📈</span> Bhavbala
+              </button>
+              <button onClick={() => window.open('/?gochara_wheel=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">🎡</span> Gochara Wheel
+              </button>
+              <button onClick={() => window.open('/?gochara_wheel_1=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">🎡</span> Gochara Wheel 1
+              </button>
+              <button onClick={() => window.open('/?nakshatra_dasha=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">🌟</span> Nakshtra Dasha
+              </button>
+              <button onClick={() => window.open('/?rashi_dashas=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">♈</span> Rashi Dashas
+              </button>
+              <button onClick={() => window.open('/?lagnas=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">🔺</span> Lagnas
+              </button>
+              <button onClick={() => window.open('/?jaimini_karakas=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">✨</span> Jaimini Karakas
+              </button>
+              <button onClick={() => window.open('/?sbc=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">☸️</span> Sarvatobhadra Chakra
+              </button>
+              <button onClick={() => window.open('/?sbc_dashboard=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">🚀</span> Sarvatobhadra Dashboard
+              </button>
+              <button onClick={() => {
+                localStorage.setItem('worksheetData', JSON.stringify(data));
+                window.open('/?worksheet=true&fullScreen=bhrigu_bindu', '_blank', 'width=1100,height=850,menubar=no,toolbar=no,location=no,status=no');
+              }} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">🌟</span> Bhrigu Bindu
+              </button>
+              <button onClick={() => window.open('/?d108=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">🔮</span> D108
+              </button>
+              <button onClick={() => window.open('/?ayanamsha=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">⚙️</span> Ayanamsha
+              </button>
+              <button onClick={() => window.open('/?sanghatta=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">🔥</span> Sanghatta
+              </button>
+              <button onClick={() => window.open('/?karaka=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">🧘</span> Karakas
+              </button>
+              <button onClick={() => window.open('/?tithi=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                <span className="text-base leading-none">🌙</span> Tithi Pravesha
+              </button>
             </div>
-            <div className="p-6 space-y-3 font-serif">
-              <div className="flex justify-between border-b pb-1"><span>House Placement:</span> <b>{selectedPlanet.house}</b></div>
-              <div className="flex justify-between border-b pb-1"><span>Zodiac Sign:</span> <b>{selectedPlanet.sign}</b></div>
-              <div className="flex justify-between border-b pb-1"><span>Precise Degree:</span> <b>{selectedPlanet.degree?.toFixed(4)}°</b></div>
-              <div className="flex justify-between border-b pb-1"><span>Nakshatra:</span> <b>{selectedPlanet.nakshatra}</b></div>
+
+          )}
+        </div>
+        {/* Row 2: External Apps Popouts */}
+        <div className="px-4 py-2 border-b border-slate-300 flex flex-col gap-2">
+          <div className="flex items-center gap-2 cursor-pointer hover:bg-slate-200/50 p-1 rounded-md transition-colors w-full" onClick={() => setShowExternalApps(!showExternalApps)}>
+            <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">External Apps Popouts</span>
+            <span className="text-[9px] font-bold text-slate-500 ml-auto">{showExternalApps ? '▼ HIDE' : '▶ SHOW'}</span>
+          </div>
+          {showExternalApps && (
+            <div className="flex flex-wrap items-center gap-3 pt-1 pb-2">
+
+              <button onClick={() => window.open('/?transit_compare=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-sky-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                <span className="text-base leading-none">🔄</span> Compare Transit
+              </button>
+              <button onClick={() => window.open('/?transit_compare2=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-sky-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                <span className="text-base leading-none">🔄</span> Compare Transit 2
+              </button>
+              <button onClick={() => window.open('/?solar_return=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-amber-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                <span className="text-base leading-none">☀️</span> Solar Return
+              </button>
+              <button onClick={() => window.open('/?daily_solar=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-yellow-300 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                <span className="text-base leading-none">🌞</span> Daily Solar
+              </button>
+              <button onClick={() => window.open('/?annual_varshaphala=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-cyan-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                <span className="text-base leading-none">🌍</span> Annual Varshaphala
+              </button>
+              <button onClick={() => window.open('/?advanced_nakshatra=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-indigo-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                <span className="text-base leading-none">🌌</span> Adv. Nakshatra
+              </button>
+              <button onClick={() => window.open('/?animated_transits=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-pink-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                <span className="text-base leading-none">🔄</span> Animated Transits
+              </button>
+              <button onClick={() => window.open('/?navamsha_ages=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                <span className="text-base leading-none">🔢</span> Navamsha Ages
+              </button>
+              <button onClick={() => window.open('/?kp_chart=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-purple-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                <span className="text-base leading-none">🔮</span> KP Chart
+              </button>
+              <button onClick={() => window.open('/?sunrise_chart=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-orange-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                <span className="text-base leading-none">🌅</span> Sunrise Chart
+              </button>
+              <button onClick={handleOpenMatchmaking} className="shrink-0 bg-rose-900/40 hover:bg-rose-900/60 text-rose-300 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-rose-500/30">
+                <span className="text-base leading-none">💏</span> Match Making
+              </button>
+
             </div>
+          )}
+          {/* Row 2: Oracle & In-page Tools */}
+          <div className="px-4 py-2 flex flex-col gap-2">
+            <div className="flex items-center gap-2 cursor-pointer hover:bg-slate-200/50 p-1 rounded-md transition-colors w-full" onClick={() => setShowOracleTools(!showOracleTools)}>
+              <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Oracle & In-page Tools</span>
+              <span className="text-[9px] font-bold text-slate-500 ml-auto">{showOracleTools ? '▼ HIDE' : '▶ SHOW'}</span>
+            </div>
+            {showOracleTools && (
+              <div className="flex flex-wrap items-center gap-4 pt-1 pb-2">
+                {oracle_items.map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => handleOracleClick(item.id)}
+                    className="flex items-center gap-2 group transition-all shrink-0 bg-slate-800/50 hover:bg-slate-800 px-4 py-2 rounded-xl border border-slate-700/50 hover:border-slate-500"
+                    title={item.label}
+                  >
+                    <span className="text-xl group-hover:scale-110 transition-transform filter drop-shadow-md">{item.icon}</span>
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300 group-hover:text-white">{item.label}</span>
+                  </button>
+                ))}
+
+                <div className="ml-auto flex items-center shrink-0">
+                  <p className="text-[10px] text-slate-500 italic uppercase pl-4 border-l border-slate-700 font-semibold tracking-widest">
+                    Astro Consult Workspace
+                  </p>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      )}
+
+        {selectedPlanet && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
+            <div className="w-full max-w-lg bg-white shadow-2xl rounded-2xl overflow-hidden">
+              <div className="flex items-center justify-between p-4 bg-[#1a237e] text-white">
+                <h4 className="text-lg font-serif italic">{selectedPlanet.name} Details</h4>
+                <button onClick={() => setSelectedPlanet(null)} className="text-black hover:text-white text-2xl leading-none">&times;</button>
+              </div>
+              <div className="p-6 space-y-3 font-serif">
+                <div className="flex justify-between border-b pb-1"><span>House Placement:</span> <b>{selectedPlanet.house}</b></div>
+                <div className="flex justify-between border-b pb-1"><span>Zodiac Sign:</span> <b>{selectedPlanet.sign}</b></div>
+                <div className="flex justify-between border-b pb-1"><span>Precise Degree:</span> <b>{selectedPlanet.degree?.toFixed(4)}°</b></div>
+                <div className="flex justify-between border-b pb-1"><span>Nakshatra:</span> <b>{selectedPlanet.nakshatra}</b></div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
-};
+
+}
+
+
+
+
+
 
 export default InteractiveWorksheet;
+

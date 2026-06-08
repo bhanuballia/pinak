@@ -1,7 +1,9 @@
 from fastapi import APIRouter, Query, HTTPException
 from typing import Optional
 import datetime
+import calendar
 from astronomy.julian import datetime_to_julian, julian_to_datetime
+from astronomy.sun_calculations import calculate_noaa_sunrise_sunset
 from panchang.tithi_yoga_karana import compute_tithi, compute_nakshatra, compute_yoga, compute_karana
 from core.utils import ZODIAC_SIGNS, get_sign_index
 
@@ -99,11 +101,15 @@ async def get_daily_panchang(
         karana = compute_karana(jd_ut)
         day = get_day_name(dt_local)
 
-        # Approximate Sunrise/Sunset for Muhurta calculations
-        # In a production app, we'd use a precise rise/set library.
-        # Fallback to 6:00 AM / 6:00 PM for UI testing if not computed.
-        sunrise_dt = datetime.datetime.combine(dt_local.date(), datetime.time(6, 0))
-        sunset_dt = datetime.datetime.combine(dt_local.date(), datetime.time(18, 0))
+        # Calculate precise Sunrise/Sunset for Muhurta calculations using NOAA algorithm
+        rise_time, set_time = calculate_noaa_sunrise_sunset(dt_local.date(), lat, lon, tz)
+        if rise_time and set_time:
+            sunrise_dt = rise_time
+            sunset_dt = set_time
+        else:
+            # Fallback for polar day/night where the sun doesn't rise/set
+            sunrise_dt = datetime.datetime.combine(dt_local.date(), datetime.time(6, 0))
+            sunset_dt = datetime.datetime.combine(dt_local.date(), datetime.time(18, 0))
         
         muhurtas = calculate_muhurta_periods(sunrise_dt, sunset_dt)
         vedic_time = calculate_vedic_time(dt_local, sunrise_dt)
@@ -121,5 +127,58 @@ async def get_daily_panchang(
             "sun_set": sunset_dt.strftime("%I:%M %p")
         }
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/monthly")
+async def get_monthly_panchang(
+    lat: float = Query(..., description="Latitude"),
+    lon: float = Query(..., description="Longitude"),
+    tz: float = Query(0.0, description="Timezone offset in hours"),
+    year: int = Query(..., description="Year"),
+    month: int = Query(..., description="Month (1-12)")
+):
+    """
+    Calculates detailed Panchang for an entire month.
+    """
+    try:
+        num_days = calendar.monthrange(year, month)[1]
+        monthly_data = []
+
+        for day in range(1, num_days + 1):
+            dt_local = datetime.datetime(year, month, day, 12, 0)
+            dt_utc = dt_local - datetime.timedelta(hours=tz)
+            jd_ut = datetime_to_julian(dt_utc)
+
+            tithi = compute_tithi(jd_ut)
+            nakshatra = compute_nakshatra(jd_ut)
+            yoga = compute_yoga(jd_ut)
+            karana = compute_karana(jd_ut)
+            day_name = get_day_name(dt_local)
+
+            rise_time, set_time = calculate_noaa_sunrise_sunset(dt_local.date(), lat, lon, tz)
+            if rise_time and set_time:
+                sunrise_dt = rise_time
+                sunset_dt = set_time
+            else:
+                sunrise_dt = datetime.datetime.combine(dt_local.date(), datetime.time(6, 0))
+                sunset_dt = datetime.datetime.combine(dt_local.date(), datetime.time(18, 0))
+            
+            muhurtas = calculate_muhurta_periods(sunrise_dt, sunset_dt)
+
+            monthly_data.append({
+                "day_number": day,
+                "date": dt_local.strftime("%Y-%m-%d"),
+                "day": day_name,
+                "tithi": tithi,
+                "nakshatra": nakshatra,
+                "yoga": yoga,
+                "karana": karana,
+                "muhurtas": muhurtas,
+                "sun_rise": sunrise_dt.strftime("%I:%M %p"),
+                "sun_set": sunset_dt.strftime("%I:%M %p")
+            })
+
+        return {"year": year, "month": month, "data": monthly_data}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -15,6 +15,10 @@ from typing import Any, Dict, List, Optional
 import logging
 import time
 from datetime import datetime
+import requests
+
+_http_session = requests.Session()
+_http_session.headers.update({"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"})
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +34,7 @@ import ssl
 import certifi
 
 _geolocator_ctx = ssl.create_default_context(cafile=certifi.where())
-_geolocator = None if Nominatim is None else Nominatim(user_agent="vedic_astrology_app", timeout=10, ssl_context=_geolocator_ctx)
+_geolocator = None if Nominatim is None else Nominatim(user_agent="vedic_astrology_web_client", timeout=10, ssl_context=_geolocator_ctx)
 _tzf = None
 
 def get_tzf():
@@ -96,21 +100,98 @@ def list_timezones_with_offsets() -> List[Dict[str, Any]]:
     
     return collection
 
+# Curated list of popular Indian cities for instant results
+POPULAR_CITIES = [
+    # India
+    {"display_name": "Mumbai, Maharashtra, India", "lat": 19.0760, "lon": 72.8777, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Delhi, India", "lat": 28.6139, "lon": 77.2090, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Bangalore, Karnataka, India", "lat": 12.9716, "lon": 77.5946, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Hyderabad, Telangana, India", "lat": 17.3850, "lon": 78.4867, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Chennai, Tamil Nadu, India", "lat": 13.0827, "lon": 80.2707, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Kolkata, West Bengal, India", "lat": 22.5726, "lon": 88.3639, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Pune, Maharashtra, India", "lat": 18.5204, "lon": 73.8567, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Ahmedabad, Gujarat, India", "lat": 23.0225, "lon": 72.5714, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Ballia, Uttar Pradesh, India", "lat": 25.7600, "lon": 84.1500, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Varanasi, Uttar Pradesh, India", "lat": 25.3176, "lon": 82.9739, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Patna, Bihar, India", "lat": 25.5941, "lon": 85.1376, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Jaipur, Rajasthan, India", "lat": 26.9124, "lon": 75.7873, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Indore, Madhya Pradesh, India", "lat": 22.7196, "lon": 75.8577, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Bhopal, Madhya Pradesh, India", "lat": 23.2599, "lon": 77.4126, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Nagpur, Maharashtra, India", "lat": 21.1458, "lon": 79.0882, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Kanpur, Uttar Pradesh, India", "lat": 26.4499, "lon": 80.3319, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    {"display_name": "Chandigarh, India", "lat": 30.7333, "lon": 76.7794, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+    
+    # Global
+    {"display_name": "London, United Kingdom", "lat": 51.5074, "lon": -0.1278, "timezone": "Europe/London", "tz_offset_hours": 0.0},
+    {"display_name": "New York, NY, USA", "lat": 40.7128, "lon": -74.0060, "timezone": "America/New_York", "tz_offset_hours": -5.0},
+    {"display_name": "Dubai, United Arab Emirates", "lat": 25.2048, "lon": 55.2708, "timezone": "Asia/Dubai", "tz_offset_hours": 4.0},
+    {"display_name": "Singapore", "lat": 1.3521, "lon": 103.8198, "timezone": "Asia/Singapore", "tz_offset_hours": 8.0},
+    {"display_name": "Sydney, NSW, Australia", "lat": -33.8688, "lon": 151.2093, "timezone": "Australia/Sydney", "tz_offset_hours": 10.0},
+    {"display_name": "San Francisco, CA, USA", "lat": 37.7749, "lon": -122.4194, "timezone": "America/Los_Angeles", "tz_offset_hours": -8.0},
+    {"display_name": "Toronto, ON, Canada", "lat": 43.6532, "lon": -79.3832, "timezone": "America/Toronto", "tz_offset_hours": -5.0},
+    {"display_name": "Lucknow, Uttar Pradesh, India", "lat": 26.8467, "lon": 80.9462, "timezone": "Asia/Kolkata", "tz_offset_hours": 5.5},
+]
+
 @lru_cache(maxsize=512)
 def search_city(query: str, limit: int = 5) -> List[Dict[str, Any]]:
     """
-    Query Nominatim for places matching `query`.
-    Returns up to `limit` results with: display_name, lat, lon, boundingbox.
+    Query Photon (fast) or Nominatim for places matching `query`.
     """
+    query_lower = query.lower().strip()
+    
+    # 1. Instant check in popular cities
+    hits = [c for c in POPULAR_CITIES if query_lower in c["display_name"].lower()]
+    if hits:
+        return hits[:limit]
+
+    # 2. Try Open-Meteo Geocoding API (extremely fast, includes timezones natively)
+    try:
+        om_url = f"https://geocoding-api.open-meteo.com/v1/search?name={query}&count={limit}&language=en&format=json"
+        resp = _http_session.get(om_url, timeout=1.5)
+        if resp.status_code == 200:
+            data = resp.json()
+            out = []
+            for feat in data.get("results", []):
+                lat = feat.get("latitude")
+                lon = feat.get("longitude")
+                
+                # Format name nicely
+                name_parts = [feat.get("name"), feat.get("admin2"), feat.get("admin1"), feat.get("country")]
+                # Deduplicate and remove empty parts
+                seen = set()
+                clean_parts = []
+                for p in name_parts:
+                    if p and p not in seen:
+                        seen.add(p)
+                        clean_parts.append(p)
+                
+                display_name = ", ".join(clean_parts)
+                
+                # Open-Meteo provides timezone directly
+                tz_name = feat.get("timezone")
+                if not tz_name:
+                    tz_name = get_timezone(lat, lon)
+                    
+                out.append({
+                    "display_name": display_name,
+                    "lat": lat,
+                    "lon": lon,
+                    "timezone": tz_name,
+                    "tz_offset_hours": _tz_offset_hours(tz_name),
+                })
+            if out:
+                return out
+    except Exception as e:
+        logger.warning(f"Open-Meteo search failed, falling back: {e}")
+
+    # 3. Fallback to Nominatim if Photon fails
     if _geolocator is None:
         return []
         
     try:
-        # Use a slightly shorter timeout for better responsiveness
-        results = _geolocator.geocode(query, exactly_one=False, limit=limit, addressdetails=True, timeout=5)
+        results = _geolocator.geocode(query, exactly_one=False, limit=limit, addressdetails=True, timeout=2.0)
     except Exception as e:
         logger.error(f"Geocode exception for query='{query}': {e}")
-        # Raise so safe_search_city can handle retry or fallback
         raise
         
     out = []
@@ -125,7 +206,6 @@ def search_city(query: str, limit: int = 5) -> List[Dict[str, Any]]:
             "display_name": r.address,
             "lat": lat,
             "lon": lon,
-            "raw": getattr(r, "raw", {}),
             "timezone": tz_name,
             "tz_offset_hours": _tz_offset_hours(tz_name),
         })
@@ -164,7 +244,7 @@ def get_timezone(lat: float, lon: float) -> Optional[str]:
 
 # Simple utility: when Nominatim throttles, retry
 @lru_cache(maxsize=512)
-def safe_search_city(query: str, limit: int = 5, retries: int = 2, delay: float = 0.5):
+def safe_search_city(query: str, limit: int = 5, retries: int = 1, delay: float = 0.0):
     """
     Search city with retries and slightly more aggressive caching.
     """
@@ -172,7 +252,7 @@ def safe_search_city(query: str, limit: int = 5, retries: int = 2, delay: float 
         try:
             return search_city(query, limit=limit)
         except Exception:
-            if i < retries - 1:
+            if i < retries - 1 and delay > 0:
                 time.sleep(delay)
             else:
                 # If all retries fail, maybe try a simple fallback or return empty

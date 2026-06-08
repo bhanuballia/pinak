@@ -206,9 +206,11 @@ def run_vimsopaka_assessment(vargas: Dict[str, Any], chart: Dict[str, Any], dash
     for p in benefics:
         score = final_ranking_scores.get(p, 10.0)
         if 7.0 <= score <= 14.0 and p in GEMSTONE_MAP:
+            stone_info = GEMSTONE_MAP[p]
+            stone_name = stone_info.get("gemstone", "") if isinstance(stone_info, dict) else str(stone_info)
             top_gemstone = {
                 "planet": p,
-                "stone": GEMSTONE_MAP[p],
+                "stone": stone_name,
                 "reason": f"Most powerful benefic for {lagna} Lagna needing activation.",
                 "score": round(score, 2)
             }

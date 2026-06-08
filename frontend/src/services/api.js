@@ -168,10 +168,20 @@ export async function fetchLalKitabRemedies(planet) {
   return res.json();
 }
 
-export async function fetchDailyPanchang(lat, lon, tz) {
-  const url = `${BASE}/api/panchang/daily?lat=${lat}&lon=${lon}&tz=${tz}`;
+export async function fetchDailyPanchang(lat, lon, tz, dateStr = "") {
+  let url = `${BASE}/api/panchang/daily?lat=${lat}&lon=${lon}&tz=${tz}`;
+  if (dateStr) {
+      url += `&date=${dateStr}`;
+  }
   const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch Daily Panchang");
+  return res.json();
+}
+
+export async function fetchMonthlyPanchang(lat, lon, tz, year, month) {
+  const url = `${BASE}/api/panchang/monthly?lat=${lat}&lon=${lon}&tz=${tz}&year=${year}&month=${month}`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch Monthly Panchang");
   return res.json();
 }
 

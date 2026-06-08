@@ -82,3 +82,29 @@ async def delete_profile(profile_id: str):
         return {"message": "Profile deleted successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+@router.post("/subscribe")
+async def subscribe_profile_by_details(payload: Dict = Body(...)):
+    """Link an FCM token to a profile by matching name, date, and time"""
+    try:
+        token = payload.get("fcm_token")
+        name = payload.get("name")
+        date = payload.get("date")
+        time = payload.get("time")
+        
+        if not all([token, name, date, time]):
+            raise HTTPException(status_code=400, detail="fcm_token, name, date, and time are required")
+            
+        result = await profiles_collection.update_one(
+            {"name": name, "date": date, "time": time},
+            {"$set": {"fcm_token": token}}
+        )
+        
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="Profile not found in database. Please generate and save a report first.")
+            
+        return {"message": "Successfully subscribed to alerts"}
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")

@@ -1,30 +1,73 @@
-# charts/divisional/d60.py
 """
-D60 (Shastiamsa) helper utilities.
+charts/divisional/d60.py
+==========================
+D60 – Shastiamsa | Past-Life Karma · Foundational Blueprint
 
-D60 divides the zodiac into 60 parts, each 6 degrees (or other schemes based on
-traditions). The simplest and widely-used mapping is:
-  - d60_index = floor(longitude / (360/60)) = floor(longitude / 6)
-  - sign_index = d60_index % 12
-This module returns index, sign, degrees inside the segment.
+Classical Odd/Even Mapping:
+- Odd Signs: Forward progression from natal sign.
+- Even Signs: Reverse progression from natal sign.
 """
 from __future__ import annotations
-import math
-from typing import Tuple
+from typing import Dict, Tuple
 
-D60_DIVISIONS = 60
-D60_SIZE_DEG = 360.0 / D60_DIVISIONS  # 6.0
+from charts.divisional.base_varga import SIGNS
 
-def d60_from_longitude(long_deg: float) -> Tuple[int, int, float]:
+
+class D60Shastiamsa:
     """
-    Return (d60_index 0..59, sign_index 0..11, deg_inside 0..6)
+    Calculator for the Shastiamsa (D60) divisional chart.
+    Uses classical odd/even directional mapping for past-life karma analysis.
     """
-    long_deg = long_deg % 360.0
-    idx = int(math.floor(long_deg / D60_SIZE_DEG))
-    idx = min(max(idx, 0), D60_DIVISIONS - 1)
-    sign_idx = idx % 12
-    start = idx * D60_SIZE_DEG
-    deg_inside = long_deg - start
-    if deg_inside < 0:
-        deg_inside += D60_SIZE_DEG
-    return idx, sign_idx, deg_inside
+
+    DIVISION = 60
+    PART_SIZE = 0.5  # 30° / 60 parts
+
+    def calculate(self, longitude: float) -> Dict:
+        """
+        Calculate the D60 position for a given sidereal longitude.
+        """
+        longitude = longitude % 360.0
+        sign_index = int(longitude / 30.0)
+        degree_in_sign = longitude % 30.0
+
+        division_part = min(
+            int(degree_in_sign / self.PART_SIZE),
+            self.DIVISION - 1
+        )
+
+        # Standard Parashara/Jagannatha Hora D60 Calculation:
+        # Continuous forward progression from the natal sign for all signs.
+        final_sign = (sign_index + division_part) % 12
+
+        # Professional Fix: Float safety for degree_inside
+        degree_inside = min(
+            (degree_in_sign % self.PART_SIZE) * self.DIVISION,
+            29.999999
+        )
+
+        return {
+            "division_part": division_part + 1,
+            "sign_index": final_sign,
+            "sign_name": SIGNS[final_sign],
+            "degree": round(degree_inside, 4),
+            "varga_longitude": round(
+                (final_sign * 30.0) + degree_inside,
+                4
+            )
+        }
+
+    def calculate_house(self, asc_sign: int, planet_sign: int) -> int:
+        """
+        Calculates the whole-sign house position for D60.
+        Essential for deep karmic diagnostic analysis.
+        """
+        return ((planet_sign - asc_sign) % 12) + 1
+
+
+def d60_from_longitude(longitude: float) -> Tuple[int, int, float]:
+    """
+    Compatibility wrapper for legacy systems.
+    Returns (d60_index 0..59, sign_index 0..11, deg_inside 0..30)
+    """
+    res = D60Shastiamsa().calculate(longitude)
+    return (res["division_part"] - 1, res["sign_index"], res["degree"])

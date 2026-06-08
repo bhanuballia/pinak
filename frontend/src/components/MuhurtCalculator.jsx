@@ -419,36 +419,78 @@ export default function MuhurtCalculator() {
                     )}
                     {ceremony === "Marriage" && (
                         <div style={{ marginTop: '60px', padding: '40px', background: 'rgba(219, 39, 119, 0.05)', borderRadius: '30px', border: '1px solid rgba(219, 39, 119, 0.1)' }}>
-                            <h2 style={{ color: '#db2777', fontSize: '28px', marginBottom: '20px' }}>Significance of Marriage Muhurat</h2>
+                            <h2 style={{ color: '#db2777', fontSize: '28px', marginBottom: '20px' }}>How is Marriage Muhurat Calculated in Sanatan Jyoti?</h2>
 
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
                                 <div>
-                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>Alignment of Planets</h3>
-                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6' }}>
-                                        The very foundation of a union rests upon the balance of planetary energy. An auspicious time ensures favorable alignment for both groom and bride, preventing negative interference and ensuring long-term happiness, love, and mutual understanding.
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '20px' }}>
+                                        Our Marriage Muhurat Expert team considers not only the Panchang but also Kundali matching and the purification of the tenth house while determining the wedding date. While providing Personalized Marriage Muhurat Consultation, we analyze the following factors:
                                     </p>
-                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginTop: '20px', marginBottom: '10px' }}>Prohibited Periods</h3>
+                                    <ul style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', paddingLeft: '20px', marginBottom: '20px' }}>
+                                        <li style={{ marginBottom: '8px' }}><b>Auspicious Nakshatra:</b> Calculation of Nakshatras like Rohini, Mrigashira, Hasta, Swati, etc.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Tithi and Day:</b> Selection of auspicious dates.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Moon of Groom-Bride:</b> Strength of the Moon according to the zodiac signs of both.</li>
+                                        <li><b>Tribal Shuddhi:</b> Checking the compatibility of the Sun, Jupiter, and the Moon.</li>
+                                    </ul>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '20px' }}>
+                                        Due to these subtle calculations, our Online Marriage Muhurat Consultation service is considered the most reliable. The selection of the engagement muhurat before marriage should also be done with equal care.
+                                    </p>
+
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>Spiritual and Astrological Significance</h3>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '15px' }}>
+                                        The significance of muhurat for marriage is unique from both astrological and spiritual perspectives. The very foundation of a marriage rests upon an Auspicious Marriage Muhurat.
+                                    </p>
+                                    <ul style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', paddingLeft: '20px', marginBottom: '20px' }}>
+                                        <li style={{ marginBottom: '8px' }}><b>Alignment of Planets:</b> Favorable planetary positions are ensured for the groom and bride, preventing negative energies from entering their lives.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Removal of Obstacles:</b> All hindrances, obstacles, and unpleasant incidents associated with the wedding ceremony are averted.</li>
+                                        <li><b>Long-term Happiness:</b> A marriage performed in an astrologically favorable muhurat increases love, respect, and mutual understanding between both parties, making married life successful and long-lasting.</li>
+                                    </ul>
+
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>Benefits of Marriage Muhurat</h3>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '15px' }}>
+                                        When you Book an Astrologer for Marriage Muhurat and complete the marriage under their guidance, it has several spiritual benefits:
+                                    </p>
+                                    <ul style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', paddingLeft: '20px', marginBottom: '15px' }}>
+                                        <li style={{ marginBottom: '8px' }}><b>Protection from Obstacles:</b> There is protection from untoward incidents or interruptions coming during the wedding ceremony.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Longevity and Health:</b> The desire for better health and long life of the couple is fulfilled.</li>
+                                        <li><b>Mental Peace:</b> The host remains satisfied that they have followed all the scriptures.</li>
+                                    </ul>
                                     <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6' }}>
-                                        Marriage is strictly avoided during:
-                                        <ul style={{ paddingLeft: '20px' }}>
-                                            <li><b>Guru/Shukra Asta:</b> When Jupiter or Venus are combust.</li>
-                                            <li><b>Chaturmas:</b> When Lord Vishnu is in Yogic sleep (usually July-Oct).</li>
-                                            <li><b>Kharmas:</b> When the Sun transits Sagittarius or Pisces.</li>
-                                            <li><b>Pitru Paksha:</b> The sacred period of honoring ancestors.</li>
-                                        </ul>
+                                        If you also want to know the best time for your or your loved ones' marriage, then Book Marriage Muhurat Consultation now. Along with this, do not forget to consider the Griha Pravesh Muhurat for a new beginning of domestic life.
                                     </p>
                                 </div>
                                 <div>
-                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>Monthly Overview</h3>
-                                    <ul style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', listStyleType: 'sparkles' }}>
-                                        <li><b>Spring/Summer:</b> Vaishakha and Jyeshtha are considered extremely excellent.</li>
-                                        <li><b>Winter:</b> Kartik (after Devotthan) and Margashirsha provide premium dates.</li>
-                                        <li><b>July - Sept:</b> Completely prohibited due to Chaturmas and Pitru Paksha.</li>
-                                    </ul>
-                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginTop: '20px', marginBottom: '10px' }}>Technical Pillars</h3>
-                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.4' }}>
-                                        The engine conducts a deep study of <b>Tribal Shuddhi</b> (compatibility of Sun, Moon, and Jupiter) and ensures the <b>Chandra Bala</b> is auspicious for both zodiac signs.
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>Main Factors of Muhurat Selection</h3>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '15px' }}>
+                                        To determine the Auspicious Marriage Muhurat of the wedding, a deep study of the five limbs of the 'Panchang' (Tithi, Vaar, Nakshatra, Yoga, and Karana) is conducted. Additionally, some other primary factors are considered:
                                     </p>
+                                    <ul style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', paddingLeft: '20px', marginBottom: '20px' }}>
+                                        <li style={{ marginBottom: '8px' }}><b>Bala Shuddhi & Lagna Shuddhi:</b> It is most necessary for Tara Bala and Chandra Bala to be favorable. 'Lagna Shuddhi' is most necessary in an Auspicious Wedding Muhurat.</li>
+                                        <li><b>Guna Milan:</b> Before extracting the marriage muhurat, Guna Milan or Kundali Milan of the groom and bride is mandatory. A minimum of 18 out of 36 qualities matching is considered auspicious.</li>
+                                    </ul>
+
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>Special Muhurats and Auspicious Days</h3>
+                                    <ul style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', paddingLeft: '20px', marginBottom: '20px' }}>
+                                        <li style={{ marginBottom: '8px' }}><b>Auspicious Vaar:</b> Monday, Wednesday, Thursday, and Friday (Tuesday and Saturday are usually avoided).</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Auspicious Tithis:</b> Dwitiya, Tritiya, Panchami, Saptami, Ekadashi, Trayodashi.</li>
+                                        <li><b>Auspicious Nakshatras:</b> Rohini, Mrigashira, Magha, Hasta, Swati, Anuradha, Moola, Uttara Phalguni, Uttara Bhadrapada, Uttarashada, Revati.</li>
+                                    </ul>
+
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>Monthly Marriage Muhurat Overview</h3>
+                                    <ul style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', paddingLeft: '20px', marginBottom: '20px' }}>
+                                        <li style={{ marginBottom: '8px' }}><b>Winter and Spring:</b> Medium auspicious muhurats start appearing in February (Magha/Phalguna) and March (Phalguna/Chaitra).</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Summer Season (Best Period):</b> In April and May (Chaitra/Vaishakha/Jyeshtha), the number of Marriage Muhurats increases and it has been considered very excellent.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Chaturmas and Rainy Season:</b> Completely prohibited for marriage (from Devshayani Ekadashi to Devuthani Ekadashi).</li>
+                                        <li><b>Autumn Season:</b> Return of best Marriage Muhurats from Devothani Ekadashi in November/December.</li>
+                                    </ul>
+
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>Prohibited Period for Marriage</h3>
+                                    <ul style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', paddingLeft: '20px' }}>
+                                        <li style={{ marginBottom: '8px' }}><b>Guru Asta and Shukra Asta:</b> When Jupiter (Guru) and Venus planets are set, their auspicious effect ends.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Chaturmas:</b> When Lord Vishnu is in Yoganidra.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Pitru Paksha (Shraddha):</b> The period of expressing respect towards ancestors.</li>
+                                        <li><b>Malmas or Kharmas:</b> When the Sun enters Sagittarius or Pisces.</li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>
@@ -475,6 +517,107 @@ export default function MuhurtCalculator() {
                                         <li><b>Chara (Movable):</b> Swati, Shravan, and Dhanishta for dynamic happiness.</li>
                                         <li><b>Days:</b> Monday (Peace), Wednesday (Knowledge), Thursday (Luck), and Friday (Glory).</li>
                                         <li><b>Avoid:</b> Chaturmas and malefic Lagnas related to the 8th house.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {ceremony === "Grih Pravesh" && (
+                        <div style={{ marginTop: '60px', padding: '40px', background: 'rgba(14, 165, 233, 0.05)', borderRadius: '30px', border: '1px solid rgba(14, 165, 233, 0.1)' }}>
+                            <h2 style={{ color: '#0ea5e9', fontSize: '28px', marginBottom: '20px' }}>Necessity and Vastu Significance of Griha Pravesh Muhurat</h2>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
+                                <div>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '20px' }}>
+                                        According to Vastu Shastra, every land and building has its own energy. The main objective of Grih Pravesh Muhurat Consultation is to balance that energy and please the Vastu Purusha (the presiding deity of the building). Entering at an auspicious time creates a divine protective shield in the building. A skilled Grih Pravesh Muhurat Expert ensures that directional flaws (Dishashool) or other celestial obstacles do not hinder the housewarming.
+                                    </p>
+
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>Benefits of Shubh Grih Pravesh Muhurat Consultation:</h3>
+                                    <ul style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', paddingLeft: '20px', marginBottom: '20px' }}>
+                                        <li style={{ marginBottom: '8px' }}><b>Stability in the Building:</b> Entering at an auspicious time protects the building from natural and man-made disasters and brings stability to the property.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Continuity of Wealth:</b> If the entry is made during a stable Griha Pravesh, Goddess Lakshmi resides permanently, leading to economic progress and an increase in wealth accumulation.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Completeness of Vastu Purification:</b> Special worship and Havan eliminate any negative energy accumulated during building construction.</li>
+                                        <li><b>Family Harmony:</b> Personalized Grih Pravesh Muhurat Consultation ensures that love, cooperation, and mental peace remain among members in the new home.</li>
+                                    </ul>
+                                    
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>Our Classical Methodology of Muhurat Selection</h3>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '20px' }}>
+                                        While selecting the Grih Pravesh Muhurat by Astrologer, our experts do not just look at the dates of the Panchang, but conduct a microscopic analysis of the alignment of planets with the house owner's horoscope. While determining the Kundli Based Grih Pravesh Muhurat, the following main pillars are kept in mind:
+                                    </p>
+                                    
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>1. Auspicious Day and Panchang Purity</h3>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '15px' }}>
+                                        <b>Monday</b> (for mental peace), <b>Wednesday</b> (for business and intellect), <b>Thursday</b> (for good fortune), and <b>Friday</b> (for luxury) are considered best for housewarming. We usually advise avoiding Tuesday, Saturday, and Sunday. During calculation, we select auspicious dates (2nd, 3rd, 5th, etc.) through the Panchang.
+                                    </p>
+                                </div>
+                                <div>
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>2. Selection of Stable Nakshatras</h3>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '15px' }}>
+                                        Priority is given only to 'stable constellations' (Sthira Nakshatras) for housewarming so that the residence in the building remains pleasant and permanent. Major ones include <i>Uttara Phalguni, Uttarashada, Uttara Bhadrapada, Rohini,</i> and <i>Dhanishta.</i> During calculation, we pay special attention to Bhadra and other inauspicious yogas so that your entry is unobstructed.
+                                    </p>
+                                    
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>3. Avoidance of Prohibited Periods and Defects</h3>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '20px' }}>
+                                        In Griha Pravesh Muhurat selection, Rahu Kaal, Kharmas (Malmas), and eclipse periods are completely avoided. Additionally, we also take care of the combustion (Asta) period of Jupiter and Venus, because no auspicious work can be successful without them. Furthermore, we also subtly consider Choghadiya Muhurat and Hora Muhurat.
+                                    </p>
+                                    
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>Housewarming Method and Ritual Guidance</h3>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '15px' }}>
+                                        The full benefit of a successful Grih Pravesh Ceremony Muhurat Consultation is attained only when the Anushthan is performed according to the classical method. Its main process is as follows:
+                                    </p>
+                                    <ul style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', paddingLeft: '20px' }}>
+                                        <li style={{ marginBottom: '8px' }}><b>Door Worship and Toran:</b> The main entrance is decorated with marigold flowers and mango leaves (Toran), which is a symbol of positive energy.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Kalash Entry:</b> At the auspicious time, the house owner enters the building by carrying the Mangal Kalash (filled with water, coins, and coconut) while placing the right foot inside first.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Vastu Shanti Puja:</b> Vastu Purusha is invoked in the Northeast corner (Ishan Kon) of the house so that welfare remains in every corner of the building.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Agni Sthapan (Havan):</b> Havan is performed for a pure atmosphere and to remove negativity.</li>
+                                        <li><b>Kitchen Ritual:</b> For the first time, the ritual of boiling milk is performed in the kitchen. For a detailed Griha Pravesh guide, you can take guidance from our experts.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    {ceremony === "Vehicle Purchase" && (
+                        <div style={{ marginTop: '60px', padding: '40px', background: 'rgba(168, 85, 247, 0.05)', borderRadius: '30px', border: '1px solid rgba(168, 85, 247, 0.1)' }}>
+                            <h2 style={{ color: '#a855f7', fontSize: '28px', marginBottom: '20px' }}>Why is Vehicle Purchase Muhurat Astrology Mandatory?</h2>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
+                                <div>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '20px' }}>
+                                        The fourth house in a horoscope represents happiness and property, and the planet Venus is the significator of material comforts. A vehicle purchase muhurat expert assesses the position of your 'Chaturthesh' (Lord of the fourth house) to ensure that the asset you are buying remains a source of joy for you. Choosing a time according to vehicle purchase muhurat astrology minimizes the risk of accidents and mechanical failures. It acts as a spiritual protective shield that guards you on the road and increases the life of the machine. Determining the timing through a vehicle buying muhurat by astrologer also brings economic stability to your life.
+                                    </p>
+
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>Specific Benefits of Accurate Vehicle Purchase Muhurat Consultation:</h3>
+                                    <ul style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', paddingLeft: '20px', marginBottom: '20px' }}>
+                                        <li style={{ marginBottom: '8px' }}><b>Safety and Protection:</b> A start ensured through personalized vehicle purchase muhurat consultation reduces the probability of accidents.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Durability and Low Maintenance:</b> When the influence of Saturn is favorable, the vehicle requires less repair and runs smoothly for years.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Economic Stability:</b> kundli based vehicle purchase muhurat prevents the unnecessary expenditure of money caused by a 'defective' machine.</li>
+                                        <li><b>Success in Business:</b> For commercial vehicles, kundli based vehicle purchase muhurat booking ensures that the vehicle brings continuous profit and reliability to your business.</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>Our Classical Methodology of Muhurat Selection</h3>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '15px' }}>
+                                        While determining the vehicle purchase muhurat consultation, our experts do not just look at general dates. We analyze subtle details and link them with the birth details of the vehicle owner.
+                                    </p>
+                                    
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>1. Selection of Auspicious Days and Tithis</h3>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '15px' }}>
+                                        Monday, Wednesday, Thursday, and Friday are considered excellent for buying a vehicle. During vehicle purchase muhurat booking, we prioritize auspicious dates such as 2, 3, 5, 7, 8, 10, 11, 12, and 13. We specifically avoid 'Rikta' Tithis (4, 9, 14) and Amavasya. For a detailed Muhurat Consultation, you can connect with our acharyas.
+                                    </p>
+                                    
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>2. Analysis of Nakshatra and Chandra Bala</h3>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '15px' }}>
+                                        Favorable constellations like Pushya, Punarvasu, Swati, Shravan, Ashwini, and Revati are focused upon for the vehicle. We ensure that the Moon is not in the 4, 8, or 12 house from your Rashi, as it can cause mental instability while driving. We also microscopically check Bhadra and Panchak Details to avoid any inauspicious influence.
+                                    </p>
+                                    
+                                    <h3 style={{ color: '#d4af37', fontSize: '18px', marginBottom: '10px' }}>Vehicle Puja Vidhi and Ritual Guidance</h3>
+                                    <p style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', marginBottom: '15px' }}>
+                                        The spiritual journey of your vehicle begins with a proper Anushthan. Here are the main steps of the puja:
+                                    </p>
+                                    <ul style={{ opacity: 0.7, fontSize: '14px', lineHeight: '1.6', paddingLeft: '20px' }}>
+                                        <li style={{ marginBottom: '8px' }}><b>Ganesh Pujan:</b> First, worship Lord Ganesha, the remover of obstacles.</li>
+                                        <li style={{ marginBottom: '8px' }}><b>Creating the Swastik:</b> Draw a Swastik with turmeric or vermillion on the bonnet or dashboard of the vehicle.</li>
+                                        <li><b>Coconut and Lemon:</b> Breaking a coconut in front of the vehicle and crushing lemons under the tires is a traditional way to remove negative energy. Our experts provide you with detailed Puja Vidhi information.</li>
                                     </ul>
                                 </div>
                             </div>

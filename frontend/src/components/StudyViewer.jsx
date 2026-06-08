@@ -8,6 +8,7 @@ export default function StudyViewer() {
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('All');
     const [userData, setUserData] = useState(null);
+    const [isHindi, setIsHindi] = useState(false);
 
     useEffect(() => {
         const loadInsights = async () => {
@@ -62,7 +63,28 @@ export default function StudyViewer() {
     const filteredInsights = filter === 'All' ? insights : insights.filter(item => item.category === filter);
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#020617', color: '#cbd5e1', fontFamily: 'serif', paddingBottom: '100px' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: '#020617', color: '#cbd5e1', fontFamily: 'serif', paddingBottom: '100px', position: 'relative' }}>
+            {/* Language Toggle Button */}
+            <button 
+                onClick={() => setIsHindi(!isHindi)}
+                style={{
+                    position: 'absolute',
+                    top: '20px',
+                    right: '20px',
+                    zIndex: 1000,
+                    background: 'rgba(255,255,255,0.8)',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    padding: '6px 12px',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    color: 'black',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+                }}
+            >
+                A / अ
+            </button>
             {/* Premium Header */}
             <div style={{ 
                 padding: '80px 40px', 

@@ -73,7 +73,13 @@ const TransitPanel = ({ data, transitPositions }) => {
       </div>
       <div className="flex-1 p-1 bg-white overflow-auto custom-scrollbar">
         <div className="mb-4">
-          <ZodiacChart houses={transitHouses} title="" variant="legacy" planetEffects={transitEffects} />
+          <ZodiacChart 
+            houses={data.charts?.houses} 
+            transitHouses={transitHouses} 
+            title="Combined Janma & Gochar Chart" 
+            variant="legacy" 
+            planetEffects={transitEffects} 
+          />
         </div>
         
         <div className="p-2 bg-slate-50 border-t border-slate-200 mt-2">
