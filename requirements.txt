@@ -1,5 +1,6 @@
 # Core Web Server
 fastapi
+python-dateutil
 uvicorn
 python-dotenv
 requests
