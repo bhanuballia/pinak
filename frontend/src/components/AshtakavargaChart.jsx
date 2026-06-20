@@ -36,7 +36,7 @@ const AshtakavargaChart = ({ title, housesData, defaultRect = false }) => {
 
   // housesData: array of { house: 1..12, signIndex: 0..11, points: number }
   const totalPoints = housesData.reduce((sum, h) => sum + (h.points || 0), 0);
-  
+
   const scalePolygon = (poly, scaleX) => {
     return poly.split(' ').map(point => {
       const [x, y] = point.split(',').map(Number);
@@ -67,35 +67,35 @@ const AshtakavargaChart = ({ title, housesData, defaultRect = false }) => {
         <svg viewBox={`0 0 ${100 * aspectRatio} 100`} preserveAspectRatio="none" className={`w-full h-full drop-shadow-sm ${isRect ? 'max-w-full' : 'max-w-[250px] aspect-square'}`}>
           {/* Background and border */}
           <rect x={5 * aspectRatio} y="5" width={90 * aspectRatio} height="90" fill="#fcfcfc" stroke="#475569" strokeWidth="0.5" />
-          
+
           {/* Draw all 12 houses */}
           {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((houseNum) => {
             const hData = housesData.find(h => h.house === houseNum) || {};
             const center = HOUSE_CENTER[houseNum];
-            
+
             // Sign number (1 for Aries, etc)
             const signNum = (hData.signIndex !== undefined) ? (hData.signIndex + 1) : "";
-            
+
             return (
               <g key={houseNum}>
-                <polygon 
-                  points={scalePolygon(HOUSE_POLYGON[houseNum], aspectRatio)} 
-                  fill="none" 
-                  stroke="#475569" 
-                  strokeWidth="0.5" 
+                <polygon
+                  points={scalePolygon(HOUSE_POLYGON[houseNum], aspectRatio)}
+                  fill="none"
+                  stroke="#475569"
+                  strokeWidth="0.5"
                 />
-                
+
                 {/* Bindu points */}
-                <text 
-                  x={center.x * aspectRatio} 
-                  y={center.y + 1.5} 
-                  textAnchor="middle" 
+                <text
+                  x={center.x * aspectRatio}
+                  y={center.y + 1.5}
+                  textAnchor="middle"
                   dominantBaseline="middle"
                   className="text-[6px] font-bold fill-slate-800"
                 >
                   {hData.points}
                 </text>
-                
+
                 {/* Sign number */}
                 {signNum && (
                   <text
@@ -111,7 +111,7 @@ const AshtakavargaChart = ({ title, housesData, defaultRect = false }) => {
               </g>
             );
           })}
-          
+
           {/* Outer Border thicker */}
           <rect x={5 * aspectRatio} y="5" width={90 * aspectRatio} height="90" fill="none" stroke="#334155" strokeWidth="1" />
         </svg>

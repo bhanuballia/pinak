@@ -94,7 +94,7 @@ export default function VimshottariTable({ data: worksheetData, transitDate }) {
 
   if (loading) {
     return (
-      <div className="flex flex-col h-full bg-white font-sans">
+      <div className="flex flex-col h-full bg-rose-100 font-sans">
         <Header page={page} totalPages={totalPages} onPrev={() => { }} onNext={() => { }} onCurrent={() => { }} levels={levels} onLevelsChange={setLevels} />
         <div className="flex-1 flex items-center justify-center">
           <div className="flex flex-col items-center gap-3">
@@ -133,7 +133,7 @@ export default function VimshottariTable({ data: worksheetData, transitDate }) {
       />
 
       {/* Column Headers */}
-      <div className="shrink-0 grid grid-cols-[2.2fr_0.4fr_1fr_0.5fr_0.9fr_0.4fr_1.6fr] bg-slate-800 text-white text-[12px] font-black uppercase tracking-wider border-b border-slate-700">
+      <div className="shrink-0 grid grid-cols-[2.2fr_0.4fr_1fr_0.5fr_0.9fr_0.4fr_1.6fr] bg-rose-100 text-slate-800 text-[12px] font-black uppercase tracking-wider border-b border-slate-700">
         <div className="px-1.5 py-1.5 border-r border-slate-600">दशाएँ</div>
         <div className="px-1 py-1.5 border-r border-slate-600 text-center">उम्र</div>
         <div className="px-1.5 py-1.5 border-r border-slate-600">आरम्भ दिनांक</div>
@@ -156,10 +156,10 @@ export default function VimshottariTable({ data: worksheetData, transitDate }) {
             <div
               key={globalIdx}
               ref={isCurrent ? currentRowRef : null}
-              className={`grid grid-cols-[2.2fr_0.4fr_1fr_0.5fr_0.9fr_0.4fr_1.6fr] text-[14px] border-b transition-all
+              className={`grid grid-cols-[2.2fr_0.4fr_1fr_0.5fr_0.9fr_0.4fr_1.6fr] text-[14px] border-black transition-all
                 ${isCurrent
                   ? 'bg-amber-100 border-amber-300 shadow-inner'
-                  : i % 2 === 0 ? 'bg-white hover:bg-slate-50' : 'bg-slate-50/60 hover:bg-slate-100'
+                  : i % 2 === 0 ? 'bg-rose-100 hover:bg-slate-50' : 'bg-rose-100 hover:bg-slate-100'
                 }`}
             >
               {/* Dasha Chain */}
@@ -201,10 +201,11 @@ export default function VimshottariTable({ data: worksheetData, transitDate }) {
       {/* Footer */}
       <div className="shrink-0 px-3 py-1 bg-slate-50 border-t border-slate-200 flex items-center justify-between">
         <p className="text-[7.5px] text-slate-400 italic font-serif">
-          {levels === 5
-            ? `पंचस्तरीय विंशोत्तरी दशा · प्राण दशा स्तर · ${rows.length} पंक्तियाँ`
-            : `द्विस्तरीय विंशोत्तरी दशा · महादशा - अंतरदशा स्तर · ${rows.length} पंक्तियाँ`
-          }
+          {levels === 1 ? `एकस्तरीय विंशोत्तरी दशा · महादशा स्तर · ${rows.length} पंक्तियाँ` :
+            levels === 2 ? `द्विस्तरीय विंशोत्तरी दशा · महादशा - अंतरदशा स्तर · ${rows.length} पंक्तियाँ` :
+              levels === 3 ? `त्रिस्तरीय विंशोत्तरी दशा · प्रत्यंतर दशा स्तर · ${rows.length} पंक्तियाँ` :
+                levels === 4 ? `चतुःस्तरीय विंशोत्तरी दशा · सूक्ष्म दशा स्तर · ${rows.length} पंक्तियाँ` :
+                  `पंचस्तरीय विंशोत्तरी दशा · प्राण दशा स्तर · ${rows.length} पंक्तियाँ`}
         </p>
         <p className="text-[7.5px] text-slate-500 font-mono">
           पृष्ठ {page + 1} / {totalPages}
@@ -215,37 +216,46 @@ export default function VimshottariTable({ data: worksheetData, transitDate }) {
 }
 
 function Header({ page, totalPages, onPrev, onNext, onFirst, onLast, rowCount, levels, onLevelsChange }) {
+  const levelNames = {
+    1: "महादशा",
+    2: "महादशा - अंतरदशा",
+    3: "त्रिस्तरीय · Dasha",
+    4: "चतुःस्तरीय · Dasha",
+    5: "पंचस्तरीय · Dasha"
+  };
+
   return (
-    <div className="shrink-0 flex items-center justify-between px-2 py-1 bg-slate-800 border-b border-slate-700">
+    <div className="shrink-0 flex items-center justify-between px-2 py-1 bg-rose-100 border-b border-slate-700">
       <div className="flex items-center gap-2">
-        <div className="w-5 h-5 rounded bg-indigo-500 flex items-center justify-center text-white text-[10px] font-black">⏳</div>
-        <span className="text-white text-[11px] font-black font-serif tracking-widest uppercase">विंशोत्तरी</span>
+        <div className="w-5 h-5 rounded bg-white flex items-center justify-center text-white text-[10px] font-black">⏳</div>
+        <span className="text-slate-900 text-[14px] font-black font-serif tracking-widest uppercase">विंशोत्तरी</span>
         {rowCount > 0 && (
-          <span className="text-[8px] text-indigo-300 font-bold bg-indigo-900/50 px-1.5 py-0.5 rounded-full ml-1">
-            {levels === 5 ? "पंचस्तरीय · Dasha" : "महादशा - अंतरदशा"}
+          <span className="text-[12px] text-black font-bold bg-rose-100 px-1.5 py-0.5 rounded-full ml-1">
+            {levelNames[levels]}
           </span>
         )}
       </div>
 
       {/* Levels Selector Switch */}
-      <div className="flex items-center gap-1 bg-slate-700/60 p-0.5 rounded border border-slate-600/50 mx-2">
+      <div className="flex items-center rounded border border-black mx-2 overflow-hidden bg-rose-100">
         <button
-          onClick={() => onLevelsChange && onLevelsChange(2)}
-          className={`px-2 py-0.5 rounded text-[8px] font-black transition-all ${levels === 2
-            ? 'bg-indigo-600 text-white shadow-sm'
-            : 'text-slate-400 hover:text-white'
-            }`}
+          onClick={() => onLevelsChange && onLevelsChange(Math.max(1, levels - 1))}
+          disabled={levels <= 1}
+          className="px-2.5 py-0.5 text-black text-[25px] font-bold hover:bg-slate-600 disabled:opacity-30 border-r border-black"
+          title="Decrease Depth"
         >
-          MD-AD
+          -
         </button>
+        <span className="px-2 text-[20px] text-black font-bold tracking-widest uppercase">
+          L{levels}
+        </span>
         <button
-          onClick={() => onLevelsChange && onLevelsChange(5)}
-          className={`px-2 py-0.5 rounded text-[8px] font-black transition-all ${levels === 5
-            ? 'bg-indigo-600 text-white shadow-sm'
-            : 'text-slate-400 hover:text-white'
-            }`}
+          onClick={() => onLevelsChange && onLevelsChange(Math.min(5, levels + 1))}
+          disabled={levels >= 5}
+          className="px-2.5 py-0.5 text-black  text-[25px] font-bold hover:bg-slate-600 disabled:opacity-30 border-l border-black"
+          title="Increase Depth"
         >
-          पंचस्तरीय
+          +
         </button>
       </div>
 
@@ -265,10 +275,10 @@ function NavBtn({ onClick, children, disabled, title }) {
       onClick={onClick}
       disabled={disabled}
       title={title}
-      className={`w-6 h-6 rounded flex items-center justify-center text-[10px] font-black transition-all
+      className={`w-6 h-6 rounded flex items-center justify-center text-[20px] font-black transition-all
         ${disabled
-          ? 'bg-slate-700 text-slate-500 cursor-not-allowed'
-          : 'bg-slate-600 text-white hover:bg-indigo-500 active:scale-90'
+          ? 'bg-white text-slate-900 cursor-not-allowed'
+          : 'bg-white text-slate-900 hover:bg-indigo-500 active:scale-90'
         }`}
     >
       {children}

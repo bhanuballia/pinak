@@ -1,5 +1,153 @@
 import React, { useState, useEffect } from 'react';
 
+const PanchPakshiVisualTimeline = ({ timeline, cycleStart, cycleEnd, currentTime }) => {
+  const [hoveredItem, setHoveredItem] = useState(null);
+
+  const startMs = new Date(cycleStart).getTime();
+  const endMs = new Date(cycleEnd).getTime();
+  const totalDuration = endMs - startMs;
+
+  const getActivityMeta = (activity) => {
+    switch (activity) {
+      case "Ruling":
+        return {
+          bg: "bg-emerald-500 hover:bg-emerald-400",
+          color: "#10b981",
+          label: "Ruling (Inspirational / Start Business)",
+          status: "Excellent",
+          textColor: "text-emerald-300"
+        };
+      case "Eating":
+        return {
+          bg: "bg-teal-500 hover:bg-teal-400",
+          color: "#14b8a6",
+          label: "Eating (Prosperous / Execute Tasks)",
+          status: "Very Good",
+          textColor: "text-teal-300"
+        };
+      case "Walking":
+        return {
+          bg: "bg-amber-400 hover:bg-amber-300",
+          color: "#fbbf24",
+          label: "Walking (Mundane / General Work)",
+          status: "Neutral",
+          textColor: "text-amber-300"
+        };
+      case "Sleeping":
+        return {
+          bg: "bg-indigo-300/60 hover:bg-indigo-300/80",
+          color: "#a5b4fc",
+          label: "Sleeping (Passive / Avoid Major Starts)",
+          status: "Resting",
+          textColor: "text-indigo-200"
+        };
+      case "Dying":
+        return {
+          bg: "bg-rose-600 hover:bg-rose-500",
+          color: "#e11d48",
+          label: "Dying (Critical / Avoid Travel & Contracts)",
+          status: "Inauspicious",
+          textColor: "text-rose-300"
+        };
+      default:
+        return { bg: "bg-slate-400", color: "#94a3b8", label: activity, status: "Unknown", textColor: "text-slate-300" };
+    }
+  };
+
+  const formatTimeStr = (isoString) => {
+    if (!isoString) return "";
+    return new Date(isoString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const refTimeMs = new Date(currentTime).getTime();
+  const showCursor = refTimeMs >= startMs && refTimeMs <= endMs;
+  const cursorLeftPercent = showCursor ? ((refTimeMs - startMs) / totalDuration) * 100 : 0;
+
+  return (
+    <div className="relative w-full bg-slate-950 p-6 rounded-2xl border border-slate-800 shadow-lg select-none">
+      <div className="flex justify-between items-center mb-3 text-[11px] font-mono text-slate-400 uppercase tracking-widest">
+        <span>🌅 {formatTimeStr(cycleStart)}</span>
+        <span className="text-amber-500 font-bold">Progress Timeline</span>
+        <span>🌌 {formatTimeStr(cycleEnd)}</span>
+      </div>
+
+      <div className="relative h-12 w-full bg-slate-900 rounded-xl overflow-hidden flex shadow-inner border border-slate-800">
+        {timeline.map((item, idx) => {
+          const itemStart = new Date(item.start).getTime();
+          const itemEnd = new Date(item.end).getTime();
+          const itemDuration = itemEnd - itemStart;
+          const widthPercent = (itemDuration / totalDuration) * 100;
+          const meta = getActivityMeta(item.activity);
+
+          return (
+            <div
+              key={idx}
+              className={`h-full relative cursor-pointer transition-all duration-200 border-r border-slate-950/20 ${meta.bg}`}
+              style={{ width: `${widthPercent}%` }}
+              onMouseEnter={() => setHoveredItem(item)}
+              onMouseLeave={() => setHoveredItem(null)}
+            />
+          );
+        })}
+
+        {showCursor && (
+          <div 
+            className="absolute top-0 bottom-0 w-0.5 bg-yellow-400 z-10 pointer-events-none"
+            style={{ left: `${cursorLeftPercent}%` }}
+          >
+            <div className="absolute -top-1.5 -left-1.5 w-3.5 h-3.5 bg-yellow-400 border-2 border-slate-950 rounded-full animate-bounce shadow-md" />
+            <div className="absolute -bottom-1 -left-1.5 bg-yellow-400 px-1 py-0.5 rounded text-[8px] font-black text-slate-950 font-mono tracking-tighter">
+              LIVE
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="mt-4 min-h-[90px] bg-slate-900/60 rounded-xl p-4 border border-slate-850 flex flex-col justify-center">
+        {hoveredItem ? (
+          (() => {
+            const meta = getActivityMeta(hoveredItem.activity);
+            return (
+              <div className="animate-fade-in flex flex-col md:flex-row md:items-center justify-between gap-3 text-slate-100">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono font-black text-xs text-slate-400">Yama {hoveredItem.yama}.{hoveredItem.apahara}</span>
+                    <span className="text-xs bg-slate-800 text-slate-300 font-mono px-2 py-0.5 rounded">
+                      ⏱️ {formatTimeStr(hoveredItem.start)} - {formatTimeStr(hoveredItem.end)}
+                    </span>
+                  </div>
+                  <div className="text-base font-black tracking-wide mt-1" style={{ color: meta.color }}>
+                    {meta.label}
+                  </div>
+                </div>
+
+                <div className="flex gap-2">
+                  <div className="bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-850 text-center min-w-[90px]">
+                    <div className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">Sub Bird</div>
+                    <div className="text-xs font-bold text-white mt-0.5">{hoveredItem.sub_bird}</div>
+                  </div>
+                  <div className="bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-850 text-center min-w-[90px]">
+                    <div className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">Relation</div>
+                    <div className="text-xs font-bold text-indigo-300 mt-0.5">{hoveredItem.relationship}</div>
+                  </div>
+                  <div className="bg-slate-950/80 px-3 py-1.5 rounded-lg border border-slate-850 text-center min-w-[70px]">
+                    <div className="text-[9px] text-slate-500 uppercase font-bold tracking-wider">Score</div>
+                    <div className="text-xs font-black text-amber-400 mt-0.5">{hoveredItem.score}</div>
+                  </div>
+                </div>
+              </div>
+            );
+          })()
+        ) : (
+          <div className="text-slate-400 text-xs italic text-center font-serif">
+            Hover over the color-coded blocks on the bar to inspect details and plan schedules.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
 const PanchPakshiTable = ({ data }) => {
   const [response, setResponse] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -312,6 +460,28 @@ const PanchPakshiTable = ({ data }) => {
             <div className="text-[10px] text-slate-400 uppercase tracking-wider font-mono">Transit Paksha</div>
             <div className="text-base font-black text-rose-300 mt-1">{query_paksha} Paksha</div>
           </div>
+        </div>
+      </div>
+
+      {/* Visual Timeline Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm">
+        <div>
+          <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-3">🌅 Diurnal (Day) Timeline Bar</h4>
+          <PanchPakshiVisualTimeline 
+            timeline={day_timeline}
+            cycleStart={sunrise}
+            cycleEnd={sunset}
+            currentTime={currentTime}
+          />
+        </div>
+        <div>
+          <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-3">🌙 Nocturnal (Night) Timeline Bar</h4>
+          <PanchPakshiVisualTimeline 
+            timeline={night_timeline}
+            cycleStart={sunset}
+            cycleEnd={sunrise_next}
+            currentTime={currentTime}
+          />
         </div>
       </div>
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { PLANET_COLORS } from "./WorksheetUtils";
+import { PLANET_COLORS, getDignityStatus } from "./WorksheetUtils";
 import PlanetaryRemediesViewer from "../PlanetaryRemediesViewer";
 
 const DignityTable = ({ data, planetEffects }) => {
@@ -59,14 +59,27 @@ const DignityTable = ({ data, planetEffects }) => {
               const statusText = nature === "benefic" ? "Benefic" : nature === "malefic" ? "Malefic" : "Neutral";
               const statusColor = nature === "benefic" ? "text-green-600" : nature === "malefic" ? "text-red-600" : "text-amber-600";
 
+              const SIGNS_LOCAL = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+              const signIdx = Math.floor(p.degree / 30);
+              const signName = SIGNS_LOCAL[signIdx];
+              const dignityObj = typeof getDignityStatus === "function" ? getDignityStatus(p.planet, signName) : null;
+              let backendDignity = pStrength?.dignity;
+              if (["Rahu", "Ketu"].includes(p.planet) && (!backendDignity || backendDignity === "Neutral" || backendDignity === "Unknown")) {
+                  backendDignity = "";
+              }
+              const dignityDisplay = backendDignity || (dignityObj ? dignityObj.label.replace(/[★↓◆♥✕]/g, '').trim() : "Own");
+              
+              const vbScore = data?.vimsopaka_bala?.shodashvarga?.[p.planet];
+              const vbDisplay = vbScore !== undefined ? (typeof vbScore === 'number' ? vbScore.toFixed(1) : vbScore) : "-";
+
               return (
                 <tr key={p.planet} className="border-b border-[#f1f5f9] hover:bg-white transition-colors">
                   <td className="p-1 font-bold" style={{ color: color }}>
-                    {p.planet.substring(0, 2)}{p.is_retrograde ? '*' : ''}{p.is_combust ? '#' : ''}
+                    {p.planet}{p.is_retrograde ? '*' : ''}{p.is_combust ? '#' : ''}
                   </td>
-                  <td className="p-1">{pStrength?.dignity || "Own"}</td>
+                  <td className="p-1">{dignityDisplay}</td>
                   <td className="p-1">{(sb * 10).toFixed(0)}</td>
-                  <td className="p-1">12</td>
+                  <td className="p-1">{vbDisplay}</td>
                   <td className={`p-1 font-bold ${statusColor}`}>{statusText}</td>
                 </tr>
               );

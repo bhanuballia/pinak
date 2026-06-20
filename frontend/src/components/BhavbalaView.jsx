@@ -41,7 +41,7 @@ const ashtakavargaData = [
     { sign: "Tau", house: 12, val: 15 },
 ];
 
-export default function BhavbalaView({ data }) {
+export default function BhavbalaView({ data, onlyTable = false }) {
 
     const renderBhavaBalaTable = () => {
         const houses = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
@@ -140,7 +140,7 @@ export default function BhavbalaView({ data }) {
     return (
         <div className="min-h-screen w-full bg-[#fff0d6] p-2 flex flex-col gap-4 overflow-y-auto">
             {renderBhavaBalaTable()}
-            {renderAshtakavargaChart()}
+            {!onlyTable && renderAshtakavargaChart()}
         </div>
     );
 }

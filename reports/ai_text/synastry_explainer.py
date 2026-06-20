@@ -55,8 +55,8 @@ def generate_fallback_reading(p1_name: str, p2_name: str, top_hits: list) -> str
 def generate_synastry_reading(p1_name: str, p2_name: str, top_hits: list) -> str:
     """Generates an empathetic relationship reading based on geometric synastry aspects."""
     
-    # We must use gemini-pro instead of gemini-1.5-flash due to intermittent package issues in this environment
-    model = genai.GenerativeModel('gemini-pro')
+    # Note: gemini-pro is deprecated and returns 404. Using gemini-flash-latest.
+    model = genai.GenerativeModel('gemini-flash-latest')
     
     hits_text = ""
     for hit in top_hits:

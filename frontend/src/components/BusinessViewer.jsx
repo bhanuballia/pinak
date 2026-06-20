@@ -3,6 +3,7 @@ import { fetchBusinessInsights } from '../services/api';
 import DiagnosticDetails from './DiagnosticDetails';
 
 export default function BusinessViewer() {
+    const [isLightMode, setIsLightMode] = useState(false);
     const [insights, setInsights] = useState([]);
     const [personalData, setPersonalData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -72,7 +73,29 @@ export default function BusinessViewer() {
     const filteredInsights = filter === 'All' ? insights : insights.filter(item => item.category === filter);
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#020617', color: '#cbd5e1', fontFamily: 'serif', paddingBottom: '100px', position: 'relative' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: isLightMode ? '#f8fafc' : '#020617', color: isLightMode ? '#a51e0dbd' : '#cbd5e1', fontFamily: 'serif', paddingBottom: '100px', position: 'relative' }}>
+
+            <button 
+                onClick={() => setIsLightMode(!isLightMode)}
+                style={{
+                    position: 'absolute',
+                    top: '20px',
+                    right: '100px',
+                    zIndex: 1000,
+                    background: isLightMode ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    padding: '6px 12px',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    color: isLightMode ? 'white' : 'black',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+                }}
+            >
+                {isLightMode ? '🌙 Dark' : '☀️ Light'}
+            </button>
+
             {/* Language Toggle Button */}
             <button 
                 onClick={() => setIsHindi(!isHindi)}
@@ -97,7 +120,7 @@ export default function BusinessViewer() {
             {/* Premium Header */}
             <div style={{ 
                 padding: '80px 40px', 
-                background: 'linear-gradient(135deg, #451a03 0%, #020617 100%)', 
+                background: isLightMode ? 'linear-gradient(135deg, #fef3c7 0%, #f8fafc 100%)' : 'linear-gradient(135deg, #451a03 0%, #020617 100%)', 
                 borderBottom: '1px solid rgba(251, 191, 36, 0.1)',
                 position: 'relative',
                 overflow: 'hidden',
@@ -120,7 +143,7 @@ export default function BusinessViewer() {
                         boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
                     }}>💼</div>
                     <div>
-                        <h1 style={{ fontSize: '64px', fontWeight: 900, color: 'white', margin: 0, fontStyle: 'italic', letterSpacing: '-2px' }}>Business & Trade Strategy</h1>
+                        <h1 style={{ fontSize: '64px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', margin: 0, fontStyle: 'italic', letterSpacing: '-2px' }}>Business & Trade Strategy</h1>
                         <p style={{ color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '6px', fontSize: '14px', fontWeight: 900, marginTop: '10px' }}>
                             Mercury Alignment • Entrepreneurial Blueprint
                         </p>
@@ -168,7 +191,7 @@ export default function BusinessViewer() {
                 {error && (
                     <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '40px', borderRadius: '40px', textAlign: 'center' }}>
                         <h3 style={{ fontSize: '24px', fontWeight: 900, color: '#ef4444', fontStyle: 'italic', marginBottom: '10px' }}>Connection Error</h3>
-                        <p style={{ color: '#94a3b8' }}>{error}</p>
+                        <p style={{ color: isLightMode ? '#475569' : '#94a3b8' }}>{error}</p>
                     </div>
                 )}
 
@@ -184,7 +207,7 @@ export default function BusinessViewer() {
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px' }}>
                             {/* Business Path Card */}
                             <div style={{ 
-                                background: 'linear-gradient(135deg, #451a03 0%, #020617 100%)', 
+                                background: isLightMode ? 'linear-gradient(135deg, #fef3c7 0%, #f8fafc 100%)' : 'linear-gradient(135deg, #451a03 0%, #020617 100%)', 
                                 padding: '40px', 
                                 borderRadius: '50px', 
                                 border: '1px solid rgba(251,191,36,0.2)',
@@ -192,44 +215,44 @@ export default function BusinessViewer() {
                                 textAlign: 'center'
                             }}>
                                 <p style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '4px', color: '#fbbf24', marginBottom: '15px' }}>Recommended Path</p>
-                                <p style={{ fontSize: '42px', fontWeight: 900, color: 'white', margin: '10px 0' }}>{personalData.path_label}</p>
+                                <p style={{ fontSize: '42px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', margin: '10px 0' }}>{personalData.path_label}</p>
                                 <p style={{ fontSize: '16px', fontWeight: 700, color: '#fbbf24', fontStyle: 'italic' }}>{personalData.path_note}</p>
                             </div>
 
                             {/* Acumen Score Card */}
                             <div style={{ 
-                                background: 'rgba(30,41,59,0.4)', 
+                                background: isLightMode ? 'rgba(255,255,255,0.8)' : 'rgba(30,41,59,0.4)', 
                                 padding: '40px', 
                                 borderRadius: '50px', 
                                 border: '1px solid rgba(255,255,255,0.05)',
                                 boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
                                 textAlign: 'center'
                             }}>
-                                <p style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '4px', color: '#94a3b8', marginBottom: '15px' }}>Business Acumen</p>
-                                <p style={{ fontSize: '64px', fontWeight: 900, color: 'white', margin: '10px 0' }}>{personalData.business_acumen}</p>
+                                <p style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '4px', color: isLightMode ? '#475569' : '#94a3b8', marginBottom: '15px' }}>Business Acumen</p>
+                                <p style={{ fontSize: '64px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', margin: '10px 0' }}>{personalData.business_acumen}</p>
                                 <p style={{ fontSize: '16px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '4px', color: '#10b981' }}>{personalData.label}</p>
                             </div>
 
                             {/* Deep Insights */}
                             <div style={{ 
-                                background: 'rgba(30,41,59,0.4)', 
+                                background: isLightMode ? 'rgba(255,255,255,0.8)' : 'rgba(30,41,59,0.4)', 
                                 padding: '40px', 
                                 borderRadius: '50px', 
                                 border: '1px solid rgba(255,255,255,0.05)',
                                 boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
                                 gridColumn: 'span 2'
                             }}>
-                                <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#94a3b8', marginBottom: '25px' }}>Planetary Trade Indicators</p>
+                                <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: isLightMode ? '#475569' : '#94a3b8', marginBottom: '25px' }}>Planetary Trade Indicators</p>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
                                     <div>
                                         <h4 style={{ color: '#fbbf24', fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', marginBottom: '15px' }}>Mercury Power</h4>
-                                        <p style={{ fontSize: '32px', color: 'white', fontWeight: 900 }}>{personalData.mercury_power}</p>
-                                        <p style={{ fontSize: '14px', color: '#94a3b8', marginTop: '10px' }}>Intelligence & Trading intellect strength.</p>
+                                        <p style={{ fontSize: '32px', color: isLightMode ? '#0f172a' : 'white', fontWeight: 900 }}>{personalData.mercury_power}</p>
+                                        <p style={{ fontSize: '14px', color: isLightMode ? '#475569' : '#94a3b8', marginTop: '10px' }}>Intelligence & Trading intellect strength.</p>
                                     </div>
                                     <div>
                                         <h4 style={{ color: '#6366f1', fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', marginBottom: '15px' }}>Market Favor</h4>
-                                        <p style={{ fontSize: '32px', color: 'white', fontWeight: 900 }}>{personalData.market_favor}</p>
-                                        <p style={{ fontSize: '14px', color: '#94a3b8', marginTop: '10px' }}>Potential for success in the open market.</p>
+                                        <p style={{ fontSize: '32px', color: isLightMode ? '#0f172a' : 'white', fontWeight: 900 }}>{personalData.market_favor}</p>
+                                        <p style={{ fontSize: '14px', color: isLightMode ? '#475569' : '#94a3b8', marginTop: '10px' }}>Potential for success in the open market.</p>
                                     </div>
                                 </div>
                             </div>
@@ -245,14 +268,14 @@ export default function BusinessViewer() {
                 <section>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
                         <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.1))' }}></div>
-                        <h2 style={{ fontSize: '32px', color: 'white', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>Vedic Business Wisdom</h2>
+                        <h2 style={{ fontSize: '32px', color: isLightMode ? '#0f172a' : 'white', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>Vedic Business Wisdom</h2>
                         <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to left, transparent, rgba(255,255,255,0.1))' }}></div>
                     </div>
                     
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px' }}>
                         {filteredInsights.map((item, idx) => (
                             <div key={idx} style={{ 
-                                background: 'rgba(15, 23, 42, 0.6)', 
+                                background: isLightMode ? 'rgba(255,255,255,0.8)' : 'rgba(15, 23, 42, 0.6)', 
                                 padding: '40px', 
                                 borderRadius: '50px', 
                                 border: '1px solid rgba(255,255,255,0.05)',
@@ -262,8 +285,8 @@ export default function BusinessViewer() {
                                     <span style={{ padding: '6px 15px', borderRadius: '100px', background: 'rgba(251, 191, 36, 0.05)', fontSize: '10px', color: '#fbbf24', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', border: '1px solid rgba(251, 191, 36, 0.1)' }}>{item.category}</span>
                                     <span style={{ fontSize: '24px' }}>{item.icon || '📊'}</span>
                                 </div>
-                                <h3 style={{ fontSize: '24px', fontWeight: 900, color: 'white', marginBottom: '15px' }}>{item.title}</h3>
-                                <p style={{ fontSize: '18px', color: '#94a3b8', lineHeight: '1.7', fontStyle: 'italic' }}>{item.content}</p>
+                                <h3 style={{ fontSize: '24px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', marginBottom: '15px' }}>{item.title}</h3>
+                                <p style={{ fontSize: '18px', color: isLightMode ? '#475569' : '#94a3b8', lineHeight: '1.7', fontStyle: 'italic' }}>{item.content}</p>
                             </div>
                         ))}
                     </div>

@@ -2314,6 +2314,854 @@
             "duration": 12.0
         }
     ],
+    "ashtottari": [
+        {
+            "lord": "Sun",
+            "start": 0.0,
+            "end": 6.0,
+            "duration": 6.0
+        },
+        {
+            "lord": "Moon",
+            "start": 6.0,
+            "end": 21.0,
+            "duration": 15.0
+        },
+        {
+            "lord": "Mars",
+            "start": 21.0,
+            "end": 29.0,
+            "duration": 8.0
+        },
+        {
+            "lord": "Mercury",
+            "start": 29.0,
+            "end": 46.0,
+            "duration": 17.0
+        },
+        {
+            "lord": "Saturn",
+            "start": 46.0,
+            "end": 56.0,
+            "duration": 10.0
+        },
+        {
+            "lord": "Jupiter",
+            "start": 56.0,
+            "end": 75.0,
+            "duration": 19.0
+        },
+        {
+            "lord": "Rahu",
+            "start": 75.0,
+            "end": 87.0,
+            "duration": 12.0
+        },
+        {
+            "lord": "Venus",
+            "start": 87.0,
+            "end": 108.0,
+            "duration": 21.0
+        }
+    ],
+    "dwisaptatisama": [
+        {
+            "item": "Venus",
+            "start": 0.0,
+            "end": 7.104018470878993,
+            "duration": 7.104018470878993
+        },
+        {
+            "item": "Saturn",
+            "start": 7.104018470878993,
+            "end": 16.10401847087899,
+            "duration": 9
+        },
+        {
+            "item": "Rahu",
+            "start": 16.10401847087899,
+            "end": 25.10401847087899,
+            "duration": 9
+        },
+        {
+            "item": "Sun",
+            "start": 25.10401847087899,
+            "end": 34.10401847087899,
+            "duration": 9
+        },
+        {
+            "item": "Moon",
+            "start": 34.10401847087899,
+            "end": 43.10401847087899,
+            "duration": 9
+        },
+        {
+            "item": "Mars",
+            "start": 43.10401847087899,
+            "end": 52.10401847087899,
+            "duration": 9
+        },
+        {
+            "item": "Mercury",
+            "start": 52.10401847087899,
+            "end": 61.10401847087899,
+            "duration": 9
+        },
+        {
+            "item": "Jupiter",
+            "start": 61.10401847087899,
+            "end": 70.104018470879,
+            "duration": 9
+        },
+        {
+            "item": "Venus",
+            "start": 70.104018470879,
+            "end": 72.0,
+            "duration": 1.895981529121002
+        }
+    ],
+    "dwadashottari": [
+        {
+            "item": "Saturn",
+            "start": 0.0,
+            "end": 14.997372327411206,
+            "duration": 14.997372327411206
+        },
+        {
+            "item": "Moon",
+            "start": 14.997372327411206,
+            "end": 35.997372327411206,
+            "duration": 21
+        },
+        {
+            "item": "Sun",
+            "start": 35.997372327411206,
+            "end": 42.997372327411206,
+            "duration": 7
+        },
+        {
+            "item": "Jupiter",
+            "start": 42.997372327411206,
+            "end": 51.997372327411206,
+            "duration": 9
+        },
+        {
+            "item": "Ketu",
+            "start": 51.997372327411206,
+            "end": 62.997372327411206,
+            "duration": 11
+        },
+        {
+            "item": "Mercury",
+            "start": 62.997372327411206,
+            "end": 75.9973723274112,
+            "duration": 13
+        },
+        {
+            "item": "Rahu",
+            "start": 75.9973723274112,
+            "end": 90.9973723274112,
+            "duration": 15
+        },
+        {
+            "item": "Mars",
+            "start": 90.9973723274112,
+            "end": 107.9973723274112,
+            "duration": 17
+        },
+        {
+            "item": "Saturn",
+            "start": 107.9973723274112,
+            "end": 112.0,
+            "duration": 4.002627672588801
+        }
+    ],
+    "panchottari": [
+        {
+            "lord": "Sun",
+            "start": 0.0,
+            "end": 12.0,
+            "duration": 12.0
+        },
+        {
+            "lord": "Mercury",
+            "start": 12.0,
+            "end": 25.0,
+            "duration": 13.0
+        },
+        {
+            "lord": "Saturn",
+            "start": 25.0,
+            "end": 39.0,
+            "duration": 14.0
+        },
+        {
+            "lord": "Mars",
+            "start": 39.0,
+            "end": 54.0,
+            "duration": 15.0
+        },
+        {
+            "lord": "Venus",
+            "start": 54.0,
+            "end": 70.0,
+            "duration": 16.0
+        },
+        {
+            "lord": "Moon",
+            "start": 70.0,
+            "end": 87.0,
+            "duration": 17.0
+        },
+        {
+            "lord": "Jupiter",
+            "start": 87.0,
+            "end": 105.0,
+            "duration": 18.0
+        }
+    ],
+    "shatabdika": [
+        {
+            "item": "Saturn",
+            "start": 0.0,
+            "end": 23.680061569596642,
+            "duration": 23.680061569596642
+        },
+        {
+            "item": "Sun",
+            "start": 23.680061569596642,
+            "end": 28.680061569596642,
+            "duration": 5
+        },
+        {
+            "item": "Moon",
+            "start": 28.680061569596642,
+            "end": 33.680061569596646,
+            "duration": 5
+        },
+        {
+            "item": "Venus",
+            "start": 33.680061569596646,
+            "end": 43.680061569596646,
+            "duration": 10
+        },
+        {
+            "item": "Mercury",
+            "start": 43.680061569596646,
+            "end": 53.680061569596646,
+            "duration": 10
+        },
+        {
+            "item": "Jupiter",
+            "start": 53.680061569596646,
+            "end": 73.68006156959665,
+            "duration": 20
+        },
+        {
+            "item": "Mars",
+            "start": 73.68006156959665,
+            "end": 93.68006156959665,
+            "duration": 20
+        },
+        {
+            "item": "Saturn",
+            "start": 93.68006156959665,
+            "end": 100.0,
+            "duration": 6.319938430403354
+        }
+    ],
+    "shashtihayani": [
+        {
+            "item": "Aries",
+            "start": 0.0,
+            "end": 10.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Taurus",
+            "start": 10.0,
+            "end": 20.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Gemini",
+            "start": 20.0,
+            "end": 30.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Cancer",
+            "start": 30.0,
+            "end": 40.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Leo",
+            "start": 40.0,
+            "end": 50.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Virgo",
+            "start": 50.0,
+            "end": 60.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Libra",
+            "start": 60.0,
+            "end": 70.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Scorpio",
+            "start": 70.0,
+            "end": 80.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Sagittarius",
+            "start": 80.0,
+            "end": 90.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Capricorn",
+            "start": 90.0,
+            "end": 100.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Aquarius",
+            "start": 100.0,
+            "end": 110.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Pisces",
+            "start": 110.0,
+            "end": 120.0,
+            "duration": 10.0
+        }
+    ],
+    "chara": [
+        {
+            "sign": "Aries",
+            "start": 0.0,
+            "end": 10.0,
+            "duration": 10.0
+        },
+        {
+            "sign": "Taurus",
+            "start": 10.0,
+            "end": 20.0,
+            "duration": 10.0
+        },
+        {
+            "sign": "Gemini",
+            "start": 20.0,
+            "end": 30.0,
+            "duration": 10.0
+        },
+        {
+            "sign": "Cancer",
+            "start": 30.0,
+            "end": 40.0,
+            "duration": 10.0
+        },
+        {
+            "sign": "Leo",
+            "start": 40.0,
+            "end": 50.0,
+            "duration": 10.0
+        },
+        {
+            "sign": "Virgo",
+            "start": 50.0,
+            "end": 60.0,
+            "duration": 10.0
+        },
+        {
+            "sign": "Libra",
+            "start": 60.0,
+            "end": 70.0,
+            "duration": 10.0
+        },
+        {
+            "sign": "Scorpio",
+            "start": 70.0,
+            "end": 80.0,
+            "duration": 10.0
+        },
+        {
+            "sign": "Sagittarius",
+            "start": 80.0,
+            "end": 90.0,
+            "duration": 10.0
+        },
+        {
+            "sign": "Capricorn",
+            "start": 90.0,
+            "end": 100.0,
+            "duration": 10.0
+        },
+        {
+            "sign": "Aquarius",
+            "start": 100.0,
+            "end": 110.0,
+            "duration": 10.0
+        },
+        {
+            "sign": "Pisces",
+            "start": 110.0,
+            "end": 120.0,
+            "duration": 10.0
+        }
+    ],
+    "sthira": [
+        {
+            "item": "Aries",
+            "start": 0.0,
+            "end": 10.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Taurus",
+            "start": 10.0,
+            "end": 20.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Gemini",
+            "start": 20.0,
+            "end": 30.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Cancer",
+            "start": 30.0,
+            "end": 40.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Leo",
+            "start": 40.0,
+            "end": 50.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Virgo",
+            "start": 50.0,
+            "end": 60.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Libra",
+            "start": 60.0,
+            "end": 70.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Scorpio",
+            "start": 70.0,
+            "end": 80.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Sagittarius",
+            "start": 80.0,
+            "end": 90.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Capricorn",
+            "start": 90.0,
+            "end": 100.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Aquarius",
+            "start": 100.0,
+            "end": 110.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Pisces",
+            "start": 110.0,
+            "end": 120.0,
+            "duration": 10.0
+        }
+    ],
+    "shoola": [
+        {
+            "item": "Aries",
+            "start": 0.0,
+            "end": 10.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Taurus",
+            "start": 10.0,
+            "end": 20.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Gemini",
+            "start": 20.0,
+            "end": 30.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Cancer",
+            "start": 30.0,
+            "end": 40.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Leo",
+            "start": 40.0,
+            "end": 50.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Virgo",
+            "start": 50.0,
+            "end": 60.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Libra",
+            "start": 60.0,
+            "end": 70.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Scorpio",
+            "start": 70.0,
+            "end": 80.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Sagittarius",
+            "start": 80.0,
+            "end": 90.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Capricorn",
+            "start": 90.0,
+            "end": 100.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Aquarius",
+            "start": 100.0,
+            "end": 110.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Pisces",
+            "start": 110.0,
+            "end": 120.0,
+            "duration": 10.0
+        }
+    ],
+    "niryaana_shoola": [
+        {
+            "item": "Aries",
+            "start": 0.0,
+            "end": 10.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Taurus",
+            "start": 10.0,
+            "end": 20.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Gemini",
+            "start": 20.0,
+            "end": 30.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Cancer",
+            "start": 30.0,
+            "end": 40.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Leo",
+            "start": 40.0,
+            "end": 50.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Virgo",
+            "start": 50.0,
+            "end": 60.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Libra",
+            "start": 60.0,
+            "end": 70.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Scorpio",
+            "start": 70.0,
+            "end": 80.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Sagittarius",
+            "start": 80.0,
+            "end": 90.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Capricorn",
+            "start": 90.0,
+            "end": 100.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Aquarius",
+            "start": 100.0,
+            "end": 110.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Pisces",
+            "start": 110.0,
+            "end": 120.0,
+            "duration": 10.0
+        }
+    ],
+    "drig": [
+        {
+            "item": "Aries",
+            "start": 0.0,
+            "end": 10.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Taurus",
+            "start": 10.0,
+            "end": 20.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Gemini",
+            "start": 20.0,
+            "end": 30.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Cancer",
+            "start": 30.0,
+            "end": 40.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Leo",
+            "start": 40.0,
+            "end": 50.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Virgo",
+            "start": 50.0,
+            "end": 60.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Libra",
+            "start": 60.0,
+            "end": 70.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Scorpio",
+            "start": 70.0,
+            "end": 80.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Sagittarius",
+            "start": 80.0,
+            "end": 90.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Capricorn",
+            "start": 90.0,
+            "end": 100.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Aquarius",
+            "start": 100.0,
+            "end": 110.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Pisces",
+            "start": 110.0,
+            "end": 120.0,
+            "duration": 10.0
+        }
+    ],
+    "mandooka": [
+        {
+            "item": "Aries",
+            "start": 0.0,
+            "end": 10.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Cancer",
+            "start": 10.0,
+            "end": 20.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Libra",
+            "start": 20.0,
+            "end": 30.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Capricorn",
+            "start": 30.0,
+            "end": 40.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Taurus",
+            "start": 40.0,
+            "end": 50.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Leo",
+            "start": 50.0,
+            "end": 60.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Scorpio",
+            "start": 60.0,
+            "end": 70.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Aquarius",
+            "start": 70.0,
+            "end": 80.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Gemini",
+            "start": 80.0,
+            "end": 90.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Virgo",
+            "start": 90.0,
+            "end": 100.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Sagittarius",
+            "start": 100.0,
+            "end": 110.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Pisces",
+            "start": 110.0,
+            "end": 120.0,
+            "duration": 10.0
+        }
+    ],
+    "sudasha": [
+        {
+            "item": "Aries",
+            "start": 0.0,
+            "end": 10.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Taurus",
+            "start": 10.0,
+            "end": 20.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Gemini",
+            "start": 20.0,
+            "end": 30.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Cancer",
+            "start": 30.0,
+            "end": 40.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Leo",
+            "start": 40.0,
+            "end": 50.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Virgo",
+            "start": 50.0,
+            "end": 60.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Libra",
+            "start": 60.0,
+            "end": 70.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Scorpio",
+            "start": 70.0,
+            "end": 80.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Sagittarius",
+            "start": 80.0,
+            "end": 90.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Capricorn",
+            "start": 90.0,
+            "end": 100.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Aquarius",
+            "start": 100.0,
+            "end": 110.0,
+            "duration": 10.0
+        },
+        {
+            "item": "Pisces",
+            "start": 110.0,
+            "end": 120.0,
+            "duration": 10.0
+        }
+    ],
     "panchang": {
         "tithi": {
             "tithi_index": 19,
@@ -12668,6 +13516,17 @@
         "sign": "Gemini",
         "nakshatra_name": "Mrigashira"
     },
+    "maraka": {
+        "signs": [
+            "Taurus",
+            "Libra",
+            "Scorpio"
+        ],
+        "planets": [
+            "Venus",
+            "Venus"
+        ]
+    },
     "planet_strength": {
         "Sun": {
             "sthana": 5.7827991981228415,
@@ -18170,48 +19029,48 @@
     },
     "transits": {
         "Sun": {
-            "house": 12,
-            "lon": 53.32,
-            "speed": 0.9566907809019207
+            "house": 1,
+            "lon": 64.82,
+            "speed": 0.954603132986459
         },
         "Moon": {
-            "house": 9,
-            "lon": 322.17,
-            "speed": 12.925720368249571
+            "house": 3,
+            "lon": 135.83,
+            "speed": 13.417369253539176
         },
         "Mercury": {
             "house": 1,
-            "lon": 76.23,
-            "speed": 1.3643823043576542
+            "lon": 88.73,
+            "speed": 0.6837788790194294
         },
         "Venus": {
-            "house": 1,
-            "lon": 89.78,
-            "speed": 1.171783389567748
+            "house": 2,
+            "lon": 103.77,
+            "speed": 1.1543096261420611
         },
         "Mars": {
             "house": 11,
-            "lon": 20.93,
-            "speed": 0.7344083819516506
+            "lon": 29.7,
+            "speed": 0.7223247640829044
         },
         "Jupiter": {
             "house": 2,
-            "lon": 91.25,
-            "speed": 0.19673200041792444
+            "lon": 93.69,
+            "speed": 0.20741900096884863
         },
         "Saturn": {
             "house": 10,
-            "lon": 348.6,
-            "speed": 0.07547643192420077
+            "lon": 349.41,
+            "speed": 0.05899959687935651
         },
         "Rahu": {
             "house": 9,
-            "lon": 308.7,
-            "speed": 0.001043831655587026
+            "lon": 307.68,
+            "speed": 0.008486198977052722
         },
         "Ketu": {
             "house": 3,
-            "lon": 128.7,
+            "lon": 127.68,
             "speed": 0
         }
     },
@@ -18219,48 +19078,48 @@
     "transit_analysis": {
         "current_positions": {
             "Sun": {
-                "house": 12,
-                "lon": 53.32,
-                "speed": 0.9566907809019207
+                "house": 1,
+                "lon": 64.82,
+                "speed": 0.954603132986459
             },
             "Moon": {
-                "house": 9,
-                "lon": 322.17,
-                "speed": 12.925720368249571
+                "house": 3,
+                "lon": 135.83,
+                "speed": 13.417369253539176
             },
             "Mercury": {
                 "house": 1,
-                "lon": 76.23,
-                "speed": 1.3643823043576542
+                "lon": 88.73,
+                "speed": 0.6837788790194294
             },
             "Venus": {
-                "house": 1,
-                "lon": 89.78,
-                "speed": 1.171783389567748
+                "house": 2,
+                "lon": 103.77,
+                "speed": 1.1543096261420611
             },
             "Mars": {
                 "house": 11,
-                "lon": 20.93,
-                "speed": 0.7344083819516506
+                "lon": 29.7,
+                "speed": 0.7223247640829044
             },
             "Jupiter": {
                 "house": 2,
-                "lon": 91.25,
-                "speed": 0.19673200041792444
+                "lon": 93.69,
+                "speed": 0.20741900096884863
             },
             "Saturn": {
                 "house": 10,
-                "lon": 348.6,
-                "speed": 0.07547643192420077
+                "lon": 349.41,
+                "speed": 0.05899959687935651
             },
             "Rahu": {
                 "house": 9,
-                "lon": 308.7,
-                "speed": 0.001043831655587026
+                "lon": 307.68,
+                "speed": 0.008486198977052722
             },
             "Ketu": {
                 "house": 3,
-                "lon": 128.7,
+                "lon": 127.68,
                 "speed": 0
             }
         },

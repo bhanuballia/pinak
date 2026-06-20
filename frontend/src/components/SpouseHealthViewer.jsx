@@ -3,6 +3,7 @@ import { fetchSpouseHealthInsights } from '../services/api';
 import DiagnosticDetails from './DiagnosticDetails';
 
 export default function SpouseHealthViewer() {
+    const [isLightMode, setIsLightMode] = useState(false);
     const [insights, setInsights] = useState([]);
     const [personalData, setPersonalData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -71,11 +72,33 @@ export default function SpouseHealthViewer() {
     const filteredInsights = filter === 'All' ? insights : insights.filter(item => item.category === filter);
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#020617', color: '#cbd5e1', fontFamily: 'serif', paddingBottom: '100px' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: isLightMode ? '#f8fafc' : '#020617', color: isLightMode ? '#a51e0dbd' : '#cbd5e1', fontFamily: 'serif', paddingBottom: '100px', position: 'relative' }}>
+
+            <button 
+                onClick={() => setIsLightMode(!isLightMode)}
+                style={{
+                    position: 'absolute',
+                    top: '20px',
+                    right: '100px',
+                    zIndex: 1000,
+                    background: isLightMode ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    padding: '6px 12px',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    color: isLightMode ? 'white' : 'black',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+                }}
+            >
+                {isLightMode ? '🌙 Dark' : '☀️ Light'}
+            </button>
+
             {/* Premium Header */}
             <div style={{ 
                 padding: '80px 40px', 
-                background: 'linear-gradient(135deg, #3b0764 0%, #020617 100%)', 
+                background: isLightMode ? 'linear-gradient(135deg, #f3e8ff 0%, #f8fafc 100%)' : 'linear-gradient(135deg, #3b0764 0%, #020617 100%)', 
                 borderBottom: '1px solid rgba(168, 85, 247, 0.1)',
                 position: 'relative',
                 overflow: 'hidden',
@@ -98,7 +121,7 @@ export default function SpouseHealthViewer() {
                         boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
                     }}>💍</div>
                     <div>
-                        <h1 style={{ fontSize: '64px', fontWeight: 900, color: 'white', margin: 0, fontStyle: 'italic', letterSpacing: '-2px' }}>Spouse Health Guide</h1>
+                        <h1 style={{ fontSize: '64px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', margin: 0, fontStyle: 'italic', letterSpacing: '-2px' }}>Spouse Health Guide</h1>
                         <p style={{ color: '#a855f7', textTransform: 'uppercase', letterSpacing: '6px', fontSize: '14px', fontWeight: 900, marginTop: '10px' }}>
                             Partner Vitality • Marital Wellness Diagnostic
                         </p>
@@ -146,7 +169,7 @@ export default function SpouseHealthViewer() {
                 {error && (
                     <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '40px', borderRadius: '40px', textAlign: 'center' }}>
                         <h3 style={{ fontSize: '24px', fontWeight: 900, color: '#ef4444', fontStyle: 'italic', marginBottom: '10px' }}>Connection Error</h3>
-                        <p style={{ color: '#94a3b8' }}>{error}</p>
+                        <p style={{ color: isLightMode ? '#475569' : '#94a3b8' }}>{error}</p>
                     </div>
                 )}
 
@@ -162,7 +185,7 @@ export default function SpouseHealthViewer() {
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px' }}>
                             {/* Spouse Health Card */}
                             <div style={{ 
-                                background: 'linear-gradient(135deg, #3b0764 0%, #020617 100%)', 
+                                background: isLightMode ? 'linear-gradient(135deg, #f3e8ff 0%, #f8fafc 100%)' : 'linear-gradient(135deg, #3b0764 0%, #020617 100%)', 
                                 padding: '40px', 
                                 borderRadius: '50px', 
                                 border: '1px solid rgba(168, 85, 247, 0.2)',
@@ -171,27 +194,27 @@ export default function SpouseHealthViewer() {
                                 gridColumn: 'span 2'
                             }}>
                                 <p style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '4px', color: '#c084fc', marginBottom: '15px' }}>Overall Physical resilience (7th House)</p>
-                                <p style={{ fontSize: '28px', fontWeight: 900, color: 'white', margin: '10px 0', lineHeight: '1.4' }}>{typeof personalData.overall === 'object' ? personalData.overall.notes || personalData.overall.score : personalData.overall}</p>
+                                <p style={{ fontSize: '28px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', margin: '10px 0', lineHeight: '1.4' }}>{typeof personalData.overall === 'object' ? personalData.overall.notes || personalData.overall.score : personalData.overall}</p>
                             </div>
 
                             {/* Deep Insights */}
                             <div style={{ 
-                                background: 'rgba(30,41,59,0.4)', 
+                                background: isLightMode ? 'rgba(255,255,255,0.8)' : 'rgba(30,41,59,0.4)', 
                                 padding: '40px', 
                                 borderRadius: '50px', 
                                 border: '1px solid rgba(255,255,255,0.05)',
                                 boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
                                 gridColumn: 'span 2'
                             }}>
-                                <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#94a3b8', marginBottom: '25px' }}>Marital Health Indicators</p>
+                                <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: isLightMode ? '#475569' : '#94a3b8', marginBottom: '25px' }}>Marital Health Indicators</p>
                                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px' }}>
                                     <div>
                                         <h4 style={{ color: '#a855f7', fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', marginBottom: '15px' }}>7th Lord Placement</h4>
-                                        <p style={{ fontSize: '16px', color: '#cbd5e1', fontStyle: 'italic' }}>{typeof personalData.lord_notes === 'object' ? personalData.lord_notes.notes || personalData.lord_notes.score : personalData.lord_notes}</p>
+                                        <p style={{ fontSize: '16px', color: isLightMode ? '#a51e0dbd' : '#cbd5e1', fontStyle: 'italic' }}>{typeof personalData.lord_notes === 'object' ? personalData.lord_notes.notes || personalData.lord_notes.score : personalData.lord_notes}</p>
                                     </div>
                                     <div>
                                         <h4 style={{ color: '#fb7185', fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', marginBottom: '15px' }}>Protective Influences</h4>
-                                        <p style={{ fontSize: '16px', color: '#cbd5e1', fontStyle: 'italic' }}>{typeof personalData.protective_aspects === 'object' ? personalData.protective_aspects.notes || personalData.protective_aspects.score : personalData.protective_aspects}</p>
+                                        <p style={{ fontSize: '16px', color: isLightMode ? '#a51e0dbd' : '#cbd5e1', fontStyle: 'italic' }}>{typeof personalData.protective_aspects === 'object' ? personalData.protective_aspects.notes || personalData.protective_aspects.score : personalData.protective_aspects}</p>
                                     </div>
                                 </div>
                             </div>
@@ -207,14 +230,14 @@ export default function SpouseHealthViewer() {
                 <section>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
                         <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.1))' }}></div>
-                        <h2 style={{ fontSize: '32px', color: 'white', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>Partner Vitality Wisdom</h2>
+                        <h2 style={{ fontSize: '32px', color: isLightMode ? '#0f172a' : 'white', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>Partner Vitality Wisdom</h2>
                         <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to left, transparent, rgba(255,255,255,0.1))' }}></div>
                     </div>
                     
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px' }}>
                         {filteredInsights.map((item, idx) => (
                             <div key={idx} style={{ 
-                                background: 'rgba(15, 23, 42, 0.6)', 
+                                background: isLightMode ? 'rgba(255,255,255,0.8)' : 'rgba(15, 23, 42, 0.6)', 
                                 padding: '40px', 
                                 borderRadius: '50px', 
                                 border: '1px solid rgba(255,255,255,0.05)',
@@ -224,8 +247,8 @@ export default function SpouseHealthViewer() {
                                     <span style={{ padding: '6px 15px', borderRadius: '100px', background: 'rgba(168, 85, 247, 0.05)', fontSize: '10px', color: '#a855f7', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', border: '1px solid rgba(168, 85, 247, 0.1)' }}>{item.category}</span>
                                     <span style={{ fontSize: '24px' }}>{item.icon || '💍'}</span>
                                 </div>
-                                <h3 style={{ fontSize: '24px', fontWeight: 900, color: 'white', marginBottom: '15px' }}>{item.title}</h3>
-                                <p style={{ fontSize: '18px', color: '#94a3b8', lineHeight: '1.7', fontStyle: 'italic' }}>{item.content}</p>
+                                <h3 style={{ fontSize: '24px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', marginBottom: '15px' }}>{item.title}</h3>
+                                <p style={{ fontSize: '18px', color: isLightMode ? '#475569' : '#94a3b8', lineHeight: '1.7', fontStyle: 'italic' }}>{item.content}</p>
                             </div>
                         ))}
                     </div>

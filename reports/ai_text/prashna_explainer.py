@@ -42,7 +42,7 @@ def guess_target_house(question: str) -> int:
     try:
         api_key = os.getenv("GEMINI_API_KEY")
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-pro")
+        model = genai.GenerativeModel("gemini-flash-latest")
         
         prompt = f"""
         You are an expert Vedic astrologer classifying a Horary (Prashna) question.
@@ -99,7 +99,7 @@ def generate_prashna_reading(
     try:
         api_key = os.getenv("GEMINI_API_KEY")
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-pro")
+        model = genai.GenerativeModel("gemini-flash-latest")
         
         outcome_str = "YES" if math_score > 0 else "NO" if math_score < 0 else "MAYBE / DELAYED"
         

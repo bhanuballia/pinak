@@ -41,9 +41,18 @@ def cache_chart(chart):
     )
     
     filename = os.path.join(CACHE_DIR, f"chart_{key}.json")
+    tmp_filename = filename + ".tmp"
     
-    with open(filename, "w", encoding="utf-8") as f:
-        json.dump(chart, f, indent=4, ensure_ascii=False)
+    try:
+        with open(tmp_filename, "w", encoding="utf-8") as f:
+            json.dump(chart, f, indent=4, ensure_ascii=False)
+        # Atomic replace
+        os.replace(tmp_filename, filename)
+    except Exception as e:
+        print(f"[CACHE DEBUG] open() failed: {e}")
+        import traceback
+        traceback.print_exc()
+        # Non-fatal error, we just don't cache
         
     print(f"[CACHE] Saved chart for {name} to {filename}")
 

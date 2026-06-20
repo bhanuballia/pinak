@@ -4,6 +4,7 @@ import MarriageDashboard from '../relationship/MarriageDashboard';
 import SynastryDashboard from '../SynastryDashboard';
 
 const CompatibilityDashboard = ({ bride, groom, brideFullData, groomFullData, report }) => {
+   const [language, setLanguage] = useState('en');
    const [activationAnalysis, setActivationAnalysis] = useState(null);
    const [isAnalyzingActivation, setIsAnalyzingActivation] = useState(false);
    const [groomActivationAnalysis, setGroomActivationAnalysis] = useState(null);
@@ -152,7 +153,13 @@ const CompatibilityDashboard = ({ bride, groom, brideFullData, groomFullData, re
             </section>
 
             {/* Step 3: Celestial Map Synchronization (Lagna Charts) */}
-            <section className="bg-white rounded-[2.5rem] p-12 shadow-xl border border-slate-100">
+            <section className="bg-white rounded-[2.5rem] p-12 shadow-xl border border-slate-100 relative">
+               <button
+                  onClick={() => setLanguage(l => l === 'en' ? 'hi' : 'en')}
+                  className="absolute top-6 right-8 z-50 px-4 py-2 bg-amber-500 text-slate-900 font-bold rounded-xl shadow-md hover:bg-amber-400 transition text-xs uppercase tracking-wide"
+               >
+                  {language === 'en' ? 'A → अ (Translate to Hindi)' : 'अ → A (Translate to English)'}
+               </button>
                <div className="text-center mb-10">
                   <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-indigo-500 mb-2">Destiny Blueprint Visualization</h3>
                   <h2 className="text-3xl font-serif italic text-slate-800">Lagna Chart Synchronization</h2>
@@ -183,10 +190,10 @@ const CompatibilityDashboard = ({ bride, groom, brideFullData, groomFullData, re
                         </div>
                      </div>
                      <div className="aspect-square bg-slate-50 rounded-3xl p-6 border border-slate-100 shadow-inner">
-                        <ZodiacChart houses={report.bride_chart?.houses} title={`${bride}'s Lagna`} variant="modern" />
+                        <ZodiacChart houses={report.bride_chart?.houses} title={`${bride}'s Lagna`} variant="modern" defaultLang={language} key={`bride-lagna-${language}`} hideOuterRect={false} stackLayout={true} scaleText={1.3} />
                      </div>
                      <div className="aspect-square bg-slate-50 rounded-3xl p-6 border border-slate-100 shadow-inner">
-                        <ZodiacChart houses={report.bride_d9_chart?.houses} title={`${bride}'s Navamsha (D9)`} variant="modern" />
+                        <ZodiacChart houses={report.bride_d9_chart?.houses} title={`${bride}'s Navamsha (D9)`} variant="modern" defaultLang={language} key={`bride-d9-${language}`} hideOuterRect={false} stackLayout={true} />
                      </div>
                   </div>
 
@@ -214,10 +221,10 @@ const CompatibilityDashboard = ({ bride, groom, brideFullData, groomFullData, re
                         </div>
                      </div>
                      <div className="aspect-square bg-slate-50 rounded-3xl p-6 border border-slate-100 shadow-inner">
-                        <ZodiacChart houses={report.groom_chart?.houses} title={`${groom}'s Lagna`} variant="modern" />
+                        <ZodiacChart houses={report.groom_chart?.houses} title={`${groom}'s Lagna`} variant="modern" defaultLang={language} key={`groom-lagna-${language}`} hideOuterRect={false} stackLayout={true} />
                      </div>
                      <div className="aspect-square bg-slate-50 rounded-3xl p-6 border border-slate-100 shadow-inner">
-                        <ZodiacChart houses={report.groom_d9_chart?.houses} title={`${groom}'s Navamsha (D9)`} variant="modern" />
+                        <ZodiacChart houses={report.groom_d9_chart?.houses} title={`${groom}'s Navamsha (D9)`} variant="modern" defaultLang={language} key={`groom-d9-${language}`} hideOuterRect={false} stackLayout={true} />
                      </div>
                   </div>
                </div>
@@ -688,10 +695,10 @@ const CompatibilityDashboard = ({ bride, groom, brideFullData, groomFullData, re
             </section>
 
             {/* Embedded Synastry Matrix */}
-            <SynastryDashboard 
-               p1Data={brideFullData} 
-               p2Data={groomFullData} 
-               standalone={false} 
+            <SynastryDashboard
+               p1Data={brideFullData}
+               p2Data={groomFullData}
+               standalone={false}
             />
 
          </div>

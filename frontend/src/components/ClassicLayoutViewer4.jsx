@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import ZodiacChart from "./ZodiacChart";
 import VimshottariTable from "./VimshottariTable";
 import { RelationshipTable } from "./PlanetaryRelationshipsViewer";
@@ -111,8 +113,27 @@ export default function ClassicLayoutViewer4({ data }) {
     const compound = friendshipData.compound !== undefined ? friendshipData.compound : friendshipData;
     const vimsopakaData = data.vimsopaka_assessment?.vimsopaka_bala || {};
 
+
+    const handleExportPDF = async () => {
+        const element = document.getElementById('pdf-classic-content');
+        if (!element) return;
+        try {
+            const canvas = await html2canvas(element, { scale: 1.5, useCORS: true, logging: false });
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('l', 'mm', 'a4'); // landscape
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('ClassicLayoutViewer4.pdf');
+        } catch (error) {
+            console.error("PDF Export failed:", error);
+            alert("Failed to export PDF.");
+        }
+    };
+
     return (
-        <div className="h-screen w-screen bg-[#fff0d6] font-sans flex flex-col overflow-y-auto overflow-x-hidden custom-scrollbar text-[#333]">
+        <div id="pdf-classic-content" className="h-screen w-screen bg-[#fff0d6] font-sans flex flex-col overflow-y-auto overflow-x-hidden custom-scrollbar text-[#333]">
+            <button onClick={handleExportPDF} className="absolute top-2 right-2 z-[100] bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-[12px] font-black uppercase shadow-lg border border-emerald-500/30 transition-all cursor-pointer">Export PDF</button>
             <div className="flex-1 flex flex-col gap-1 p-2 h-full w-full min-h-[900px]">
 
                 {/* Top Row: Compound Relationships */}

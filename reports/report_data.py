@@ -22,6 +22,19 @@ from reports.interpretation.core import generate_ai_life_analysis
 from strength.shadbala import compute_shadbala as compute_shadbala_old
 from dasha.shodashottari import compute_shodashottari
 from dasha.chaturshitisama import compute_chaturshitisama
+from dasha.ashtottari import compute_ashtottari
+from dasha.dwisaptatisama import compute_dwisaptatisama
+from dasha.dwadashottari import compute_dwadashottari
+from dasha.panchottari import compute_panchottari
+from dasha.shatabdika import compute_shatabdika
+from dasha.shastihayani import compute_shastihayani
+from dasha.chara import compute_chara
+from dasha.sthira import compute_sthira
+from dasha.shoola import compute_shoola
+from dasha.niryaana_shoola import compute_niryaana_shoola
+from dasha.drig import compute_drig
+from dasha.mandooka import compute_mandooka
+from dasha.sudasha import compute_sudasha
 
 # New professional analysis engines
 from core.analysis.dosha_engine import calculate_all_doshas
@@ -794,6 +807,19 @@ def assemble_report_data(
         "dasha": dasha,
         "shodashottari": compute_shodashottari(start_planet=shodasha_start), 
         "chaturshitisama": compute_chaturshitisama(start_planet=chatur_start),
+        "ashtottari": compute_ashtottari(),
+        "dwisaptatisama": compute_dwisaptatisama(moon_lon),
+        "dwadashottari": compute_dwadashottari(moon_lon),
+        "panchottari": compute_panchottari(),
+        "shatabdika": compute_shatabdika(moon_lon),
+        "shashtihayani": compute_shastihayani(),
+        "chara": compute_chara(),
+        "sthira": compute_sthira(),
+        "shoola": compute_shoola(),
+        "niryaana_shoola": compute_niryaana_shoola(),
+        "drig": compute_drig(),
+        "mandooka": compute_mandooka(),
+        "sudasha": compute_sudasha(),
         "panchang": panchang_data,
         "charts": {
             "lagna_grid": _lagna_grid(chart),
@@ -804,6 +830,25 @@ def assemble_report_data(
         "vargas": vargas, # All 16 vargas included here
         "jd_ut": jd_ut,
         "bhrigu_bindu": bhrigu_bindu,
+    }
+    # --- Calculate Maraka (Death-Inflicting) Periods ---
+    lagna_sign = chart.get("houses", {}).get("1", {}).get("sign_name", "Aries")
+    try:
+        lagna_idx = ZODIAC_SIGNS.index(lagna_sign)
+    except ValueError:
+        lagna_idx = 0
+    
+    # 2nd, 7th, 8th signs from Lagna
+    maraka_sign_2 = ZODIAC_SIGNS[(lagna_idx + 1) % 12]
+    maraka_sign_7 = ZODIAC_SIGNS[(lagna_idx + 6) % 12]
+    maraka_sign_8 = ZODIAC_SIGNS[(lagna_idx + 7) % 12]
+    
+    maraka_planet_2 = SIGN_LORDS.get(maraka_sign_2)
+    maraka_planet_7 = SIGN_LORDS.get(maraka_sign_7)
+    
+    report_data["maraka"] = {
+        "signs": [maraka_sign_2, maraka_sign_7, maraka_sign_8],
+        "planets": [maraka_planet_2, maraka_planet_7]
     }
 
     # --- New Analytic Fields ---

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MARRIAGE_HOUSE_INTERPRETATIONS, MARRIAGE_YOGAS, MARRIAGE_CONJUNCTIONS, SIGN_LORDS, predictMarriageYears } from '../data/marriageData';
 
 export default function MarriageAnalysis() {
+    const [isLightMode, setIsLightMode] = useState(false);
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedYoga, setSelectedYoga] = useState(null);
@@ -20,12 +21,12 @@ export default function MarriageAnalysis() {
 
     const houses = data.charts?.houses || {};
     const basic = data.basic_details || {};
-    
+
     // Ultra-robust date extraction
     let day = basic.day || basic.date;
     let month = basic.month;
     let year = basic.year;
-    
+
     if (!day || !month || !year) {
         const fullDate = basic.birth_date || (basic.birth_datetime && basic.birth_datetime.split(' ')[0]);
         if (fullDate) {
@@ -40,14 +41,14 @@ export default function MarriageAnalysis() {
             }
         }
     }
-    
+
     const dobStr = `${day}/${month}/${year}`;
     console.log("Numerology Debug - DOB String:", dobStr);
     const numerology = predictMarriageYears(dobStr);
     console.log("Numerology Debug - Result:", numerology);
 
     const getPlanetHouse = (pName) => {
-        const hNum = Object.keys(houses).find(h => 
+        const hNum = Object.keys(houses).find(h =>
             houses[h].planets?.some(p => (typeof p === 'object' ? p.name : p) === pName)
         );
         return hNum ? parseInt(hNum) : null;
@@ -75,9 +76,60 @@ export default function MarriageAnalysis() {
     const activeConjunctions = getActiveConjunctions();
 
     return (
-        <div className="min-h-screen bg-[#020617] text-[#cbd5e1] font-serif p-8 relative">
+        <div className={`${isLightMode ? 'light-mode-override' : 'min-h-screen bg-[#020617] text-[#cbd5e1] font-serif p-8 relative'} relative`}>
+
+            <button
+                onClick={() => setIsLightMode(!isLightMode)}
+                style={{
+                    position: 'absolute',
+                    top: '20px',
+                    right: '80px',
+                    zIndex: 1000,
+                    background: isLightMode ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    padding: '6px 12px',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    color: isLightMode ? 'white' : 'black',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+                }}
+            >
+                {isLightMode ? '🌙 Dark' : '☀️ Light'}
+            </button>
+
+
+            <style>{`
+                .light-mode-override {
+                    background-color: #f8fafc !important;
+                    color: rgba(107, 5, 102, 0.74) !important;
+                }
+                .light-mode-override .bg-\\[\\#0f172a\\] {
+                    background-color: #ffffff !important;
+                    border-color: rgba(0,0,0,0.1) !important;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+                }
+                .light-mode-override .text-white {
+                    color: #0f172a !important;
+                }
+                .light-mode-override .text-\\[\\#cbd5e1\\] {
+                    color: #1a1111bd !important;
+                }
+                .light-mode-override .bg-white\\/5 {
+                    background-color: rgba(0,0,0,0.03) !important;
+                    border-color: rgba(0,0,0,0.05) !important;
+                }
+                .light-mode-override .from-\\[\\#1e1b4b\\] {
+                    --tw-gradient-from: #f1f5f9 var(--tw-gradient-from-position) !important;
+                }
+                .light-mode-override .to-\\[\\#020617\\] {
+                    --tw-gradient-to: #e2e8f0 var(--tw-gradient-to-position) !important;
+                }
+            `}</style>
+
             {/* Language Toggle Button */}
-            <button 
+            <button
                 onClick={() => setIsHindi(!isHindi)}
                 style={{
                     position: 'absolute',
@@ -129,7 +181,7 @@ export default function MarriageAnalysis() {
                                     {numerology.rules.intro}
                                 </p>
                             </div>
-                            
+
                             <div className="lg:col-span-2 space-y-6">
                                 <h3 className="text-xl font-black text-white uppercase tracking-tight mb-4">Predicted Marriage Yoga Years</h3>
                                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -144,7 +196,7 @@ export default function MarriageAnalysis() {
                                 <div className="bg-amber-500/5 p-4 rounded-xl border border-amber-500/10 mt-6">
                                     <p className="text-[9px] font-bold text-amber-200 uppercase mb-2">💡 Numerology Tip</p>
                                     <p className="text-xs opacity-60 leading-relaxed">
-                                        According to numerology, your strongest years for union are those that reduce to <b>{numerology.rules.marriage_years.join(', ')}</b>. 
+                                        According to numerology, your strongest years for union are those that reduce to <b>{numerology.rules.marriage_years.join(', ')}</b>.
                                         Planning ceremonies on dates that reduce to 1 or 9 is generally considered highly auspicious.
                                     </p>
                                 </div>
@@ -168,7 +220,7 @@ export default function MarriageAnalysis() {
                                 <h3 className="text-2xl font-black text-[#fb7185] mb-2">{hInfo.title}</h3>
                                 <p className="text-sm opacity-60 mb-6 font-sans uppercase tracking-widest">Sign: {signName}</p>
                                 <p className="text-lg italic mb-8 border-l-4 border-[#fb7185] pl-4">{hInfo.description}</p>
-                                
+
                                 <div className="space-y-4 relative z-10">
                                     {housePlanets.length > 0 ? (
                                         housePlanets.map((p, idx) => {
@@ -188,32 +240,32 @@ export default function MarriageAnalysis() {
                                                             )}
                                                         </div>
                                                         {isObject && (
-                                                            <span className="text-[10px] bg-[#fb7185]/10 text-[#fb7185] px-3 py-1 rounded-full font-black uppercase tracking-widest border border-[#fb7185]/20 animate-pulse">
+                                                            <span className="text-[14px] bg-[#fb7185]/10 text-[#fb7185] px-3 py-1 rounded-full font-black uppercase tracking-widest border border-[#fb7185]/20 animate-pulse">
                                                                 Deep Analysis available
                                                             </span>
                                                         )}
                                                     </div>
-                                                    <p className="text-sm leading-relaxed mb-4 italic opacity-80">
+                                                    <p className="text-[14px] leading-relaxed mb-4 italic opacity-80">
                                                         {isObject ? interpretation.intro : (interpretation || "Influence analysis in progress...")}
                                                     </p>
                                                     {isObject && interpretation.effects && (
                                                         <div className="grid grid-cols-2 gap-3 mb-4">
                                                             {Object.entries(interpretation.effects).slice(0, 4).map(([key, val], idx) => (
-                                                                <div key={idx} className="bg-black/20 p-3 rounded-xl border border-white/5">
-                                                                    <p className="text-[8px] font-black uppercase text-[#fb7185] mb-1">{key}</p>
-                                                                    <p className="text-[10px] opacity-70 line-clamp-2">{val}</p>
+                                                                <div key={idx} className="bg-black/10 p-3 rounded-xl border border-white/5">
+                                                                    <p className="text-[15px] font-black uppercase text-[#fb7185] mb-1">{key}</p>
+                                                                    <p className="text-[14px] opacity-80 line-clamp-3">{val}</p>
                                                                 </div>
                                                             ))}
                                                         </div>
                                                     )}
                                                     {isObject && (
-                                                        <button 
-                                                            onClick={() => setSelectedYoga({ 
-                                                                name: `${pName} in ${hInfo.title}`, 
+                                                        <button
+                                                            onClick={() => setSelectedYoga({
+                                                                name: `${pName} in ${hInfo.title}`,
                                                                 details: interpretation,
                                                                 type: 'planet_detail'
                                                             })}
-                                                            className="w-full py-3 bg-[#fb7185]/10 hover:bg-[#fb7185] hover:text-white text-[#fb7185] rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all border border-[#fb7185]/30"
+                                                            className="w-full py-3 bg-[#fb7185]/10 hover:bg-[#fb7185] hover:text-white text-[#fb7185] rounded-xl text-[15px] font-black uppercase tracking-[0.2em] transition-all border border-[#fb7185]/30"
                                                         >
                                                             View Full Diagnostic
                                                         </button>
@@ -284,22 +336,21 @@ export default function MarriageAnalysis() {
                             {MARRIAGE_YOGAS.map(yoga => {
                                 const active = hasYoga(yoga.id);
                                 return (
-                                    <div 
-                                        key={yoga.id} 
-                                        className={`p-8 rounded-[2.5rem] border transition-all cursor-pointer group relative overflow-hidden ${
-                                            active ? 'bg-[#fb7185]/10 border-[#fb7185]/40 shadow-[0_0_30px_rgba(251,113,133,0.1)]' : 'bg-white/5 border-white/5 opacity-40 grayscale'
-                                        }`}
+                                    <div
+                                        key={yoga.id}
+                                        className={`p-8 rounded-[2.5rem] border transition-all cursor-pointer group relative overflow-hidden ${active ? 'bg-[#fb7185]/10 border-[#fb7185]/40 shadow-[0_0_30px_rgba(251,113,133,0.1)]' : 'bg-white/5 border-white/5 opacity-40 grayscale'
+                                            }`}
                                         onClick={() => active && setSelectedYoga(yoga)}
                                     >
                                         <div className="absolute top-4 right-4 text-4xl opacity-10 group-hover:scale-125 transition-transform">
                                             {active ? '✨' : '🔒'}
                                         </div>
-                                        <h4 className={`text-xl font-black mb-3 ${active ? 'text-white' : 'text-gray-500'}`}>{yoga.name}</h4>
-                                        <p className="text-xs leading-relaxed opacity-60 mb-6 line-clamp-3 italic">
+                                        <h4 className={`text-xl font-black mb-3 ${active ? 'text-white' : 'text-black'}`}>{yoga.name}</h4>
+                                        <p className="text-[15px] leading-relaxed opacity-60 mb-6 line-clamp-3 italic">
                                             {yoga.description}
                                         </p>
                                         {active && (
-                                            <div className="text-[9px] font-black uppercase text-[#fb7185] tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
+                                            <div className="text-[14px] font-black uppercase text-[#fb7185] tracking-widest flex items-center gap-2 group-hover:translate-x-2 transition-transform">
                                                 Active Placement • Explore Details →
                                             </div>
                                         )}
@@ -319,14 +370,14 @@ export default function MarriageAnalysis() {
                         <div className="absolute top-0 right-0 p-8">
                             <button onClick={() => setSelectedYoga(null)} className="text-white/40 hover:text-white text-4xl font-light">&times;</button>
                         </div>
-                        
+
                         <div className="p-12 md:p-16 overflow-y-auto max-h-[90vh] custom-scrollbar">
                             <div className="flex items-center gap-4 mb-2">
                                 <div className="h-[1px] w-12 bg-[#fb7185]"></div>
                                 <p className="text-[#fb7185] text-xs font-black uppercase tracking-[0.4em]">Detailed Diagnostic Report</p>
                             </div>
                             <h2 className="text-5xl font-black text-white italic mb-10 tracking-tighter">{selectedYoga.name}</h2>
-                            
+
                             {selectedYoga.type === 'planet_detail' ? (
                                 <div className="space-y-12">
                                     <div className="bg-white/5 p-8 rounded-3xl border border-white/5">

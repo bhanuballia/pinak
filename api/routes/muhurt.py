@@ -379,3 +379,198 @@ async def search_advanced_muhurt(payload: Dict = Body(...)):
         import traceback
         print(traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
+
+# Hour calculations
+def calculate_horas_for_day(sunrise_dt, sunset_dt, next_sunrise_dt, weekday):
+    HORA_ORDER = ["Sun", "Venus", "Mercury", "Moon", "Saturn", "Jupiter", "Mars"]
+    WEEKDAY_TO_HORA_IDX = {
+        6: 0, # Sunday -> Sun
+        0: 3, # Monday -> Moon
+        1: 6, # Tuesday -> Mars
+        2: 2, # Wednesday -> Mercury
+        3: 5, # Thursday -> Jupiter
+        4: 1, # Friday -> Venus
+        5: 4  # Saturday -> Saturn
+    }
+    first_hora_idx = WEEKDAY_TO_HORA_IDX[weekday]
+    
+    day_duration = (sunset_dt - sunrise_dt).total_seconds()
+    night_duration = (next_sunrise_dt - sunset_dt).total_seconds()
+    
+    day_hora_secs = day_duration / 12.0
+    night_hora_secs = night_duration / 12.0
+    
+    day_horas = []
+    current_time = sunrise_dt
+    for i in range(12):
+        lord = HORA_ORDER[(first_hora_idx + i) % 7]
+        end_time = current_time + datetime.timedelta(seconds=day_hora_secs)
+        day_horas.append({
+            "index": i + 1,
+            "lord": lord,
+            "start": current_time.strftime("%I:%M %p"),
+            "end": end_time.strftime("%I:%M %p")
+        })
+        current_time = end_time
+        
+    night_horas = []
+    current_time = sunset_dt
+    for i in range(12):
+        lord = HORA_ORDER[(first_hora_idx + 12 + i) % 7]
+        end_time = current_time + datetime.timedelta(seconds=night_hora_secs)
+        night_horas.append({
+            "index": i + 1,
+            "lord": lord,
+            "start": current_time.strftime("%I:%M %p"),
+            "end": end_time.strftime("%I:%M %p")
+        })
+        current_time = end_time
+        
+    return {
+        "day": day_horas,
+        "night": night_horas
+    }
+
+@router.post("/heatmap")
+async def calculate_muhurt_heatmap(payload: Dict = Body(...)):
+    try:
+        from panchang.choghadiya import calculate_choghadiya
+        set_ayanamsa()
+        
+        start_date_str = payload.get("start_date") or datetime.datetime.now().strftime("%Y-%m-%d")
+        days_to_check = int(payload.get("days", 30))
+        
+        start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d")
+        tz = float(payload.get("tz", 5.5))
+        lat = float(payload.get("lat", 28.6139))
+        lon = float(payload.get("lon", 77.2090))
+        ceremony = payload.get("ceremony", "Marriage")
+        rules = CEREMONY_RULES.get(ceremony, CEREMONY_RULES["Marriage"])
+        
+        user_profile = payload.get("user_profile", {})
+        natal_moon_lon = user_profile.get("moon_lon")
+        natal_moon_rashi = int(natal_moon_lon // 30.0) if natal_moon_lon is not None else None
+        natal_nak_index = int(natal_moon_lon // 13.333333) % 27 if natal_moon_lon is not None else None
+
+        TITHI_DEG = 12.0
+        NAK_DEG = 13.333333333333334
+        
+        base_jd_ut = datetime_to_julian(start_date.replace(hour=12) - datetime.timedelta(hours=tz))
+        results = []
+        
+        for i in range(days_to_check):
+            jd_ut = base_jd_ut + i
+            current_day = start_date + datetime.timedelta(days=i)
+            
+            pos = get_sun_moon_sidereal(jd_ut)
+            sun_lon, moon_lon = pos["Sun"], pos["Moon"]
+            
+            elong = (moon_lon - sun_lon) % 360.0
+            tithi_index = int(elong // TITHI_DEG)
+            tithi_val = (tithi_index % 15) + 1
+            paksha = "Shukla" if tithi_index < 15 else "Krishna"
+            tithi_name = f"{paksha} {tithi_val}"
+            
+            nak_index = int(moon_lon // NAK_DEG) % 27
+            nak_name = NAKS[nak_index]
+            weekday = current_day.weekday()
+            
+            base_match = (
+                nak_name in rules["nakshatras"] and
+                tithi_val in rules["tithis"] and
+                weekday in rules["days"]
+            )
+            
+            score = 40
+            reasons = []
+            
+            if base_match:
+                score += 30
+                reasons.append("Tithi, Nakshatra, and Day match ceremony guidelines")
+            else:
+                reasons.append("Base Panchang criteria mismatch for ceremony")
+                
+            if natal_nak_index is not None:
+                tara_diff = (nak_index - natal_nak_index) % 27
+                tara_idx = tara_diff % 9
+                tara_names = ["Janma", "Sampat", "Vipat", "Kshema", "Pratyak", "Sadhaka", "Vadha", "Mitra", "Ati Mitra"]
+                tara_name = tara_names[tara_idx]
+                if tara_idx in [2, 4, 6]:
+                    score -= 20
+                    reasons.append(f"Inauspicious Tara Bala: {tara_name} Tara")
+                else:
+                    score += 15
+                    reasons.append(f"Auspicious Tara Bala: {tara_name} Tara")
+            
+            if natal_moon_rashi is not None:
+                moon_rashi = int(moon_lon // 30.0)
+                house_from_rashi = (moon_rashi - natal_moon_rashi + 12) % 12 + 1
+                if house_from_rashi in [4, 8, 12]:
+                    score -= 20
+                    reasons.append(f"Inauspicious Moon House ({house_from_rashi}) from Janma Rashi")
+                else:
+                    score += 15
+                    reasons.append(f"Auspicious Chandra Bala (Moon in house {house_from_rashi})")
+            
+            # Combustion checks
+            jup_diff = abs(pos.get("Jupiter", 180.0) - sun_lon)
+            if jup_diff > 180: jup_diff = 360 - jup_diff
+            ven_diff = abs(pos.get("Venus", 180.0) - sun_lon)
+            if ven_diff > 180: ven_diff = 360 - ven_diff
+            
+            if jup_diff < 11.0:
+                score -= 15
+                reasons.append("Jupiter Combustion (Guru Asta)")
+            if ven_diff < 10.0:
+                score -= 15
+                reasons.append("Venus Combustion (Shukra Asta)")
+                
+            if (240.0 <= sun_lon <= 270.0) or (330.0 <= sun_lon <= 360.0):
+                score -= 15
+                reasons.append("Kharmas Period (Sun in Sagittarius/Pisces)")
+                
+            if (90.0 <= sun_lon <= 210.0) and ceremony in ["Marriage", "Vadhu Pravesh", "Grih Pravesh", "Mundan"]:
+                score -= 10
+                reasons.append("Chaturmas Period")
+                
+            score = max(10, min(100, score))
+            
+            if score >= 80:
+                status = "Highly Auspicious"
+            elif score >= 60:
+                status = "Auspicious"
+            elif score >= 40:
+                status = "Neutral"
+            else:
+                status = "Inauspicious"
+                
+            rise_time, set_time = calculate_noaa_sunrise_sunset(current_day.date(), lat, lon, tz)
+            if not rise_time or not set_time:
+                rise_time = datetime.datetime.combine(current_day.date(), datetime.time(6, 0))
+                set_time = datetime.datetime.combine(current_day.date(), datetime.time(18, 0))
+                
+            next_day = current_day + datetime.timedelta(days=1)
+            next_rise_time, _ = calculate_noaa_sunrise_sunset(next_day.date(), lat, lon, tz)
+            if not next_rise_time:
+                next_rise_time = datetime.datetime.combine(next_day.date(), datetime.time(6, 0))
+                
+            choghadiya = calculate_choghadiya(rise_time, set_time, next_rise_time)
+            horas = calculate_horas_for_day(rise_time, set_time, next_rise_time, weekday)
+            
+            results.append({
+                "date": current_day.strftime("%Y-%m-%d"),
+                "weekday": current_day.strftime("%A"),
+                "tithi": tithi_name,
+                "nakshatra": nak_name,
+                "score": score,
+                "status": status,
+                "reasons": reasons,
+                "choghadiya": choghadiya,
+                "horas": horas
+            })
+            
+        return {"ceremony": ceremony, "heatmap": results}
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=str(e))

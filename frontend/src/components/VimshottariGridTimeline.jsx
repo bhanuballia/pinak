@@ -2,15 +2,15 @@ import React from 'react';
 
 // ─── Planet Meta ──────────────────────────────────────────────────────────────
 const PLANET_META = {
-  Sun:     { years: 6,  color: '#d92121' },
-  Moon:    { years: 10, color: '#111827' },
-  Mars:    { years: 7,  color: '#ef4444' },
-  Rahu:    { years: 18, color: '#4b5563' },
+  Sun: { years: 6, color: '#d92121' },
+  Moon: { years: 10, color: '#111827' },
+  Mars: { years: 7, color: '#ef4444' },
+  Rahu: { years: 18, color: '#4b5563' },
   Jupiter: { years: 16, color: '#d97706' },
-  Saturn:  { years: 19, color: '#2563eb' },
+  Saturn: { years: 19, color: '#2563eb' },
   Mercury: { years: 17, color: '#16a34a' },
-  Ketu:    { years: 7,  color: '#92400e' },
-  Venus:   { years: 20, color: '#db2777' },
+  Ketu: { years: 7, color: '#92400e' },
+  Venus: { years: 20, color: '#db2777' },
 };
 
 // ─── Compute age from birth date and dasha date ────────────────────────────
@@ -23,7 +23,7 @@ function computeAge(birthDateStr, dashaDateStr) {
     } else {
       [birthY, birthM, birthD] = birthDateStr.split('-').map(Number);
     }
-    
+
     let y, m, d;
     if (dashaDateStr.includes('/')) {
       [d, m, y] = dashaDateStr.split('/').map(Number);
@@ -32,7 +32,7 @@ function computeAge(birthDateStr, dashaDateStr) {
     } else {
       return null;
     }
-    
+
     let ageY = y - birthY;
     let ageM = m - birthM;
     if (ageM < 0 || (ageM === 0 && d < birthD)) {
@@ -65,9 +65,9 @@ function fmtDate(dateStr) {
 
 export default function VimshottariGridTimeline({ data }) {
   const list = data?.dasha?.list || [];
-  
+
   const basic = data?.basic_details || {};
-  const meta  = data?.meta || {};
+  const meta = data?.meta || {};
   const birthDateStr = basic.birth_date || meta.date || null;
 
   if (!list.length) return null;
@@ -79,10 +79,10 @@ export default function VimshottariGridTimeline({ data }) {
           const metaInfo = PLANET_META[md.lord] || { color: '#000', years: '?' };
           const nextD = list[i + 1];
           const endDate = md.end_date || (nextD ? nextD.start_date : '');
-          
+
           const startAge = computeAge(birthDateStr, md.start_date) || '0 yrs.';
           const endAge = computeAge(birthDateStr, endDate) || '';
-          
+
           return (
             <div key={i} className="flex flex-col">
               <div className="mb-2">
@@ -93,7 +93,7 @@ export default function VimshottariGridTimeline({ data }) {
                   From {startAge} to {endAge}
                 </p>
               </div>
-              
+
               <table className="w-full text-[13px] border-collapse">
                 <thead>
                   <tr className="border-t border-b border-red-600 bg-amber-100/50">
@@ -107,7 +107,7 @@ export default function VimshottariGridTimeline({ data }) {
                     const adMetaInfo = PLANET_META[ad.lord] || { color: '#000' };
                     const adStart = ad.start_date ? fmtDate(ad.start_date) : '';
                     const adEnd = ad.end_date ? fmtDate(ad.end_date) : '';
-                    
+
                     return (
                       <tr key={j} className="border-b border-gray-100 last:border-b-2 last:border-red-600">
                         <td className="py-1 px-1" style={{ color: adMetaInfo.color }}>{ad.lord}</td>

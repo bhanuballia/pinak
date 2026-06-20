@@ -100,7 +100,7 @@ const MiniSvgChart = ({ title, data, dataKey, forceMin, forceMax, step = 10 }) =
   );
 };
 
-const ShadbalaChart = ({ data, title }) => {
+const ShadbalaChart = ({ data, title, onlyRatio = false }) => {
   if (!data || !data.planets) return <div className="p-6 text-center text-xs text-gray-400 italic font-serif">Awaiting Shad Bala Computations...</div>;
 
   const planets = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn"];
@@ -142,58 +142,61 @@ const ShadbalaChart = ({ data, title }) => {
       </div>
 
       <div className="flex-1 overflow-auto custom-scrollbar flex flex-col relative">
-        {/* Detailed List */}
-        <div className="p-2 space-y-2.5 bg-white/50">
-          {scores.map(s => (
-            <div key={s.name} className={`p-2 rounded-lg border border-gray-100 shadow-sm ${s.bg} transition-all hover:shadow-md`}>
-              <div className="flex justify-between items-center mb-1.5 px-0.5">
-                <div className="flex items-center gap-2">
-                  <span className="text-sm shadow-sm p-1 bg-white/80 rounded-full border border-gray-200 leading-none">{s.icon}</span>
-                  <div className="flex flex-col">
-                    <span className="text-[14px] font-black text-gray-800 uppercase tracking-tighter leading-none">{s.name}</span>
-                    <span className="text-[10px] text-black-400 italic font-serif mt-0.5 leading-none">{s.hindi}</span>
+        {!onlyRatio && (
+          <>
+            {/* Detailed List */}
+            <div className="p-2 space-y-2.5 bg-white/50">
+              {scores.map(s => (
+                <div key={s.name} className={`p-2 rounded-lg border border-gray-100 shadow-sm ${s.bg} transition-all hover:shadow-md`}>
+                  <div className="flex justify-between items-center mb-1.5 px-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm shadow-sm p-1 bg-white/80 rounded-full border border-gray-200 leading-none">{s.icon}</span>
+                      <div className="flex flex-col">
+                        <span className="text-[14px] font-black text-gray-800 uppercase tracking-tighter leading-none">{s.name}</span>
+                        <span className="text-[10px] text-black-400 italic font-serif mt-0.5 leading-none">{s.hindi}</span>
+                      </div>
+                    </div>
+                    <div className="flex flex-col items-end">
+                      <div className="flex items-center gap-1.5">
+                        <span className={`text-[12px] font-mono font-black ${s.isSufficient ? 'text-green-600' : 'text-amber-600'} drop-shadow-sm`}>
+                          {s.total.toFixed(2)}
+                        </span>
+                        <span className="text-[14px] font-bold text-black-400 bg-white/50 px-1 rounded">Rupa</span>
+                      </div>
+                      <span className="text-[12px] uppercase tracking-tighter text-black-400 font-bold">Req: {s.min}</span>
+                    </div>
                   </div>
-                </div>
-                <div className="flex flex-col items-end">
-                  <div className="flex items-center gap-1.5">
-                    <span className={`text-[12px] font-mono font-black ${s.isSufficient ? 'text-green-600' : 'text-amber-600'} drop-shadow-sm`}>
-                      {s.total.toFixed(2)}
+
+                  <div className="relative h-2.5 bg-gray-200/50 rounded-full border border-gray-300/40 p-[1px] shadow-inner overflow-hidden">
+                    <div
+                      className="absolute top-0 bottom-0 w-[2px] bg-red-400/80 z-20 shadow-[0_0_2px_rgba(0,0,0,0.2)]"
+                      style={{ left: `${(s.min / 10) * 100}%` }}
+                      title={`Required Minimum: ${s.min} Rupa`}
+                    ></div>
+
+                    <div
+                      className={`h-full rounded-full transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-[inset_-2px_0_4px_rgba(255,255,255,0.4)]`}
+                      style={{
+                        width: `${s.percent}%`,
+                        backgroundColor: s.color,
+                        opacity: 0.85,
+                        backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%)'
+                      }}
+                    />
+
+                    <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
+                  </div>
+
+                  <div className="flex justify-between mt-1 px-1">
+                    <span className="text-[9.5px] font-bold text-gray-400 uppercase">Potency Index</span>
+                    <span className={`text-[10.5px] font-black uppercase ${s.isSufficient ? 'text-green-500' : 'text-amber-500'}`}>
+                      {s.isSufficient ? 'Sufficient' : 'Weak Status'}
                     </span>
-                    <span className="text-[14px] font-bold text-black-400 bg-white/50 px-1 rounded">Rupa</span>
                   </div>
-                  <span className="text-[12px] uppercase tracking-tighter text-black-400 font-bold">Req: {s.min}</span>
                 </div>
-              </div>
-
-              <div className="relative h-2.5 bg-gray-200/50 rounded-full border border-gray-300/40 p-[1px] shadow-inner overflow-hidden">
-                <div
-                  className="absolute top-0 bottom-0 w-[2px] bg-red-400/80 z-20 shadow-[0_0_2px_rgba(0,0,0,0.2)]"
-                  style={{ left: `${(s.min / 10) * 100}%` }}
-                  title={`Required Minimum: ${s.min} Rupa`}
-                ></div>
-
-                <div
-                  className={`h-full rounded-full transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] shadow-[inset_-2px_0_4px_rgba(255,255,255,0.4)]`}
-                  style={{
-                    width: `${s.percent}%`,
-                    backgroundColor: s.color,
-                    opacity: 0.85,
-                    backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%)'
-                  }}
-                />
-
-                <div className="absolute inset-0 bg-gradient-to-b from-white/10 to-transparent pointer-events-none"></div>
-              </div>
-
-              <div className="flex justify-between mt-1 px-1">
-                <span className="text-[9.5px] font-bold text-gray-400 uppercase">Potency Index</span>
-                <span className={`text-[10.5px] font-black uppercase ${s.isSufficient ? 'text-green-500' : 'text-amber-500'}`}>
-                  {s.isSufficient ? 'Sufficient' : 'Weak Status'}
-                </span>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+
 
         {/* Main Strength Chart */}
         <div className="border-t-2 border-[#94a3b8] bg-[#fdfbf7] px-3 pt-2 pb-3 mt-2">
@@ -278,15 +281,17 @@ const ShadbalaChart = ({ data, title }) => {
             </div>
           </div>
         </div>
+        </>
+        )}
 
         {/* Relative Strength Ratio Chart (Parashara Style) */}
-        <div className="border-t-2 border-[#94a3b8] bg-[#fdfbf7] px-3 pt-3 pb-3 mt-2">
+        <div className={`${onlyRatio ? 'h-full flex flex-col p-4' : 'border-t-2 border-[#94a3b8] px-3 pt-3 pb-3 mt-2'} bg-[#fdfbf7]`}>
           <div className="flex items-center gap-2 mb-2">
             <span className="text-[10px] font-black text-[#1e293b] uppercase tracking-widest font-serif">Relative Strength Ratio (BPHS)</span>
           </div>
 
           {/* Pure-div chart — no SVG distortion */}
-          <div className="relative w-full border-2 border-black overflow-hidden shadow-sm" style={{ height: "400px" }}>
+          <div className={`relative w-full border-2 border-black overflow-hidden shadow-sm ${onlyRatio ? 'flex-1' : ''}`} style={{ height: onlyRatio ? "100%" : "400px" }}>
             {/* Background: green top half (ratio > 1.0), red bottom half (ratio < 1.0) */}
             <div className="absolute inset-0 top-0 h-1/2 bg-[#009900]"></div>
             <div className="absolute inset-0 top-1/2 h-1/2 bg-[#ff0000]"></div>
@@ -343,28 +348,34 @@ const ShadbalaChart = ({ data, title }) => {
           </div>
         </div>
 
-        {/* Breakdown Mini Charts */}
-        <div className="border-t-2 border-[#94a3b8] bg-[#fdfbf7] p-3 pb-6">
-          <div className="grid grid-cols-2 gap-3">
-            <MiniSvgChart title="Sthaana Bala In Rupas" data={scores} dataKey="sthana" forceMin={0} forceMax={250} step={50} />
-            <MiniSvgChart title="Dig Bala In Rupas" data={scores} dataKey="dig" forceMin={0} forceMax={60} step={10} />
-            <MiniSvgChart title="Kala Bala In Rupas" data={scores} dataKey="kala" forceMin={0} forceMax={300} step={50} />
-            <MiniSvgChart title="Cheshta Bala In Rupas" data={scores} dataKey="cheshta" forceMin={0} forceMax={60} step={10} />
-            <MiniSvgChart title="Naisargika Bala In Rupas" data={scores} dataKey="naisargika" forceMin={0} forceMax={60} step={10} />
-            <MiniSvgChart title="Drik Bala In Rupas" data={scores} dataKey="drik" forceMin={-60} forceMax={60} step={20} />
-          </div>
-        </div>
+        {!onlyRatio && (
+          <>
+            {/* Breakdown Mini Charts */}
+            <div className="border-t-2 border-[#94a3b8] bg-[#fdfbf7] p-3 pb-6">
+              <div className="grid grid-cols-2 gap-3">
+                <MiniSvgChart title="Sthaana Bala In Rupas" data={scores} dataKey="sthana" forceMin={0} forceMax={250} step={50} />
+                <MiniSvgChart title="Dig Bala In Rupas" data={scores} dataKey="dig" forceMin={0} forceMax={60} step={10} />
+                <MiniSvgChart title="Kala Bala In Rupas" data={scores} dataKey="kala" forceMin={0} forceMax={300} step={50} />
+                <MiniSvgChart title="Cheshta Bala In Rupas" data={scores} dataKey="cheshta" forceMin={0} forceMax={60} step={10} />
+                <MiniSvgChart title="Naisargika Bala In Rupas" data={scores} dataKey="naisargika" forceMin={0} forceMax={60} step={10} />
+                <MiniSvgChart title="Drik Bala In Rupas" data={scores} dataKey="drik" forceMin={-60} forceMax={60} step={20} />
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
-      <div className="p-2 bg-[#f8fafc] border-t border-gray-200 shrink-0">
-        <div className="flex items-center gap-1 mb-1">
-          <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
-          <span className="text-[7px] font-black text-red-800 uppercase tracking-widest leading-none">Vedic Threshold Indicator</span>
+      {!onlyRatio && (
+        <div className="p-2 bg-[#f8fafc] border-t border-gray-200 shrink-0">
+          <div className="flex items-center gap-1 mb-1">
+            <div className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></div>
+            <span className="text-[7px] font-black text-red-800 uppercase tracking-widest leading-none">Vedic Threshold Indicator</span>
+          </div>
+          <p className="text-[7.5px] text-gray-500 font-serif leading-tight text-justify">
+            Shad Bala represents the mathematical aggregate strength of planets across six distinct dimensions. A score above the <b className="text-red-700">threshold</b> signifies a planet's ability to manifest its results fully during its dasha periods. Component breakdowns are displayed in classical Virupas.
+          </p>
         </div>
-        <p className="text-[7.5px] text-gray-500 font-serif leading-tight text-justify">
-          Shad Bala represents the mathematical aggregate strength of planets across six distinct dimensions. A score above the <b className="text-red-700">threshold</b> signifies a planet's ability to manifest its results fully during its dasha periods. Component breakdowns are displayed in classical Virupas.
-        </p>
-      </div>
+      )}
     </div>
   );
 };

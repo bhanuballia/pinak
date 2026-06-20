@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import ZodiacChart from "./ZodiacChart";
 import AshtakavargaChart from "./AshtakavargaChart";
 import VimshottariTable from "./VimshottariTable";
@@ -184,8 +186,27 @@ export default function ClassicLayoutViewer2({ data: worksheetData }) {
     const bTime = worksheetData.meta?.time || worksheetData.meta?.tob || worksheetData.basic_details?.birth_time || "";
     const bLoc = worksheetData.meta?.location || worksheetData.meta?.loc || worksheetData.basic_details?.city || "";
 
+
+    const handleExportPDF = async () => {
+        const element = document.getElementById('pdf-classic-content');
+        if (!element) return;
+        try {
+            const canvas = await html2canvas(element, { scale: 1.5, useCORS: true, logging: false });
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('l', 'mm', 'a4'); // landscape
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('ClassicLayoutViewer2.pdf');
+        } catch (error) {
+            console.error("PDF Export failed:", error);
+            alert("Failed to export PDF.");
+        }
+    };
+
     return (
-        <div className="h-screen w-screen bg-[#f3f3f3] font-sans flex flex-col overflow-y-auto overflow-x-hidden text-[#333]">
+        <div id="pdf-classic-content" className="h-screen w-screen bg-[#f3f3f3] font-sans flex flex-col overflow-y-auto overflow-x-hidden text-[#333]">
+            <button onClick={handleExportPDF} className="absolute top-2 right-2 z-[100] bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-[12px] font-black uppercase shadow-lg border border-emerald-500/30 transition-all cursor-pointer">Export PDF</button>
             {/* Top Toolbar Replica */}
 
 
@@ -197,7 +218,7 @@ export default function ClassicLayoutViewer2({ data: worksheetData }) {
                     {/* Left: Birth Chart */}
                     <div className="flex-[2] bg-white border border-[#8ec5e6] flex flex-col overflow-hidden">
                         <div className="flex-1 relative p-1 flex items-center justify-center bg-white">
-                            <ZodiacChart houses={d1Houses} variant="legacy" defaultRect={true} title="Birth Chart" />
+                            <ZodiacChart houses={d1Houses} variant="legacy" defaultRect={true} scaleText={1.6} title="Birth Chart" />
                         </div>
                     </div>
 

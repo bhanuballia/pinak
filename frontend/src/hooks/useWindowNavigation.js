@@ -46,42 +46,35 @@ export const useWindowNavigation = () => {
 
       if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
         e.preventDefault();
-        
-        let openWindows = [];
-        try {
-          openWindows = JSON.parse(localStorage.getItem('astro_open_windows') || '[]');
-        } catch(e) {}
-        
-        if (openWindows.length === 0) return; // Nothing to cycle to
 
-        // If on the main window, we need to pick a starting point
-        let currentCycleIndex = -1;
+        let currentSequenceIndex = -1;
         if (currentIndex === -1) {
             const lastStr = localStorage.getItem('astro_active_index');
-            const lastActive = lastStr ? parseInt(lastStr, 10) : openWindows[0];
-            // Find closest index in openWindows
-            currentCycleIndex = openWindows.indexOf(lastActive);
-            if (currentCycleIndex === -1) currentCycleIndex = 0; // Default to first open window
+            const lastActive = lastStr ? parseInt(lastStr, 10) : 1;
+            currentSequenceIndex = lastActive - 1; 
         } else {
-            currentCycleIndex = openWindows.indexOf(currentIndex);
-            if (currentCycleIndex === -1) currentCycleIndex = 0;
+            currentSequenceIndex = currentIndex - 1;
         }
 
-        let nextCycleIndex;
+        let nextSequenceIndex;
         if (e.key === 'ArrowDown') {
-          nextCycleIndex = currentCycleIndex + 1;
-          if (nextCycleIndex >= openWindows.length) nextCycleIndex = 0;
+          nextSequenceIndex = currentSequenceIndex + 1;
+          if (nextSequenceIndex >= WINDOW_SEQUENCE.length) nextSequenceIndex = 0;
         } else {
-          nextCycleIndex = currentCycleIndex - 1;
-          if (nextCycleIndex < 0) nextCycleIndex = openWindows.length - 1;
+          nextSequenceIndex = currentSequenceIndex - 1;
+          if (nextSequenceIndex < 0) nextSequenceIndex = WINDOW_SEQUENCE.length - 1;
         }
 
-        const nextIndex = openWindows[nextCycleIndex];
-        const nextWinConfig = WINDOW_SEQUENCE[nextIndex - 1];
+        const nextWinConfig = WINDOW_SEQUENCE[nextSequenceIndex];
         
         if (nextWinConfig) {
+          const nextIndex = nextSequenceIndex + 1;
           localStorage.setItem('astro_active_index', nextIndex.toString());
           openAstroWindow(nextWinConfig);
+          
+          if (currentIndex > 0) {
+            window.close();
+          }
         }
       }
     };

@@ -38,6 +38,16 @@ const ChartWithBorders = ({ title, houses, borderData }) => (
 export default function LagnasView({ data }) {
     const [specialLagnas, setSpecialLagnas] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [transitDateStr, setTransitDateStr] = useState(null);
+    const [transitTimeStr, setTransitTimeStr] = useState(null);
+
+    const handleTransitChange = (positions, dt) => {
+        const pad = n => String(n).padStart(2, "0");
+        const localDateStr = `${dt.getFullYear()}-${pad(dt.getMonth() + 1)}-${pad(dt.getDate())}`;
+        const localTimeStr = `${pad(dt.getHours())}:${pad(dt.getMinutes())}:${pad(dt.getSeconds())}`;
+        setTransitDateStr(localDateStr);
+        setTransitTimeStr(localTimeStr);
+    };
 
     useEffect(() => {
         const fetchLagnas = async () => {
@@ -46,12 +56,12 @@ export default function LagnasView({ data }) {
             try {
                 // Safely extract birth details with fallbacks
                 const details = data.birth_details || {};
-                const dateStr = details.date || "2000-01-01";
-                const timeStr = details.time || "12:00:00";
-                
+                const baseDateStr = details.date || "2000-01-01";
+                const baseTimeStr = details.time || "12:00:00";
+
                 const payload = {
-                    date: dateStr,
-                    time: timeStr,
+                    date: transitDateStr || baseDateStr,
+                    time: transitTimeStr || baseTimeStr,
                     tz_offset: details.tz_offset || 5.5,
                     lat: details.lat || 28.6139,
                     lon: details.lon || 77.2090
@@ -68,7 +78,7 @@ export default function LagnasView({ data }) {
             }
         };
         fetchLagnas();
-    }, [data]);
+    }, [data, transitDateStr, transitTimeStr]);
 
     const getHouses = () => {
         if (!data) return {};
@@ -81,9 +91,9 @@ export default function LagnasView({ data }) {
         const rem = deg % 30;
         const d = Math.floor(rem).toString().padStart(2, '0');
         const m = Math.floor((rem - d) * 60).toString().padStart(2, '0');
-        
+
         const getStr = (offset) => `${d}${signs[(signIdx + offset) % 12]}${m}`;
-        
+
         // Follow North Indian houses counter-clockwise starting from t (House 1)
         return {
             t: getStr(0),
@@ -101,19 +111,11 @@ export default function LagnasView({ data }) {
         };
     };
 
-    if (loading) {
-        return <div className="p-4 text-center">Loading Lagnas...</div>;
-    }
-
-    const bhavaBorders = specialLagnas ? generateBorders(specialLagnas.bhava.deg) : {};
-    const horaBorders = specialLagnas ? generateBorders(specialLagnas.hora.deg) : {};
-    const ghatikaBorders = specialLagnas ? generateBorders(specialLagnas.ghatika.deg) : {};
-
     return (
         <div className="min-h-screen w-full bg-[#fff0d6] p-2 flex flex-col font-serif overflow-y-auto gap-2">
             {/* Top Row */}
             <div className="h-[400px] flex gap-2">
-                <div className="w-3/4 bg-[#fdfbf7] border-2 border-[#00008b] rounded-sm relative flex flex-col shadow-sm overflow-hidden h-full">
+                <div className="flex-1 bg-[#fdfbf7] border-2 border-[#00008b] rounded-sm relative flex flex-col shadow-sm overflow-hidden h-full max-w-[400px]">
                     <div className="border-b border-[#00008b] px-2 py-0 text-xl text-[#00008b] font-medium bg-white rounded-t-sm">
                         Birth Chart
                     </div>
@@ -123,31 +125,39 @@ export default function LagnasView({ data }) {
                         </div>
                     </div>
                 </div>
-                <div className="w-2/3"></div>
+
             </div>
 
             {/* Bottom Row */}
             <div className="h-[400px] flex gap-2">
                 <div className="flex-1">
-                    <ChartWithBorders 
-                        title={`Bhava Lagna ${specialLagnas ? specialLagnas.bhava.formatted : ''}`} 
-                        houses={specialLagnas ? specialLagnas.bhava.chart.houses : getHouses()} 
-                        borderData={bhavaBorders} 
-                    />
+                    {loading && !specialLagnas ? (
+                        <div className="p-4 text-center">Loading Lagnas...</div>
+                    ) : (
+                        <ChartWithBorders
+                            title={`Bhava Lagna ${specialLagnas ? specialLagnas.bhava.formatted : ''}`}
+                            houses={specialLagnas ? specialLagnas.bhava.chart.houses : getHouses()}
+                            borderData={specialLagnas ? generateBorders(specialLagnas.bhava.deg) : {}}
+                        />
+                    )}
                 </div>
                 <div className="flex-1">
-                    <ChartWithBorders 
-                        title={`Hora Lagna ${specialLagnas ? specialLagnas.hora.formatted : ''}`} 
-                        houses={specialLagnas ? specialLagnas.hora.chart.houses : getHouses()} 
-                        borderData={horaBorders} 
-                    />
+                    {!loading && specialLagnas && (
+                        <ChartWithBorders
+                            title={`Hora Lagna ${specialLagnas ? specialLagnas.hora.formatted : ''}`}
+                            houses={specialLagnas ? specialLagnas.hora.chart.houses : getHouses()}
+                            borderData={specialLagnas ? generateBorders(specialLagnas.hora.deg) : {}}
+                        />
+                    )}
                 </div>
                 <div className="flex-1">
-                    <ChartWithBorders 
-                        title={`Ghatika Lagna ${specialLagnas ? specialLagnas.ghatika.formatted : ''}`} 
-                        houses={specialLagnas ? specialLagnas.ghatika.chart.houses : getHouses()} 
-                        borderData={ghatikaBorders} 
-                    />
+                    {!loading && specialLagnas && (
+                        <ChartWithBorders
+                            title={`Ghatika Lagna ${specialLagnas ? specialLagnas.ghatika.formatted : ''}`}
+                            houses={specialLagnas ? specialLagnas.ghatika.chart.houses : getHouses()}
+                            borderData={specialLagnas ? generateBorders(specialLagnas.ghatika.deg) : {}}
+                        />
+                    )}
                 </div>
             </div>
         </div>

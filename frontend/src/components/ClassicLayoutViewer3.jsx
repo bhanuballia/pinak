@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import ZodiacChart from "./ZodiacChart";
 import VimshottariTable from "./VimshottariTable";
 
@@ -36,8 +38,8 @@ const ShadbalaRatioChart = ({ title, data }) => {
 
 const DegreeTable = ({ pPos }) => {
     const rows = [
-        { id: "As", name: "As", isLagna: true, color: "#ff8c00" },
-        ...PLANETS.map(p => ({ id: p, name: ABBREV[p], color: PLANET_COLORS_CLASSIC[p] }))
+        { id: "As", name: "Ascendant", isLagna: true, color: "#ff8c00" },
+        ...PLANETS.map(p => ({ id: p, name: p, color: PLANET_COLORS_CLASSIC[p] }))
     ];
     return (
         <div className="flex-1 overflow-auto custom-scrollbar bg-[#ffffe0]">
@@ -86,7 +88,7 @@ const DegreeTable = ({ pPos }) => {
 };
 
 const DignityTable = ({ shadbalaData }) => {
-    const rows = PLANETS.map(p => ({ id: p, name: ABBREV[p], color: PLANET_COLORS_CLASSIC[p] }));
+    const rows = PLANETS.map(p => ({ id: p, name: p, color: PLANET_COLORS_CLASSIC[p] }));
     return (
         <div className="flex-1 overflow-auto custom-scrollbar bg-[#ffffe0]">
             <table className="w-full text-[11px] font-serif text-left border-collapse">
@@ -145,8 +147,27 @@ export default function ClassicLayoutViewer3({ data: worksheetData }) {
         };
     });
 
+
+    const handleExportPDF = async () => {
+        const element = document.getElementById('pdf-classic-content');
+        if (!element) return;
+        try {
+            const canvas = await html2canvas(element, { scale: 1.5, useCORS: true, logging: false });
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('l', 'mm', 'a4'); // landscape
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('ClassicLayoutViewer3.pdf');
+        } catch (error) {
+            console.error("PDF Export failed:", error);
+            alert("Failed to export PDF.");
+        }
+    };
+
     return (
-        <div className="h-screen w-screen bg-[#fff0d6] font-sans flex flex-col overflow-y-auto overflow-x-hidden custom-scrollbar text-[#333]">
+        <div id="pdf-classic-content" className="h-screen w-screen bg-[#fff0d6] font-sans flex flex-col overflow-y-auto overflow-x-hidden custom-scrollbar text-[#333]">
+            <button onClick={handleExportPDF} className="absolute top-2 right-2 z-[100] bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-[12px] font-black uppercase shadow-lg border border-emerald-500/30 transition-all cursor-pointer">Export PDF</button>
             {/* Main Container: Left Block and Right Block */}
             <div className="flex-1 flex gap-2 bg-[#f0f0f0] p-1 h-full w-full min-h-[900px]">
 

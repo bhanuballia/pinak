@@ -16,3 +16,4 @@ frontend/dist/
 # System
 .DS_Store
 Thumbs.db
+api/firebase-adminsdk.json

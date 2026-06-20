@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import PlaceAutocomplete from "../components/PlaceAutocomplete";
 import ReportPreview from "../components/ReportPreview";
+import LanguageSwitcher from "../components/LanguageSwitcher";
 
 import { createReport, fetchTimezones, fetchReportData, fetchShodashottari, fetchChaturshitisama, saveProfileToDB, fetchSavedProfiles, fetchProfileById } from "../services/api";
 
@@ -34,6 +35,8 @@ export default function GenerateReport() {
   const [customTimezone, setCustomTimezone] = useState("");
   const [timezonesLoading, setTimezonesLoading] = useState(false);
   const [timezonesError, setTimezonesError] = useState(null);
+  const [showPreview, setShowPreview] = useState(false);
+  const [reportSuccess, setReportSuccess] = useState(false);
 
   // MongoDB state
   const [savedProfiles, setSavedProfiles] = useState([]);
@@ -189,6 +192,12 @@ export default function GenerateReport() {
 
       const fileUrl = await createReport(payload);
       setReportFileUrl(fileUrl);
+
+      // Show success toast
+      setReportSuccess(true);
+      setTimeout(() => setReportSuccess(false), 4000);
+
+
     } catch (err) {
       console.error("Report generation error:", err);
       setError(err?.message || "Failed to generate report. Check backend logs.");
@@ -208,6 +217,26 @@ export default function GenerateReport() {
       if (win) {
         win.focus();
         if (win.location.search.includes('worksheet=true')) {
+          win.location.reload();
+        }
+      }
+    } catch (e) {
+      console.error("LocalStorage save failed:", e);
+      setError("Failed to save worksheet data. The data may be too large for your browser's local storage.");
+    }
+  };
+
+  const handleOpenBlankSheet = () => {
+    if (!reportData) {
+      setError("Please generate a report first.");
+      return;
+    }
+    try {
+      localStorage.setItem('worksheetData', JSON.stringify(reportData));
+      const win = window.open('/?blank_sheet=true', 'BlankSheetViewer', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+      if (win) {
+        win.focus();
+        if (win.location.search.includes('blank_sheet=true')) {
           win.location.reload();
         }
       }
@@ -285,6 +314,26 @@ export default function GenerateReport() {
     }
   };
 
+  const handleOpenDeepHoroscope = (type) => {
+    if (!reportData) {
+      setError("Please generate a report first.");
+      return;
+    }
+    try {
+      localStorage.setItem('deepHoroscopeData', JSON.stringify(reportData));
+      const win = window.open(`/?deep_horoscope=${type}`, 'DeepHoroscopeViewer', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no');
+      if (win) {
+        win.focus();
+        if (win.location.search.includes(`deep_horoscope=${type}`)) {
+          win.location.reload();
+        }
+      }
+    } catch (e) {
+      console.error("LocalStorage save failed for Deep Horoscope:", e);
+      setError("Failed to open the Deep Horoscope window.");
+    }
+  };
+
   const handleOpenAdvancedMuhurt = () => {
     const win = window.open('/?advanced_muhurt=true', 'AdvancedMuhurtaSearch', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no');
     if (win) win.focus();
@@ -302,6 +351,11 @@ export default function GenerateReport() {
 
   const handleOpenMantra = () => {
     const win = window.open('/?mantra=true', 'MantraTracker', 'width=1000,height=800,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenBrahmaMuhurt = () => {
+    const win = window.open('/?brahma_muhurt=true', 'BrahmaMuhurtViewer', 'width=1000,height=800,menubar=no,toolbar=no,location=no,status=no');
     if (win) win.focus();
   };
 
@@ -445,6 +499,14 @@ export default function GenerateReport() {
 
   return (
     <div className="min-h-screen bg-gray-50 p-6 relative">
+      {/* Success Toast */}
+      {reportSuccess && (
+        <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] animate-bounce">
+          <div className="bg-green-600 text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-3 text-lg font-bold border-2 border-green-400">
+            <span className="text-2xl">✅</span> Reports Generated
+          </div>
+        </div>
+      )}
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-8 border border-gray-100">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-serif italic font-black text-indigo-900 tracking-wide">{t('generate_kundali', 'Generate Kundali')}</h1>
@@ -455,7 +517,7 @@ export default function GenerateReport() {
               onClick={() => setShowProfilesModal(true)}
               className="bg-indigo-50 border border-indigo-200 text-indigo-700 px-4 py-2 rounded-xl text-sm font-bold shadow-sm hover:bg-indigo-100 flex items-center gap-2"
             >
-              <span>🗄️</span> Database ({savedProfiles.length})
+              <span>🗄️</span> {t('database')} ({savedProfiles.length})
             </button>
           </div>
         </div>
@@ -465,11 +527,11 @@ export default function GenerateReport() {
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
             <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl p-6 border border-indigo-100 max-h-[80vh] overflow-auto relative">
               <button onClick={() => setShowProfilesModal(false)} className="absolute top-4 right-4 text-gray-400 hover:text-black">✖</button>
-              <h2 className="text-2xl font-serif font-bold text-indigo-900 mb-2">Saved Profiles</h2>
-              <p className="text-xs uppercase tracking-widest text-gray-500 font-bold mb-6">MongoDB Archive</p>
+              <h2 className="text-2xl font-serif font-bold text-indigo-900 mb-2">{t('saved_profiles')}</h2>
+              <p className="text-xs uppercase tracking-widest text-gray-500 font-bold mb-6">{t('mongodb_archive')}</p>
 
               {savedProfiles.length === 0 ? (
-                <div className="p-8 text-center text-gray-400 italic bg-gray-50 rounded-xl">No profiles found in the database.</div>
+                <div className="p-8 text-center text-gray-400 italic bg-gray-50 rounded-xl">{t('no_profiles_found')}</div>
               ) : (
                 <div className="space-y-3">
                   {savedProfiles.map(p => (
@@ -490,30 +552,30 @@ export default function GenerateReport() {
         <form onSubmit={handleSubmit} className="space-y-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <label className="col-span-1">
-              <div className="text-sm text-gray-600">Full name</div>
+              <div className="text-sm text-gray-600">{t('full_name')}</div>
               <input
                 className="mt-1 w-full border rounded p-2"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g., Rahul Sharma"
+                placeholder={t('eg_name')}
               />
             </label>
 
             <label>
-              <div className="text-sm text-gray-600">Gender</div>
+              <div className="text-sm text-gray-600">{t('gender')}</div>
               <select
                 className="mt-1 w-full border rounded p-2"
                 value={gender}
                 onChange={(e) => setGender(e.target.value)}
               >
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
+                <option value="Male">{t('male')}</option>
+                <option value="Female">{t('female')}</option>
+                <option value="Other">{t('other')}</option>
               </select>
             </label>
 
             <label>
-              <div className="text-sm text-gray-600">Date of birth</div>
+              <div className="text-sm text-gray-600">{t('date_of_birth')}</div>
               <input
                 type="date"
                 className="mt-1 w-full border rounded p-2"
@@ -523,7 +585,7 @@ export default function GenerateReport() {
             </label>
 
             <label>
-              <div className="text-sm text-gray-600">Time of birth</div>
+              <div className="text-sm text-gray-600">{t('time_of_birth')}</div>
               <input
                 type="time"
                 className="mt-1 w-full border rounded p-2"
@@ -534,16 +596,16 @@ export default function GenerateReport() {
           </div>
 
           <div>
-            <div className="text-sm text-gray-600">Birth place</div>
+            <div className="text-sm text-gray-600">{t('birth_place')}</div>
             <PlaceAutocomplete value={latLon?.display_name || ""} onSelect={onPlaceSelected} />
             {latLon && (
               <div className="mt-2 text-xs text-gray-500 space-y-1">
                 <div>
-                  Selected: {latLon.display_name} ({latLon.lat.toFixed(4)}, {latLon.lon.toFixed(4)})
+                  {t('selected')}: {latLon.display_name} ({latLon.lat.toFixed(4)}, {latLon.lon.toFixed(4)})
                 </div>
                 {(latLon.timezone || typeof latLon.tz_offset_hours === "number") && (
                   <div>
-                    Timezone: {latLon.timezone || "Unknown"}{" "}
+                    {t('timezone')}: {latLon.timezone || "Unknown"}{" "}
                     {typeof latLon.tz_offset_hours === "number"
                       ? `(UTC${latLon.tz_offset_hours >= 0 ? "+" : ""}${latLon.tz_offset_hours})`
                       : ""}
@@ -555,7 +617,7 @@ export default function GenerateReport() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <label>
-              <div className="text-sm text-gray-600">Timezone offset (hrs)</div>
+              <div className="text-sm text-gray-600">{t('timezone_offset')}</div>
               <input
                 type="number"
                 step="0.25"
@@ -566,7 +628,7 @@ export default function GenerateReport() {
             </label>
 
             <label className="md:col-span-2">
-              <div className="text-sm text-gray-600">Timezone (optional override)</div>
+              <div className="text-sm text-gray-600">{t('timezone_override')}</div>
               <select
                 className="mt-1 w-full border rounded p-2"
                 value={customTimezone}
@@ -575,10 +637,10 @@ export default function GenerateReport() {
               >
                 <option value="">
                   {timezonesLoading
-                    ? "Loading timezones..."
+                    ? t('loading_timezones')
                     : timezones.length
-                      ? "Select timezone"
-                      : "Timezone list unavailable"}
+                      ? t('select_timezone')
+                      : t('timezone_unavailable')}
                 </option>
                 {timezones.map((tz) => (
                   <option key={tz.name} value={tz.name}>
@@ -593,25 +655,25 @@ export default function GenerateReport() {
             </label>
 
             <label>
-              <div className="text-sm text-gray-600">Report style</div>
+              <div className="text-sm text-gray-600">{t('report_style')}</div>
               <select
                 value={style}
                 onChange={(e) => setStyle(e.target.value)}
                 className="mt-1 w-full border rounded p-2"
               >
-                <option value="minimal">Minimal (10–12 pages)</option>
-                <option value="premium">Premium (40+ pages)</option>
+                <option value="minimal">{t('minimal_report')}</option>
+                <option value="premium">{t('premium_report')}</option>
               </select>
             </label>
 
             <label>
-              <div className="text-sm text-gray-600">Language</div>
+              <div className="text-sm text-gray-600">{t('language')}</div>
               <select
                 value={languageMode}
                 onChange={(e) => setLanguageMode(e.target.value)}
                 className="mt-1 w-full border rounded p-2"
               >
-                <option value="english">English (Default)</option>
+                <option value="english">{t('english_default')}</option>
               </select>
             </label>
           </div>
@@ -627,98 +689,113 @@ export default function GenerateReport() {
               {isSubmitting ? t('generating', 'Generating...') : t('generate_pdf', 'Generate & Download PDF')}
             </button>
 
-            {reportFileUrl && (
-              <a
-                href={reportFileUrl}
-                download
-                className="text-indigo-600 underline ml-2"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Open latest report
-              </a>
-            )}
+
           </div>
         </form>
 
         <div className="mt-6 space-y-4">
           <div className="flex flex-col gap-3 border-b pb-4">
             <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-black">Preview Results</h2>
+              <h2 className="text-xl font-semibold text-black">{t('preview_results')}</h2>
               <div className="flex flex-wrap gap-2 justify-end">
                 <button
                   onClick={handleOpenWorksheet}
-                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-purple-600 text-black shadow hover:bg-purple-700 flex items-center gap-2"
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-purple-100 text-black shadow hover:bg-purple-700 flex items-center gap-2"
                 >
-                  <span>✨</span> Open Interactive Worksheet
+                  <span>✨</span> {t('open_worksheet')}
+                </button>
+                <button
+                  onClick={handleOpenBlankSheet}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-slate-200 text-black shadow hover:bg-slate-300 flex items-center gap-2"
+                >
+                  <span>📝</span> {t('blank_sheet', 'Blank Sheet')}
                 </button>
                 <button
                   onClick={handleOpenHTMLReport}
-                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-blue-600 text-black shadow hover:bg-blue-700 flex items-center gap-2"
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-blue-100 text-black shadow hover:bg-blue-700 flex items-center gap-2"
                 >
-                  <span>🌐</span> Your Kundali (Detailed Report)
+                  <span>🌐</span> {t('detailed_report')}
                 </button>
-                <button
-                  onClick={handleOpenHoroscope}
-                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-amber-500 text-black shadow hover:bg-amber-600 flex items-center gap-2"
-                >
-                  <span>🌟</span> Daily/Monthly/Yearly Horoscope
-                </button>
+                <div className="flex bg-amber-100 rounded-full border border-amber-300 shadow overflow-hidden">
+                  <div className="px-3 py-1.5 bg-amber-100 text-black font-bold border-r border-amber-300 flex items-center text-[13px] tracking-tight">
+                    Detailed Horoscopes:
+                  </div>
+                  <button
+                    onClick={() => handleOpenDeepHoroscope('daily')}
+                    className="px-3 py-1.5 text-[14px] font-bold transition-all bg-amber-50 text-amber-900 hover:bg-amber-500 hover:text-black border-r border-amber-200 flex items-center gap-1"
+                  >
+                    <span>🌟</span> Daily
+                  </button>
+                  <button
+                    onClick={() => handleOpenDeepHoroscope('monthly')}
+                    className="px-3 py-1.5 text-[14px] font-bold transition-all bg-amber-50 text-amber-900 hover:bg-amber-500 hover:text-black border-r border-amber-200 flex items-center gap-1"
+                  >
+                    <span>🌙</span> Monthly
+                  </button>
+                  <button
+                    onClick={() => handleOpenDeepHoroscope('yearly')}
+                    className="px-3 py-1.5 text-[14px] font-bold transition-all bg-amber-50 text-amber-900 hover:bg-amber-500 hover:text-black flex items-center gap-1"
+                  >
+                    <span>☀️</span> Yearly
+                  </button>
+                </div>
                 <button
                   onClick={handleKnowIshtaDev}
-                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-indigo-600 text-black shadow hover:bg-indigo-700 flex items-center gap-2"
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-indigo-100 text-black shadow hover:bg-indigo-700 flex items-center gap-2"
                 >
-                  <span>🖥️</span> Know Your Ishta Dev
+                  <span>🖥️</span> {t('ishta_dev')}
                 </button>
                 <button
                   onClick={handleOpenMatchmaking}
-                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-pink-600 text-black shadow hover:bg-pink-700 flex items-center gap-2"
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-pink-100 text-black shadow hover:bg-pink-700 flex items-center gap-2"
                 >
-                  <span>💏</span> Match Making
+                  <span>💏</span> {t('match_making')}
                 </button>
                 <button
                   onClick={handleOpenAdvancedMuhurt}
-                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-teal-600 text-black shadow hover:bg-teal-700 flex items-center gap-2"
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-teal-100 text-black shadow hover:bg-teal-700 flex items-center gap-2"
                 >
-                  <span>✨</span> Advanced Muhurt Calculator
+                  <span>✨</span> {t('muhurt_calculator')}
                 </button>
               </div>
             </div>
             <div className="flex flex-wrap gap-2 justify-end">
               <button
                 onClick={handleOpenPrashna}
-                className="px-4 py-1.5 rounded-full text-[15px]  font-bold transition-all bg-amber-500 text-black shadow hover:bg-amber-600 flex items-center gap-2"
+                className="px-4 py-1.5 rounded-full text-[15px]  font-bold transition-all bg-amber-100 text-black shadow hover:bg-amber-600 flex items-center gap-2"
               >
-                <span>🔮</span> Ask Prashna
+                <span>🔮</span> {t('ask_prashna')}
               </button>
               <button
                 onClick={handleOpenNadi}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-blue-600 text-black shadow hover:bg-blue-700 flex items-center gap-2"
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-blue-100 text-black shadow hover:bg-blue-700 flex items-center gap-2"
               >
-                <span>📜</span> Nadi Astrology
+                <span>📜</span> {t('nadi_astrology')}
               </button>
               <button
                 onClick={handleOpenMantra}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-teal-600 text-black shadow hover:bg-teal-700 flex items-center gap-2"
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-teal-100 text-black shadow hover:bg-teal-700 flex items-center gap-2"
               >
-                <span>📿</span> Japa Mala (Mantras)
+                <span>📿</span> {t('japa_mala')}
               </button>
               <button
-                onClick={handleOpenSynastry}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-pink-600 text-black shadow hover:bg-pink-700 flex items-center gap-2"
+                onClick={handleOpenBrahmaMuhurt}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-orange-100 text-black shadow hover:bg-orange-700 flex items-center gap-2"
               >
-                <span>🔮</span> Synastry Matrix
+                <span>🌅</span> {t('brahma_muhurt')}
               </button>
 
             </div>
           </div>
 
-          <div className="space-y-4 animate-in fade-in duration-500">
-            <div>
-              <h3 className="text-lg font-medium text-gray-700 mb-2">PDF Document Preview</h3>
-              <ReportPreview fileUrl={reportFileUrl} />
+          {showPreview && (
+            <div className="space-y-4 animate-in fade-in duration-500 mt-6 border-t pt-4">
+              <div>
+                <h3 className="text-lg font-medium text-gray-700 mb-2">{t('pdf_preview')}</h3>
+                <ReportPreview fileUrl={reportFileUrl} />
+              </div>
             </div>
-          </div>
+          )}
         </div>
       </div>
     </div>

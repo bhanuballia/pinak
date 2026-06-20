@@ -4,6 +4,7 @@ import MatchmakingPage from './pages/matchmaking/MatchmakingPage';
 import InteractiveWorksheet from './components/InteractiveWorksheet';
 import IshtaDevViewer from './components/IshtaDevViewer';
 import ClassicLayoutViewer from './components/ClassicLayoutViewer';
+import { useWindowNavigation } from './hooks/useWindowNavigation';
 import ClassicLayoutViewer2 from './components/ClassicLayoutViewer2';
 import ClassicLayoutViewer3 from './components/ClassicLayoutViewer3';
 import ClassicLayoutViewer4 from './components/ClassicLayoutViewer4';
@@ -42,6 +43,7 @@ import ChildrenHealthViewer from './components/ChildrenHealthViewer';
 import AscendantAnalysis from './components/AscendantAnalysis';
 import MoonSignAnalysis from './components/MoonSignAnalysis';
 import SadesatiAnalysis from './components/SadesatiAnalysis';
+import SolarSystem3D from './components/SolarSystem3D';
 import SBCGrid from './components/SBCGrid';
 import SarvatobhadraDashboard from './pages/SarvatobhadraDashboard';
 import D108Dashboard from './components/D108Dashboard';
@@ -52,9 +54,19 @@ import TithiDashboard from './components/TithiDashboard';
 import SolarReturnViewer from './components/SolarReturnViewer';
 import DailySolarViewer from './components/DailySolarViewer';
 import AnnualVarshaphalaViewer from './components/AnnualVarshaphalaViewer';
+import VarshaphalaDetailsViewer from './components/VarshaphalaDetailsViewer';
+import HarshaBalaViewer from './components/HarshaBalaViewer';
+import TajikaYogasViewer from './components/TajikaYogasViewer';
+import TripatakiChakraViewer from './components/TripatakiChakraViewer';
+import KalachakraViewer from './components/KalachakraViewer';
+import LongevityViewer from './components/LongevityViewer';
+
+import ZodiacPDFchart from './components/ZodiacPDFchart';
+import VarshaphalaDetailedCharts from './components/VarshaphalaDetailedCharts';
 import AnimatedTransitsViewer from './components/AnimatedTransitsViewer';
 import NavamshaAgesViewer from './components/NavamshaAgesViewer';
 import KPChartViewer from './components/KPChartViewer';
+import AstrologicalTimeMachine from './components/AstrologicalTimeMachine';
 import SunriseChartViewer from './components/SunriseChartViewer';
 import KundaliReportView from './components/KundaliReportView';
 import BhriguBinduAnalysis from './components/BhriguBinduAnalysis';
@@ -64,8 +76,12 @@ import PrashnaEngine from './components/PrashnaEngine';
 import NadiViewer from './components/NadiViewer';
 import MantraTracker from './components/MantraTracker';
 import SynastryDashboard from './components/SynastryDashboard';
-
+import BrahmaMuhurtViewer from './components/BrahmaMuhurtViewer';
+import NamingCalculator from './components/NamingCalculator';
+import DasaTimeline from './components/DasaTimeline';
+import DeepHoroscopeViewer from './components/DeepHoroscopeViewer.jsx';
 function App() {
+    useWindowNavigation();
     const [isWorksheetMode, setIsWorksheetMode] = useState(false);
     const [advancedNakshatraMode, setAdvancedNakshatraMode] = useState(false);
     const [classicLayoutMode, setClassicLayoutMode] = useState(false);
@@ -120,16 +136,30 @@ function App() {
     const [solarReturnMode, setSolarReturnMode] = useState(false);
     const [dailySolarMode, setDailySolarMode] = useState(false);
     const [annualVarshaphalaMode, setAnnualVarshaphalaMode] = useState(false);
+    const [harshaBalaMode, setHarshaBalaMode] = useState(false);
+    const [tajikaYogasMode, setTajikaYogasMode] = useState(false);
+    const [tripatakiChakraMode, setTripatakiChakraMode] = useState(false);
+    const [kalachakraMode, setKalachakraMode] = useState(false);
+    const [longevityMode, setLongevityMode] = useState(false);
     const [animatedTransitsMode, setAnimatedTransitsMode] = useState(false);
     const [navamshaAgesMode, setNavamshaAgesMode] = useState(false);
     const [kpChartMode, setKpChartMode] = useState(false);
     const [sunriseChartMode, setSunriseChartMode] = useState(false);
     const [bhriguBinduMode, setBhriguBinduMode] = useState(false);
     const [htmlReportMode, setHtmlReportMode] = useState(false);
+    const [isBlankSheetMode, setIsBlankSheetMode] = useState(false);
     const [advancedMuhurtaMode, setAdvancedMuhurtaMode] = useState(false);
+    const [varshaphalaDetailsMode, setVarshaphalaDetailsMode] = useState(false);
+    const [detailedChartsMode, setDetailedChartsMode] = useState(false);
     const [horoscopeData, setHoroscopeData] = useState(null);
     const [fullScreenParam, setFullScreenParam] = useState(null);
     const [oracleCategory, setOracleCategory] = useState(null);
+    const [namingMode, setNamingMode] = useState(false);
+    const [dasaTimelineMode, setDasaTimelineMode] = useState(false);
+    const [solarSystem3DMode, setSolarSystem3DMode] = useState(false);
+    const [astroTmMode, setAstroTmMode] = useState(false);
+    const [deepHoroscopeMode, setDeepHoroscopeMode] = useState(false);
+    const [deepHoroscopeType, setDeepHoroscopeType] = useState(null);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -326,6 +356,15 @@ function App() {
                     console.error("Failed to parse horoscope data", e);
                 }
             }
+        } else if (params.get('deep_horoscope')) {
+            setDeepHoroscopeMode(true);
+            setDeepHoroscopeType(params.get('deep_horoscope'));
+            const savedData = localStorage.getItem('deepHoroscopeData');
+            if (savedData) {
+                try {
+                    setWorksheetData(JSON.parse(savedData));
+                } catch (e) { }
+            }
         } else if (params.get('oracle')) {
             setOracleMode(true);
             setOracleCategory(params.get('oracle'));
@@ -333,6 +372,14 @@ function App() {
             setLalkitabMode(true);
         } else if (params.get('advanced_nakshatra') === 'true') {
             setAdvancedNakshatraMode(true);
+        } else if (params.get('naming') === 'true') {
+            setNamingMode(true);
+            const savedData = localStorage.getItem('worksheetData');
+            if (savedData) {
+                try {
+                    setWorksheetData(JSON.parse(savedData));
+                } catch (e) { }
+            }
         } else if (params.get('panchang') === 'true') {
             setPanchangMode(true);
         } else if (params.get('monthly_panchang') === 'true') {
@@ -401,8 +448,22 @@ function App() {
             setSolarReturnMode(true);
         } else if (params.get('daily_solar') === 'true') {
             setDailySolarMode(true);
+        } else if (params.get('harsha_bala') === 'true') {
+            setHarshaBalaMode(true);
+        } else if (params.get('tajika_yogas') === 'true') {
+            setTajikaYogasMode(true);
+        } else if (params.get('tripataki_chakra') === 'true') {
+            setTripatakiChakraMode(true);
+        } else if (params.get('kalachakra') === 'true') {
+            setKalachakraMode(true);
+        } else if (params.get('longevity') === 'true') {
+            setLongevityMode(true);
         } else if (params.get('annual_varshaphala') === 'true') {
             setAnnualVarshaphalaMode(true);
+        } else if (params.get('varshaphala_details') === 'true') {
+            setVarshaphalaDetailsMode(true);
+        } else if (params.get('detailed_charts') === 'true') {
+            setDetailedChartsMode(true);
         } else if (params.get('animated_transits') === 'true') {
             setAnimatedTransitsMode(true);
             const savedData = localStorage.getItem('worksheetData');
@@ -451,6 +512,14 @@ function App() {
                     setWorksheetData(JSON.parse(savedData));
                 } catch (e) { }
             }
+        } else if (params.get('blank_sheet') === 'true') {
+            setIsBlankSheetMode(true);
+            const savedData = localStorage.getItem('worksheetData');
+            if (savedData) {
+                try {
+                    setWorksheetData(JSON.parse(savedData));
+                } catch (e) { }
+            }
         } else if (params.get('advanced_muhurt') === 'true') {
             setAdvancedMuhurtaMode(true);
             const savedData = localStorage.getItem('worksheetData');
@@ -460,6 +529,30 @@ function App() {
                 } catch (e) { }
             }
         } else if (params.get('nadi') === 'true' || params.get('synastry') === 'true') {
+            const savedData = localStorage.getItem('worksheetData');
+            if (savedData) {
+                try {
+                    setWorksheetData(JSON.parse(savedData));
+                } catch (e) { }
+            }
+        } else if (params.get('dasa_timeline') === 'true') {
+            setDasaTimelineMode(true);
+            const savedData = localStorage.getItem('worksheetData');
+            if (savedData) {
+                try {
+                    setWorksheetData(JSON.parse(savedData));
+                } catch (e) { }
+            }
+        } else if (params.get('solarsystem3d') === 'true') {
+            setSolarSystem3DMode(true);
+            const savedData = localStorage.getItem('worksheetData');
+            if (savedData) {
+                try {
+                    setWorksheetData(JSON.parse(savedData));
+                } catch (e) { }
+            }
+        } else if (params.get('astro_tm') === 'true') {
+            setAstroTmMode(true);
             const savedData = localStorage.getItem('worksheetData');
             if (savedData) {
                 try {
@@ -480,12 +573,24 @@ function App() {
         return <HoroscopeViewer data={horoscopeData} />;
     }
 
+    if (deepHoroscopeMode) {
+        return <DeepHoroscopeViewer data={worksheetData} type={deepHoroscopeType} />;
+    }
+
     if (lalkitabMode) {
         return <LalKitabViewer />;
     }
 
     if (advancedNakshatraMode) {
         return <AdvancedNakshatraViewer />;
+    }
+
+    if (namingMode) {
+        return <NamingCalculator data={worksheetData} />;
+    }
+
+    if (astroTmMode) {
+        return <AstrologicalTimeMachine data={worksheetData} />;
     }
 
     if (panchangMode) {
@@ -511,6 +616,11 @@ function App() {
     const isNadiMode = new URLSearchParams(window.location.search).get('nadi') === 'true';
     const isMantraMode = new URLSearchParams(window.location.search).get('mantra') === 'true';
     const isSynastryMode = new URLSearchParams(window.location.search).get('synastry') === 'true';
+    const isBrahmaMuhurtMode = new URLSearchParams(window.location.search).get('brahma_muhurt') === 'true';
+
+    if (isBrahmaMuhurtMode) {
+        return <BrahmaMuhurtViewer />;
+    }
 
     if (isSynastryMode) {
         return <SynastryDashboard p1Data={worksheetData} />;
@@ -745,6 +855,34 @@ function App() {
         return <AnnualVarshaphalaViewer />;
     }
 
+    if (harshaBalaMode) {
+        return <HarshaBalaViewer />;
+    }
+
+    if (tajikaYogasMode) {
+        return <TajikaYogasViewer />;
+    }
+
+    if (tripatakiChakraMode) {
+        return <TripatakiChakraViewer />;
+    }
+
+    if (kalachakraMode) {
+        return <KalachakraViewer />;
+    }
+
+    if (longevityMode) {
+        return <LongevityViewer />;
+    }
+
+    if (varshaphalaDetailsMode) {
+        return <VarshaphalaDetailsViewer />;
+    }
+
+    if (detailedChartsMode) {
+        return <VarshaphalaDetailedCharts />;
+    }
+
     if (animatedTransitsMode) {
         return <AnimatedTransitsViewer formData={worksheetData} />;
     }
@@ -775,8 +913,22 @@ function App() {
                 {worksheetData ? (
                     <InteractiveWorksheet data={worksheetData} fullScreenInitial={fullScreenParam} />
                 ) : (
-                    <div className="flex items-center justify-center h-screen text-gray-500 italic">
-                        No data found. Please generate a report first.
+                    <div className="flex h-screen items-center justify-center bg-slate-900 text-white animate-pulse font-serif text-xl tracking-widest">
+                        Loading celestial geometry...
+                    </div>
+                )}
+            </div>
+        );
+    }
+
+    if (isBlankSheetMode) {
+        return (
+            <div className="min-h-screen bg-[#f1f5f9]">
+                {worksheetData ? (
+                    <InteractiveWorksheet data={worksheetData} isBlankSheet={true} />
+                ) : (
+                    <div className="flex h-screen items-center justify-center bg-slate-900 text-white animate-pulse font-serif text-xl tracking-widest">
+                        Loading celestial geometry...
                     </div>
                 )}
             </div>
@@ -794,6 +946,33 @@ function App() {
                         No data found. Please generate a report first.
                     </div>
                 )}
+            </div>
+        );
+    }
+
+    if (dasaTimelineMode) {
+        return (
+            <div className="min-h-screen bg-white p-4 md:p-8">
+                <DasaTimeline data={worksheetData} />
+            </div>
+        );
+    }
+
+    if (solarSystem3DMode) {
+        let date = "1990-10-01";
+        let time = "12:00:00";
+        if (worksheetData) {
+            const basic = worksheetData.basic_details || {};
+            if (basic.day && basic.month && basic.year) {
+                date = `${basic.year}-${String(basic.month).padStart(2, '0')}-${String(basic.day).padStart(2, '0')}`;
+                time = `${basic.hour || 12}:${basic.minute || 0}:00`;
+            } else if (worksheetData.meta?.date) {
+                date = worksheetData.meta.date;
+            }
+        }
+        return (
+            <div className="min-h-screen bg-slate-900 p-4 md:p-8">
+                <SolarSystem3D date={date} time={time} />
             </div>
         );
     }

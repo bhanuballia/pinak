@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import MuhurtHeatmap from './MuhurtHeatmap';
 
 export default function AdvancedMuhurtaSearch({ data }) {
     const [ceremony, setCeremony] = useState("Marriage");
@@ -7,6 +8,18 @@ export default function AdvancedMuhurtaSearch({ data }) {
     const [results, setResults] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [worksheetData, setWorksheetData] = useState(null);
+
+    useEffect(() => {
+        const savedData = localStorage.getItem('worksheetData');
+        if (savedData) {
+            try {
+                setWorksheetData(JSON.parse(savedData));
+            } catch (e) {
+                console.error("Failed to parse worksheetData", e);
+            }
+        }
+    }, []);
 
     // Extract natal moon longitude from provided data if available
     const natalMoonLon = data?.planets?.find(p => p.name === 'Moon')?.normDegree || null;
@@ -43,13 +56,13 @@ export default function AdvancedMuhurtaSearch({ data }) {
     };
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#0f172a', color: 'white', fontFamily: 'system-ui, sans-serif', padding: '40px 20px' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: 'rgba(243, 239, 243, 1)', color: 'black', fontFamily: 'system-ui, sans-serif', padding: '40px 20px' }}>
             <div style={{ maxWidth: '900px', margin: '0 auto' }}>
                 <header style={{ textAlign: 'center', marginBottom: '40px' }}>
                     <h1 style={{ fontSize: '42px', fontWeight: 800, background: 'linear-gradient(to right, #38bdf8, #818cf8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                         Muhurta Search Engine
                     </h1>
-                    <p style={{ opacity: 0.7, fontSize: '18px', marginTop: '10px' }}>
+                    <p style={{ opacity: 10, fontSize: '18px', marginTop: '10px' }}>
                         Scanning thousands of planetary alignments to find the exact perfect moment for you.
                     </p>
                     {natalMoonLon !== null && (
@@ -59,10 +72,10 @@ export default function AdvancedMuhurtaSearch({ data }) {
                     )}
                 </header>
 
-                <div style={{ background: 'rgba(30,41,59,0.5)', padding: '30px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)' }}>
+                <div style={{ background: 'rgba(175, 202, 92, 1)', padding: '30px', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginBottom: '30px' }}>
                         <div>
-                            <label style={{ display: 'block', fontSize: '12px', textTransform: 'uppercase', color: '#94a3b8', fontWeight: 700, marginBottom: '8px' }}>Event</label>
+                            <label style={{ display: 'block', fontSize: '18px', textTransform: 'uppercase', color: '#0a1018ff', fontWeight: 700, marginBottom: '8px' }}>Event</label>
                             <select
                                 value={ceremony}
                                 onChange={(e) => setCeremony(e.target.value)}
@@ -72,7 +85,7 @@ export default function AdvancedMuhurtaSearch({ data }) {
                             </select>
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontSize: '12px', textTransform: 'uppercase', color: '#94a3b8', fontWeight: 700, marginBottom: '8px' }}>Start Date</label>
+                            <label style={{ display: 'block', fontSize: '18px', textTransform: 'uppercase', color: '#060a0fff', fontWeight: 700, marginBottom: '8px' }}>Start Date</label>
                             <input
                                 type="date"
                                 value={startDate}
@@ -81,7 +94,7 @@ export default function AdvancedMuhurtaSearch({ data }) {
                             />
                         </div>
                         <div>
-                            <label style={{ display: 'block', fontSize: '12px', textTransform: 'uppercase', color: '#94a3b8', fontWeight: 700, marginBottom: '8px' }}>End Date (Max 60 days)</label>
+                            <label style={{ display: 'block', fontSize: '18px', textTransform: 'uppercase', color: 'rgba(10, 13, 17, 1)', fontWeight: 700, marginBottom: '8px' }}>End Date (Max 60 days)</label>
                             <input
                                 type="date"
                                 value={endDate}
@@ -90,7 +103,7 @@ export default function AdvancedMuhurtaSearch({ data }) {
                             />
                         </div>
                     </div>
-                    
+
                     <button
                         onClick={calculate}
                         disabled={loading}
@@ -109,54 +122,54 @@ export default function AdvancedMuhurtaSearch({ data }) {
 
                 {results && (
                     <div style={{ marginTop: '40px' }}>
-                        <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '20px', color: '#f8fafc' }}>Top Recommended Windows:</h3>
+                        <h3 style={{ fontSize: '20px', fontWeight: 700, marginBottom: '20px', color: 'rgba(184, 48, 14, 0.71)' }}>Top Recommended Windows:</h3>
                         {results.length > 0 ? (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                                 {results.map((r, i) => (
-                                    <div key={i} style={{ 
-                                        background: i === 0 ? 'linear-gradient(145deg, rgba(56,189,248,0.1), rgba(129,140,248,0.05))' : 'rgba(30,41,59,0.3)', 
-                                        border: i === 0 ? '1px solid rgba(56,189,248,0.4)' : '1px solid rgba(255,255,255,0.05)', 
-                                        padding: '24px', borderRadius: '20px', display: 'flex', gap: '20px', alignItems: 'center' 
+                                    <div key={i} style={{
+                                        background: i === 0 ? 'linear-gradient(145deg, rgba(56,189,248,0.1), rgba(129,140,248,0.05))' : 'hsla(140, 19%, 91%, 1.00)',
+                                        border: i === 0 ? '1px solid rgba(56,189,248,0.4)' : '1px solid rgba(255,255,255,0.05)',
+                                        padding: '24px', borderRadius: '20px', display: 'flex', gap: '20px', alignItems: 'center'
                                     }}>
-                                        <div style={{ 
-                                            background: i === 0 ? '#38bdf8' : '#475569', 
-                                            color: i === 0 ? '#0f172a' : 'white', 
-                                            width: '40px', height: '40px', borderRadius: '50%', 
-                                            display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                                        <div style={{
+                                            background: i === 0 ? 'rgba(235, 248, 56, 1)' : '#475569',
+                                            color: i === 0 ? '#0f172a' : 'white',
+                                            width: '40px', height: '40px', borderRadius: '50%',
+                                            display: 'flex', alignItems: 'center', justifyContent: 'center',
                                             fontWeight: 800, fontSize: '20px', flexShrink: 0
                                         }}>
                                             #{i + 1}
                                         </div>
                                         <div style={{ flexGrow: 1 }}>
-                                            <div style={{ fontSize: '22px', fontWeight: 800, color: '#f8fafc', marginBottom: '4px' }}>
+                                            <div style={{ fontSize: '22px', fontWeight: 800, color: 'hsla(231, 89%, 41%, 0.80)', marginBottom: '4px' }}>
                                                 {new Date(r.start_time).toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' })}
                                             </div>
-                                            <div style={{ fontSize: '18px', color: '#94a3b8', marginBottom: '12px' }}>
-                                                {new Date(r.start_time).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })} 
-                                                {' - '} 
+                                            <div style={{ fontSize: '18px', color: '#a01433d5', marginBottom: '12px' }}>
+                                                {new Date(r.start_time).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}
+                                                {' - '}
                                                 {new Date(r.end_time).toLocaleTimeString(undefined, { hour: 'numeric', minute: '2-digit' })}
                                             </div>
                                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                                                 {r.nakshatra && (
-                                                    <span style={{ background: 'rgba(245,158,11,0.15)', color: '#fbbf24', padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 600 }}>
+                                                    <span style={{ background: 'hsla(40, 14%, 91%, 1.00)', color: 'hsla(125, 81%, 22%, 0.72)', padding: '4px 10px', borderRadius: '12px', fontSize: '14px', fontWeight: 600 }}>
                                                         🌙 {r.nakshatra}
                                                     </span>
                                                 )}
                                                 {r.tithi && (
-                                                    <span style={{ background: 'rgba(168,85,247,0.15)', color: '#c084fc', padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 600 }}>
+                                                    <span style={{ background: 'rgba(168,85,247,0.15)', color: '#09040fff', padding: '4px 10px', borderRadius: '14px', fontSize: '12px', fontWeight: 600 }}>
                                                         📅 {r.tithi}
                                                     </span>
                                                 )}
                                                 {r.reasons.map((rsn, idx) => (
-                                                    <span key={idx} style={{ background: 'rgba(16,185,129,0.15)', color: '#10b981', padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: 600 }}>
+                                                    <span key={idx} style={{ background: 'rgba(16,185,129,0.15)', color: 'rgba(6, 3, 19, 1)', padding: '4px 10px', borderRadius: '12px', fontSize: '14px', fontWeight: 600 }}>
                                                         ✓ {rsn}
                                                     </span>
                                                 ))}
                                             </div>
                                         </div>
                                         <div style={{ textAlign: 'right' }}>
-                                            <div style={{ fontSize: '12px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px' }}>Score</div>
-                                            <div style={{ fontSize: '32px', fontWeight: 900, color: i === 0 ? '#38bdf8' : '#f8fafc' }}>{r.score}</div>
+                                            <div style={{ fontSize: '14px', color: 'rgba(3, 11, 22, 0.62)', textTransform: 'uppercase', letterSpacing: '1px' }}>Score</div>
+                                            <div style={{ fontSize: '32px', fontWeight: 900, color: i === 0 ? '#38bdf8' : 'rgba(138, 87, 29, 0.84)' }}>{r.score}</div>
                                         </div>
                                     </div>
                                 ))}
@@ -168,6 +181,14 @@ export default function AdvancedMuhurtaSearch({ data }) {
                         )}
                     </div>
                 )}
+
+                {/* Auspiciousness Heatmap Panel */}
+                <div style={{ marginTop: '50px', marginBottom: '50px' }}>
+                    <h2 style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '4px', color: '#38bdf8', fontWeight: 900, marginBottom: '20px', textAlign: 'center' }}>
+                        Interactive Auspiciousness Heatmap Calendar
+                    </h2>
+                    <MuhurtHeatmap data={worksheetData} />
+                </div>
             </div>
         </div>
     );

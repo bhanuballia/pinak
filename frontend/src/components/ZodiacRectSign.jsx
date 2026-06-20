@@ -59,15 +59,15 @@ const PLANET_ABBREV = {
 };
 
 const PLANET_COLORS = {
-    "Sun": "#dc2626",  // Red
-    "Moon": "#475569",  // Slate
-    "Mars": "#b91c1c",  // Dark Red
+    "Sun": "rgba(190, 8, 8, 1)",  // Red
+    "Moon": "hsla(198, 91%, 9%, 1.00)",  // Slate
+    "Mars": "rgba(126, 5, 5, 1)",  // Dark Red
     "Mercury": "#15803d",  // Green
-    "Jupiter": "#b45309",  // Amber
-    "Venus": "#be185d",  // Pink
-    "Saturn": "#3730a3",  // Indigo
-    "Rahu": "#0f766e",  // Teal
-    "Ketu": "#92400e",  // Brown
+    "Jupiter": "rgba(148, 67, 6, 1)",  // Amber
+    "Venus": "hsla(335, 92%, 24%, 1.00)",  // Pink
+    "Saturn": "#130b85ff",  // Indigo
+    "Rahu": "hsla(175, 90%, 12%, 1.00)",  // Teal
+    "Ketu": "rgba(47, 3, 65, 1)",  // Brown
     "Ascendant": "#000000"   // Black
 };
 
@@ -88,7 +88,14 @@ const NAKSHATRA_HINDI = {
     "Revati": "रेव"
 };
 
-const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", planetEffects = {}, aspectRatio = 2.5, planetPositions = [], isRect, setIsRect, scaleText = 1, hideLegend = false, defaultLang = 'en' }) => {
+const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", planetEffects = {}, aspectRatio = 2.5, planetPositions = [], isRect, setIsRect, scaleText = 1, hideLegend = false, hideOuterRect, defaultLang = 'en', showFullscreenButton = false, onPopOut }) => {
+    const isMainChart = title && (
+        title.toLowerCase().includes('birth') ||
+        title.toLowerCase().includes('lagna') ||
+        title.toLowerCase().includes('d1') ||
+        title.toLowerCase().includes('d-1')
+    );
+    const finalHideOuterRect = hideOuterRect !== undefined ? hideOuterRect : !isMainChart;
     const [lang, setLang] = useState(defaultLang);
     const [zoom, setZoom] = useState(1);
     const isLegacy = variant === "legacy";
@@ -111,17 +118,32 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
 
     const getPlanetColor = (planet) => {
         if (useOriginalColors) {
-            return PLANET_COLORS[planet] || "#374151";
+            return PLANET_COLORS[planet] || "#727e96ff";
         }
-        const effect = planetEffects[planet];
-        if (effect === "positive") return "#16a34a"; // Green
-        if (effect === "negative") return "#dc2626"; // Red
-        if (effect === "neutral") return "#2563eb";  // Blue
-        return PLANET_COLORS[planet] || "#374151";
+        if (isMainChart) {
+            const effect = planetEffects[planet];
+            if (effect === "positive") return "#077e2fff"; // Green
+            if (effect === "negative") return "rgba(199, 20, 20, 1)"; // Red
+            if (effect === "neutral") return "rgba(14, 5, 95, 1)";  // Blue
+        }
+        return PLANET_COLORS[planet] || "#727e96ff";
+    };
+
+    const containerRef = React.useRef(null);
+
+    const handleFullscreen = (e) => {
+        e.stopPropagation();
+        if (!document.fullscreenElement) {
+            containerRef.current?.requestFullscreen().catch(err => {
+                console.error(`Error attempting to enable fullscreen: ${err.message}`);
+            });
+        } else {
+            document.exitFullscreen();
+        }
     };
 
     return (
-        <div style={{
+        <div ref={containerRef} style={{
             display: 'flex', flexDirection: 'column',
             width: '100%', height: '100%',
             background: isLegacy ? '#f0ebe3ff' : 'white',
@@ -143,71 +165,34 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
                     flexShrink: 0
                 }}>
                     <div style={{
-                        fontSize: '11px',
-                        fontWeight: 'bold',
-                        color: '#0a4d7a',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px'
                     }}>
-                        {title}
+                        <div style={{
+                            fontSize: '11px',
+                            fontWeight: 'bold',
+                            color: '#0a4d7a',
+                        }}>
+                            {title}
+                        </div>
+                        {onPopOut && (
+                            <button
+                                onClick={(e) => { e.stopPropagation(); onPopOut(); }}
+                                style={{
+                                    background: 'rgba(15, 23, 42, 0.1)', color: '#334155', border: '1px solid #cbd5e1',
+                                    padding: '0px 4px', borderRadius: '4px', fontSize: '9px',
+                                    fontWeight: 'bold', cursor: 'pointer'
+                                }}
+                                title="Pop out chart to new window"
+                            >
+                                ⛶
+                            </button>
+                        )}
                     </div>
 
                     <div style={{ display: 'flex', gap: '4px' }}>
-                        <button
-                            onClick={(e) => { e.stopPropagation(); setLang(lang === 'en' ? 'hi' : 'en'); }}
-                            style={{
-                                background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1',
-                                padding: '1px 6px', borderRadius: '4px', fontSize: '9px',
-                                fontWeight: 'bold', cursor: 'pointer'
-                            }}
-                            title="Toggle Language (English/Hindi)"
-                        >
-                            {lang === 'en' ? 'अ' : 'A'}
-                        </button>
-                        {setIsRect && (
-                            <button
-                                onClick={(e) => { e.stopPropagation(); setIsRect(!isRect); }}
-                                style={{
-                                    background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1',
-                                    padding: '1px 6px', borderRadius: '4px', fontSize: '9px',
-                                    fontWeight: 'bold', cursor: 'pointer'
-                                }}
-                                title="Toggle Shape (Square/Rectangular)"
-                            >
-                                ⬛
-                            </button>
-                        )}
-                        <button
-                            onClick={(e) => { e.stopPropagation(); setZoom(z => Math.min(z + 0.25, 3)); }}
-                            style={{
-                                background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1',
-                                padding: '1px 6px', borderRadius: '4px', fontSize: '9px',
-                                fontWeight: 'bold', cursor: 'pointer'
-                            }}
-                            title="Zoom In (+)"
-                        >
-                            +
-                        </button>
-                        <button
-                            onClick={(e) => { e.stopPropagation(); setZoom(z => Math.max(z - 0.25, 1)); }}
-                            style={{
-                                background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1',
-                                padding: '1px 6px', borderRadius: '4px', fontSize: '9px',
-                                fontWeight: 'bold', cursor: 'pointer'
-                            }}
-                            title="Zoom Out (-)"
-                        >
-                            -
-                        </button>
-                        <button
-                            onClick={(e) => { e.stopPropagation(); setUseOriginalColors(c => !c); }}
-                            style={{
-                                background: useOriginalColors ? '#cbd5e1' : '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1',
-                                padding: '1px 6px', borderRadius: '4px', fontSize: '9px',
-                                fontWeight: 'bold', cursor: 'pointer'
-                            }}
-                            title="Toggle Original Colors"
-                        >
-                            🎨
-                        </button>
+
                     </div>
                 </div>
             )}
@@ -215,45 +200,51 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
 
                 <div style={{ width: '100%', flex: 1, padding: '2px', minHeight: 0 }}>
                     <svg
-                        viewBox={`0 0 ${100 * aspectRatio} 100`}
+                        viewBox={finalHideOuterRect ? `${5 * aspectRatio} 5 ${90 * aspectRatio} 90` : `0 0 ${100 * aspectRatio} 100`}
                         style={{ display: 'block', width: `100%`, height: `100%` }}
                         preserveAspectRatio="none"
                     >
                         {/* Background */}
-                        <rect x="0" y="0" width={100 * aspectRatio} height="100" fill={isLegacy ? "#f5e83bff" : "white"} />
+                        <rect x="0" y="0" width={100 * aspectRatio} height="100" fill={isLegacy && isMainChart ? "hsla(0, 0%, 95%, 1.00)" : "white"} />
 
                         {/* Outer Margin frame */}
-                        <rect
-                            x={1 * aspectRatio} y="1" width={98 * aspectRatio} height="98"
-                            fill="none"
-                            stroke="#1e3a8a"
-                            strokeWidth="0.8"
-                        />
+                        {!finalHideOuterRect && (
+                            <rect
+                                x={1 * aspectRatio} y="1" width={98 * aspectRatio} height="98"
+                                fill="none"
+                                stroke="#1e3a8a"
+                                strokeWidth="0.4"
+                            />
+                        )}
 
                         {/* Inner square */}
                         <rect
                             x={5 * aspectRatio} y="5" width={90 * aspectRatio} height="90"
-                            fill="none"
+                            fill={isLegacy && !isMainChart ? "rgba(255, 240, 245, 1)" : "none"}
                             stroke="#1e3a8a"
-                            strokeWidth={isLegacy ? "0.8" : "1.2"}
+                            strokeWidth={isLegacy ? "0.3" : "1.2"}
                         />
 
                         {/* Margin Dividers */}
-                        <line x1={27.5 * aspectRatio} y1="1" x2={27.5 * aspectRatio} y2="5" stroke="#1e3a8a" strokeWidth="0.5" />
-                        <line x1={72.5 * aspectRatio} y1="1" x2={72.5 * aspectRatio} y2="5" stroke="#1e3a8a" strokeWidth="0.5" />
-                        <line x1={27.5 * aspectRatio} y1="95" x2={27.5 * aspectRatio} y2="99" stroke="#1e3a8a" strokeWidth="0.5" />
-                        <line x1={72.5 * aspectRatio} y1="95" x2={72.5 * aspectRatio} y2="99" stroke="#1e3a8a" strokeWidth="0.5" />
-                        <line x1={1 * aspectRatio} y1="27.5" x2={5 * aspectRatio} y2="27.5" stroke="#1e3a8a" strokeWidth="0.5" />
-                        <line x1={1 * aspectRatio} y1="72.5" x2={5 * aspectRatio} y2="72.5" stroke="#1e3a8a" strokeWidth="0.5" />
-                        <line x1={95 * aspectRatio} y1="27.5" x2={99 * aspectRatio} y2="27.5" stroke="#1e3a8a" strokeWidth="0.5" />
-                        <line x1={95 * aspectRatio} y1="72.5" x2={99 * aspectRatio} y2="72.5" stroke="#1e3a8a" strokeWidth="0.5" />
+                        {!finalHideOuterRect && (
+                            <>
+                                <line x1={27.5 * aspectRatio} y1="1" x2={27.5 * aspectRatio} y2="5" stroke="#1e3a8a" strokeWidth="0.3" />
+                                <line x1={72.5 * aspectRatio} y1="1" x2={72.5 * aspectRatio} y2="5" stroke="#1e3a8a" strokeWidth="0.3" />
+                                <line x1={27.5 * aspectRatio} y1="95" x2={27.5 * aspectRatio} y2="99" stroke="#1e3a8a" strokeWidth="0.3" />
+                                <line x1={72.5 * aspectRatio} y1="95" x2={72.5 * aspectRatio} y2="99" stroke="#1e3a8a" strokeWidth="0.3" />
+                                <line x1={1 * aspectRatio} y1="27.5" x2={5 * aspectRatio} y2="27.5" stroke="#1e3a8a" strokeWidth="0.3" />
+                                <line x1={1 * aspectRatio} y1="72.5" x2={5 * aspectRatio} y2="72.5" stroke="#1e3a8a" strokeWidth="0.3" />
+                                <line x1={95 * aspectRatio} y1="27.5" x2={99 * aspectRatio} y2="27.5" stroke="#1e3a8a" strokeWidth="0.3" />
+                                <line x1={95 * aspectRatio} y1="72.5" x2={99 * aspectRatio} y2="72.5" stroke="#1e3a8a" strokeWidth="0.3" />
+                            </>
+                        )}
 
                         {/* Inner diamond connecting midpoints */}
                         <polygon
                             points={`${50 * aspectRatio},5 ${95 * aspectRatio},50 ${50 * aspectRatio},95 ${5 * aspectRatio},50`}
                             fill="none"
                             stroke="#1e3a8a"
-                            strokeWidth={isLegacy ? "0.6" : "1"}
+                            strokeWidth={isLegacy ? "0.3" : "0.3"}
                         />
 
                         {/* Centre cross lines */}
@@ -261,10 +252,10 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
 
 
                         {/* Diagonal corner lines (corners to opposite midpoints) */}
-                        <line x1={5 * aspectRatio} y1="5" x2={95 * aspectRatio} y2="95" stroke="#1e3a8a" strokeWidth="0.5" />
-                        <line x1={95 * aspectRatio} y1="5" x2={5 * aspectRatio} y2="95" stroke="#1e3a8a" strokeWidth="0.5" />
+                        <line x1={5 * aspectRatio} y1="5" x2={95 * aspectRatio} y2="95" stroke="#1e3a8a" strokeWidth="0.3" />
+                        <line x1={95 * aspectRatio} y1="5" x2={5 * aspectRatio} y2="95" stroke="#1e3a8a" strokeWidth="0.3" />
                         {/* Margin Labels */}
-                        {[
+                        {!finalHideOuterRect && [
                             { h: 2, x: 16.25, y: 3, r: 0 },
                             { h: 1, x: 50, y: 3, r: 0 },
                             { h: 12, x: 83.75, y: 3, r: 0 },
@@ -306,10 +297,13 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
                             if (!signAnchor || !center) return null;
 
                             // Prepare the stack items: House index (gray) + Planets (colored)
-                            const displayedPlanets = planets.slice(0, 4);
-                            const lineH = 3.8 * scaleText;
+                            const displayedPlanets = planets.slice(0, 7);
+                            const lineH = 5.0 * scaleText; // Increased distance between planets
                             const totalItems = displayedPlanets.length;
-                            const startY = totalItems > 0 ? center.y - ((totalItems - 1) * lineH) / 2 : center.y;
+
+                            const isGrid = !isMainChart && totalItems >= 2;
+                            const numRows = isGrid ? Math.ceil(totalItems / 2) : totalItems;
+                            const startY = numRows > 0 ? center.y - ((numRows - 1) * lineH) / 2 : center.y;
 
                             return (
                                 <g key={houseNum}>
@@ -319,7 +313,7 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
                                         y={signAnchor.y}
                                         textAnchor="middle"
                                         dominantBaseline="middle"
-                                        fontSize={4.5 * scaleText}
+                                        fontSize={3.5 * scaleText}
                                         fill="#0e0c0cff"
                                         fontWeight="normal"
                                         fontFamily="serif"
@@ -343,7 +337,7 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
                                         let fullPos = positionArray.find(pos => pos.planet === pName || pos.name === pName) || (typeof p === 'object' ? p : null);
 
                                         let nakshatra = fullPos?.nakshatra || (typeof p === 'object' ? p.nakshatra : null);
-                                        let nakText = nakshatra ? nakshatra.substring(0, 3) : "";
+                                        let nakText = nakshatra ? String(nakshatra).substring(0, 3) : "";
                                         if (lang === 'hi' && nakshatra) {
                                             nakText = NAKSHATRA_HINDI[nakshatra] || nakText;
                                         }
@@ -359,18 +353,24 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
                                             }
                                         }
 
-                                        if (typeof p === 'object') {
-                                            const nature = p.nature ? p.nature.toLowerCase() : '';
-                                            if (p.is_malefic || nature === 'malefic') color = '#dc2626'; // Red
-                                            else if (p.is_benefic || nature === 'benefic') color = '#16a34a'; // Green
-                                            else if (p.is_neutral || nature === 'neutral') color = '#2563eb'; // Blue
+                                        let row = isGrid ? Math.floor(idx / 2) : idx;
+                                        let col = isGrid ? idx % 2 : 0;
+                                        let itemsInThisRow = isGrid ? (row === numRows - 1 && totalItems % 2 !== 0 ? 1 : 2) : 1;
+
+                                        let offsetX = 0;
+                                        if (itemsInThisRow === 2) {
+                                            offsetX = (col === 0 ? -3.5 : 3.5) * scaleText;
                                         }
 
+                                        let posX = center.x * aspectRatio + offsetX;
+                                        let posY = startY + row * lineH;
+
+                                        // Use strictly PLANET_COLORS without overriding for nature
                                         return (
                                             <text
                                                 key={idx}
-                                                x={center.x * aspectRatio}
-                                                y={startY + idx * lineH}
+                                                x={posX}
+                                                y={posY}
                                                 textAnchor="middle"
                                                 dominantBaseline="middle"
                                                 style={{ cursor: 'pointer' }}
@@ -379,15 +379,15 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
                                                     onPlanetClick?.(pName, houseNum);
                                                 }}
                                             >
-                                                <tspan fontSize={3.9 * scaleText} fill={color} fontWeight="medium" fontFamily="Arial, sans-serif">
+                                                <tspan fontSize={3.9 * scaleText} fill={color} fontWeight="semibold" fontFamily="Arial, sans-serif">
                                                     {abbrev}
                                                 </tspan>
-                                                {degreeStr && (
+                                                {isMainChart && degreeStr && (
                                                     <tspan dx="1.5" fontSize={2.8 * scaleText} fill="rgba(87, 6, 53, 1)" fontWeight="normal" fontFamily="Arial, sans-serif">
                                                         {degreeStr}
                                                     </tspan>
                                                 )}
-                                                {nakshatra && (
+                                                {isMainChart && nakshatra && (
                                                     <tspan dx="1.5" fontSize={2.9 * scaleText} fill="#000000" fontWeight="normal" fontFamily="Arial, sans-serif">
                                                         {nakText}
                                                     </tspan>
@@ -401,7 +401,7 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
 
                     </svg>
                 </div>
-                {!hideLegend && (
+                {!hideLegend && isMainChart && (
                     <div style={{
                         textAlign: 'center',
                         padding: '4px',

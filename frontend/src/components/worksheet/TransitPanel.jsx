@@ -67,21 +67,22 @@ const TransitPanel = ({ data, transitPositions }) => {
   }
 
   return (
-    <div className="flex flex-col h-full bg-[#fdfbf7]">
+    <div className="flex flex-col bg-rose-50 rounded-xl overflow-hidden">
       <div className="w-full text-center py-1 border-b bg-[#e2e8f0] border-[#94a3b8] text-[#1e293b] font-serif font-bold text-xs uppercase italic tracking-widest flex-shrink-0">
         Today's Transit (Gochar)
       </div>
-      <div className="flex-1 p-1 bg-white overflow-auto custom-scrollbar">
+      <div className="flex-1 p-1 bg-rose-50">
         <div className="mb-4">
-          <ZodiacChart 
-            houses={data.charts?.houses} 
-            transitHouses={transitHouses} 
-            title="Combined Janma & Gochar Chart" 
-            variant="legacy" 
-            planetEffects={transitEffects} 
+          <ZodiacChart
+            houses={data.charts?.houses}
+            transitHouses={transitHouses}
+            title="Combined Janma & Gochar Chart"
+            variant="legacy"
+            planetEffects={transitEffects}
+            bgColor="transparent"
           />
         </div>
-        
+
         <div className="p-2 bg-slate-50 border-t border-slate-200 mt-2">
           <h3 className="text-[10px] font-black uppercase tracking-tight mb-3 text-slate-800 text-center">Transit Planet in Sign & House Analysis</h3>
           <div className="space-y-3">
@@ -101,9 +102,9 @@ const TransitPanel = ({ data, transitPositions }) => {
               const houseEffect = signData?.houses?.[String(transitHouse)];
 
               const houseLabel = transitHouse === 1 ? '1st' : transitHouse === 2 ? '2nd' : transitHouse === 3 ? '3rd' : `${transitHouse}th`;
-              const houseBorderColor = [1,4,5,9,10].includes(transitHouse) ? 'border-l-green-400' :
-                                       [6,8,12].includes(transitHouse)    ? 'border-l-red-400'   :
-                                       'border-l-indigo-300';
+              const houseBorderColor = [1, 4, 5, 9, 10].includes(transitHouse) ? 'border-l-green-400' :
+                [6, 8, 12].includes(transitHouse) ? 'border-l-red-400' :
+                  'border-l-indigo-300';
 
               const dignity = getDignityStatus(planet, signName);
 
@@ -135,19 +136,19 @@ const TransitPanel = ({ data, transitPositions }) => {
                   <div className="px-4 pb-4 space-y-3">
                     {signEffect ? (
                       <div>
-                        <p className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {signName}</p>
-                        <p className="text-sm leading-relaxed text-slate-700 font-serif">
-                          {signEffect.length > 300 ? signEffect.slice(0, 300) + '…' : signEffect}
+                        <p className="text-[12px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {signName}</p>
+                        <p className="text-[12px] leading-relaxed text-slate-700 font-serif">
+                          {signEffect}
                         </p>
                       </div>
                     ) : (
-                      <p className="text-sm text-gray-400 italic font-serif">Sign interpretation coming soon.</p>
+                      <p className="text-[12px] text-gray-400 italic font-serif">Sign interpretation coming soon.</p>
                     )}
                     {houseEffect && (
                       <div className="pt-3 border-t border-indigo-50">
-                        <p className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {houseLabel} House (Transiting)</p>
-                        <p className="text-sm leading-relaxed text-slate-700 font-serif">
-                          {houseEffect.length > 350 ? houseEffect.slice(0, 350) + '…' : houseEffect}
+                        <p className="text-[14px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {houseLabel} House (Transiting)</p>
+                        <p className="text-[14px] leading-relaxed text-slate-700 font-serif">
+                          {houseEffect}
                         </p>
                       </div>
                     )}

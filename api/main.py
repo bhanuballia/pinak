@@ -1,4 +1,8 @@
 # api/main.py
+import os
+from dotenv import load_dotenv
+load_dotenv() # Load variables from .env file into the environment
+
 print("[STARTUP] Initializing Vedic Astrology API...")
 """
 FastAPI application wiring for the Vedic Astrology App.
@@ -44,6 +48,7 @@ from api.routes.profiles import router as profiles_router
 from api.routes import lalkitab
 from api.routes import conjunction
 from api.routes import study
+from api.routes import kalachakra
 from api.routes import panchang
 from api.routes import muhurt
 from api.routes import career
@@ -64,9 +69,15 @@ from api.routes import solar_return
 from api.routes import nakshatra_advanced_live
 from api.routes import transit_animated
 from api.routes import navamsha_ages
+from api.routes import transit
 from api.routes import kp_chart
 from api.routes import sunrise_chart
 from api.routes import sarvatobhadra_routes
+from api.routes import naming
+from api.routes import longevity
+from api.routes import astronomy
+from api.routes import ai_interpretation
+from api.routes import horoscope_reports
 from core.database import yantra_collection
 
 from api.routes.dasha_report import router as dasha_report_router
@@ -104,7 +115,9 @@ app.include_router(sanghatta_routes.router, prefix="/api", tags=["sanghatta"])
 app.include_router(karaka_routes.router, prefix="/api", tags=["karaka"])
 app.include_router(tithi_routes.router, prefix="/api", tags=["tithi"])
 app.include_router(websocket_router, tags=["websocket"])
-
+app.include_router(solar_return.router, prefix="/api/solar_return", tags=["Solar Return"])
+app.include_router(ai_interpretation.router, prefix="/api/ai", tags=["AI"])
+app.include_router(transit.router, prefix="/api/transit", tags=["Transit"])
 @app.get("/api/yantras")
 async def get_yantras():
     fallback_yantras = [
@@ -136,11 +149,13 @@ app.include_router(websocket_router)
 app.include_router(astro_router, prefix="/api")
 app.include_router(decision.router, prefix="/api", tags=["Decision"])
 app.include_router(horoscope.router, prefix="/api/horoscope", tags=["Horoscope"])
+app.include_router(horoscope_reports.router, prefix="/api/horoscope-report", tags=["Horoscope Reports"])
 app.include_router(profiles_router, prefix="/api/profiles", tags=["Profiles"])
 app.include_router(lalkitab.router, prefix="/api/lalkitab", tags=["Lal Kitab"])
 app.include_router(conjunction.router, prefix="/api/conjunction", tags=["Conjunction"])
 app.include_router(study.router, prefix="/api/study", tags=["Study"])
 app.include_router(career.router, prefix="/api/career", tags=["Career"])
+app.include_router(panchang.router, prefix="/api/panchang", tags=["Panchang"])
 app.include_router(prashna.router, prefix="/api/prashna", tags=["Prashna Kundali"])
 app.include_router(finance.router, prefix="/api/finance", tags=["Finance"])
 app.include_router(nadi.router, prefix="/api/nadi", tags=["Nadi Astrology"])
@@ -160,6 +175,10 @@ app.include_router(navamsha_ages.router, prefix="/api/navamsha_ages", tags=["Nav
 app.include_router(kp_chart.router, prefix="/api/kp", tags=["KP Chart"])
 app.include_router(sunrise_chart.router, prefix="/api/sunrise", tags=["Sunrise Chart"])
 app.include_router(sarvatobhadra_routes.router, prefix="/api/sarvatobhadra", tags=["Sarvatobhadra"])
+app.include_router(kalachakra.router, prefix="/api/kalachakra", tags=["Kalachakra"])
+app.include_router(naming.router, prefix="/api/naming", tags=["Naming"])
+app.include_router(longevity.router, prefix="/api/longevity", tags=["Longevity"])
+app.include_router(astronomy.router, prefix="/api/astronomy", tags=["Astronomy"])
 print("[STARTUP] Initializing routers...")
 app.include_router(family_health.router, prefix="/api/family-health", tags=["Family Health"])
 print("[STARTUP] Computing timezone cache...")
@@ -272,6 +291,35 @@ def api_chaturshitisama(payload: Dict = Body(...)):
         raise HTTPException(status_code=400, detail=f"Invalid parameter: {e}")
     res = compute_chaturshitisama(start_planet=start_planet, years_ahead=years)
     return JSONResponse(res)
+
+@app.post("/api/dasha/timeline")
+def api_dasha_timeline(payload: Dict = Body(...)):
+    try:
+        date_str = payload.get("date", "1990-10-01")
+        time_str = payload.get("time", "12:00:00")
+        if time_str and len(time_str.split(':')) == 2:
+            time_str += ':00'
+        tz_offset = float(payload.get("tz_offset", 5.5))
+        
+        from astronomy.julian import datetime_to_julian
+        from dasha_engine.ephemeris_engine import SwissEphemerisEngine
+        import datetime
+        
+        birth_dt_local = datetime.datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %H:%M:%S")
+        birth_dt_utc = birth_dt_local - datetime.timedelta(hours=tz_offset)
+        jd_ut = datetime_to_julian(birth_dt_utc)
+        
+        try:
+            ephe = SwissEphemerisEngine()
+            moon_lon = ephe.get_planet_longitude(birth_dt_utc, 1) # 1 is Moon
+        except:
+            moon_lon = 60.0
+            
+        from dasha.vimshottari import compute_vimshottari_full
+        res = compute_vimshottari_full(jd_ut, moon_lon, years_ahead=120)
+        return JSONResponse({"vimshottari": res, "jd_ut": jd_ut})
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/api/dasha/all-nakshatra")
 def api_all_nakshatra_dashas(payload: Dict = Body(...)):

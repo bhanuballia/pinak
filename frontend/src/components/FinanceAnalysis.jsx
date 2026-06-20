@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FINANCE_HOUSE_INTERPRETATIONS, FINANCE_YOGAS, SIGN_LORDS } from '../data/financeData';
 
 export default function FinanceAnalysis() {
+    const [isLightMode, setIsLightMode] = useState(false);
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedYoga, setSelectedYoga] = useState(null);
@@ -93,7 +94,58 @@ export default function FinanceAnalysis() {
     };
 
     return (
-            <div className="min-h-screen bg-[#020617] text-[#cbd5e1] font-serif p-8">
+            <div className={`${isLightMode ? 'light-mode-override' : 'min-h-screen bg-[#020617] text-[#cbd5e1] font-serif p-8'} relative`}>
+
+            <button 
+                onClick={() => setIsLightMode(!isLightMode)}
+                style={{
+                    position: 'absolute',
+                    top: '20px',
+                    right: '80px',
+                    zIndex: 1000,
+                    background: isLightMode ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    padding: '6px 12px',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    color: isLightMode ? 'white' : 'black',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+                }}
+            >
+                {isLightMode ? '🌙 Dark' : '☀️ Light'}
+            </button>
+
+
+            <style>{`
+                .light-mode-override {
+                    background-color: #f8fafc !important;
+                    color: #a51e0dbd !important;
+                }
+                .light-mode-override .bg-\[\#0f172a\] {
+                    background-color: #ffffff !important;
+                    border-color: rgba(0,0,0,0.1) !important;
+                    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
+                }
+                .light-mode-override .text-white {
+                    color: #0f172a !important;
+                }
+                .light-mode-override .text-\[\#cbd5e1\] {
+                    color: #a51e0dbd !important;
+                }
+                .light-mode-override .bg-white\/5 {
+                    background-color: rgba(0,0,0,0.03) !important;
+                    border-color: rgba(0,0,0,0.05) !important;
+                }
+                .light-mode-override .from-\[\#1e1b4b\] {
+                    --tw-gradient-from: #f1f5f9 var(--tw-gradient-from-position) !important;
+                }
+                .light-mode-override .to-\[\#020617\] {
+                    --tw-gradient-to: #e2e8f0 var(--tw-gradient-to-position) !important;
+                }
+            `}</style>
+
                 <div className="max-w-6xl mx-auto space-y-12">
                     {/* Header */}
                     <div className="text-center space-y-4 border-b border-[#d4af37]/20 pb-12">

@@ -13,7 +13,7 @@ const CompactTransitControl = ({ lat, lon, onTransitChange }) => {
       const pad = n => String(n).padStart(2, "0");
       const timeStr = `${pad(dt.getHours())}:${pad(dt.getMinutes())}:${pad(dt.getSeconds())}`;
       const tz_offset = (dt.getTimezoneOffset() / -60.0).toFixed(1);
-      
+
       const res = await fetch(
         `/api/horoscope/positions?date=${dateStr}&time=${timeStr}&tz_offset=${tz_offset}&lat=${lat || 28.6}&lon=${lon || 77.2}`
       );
@@ -67,38 +67,38 @@ const CompactTransitControl = ({ lat, lon, onTransitChange }) => {
   };
 
   return (
-    <div className="flex items-center gap-3 bg-[#1e1e2e] p-2 rounded-lg border border-[#333] shadow-md font-sans">
-      <button 
+    <div className="flex items-center gap-3 bg-rose-250 p-2 rounded-lg border border-[#333] shadow-md font-sans">
+      <button
         onClick={() => { setIsAnimating(false); handleStep(-1); }}
-        className="px-3 py-1 bg-[#333] hover:bg-[#444] rounded text-white text-lg font-bold"
+        className="px-3 py-1 bg-rose-50 hover:bg-[#444] rounded text-black  text-[22px] font-bold"
       >
         -
       </button>
-      
-      <button 
+
+      <button
         onClick={() => setIsAnimating(!isAnimating)}
-        className={`px-4 py-1 rounded text-white font-bold ${isAnimating ? 'bg-red-600 hover:bg-red-500' : 'bg-blue-600 hover:bg-blue-500'}`}
+        className={`px-4 py-1 rounded text-white font-bold ${isAnimating ? 'bg-rose-50 hover:bg-red-500' : 'bg-blue-600 hover:bg-blue-500'}`}
       >
         {isAnimating ? 'Stop' : 'Animate'}
       </button>
-      
-      <button 
+
+      <button
         onClick={() => { setIsAnimating(false); handleStep(1); }}
-        className="px-3 py-1 bg-[#333] hover:bg-[#444] rounded text-white text-lg font-bold"
+        className="px-3 py-1 bg-rose-50 hover:bg-[#444] rounded text-white text-[22px] font-bold"
       >
         +
       </button>
-      
-      <select 
-        className="bg-[#222] border border-[#444] text-white px-2 py-1 rounded outline-none"
+
+      <select
+        className="bg-rose-50 border border-[#444] text-[18px] text-black px-2 py-1 rounded outline-none"
         value={stepValue}
         onChange={(e) => setStepValue(parseInt(e.target.value))}
       >
         {[1, 2, 3, 4, 5, 10].map(v => <option key={v} value={v}>{v}</option>)}
       </select>
-      
-      <select 
-        className="bg-[#222] border border-[#444] text-white px-2 py-1 rounded outline-none"
+
+      <select
+        className="bg-rose-50 border border-[#444] text-[18px] text-black px-2 py-1 rounded outline-none"
         value={stepUnit}
         onChange={(e) => setStepUnit(e.target.value)}
       >

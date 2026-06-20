@@ -1,4 +1,6 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, Query
+from pydantic import BaseModel
+from typing import Optional
 import datetime
 from charts.rashi_chart import build_rashi_chart
 from panchang.nakshatra import compute_nakshatra_from_lon
@@ -39,11 +41,22 @@ NATURE_ACTIVITIES = {
 }
 
 @router.get("/live")
-def get_live_nakshatra():
-    """Returns the live, real-time Nakshatra position of all planets."""
+def get_live_nakshatra(target_datetime: Optional[str] = Query(None, description="ISO formatted datetime string (e.g. 2025-12-01T10:00:00Z)")):
+    """Returns the live or historical Nakshatra position of all planets."""
     try:
-        # Use utcnow since Julian calculations expect UTC
-        now = datetime.datetime.utcnow()
+        # Use provided time if any, else utcnow since Julian calculations expect UTC
+        if target_datetime:
+            try:
+                # Parse ISO format, strip Z if present for fromisoformat
+                cleaned_dt = target_datetime.replace('Z', '+00:00')
+                now = datetime.datetime.fromisoformat(cleaned_dt)
+                # Convert to naive UTC for julian calculation compatibility
+                now = now.replace(tzinfo=None)
+            except ValueError:
+                now = datetime.datetime.utcnow()
+        else:
+            now = datetime.datetime.utcnow()
+            
         jd_ut = datetime_to_julian(now)
         
         # We can just build a chart for Delhi to get planetary positions (house placement depends on location, but planetary longitudes are mostly universal at a given time)
@@ -165,3 +178,139 @@ def get_live_nakshatra():
     except Exception as e:
         logger.error(f"Error computing live nakshatras: {e}")
         return {"error": str(e)}
+
+class PersonalizedOracleRequest(BaseModel):
+    date: str
+    time: str
+    lat: float
+    lon: float
+    tz_offset: float
+    question: str
+    category: str = "General"
+    target_datetime: Optional[str] = None
+
+NAKSHATRAS_LIST = [
+    "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra", 
+    "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", 
+    "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", 
+    "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", 
+    "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"
+]
+
+TARA_MEANINGS = {
+    1: {"name": "Janma", "meaning": "Danger to body, mental stress, unfavorable for new beginnings.", "quality": "Inauspicious"},
+    2: {"name": "Sampat", "meaning": "Wealth, prosperity, highly favorable for financial matters.", "quality": "Extremely Auspicious"},
+    3: {"name": "Vipat", "meaning": "Losses, accidents, obstacles. Avoid important tasks.", "quality": "Inauspicious"},
+    4: {"name": "Kshema", "meaning": "Well-being, safety, prosperity, success in endeavors.", "quality": "Auspicious"},
+    5: {"name": "Pratyak", "meaning": "Obstacles, hurdles, delays in work. Proceed with caution.", "quality": "Neutral"},
+    6: {"name": "Sadhaka", "meaning": "Achievement of goals, success, very favorable for ambitions.", "quality": "Extremely Auspicious"},
+    7: {"name": "Naidhana", "meaning": "Extreme danger, severe failures. Strictly avoid important work.", "quality": "Inauspicious"},
+    8: {"name": "Mitra", "meaning": "Friendship, help from others, favorable for social interactions.", "quality": "Auspicious"},
+    0: {"name": "Ati-Mitra", "meaning": "Great friendship, ultimate success, highly favorable.", "quality": "Extremely Auspicious"} # 9 % 9 == 0
+}
+
+@router.post("/personalized_oracle")
+def get_personalized_oracle(req: PersonalizedOracleRequest):
+    """
+    Calculates the Tara Bala (Star Strength) based on user's birth data
+    and live transit data to answer a personalized question.
+    """
+    try:
+        # 1. Calculate Natal Moon Nakshatra
+        import datetime as _dt
+        y, m, d = [int(x) for x in req.date.split("-")]
+        tp = [int(x) for x in req.time.split(":")]
+        dt_local = _dt.datetime(y, m, d, tp[0], tp[1], tp[2] if len(tp) > 2 else 0)
+        dt_utc = dt_local - _dt.timedelta(hours=req.tz_offset)
+        birth_jd_ut = datetime_to_julian(dt_utc)
+        
+        birth_chart = build_rashi_chart(birth_jd_ut, lat=req.lat, lon=req.lon)
+        natal_moon_lon = birth_chart["planet_positions"]["Moon"]["sidereal"]["lon"]
+        natal_nak_info = compute_nakshatra_from_lon(natal_moon_lon)
+        natal_nak_name = natal_nak_info["nakshatra_name"]
+        
+        # Determine index (1-27)
+        # Handle spelling variations like "Purva Phalguni" vs "Purva Phalguni"
+        def get_nak_index(name):
+            for i, n in enumerate(NAKSHATRAS_LIST):
+                if n.lower() in name.lower() or name.lower() in n.lower():
+                    return i + 1
+            return 1 # Fallback
+
+        natal_idx = get_nak_index(natal_nak_name)
+
+        # 2. Calculate Live (or Target) Moon Nakshatra
+        import datetime
+        if req.target_datetime:
+            try:
+                cleaned_dt = req.target_datetime.replace('Z', '+00:00')
+                now = datetime.datetime.fromisoformat(cleaned_dt)
+                now = now.replace(tzinfo=None)
+            except ValueError:
+                now = datetime.datetime.utcnow()
+        else:
+            now = datetime.datetime.utcnow()
+            
+        live_jd_ut = datetime_to_julian(now)
+        live_chart = build_rashi_chart(live_jd_ut, lat=req.lat, lon=req.lon)
+        live_moon_lon = live_chart["planet_positions"]["Moon"]["sidereal"]["lon"]
+        live_nak_info = compute_nakshatra_from_lon(live_moon_lon)
+        live_nak_name = live_nak_info["nakshatra_name"]
+        
+        live_idx = get_nak_index(live_nak_name)
+
+        # 3. Calculate Tara Bala
+        # Formula: (Live Index - Natal Index + 1) % 9
+        # Wait, the classical formula is counting from Natal to Live inclusive.
+        # So if Natal is Ashwini(1) and Live is Bharani(2), distance is 2. (2 - 1 + 1) = 2 (Sampat)
+        tara_index = (live_idx - natal_idx + 1) % 9
+        # If the index is negative because live_idx < natal_idx, we add 27 before modulo
+        if live_idx < natal_idx:
+            tara_index = ((live_idx + 27) - natal_idx + 1) % 9
+
+        tara_info = TARA_MEANINGS.get(tara_index, TARA_MEANINGS[0])
+
+        # 4. Construct Response
+        response_text = f"Astrological Analysis for: '{req.question}'\n\n"
+        response_text += f"Your Birth Star (Janma Nakshatra) is {natal_nak_name}. "
+        response_text += f"The current transiting Moon is in {live_nak_name}.\n"
+        response_text += f"This forms a **{tara_info['name']} Tara** relationship for you today.\n\n"
+        
+        # Contextual advice based on Tara
+        q_lower = req.question.lower()
+        if tara_info["quality"] == "Extremely Auspicious" or tara_info["quality"] == "Auspicious":
+            response_text += f"✨ **Highly Favorable!** The stars are aligned in your favor. {tara_info['meaning']} "
+            if "job" in q_lower or "interview" in q_lower or "career" in q_lower:
+                response_text += "It is a fantastic time for career advancements, interviews, or professional meetings."
+            elif "love" in q_lower or "marriage" in q_lower or "relationship" in q_lower:
+                response_text += "Relationships and romantic pursuits will bring joy and harmony today."
+            elif "money" in q_lower or "invest" in q_lower or "business" in q_lower:
+                response_text += "Financial transactions and business deals are highly supported."
+            elif "travel" in q_lower:
+                response_text += "Travel undertaken today will be safe, pleasant, and successful."
+        elif tara_info["quality"] == "Inauspicious":
+            response_text += f"⚠️ **Exercise Caution.** The current planetary energy is challenging. {tara_info['meaning']} "
+            if "job" in q_lower or "interview" in q_lower or "career" in q_lower:
+                response_text += "Expect delays or tough questions. Postpone important career moves if possible."
+            elif "love" in q_lower or "marriage" in q_lower or "relationship" in q_lower:
+                response_text += "Misunderstandings are likely. Avoid arguments and major relationship decisions."
+            elif "money" in q_lower or "invest" in q_lower or "business" in q_lower:
+                response_text += "Avoid financial risks or signing new contracts today."
+            elif "travel" in q_lower:
+                response_text += "Travel is not advised today as obstacles or accidents could occur."
+        else:
+            response_text += f"⚖️ **Neutral Energy.** The cosmic weather is mixed. {tara_info['meaning']} "
+            response_text += "Success depends on your own hard work rather than cosmic support today. Proceed carefully and be prepared for minor delays."
+
+        return {
+            "natal_nakshatra": natal_nak_name,
+            "live_nakshatra": live_nak_name,
+            "tara_name": tara_info["name"],
+            "tara_quality": tara_info["quality"],
+            "response": response_text,
+            "quality": tara_info["quality"]
+        }
+
+    except Exception as e:
+        logger.error(f"Error computing personalized oracle: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

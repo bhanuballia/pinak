@@ -1,34 +1,40 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+const CATEGORY_TRANSLATIONS = {
+    "Navagraha (Planets)": "नवग्रह",
+    "Hindu Deities": "हिन्दू देवी-देवता"
+};
+
 const MANTRAS = {
     "Navagraha (Planets)": [
-        { name: "Sun (Surya)", mantra: "Om Ghrini Suryaya Namah" },
-        { name: "Moon (Chandra)", mantra: "Om Som Somaya Namah" },
-        { name: "Mars (Mangal)", mantra: "Om Ang Angarakaya Namah" },
-        { name: "Mercury (Budh)", mantra: "Om Bum Budhaya Namah" },
-        { name: "Jupiter (Guru)", mantra: "Om Brim Brihaspataye Namah" },
-        { name: "Venus (Shukra)", mantra: "Om Shum Shukraya Namah" },
-        { name: "Saturn (Shani)", mantra: "Om Sham Shanaischaraya Namah" },
-        { name: "Rahu", mantra: "Om Ram Rahave Namah" },
-        { name: "Ketu", mantra: "Om Kem Ketave Namah" }
+        { name: "Sun (Surya)", hindiName: "सूर्य", mantra: "Om Ghrini Suryaya Namah", hindiMantra: "ॐ घृणि सूर्याय नमः" },
+        { name: "Moon (Chandra)", hindiName: "चन्द्र", mantra: "Om Som Somaya Namah", hindiMantra: "ॐ सों सोमाय नमः" },
+        { name: "Mars (Mangal)", hindiName: "मंगल", mantra: "Om Ang Angarakaya Namah", hindiMantra: "ॐ अं अंगारकाय नमः" },
+        { name: "Mercury (Budh)", hindiName: "बुध", mantra: "Om Bum Budhaya Namah", hindiMantra: "ॐ बुं बुधाय नमः" },
+        { name: "Jupiter (Guru)", hindiName: "बृहस्पति (गुरु)", mantra: "Om Brim Brihaspataye Namah", hindiMantra: "ॐ बृं बृहस्पतये नमः" },
+        { name: "Venus (Shukra)", hindiName: "शुक्र", mantra: "Om Shum Shukraya Namah", hindiMantra: "ॐ शुं शुक्राय नमः" },
+        { name: "Saturn (Shani)", hindiName: "शनि", mantra: "Om Sham Shanaischaraya Namah", hindiMantra: "ॐ शं शनैश्चराय नमः" },
+        { name: "Rahu", hindiName: "राहु", mantra: "Om Ram Rahave Namah", hindiMantra: "ॐ रां राहवे नमः" },
+        { name: "Ketu", hindiName: "केतु", mantra: "Om Kem Ketave Namah", hindiMantra: "ॐ कें केतवे नमः" }
     ],
     "Hindu Deities": [
-        { name: "Lord Ganesha", mantra: "Om Gam Ganapataye Namah" },
-        { name: "Lord Shiva", mantra: "Om Namah Shivaya" },
-        { name: "Lord Vishnu", mantra: "Om Namo Narayanaya" },
-        { name: "Lord Krishna", mantra: "Om Namo Bhagavate Vasudevaya" },
-        { name: "Lord Rama", mantra: "Om Shri Ramaya Namah" },
-        { name: "Lord Hanuman", mantra: "Om Hum Hanumate Namah" },
-        { name: "Maa Durga", mantra: "Om Dum Durgayei Namah" },
-        { name: "Maa Kali", mantra: "Om Krim Kalyai Namah" },
-        { name: "Maa Saraswati", mantra: "Om Aim Saraswatyai Namah" },
-        { name: "Maa Lakshmi", mantra: "Om Shreem Mahalakshmiyei Namah" }
+        { name: "Lord Ganesha", hindiName: "भगवान गणेश", mantra: "Om Gam Ganapataye Namah", hindiMantra: "ॐ गं गणपतये नमः" },
+        { name: "Lord Shiva", hindiName: "भगवान शिव", mantra: "Om Namah Shivaya", hindiMantra: "ॐ नमः शिवाय" },
+        { name: "Lord Vishnu", hindiName: "भगवान विष्णु", mantra: "Om Namo Narayanaya", hindiMantra: "ॐ नमो नारायणाय" },
+        { name: "Lord Krishna", hindiName: "भगवान कृष्ण", mantra: "Om Namo Bhagavate Vasudevaya", hindiMantra: "ॐ नमो भगवते वासुदेवाय" },
+        { name: "Lord Rama", hindiName: "भगवान राम", mantra: "Om Shri Ramaya Namah", hindiMantra: "ॐ श्री रामाय नमः" },
+        { name: "Lord Hanuman", hindiName: "भगवान हनुमान", mantra: "Om Hum Hanumate Namah", hindiMantra: "ॐ हुं हनुमते नमः" },
+        { name: "Maa Durga", hindiName: "माँ दुर्गा", mantra: "Om Dum Durgayei Namah", hindiMantra: "ॐ दुं दुर्गायै नमः" },
+        { name: "Maa Kali", hindiName: "माँ काली", mantra: "Om Krim Kalyai Namah", hindiMantra: "ॐ क्रीं काल्यै नमः" },
+        { name: "Maa Saraswati", hindiName: "माँ सरस्वती", mantra: "Om Aim Saraswatyai Namah", hindiMantra: "ॐ ऐं सरस्वत्यै नमः" },
+        { name: "Maa Lakshmi", hindiName: "माँ लक्ष्मी", mantra: "Om Shreem Mahalakshmiyei Namah", hindiMantra: "ॐ श्रीं महालक्ष्म्यै नमः" }
     ]
 };
 
 export default function MantraTracker() {
     const [selectedCategory, setSelectedCategory] = useState("Hindu Deities");
     const [selectedMantra, setSelectedMantra] = useState(MANTRAS["Hindu Deities"][1]);
+    const [showHindi, setShowHindi] = useState(false);
 
     const [count, setCount] = useState(0);
     const [isSessionActive, setIsSessionActive] = useState(false);
@@ -281,13 +287,34 @@ export default function MantraTracker() {
     const isActuallySpeaking = isMicEnabled && isSpeakingUI;
 
     return (
-        <div className="min-h-screen bg-slate-950 text-slate-200 p-6 flex flex-col font-sans">
-            <div className="flex justify-between items-center mb-8">
-                <div>
-                    <h1 className="text-3xl font-bold text-amber-500 flex items-center gap-3">
+        <div
+            className="min-h-screen bg-slate-950 text-slate-200 p-6 flex flex-col font-sans relative bg-cover bg-center bg-fixed"
+            style={{ backgroundImage: "url('/deities/japamala.png')" }}
+        >
+            <div className="absolute inset-0 bg-slate-900/10 backdrop-blur-[2px] z-0"></div>
+
+            <div className="relative z-10 flex justify-between items-start mb-8">
+                <div className="max-w-3xl bg-slate-900/60 p-6 rounded-2xl border border-slate-700/50 backdrop-blur-sm shadow-xl">
+                    <h1 className="text-4xl font-bold text-amber-500 flex items-center gap-3 mb-2">
                         <span className="text-4xl">📿</span> Digital Japa Mala
                     </h1>
-                    <p className="text-slate-400 mt-1">Focus your mind. Track your spiritual progress.</p>
+                    <p className="text-orange-100 mt-1 text-lg font-medium">
+                        A digital companion for your daily spiritual practice. Focus your mind and effortlessly track your chants.
+                    </p>
+                    <div className="mt-4 space-y-2 text-slate-200 text-sm">
+                        <p className="flex items-start gap-2">
+                            <span className="text-amber-500">👆</span>
+                            <span><strong>Manual Chanting:</strong> Tap the large circle or press the Spacebar on your keyboard after each mantra.</span>
+                        </p>
+                        <p className="flex items-start gap-2">
+                            <span className="text-amber-500">🎤</span>
+                            <span><strong>Hands-Free Chanting:</strong> Enable your microphone, close your eyes, and just chant. The app intelligently listens and counts for you!</span>
+                        </p>
+                        <p className="flex items-start gap-2">
+                            <span className="text-amber-500">🔔</span>
+                            <span><strong>Milestones:</strong> A divine temple bell will automatically chime every 108 chants (1 complete Mala).</span>
+                        </p>
+                    </div>
                 </div>
                 <button
                     onClick={() => window.close()}
@@ -297,13 +324,25 @@ export default function MantraTracker() {
                 </button>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1">
+            <div className="relative z-10 grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1">
                 {/* Left Sidebar */}
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl flex flex-col justify-between">
+                <div className="bg-slate-900/70 backdrop-blur-md border border-slate-800/50 rounded-2xl p-6 shadow-2xl flex flex-col justify-between">
                     <div>
-                        <h2 className="text-xl font-bold text-slate-300 mb-4 border-b border-slate-700 pb-2">Select Mantra</h2>
+                        <div className="flex justify-between items-center mb-4 border-b border-slate-700 pb-2">
+                            <h2 className="text-xl font-bold text-slate-300">
+                                {showHindi ? "मंत्र चुनें" : "Select Mantra"}
+                            </h2>
+                            <button
+                                onClick={() => setShowHindi(!showHindi)}
+                                className="text-xs font-bold bg-slate-800 hover:bg-slate-700 text-amber-500 px-3 py-1 rounded-full border border-slate-700 transition-colors shadow-sm"
+                            >
+                                {showHindi ? "English" : "हिंदी"}
+                            </button>
+                        </div>
 
-                        <label className="block text-sm font-medium text-slate-400 mb-1">Category</label>
+                        <label className="block text-sm font-medium text-slate-400 mb-1">
+                            {showHindi ? "श्रेणी" : "Category"}
+                        </label>
                         <select
                             className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-slate-200 mb-4 focus:outline-none focus:border-amber-500"
                             value={selectedCategory}
@@ -314,11 +353,15 @@ export default function MantraTracker() {
                             disabled={isSessionActive}
                         >
                             {Object.keys(MANTRAS).map(cat => (
-                                <option key={cat} value={cat}>{cat}</option>
+                                <option key={cat} value={cat}>
+                                    {showHindi ? CATEGORY_TRANSLATIONS[cat] : cat}
+                                </option>
                             ))}
                         </select>
 
-                        <label className="block text-sm font-medium text-slate-400 mb-1">Deity / Planet</label>
+                        <label className="block text-sm font-medium text-slate-400 mb-1">
+                            {showHindi ? "देवता / ग्रह" : "Deity / Planet"}
+                        </label>
                         <select
                             className="w-full bg-slate-800 border border-slate-700 rounded-lg p-2.5 text-slate-200 focus:outline-none focus:border-amber-500"
                             value={selectedMantra.name}
@@ -329,13 +372,21 @@ export default function MantraTracker() {
                             disabled={isSessionActive}
                         >
                             {MANTRAS[selectedCategory].map(m => (
-                                <option key={m.name} value={m.name}>{m.name}</option>
+                                <option key={m.name} value={m.name}>
+                                    {showHindi ? m.hindiName : m.name}
+                                </option>
                             ))}
                         </select>
 
                         <div className="mt-8 bg-slate-950 p-4 rounded-xl border border-slate-800">
-                            <div className="text-sm text-slate-400 mb-1">Current Mantra:</div>
-                            <div className="text-lg text-amber-400 font-bold italic text-center">"{selectedMantra.mantra}"</div>
+                            <div className="flex justify-between items-center mb-3 border-b border-slate-800 pb-2">
+                                <div className="text-sm font-bold text-slate-400">
+                                    {showHindi ? "वर्तमान मंत्र:" : "Current Mantra:"}
+                                </div>
+                            </div>
+                            <div className={`text-xl text-amber-400 font-bold text-center ${showHindi ? 'font-sans' : 'italic'}`}>
+                                "{showHindi ? selectedMantra.hindiMantra : selectedMantra.mantra}"
+                            </div>
                         </div>
                     </div>
 
@@ -357,7 +408,7 @@ export default function MantraTracker() {
                 </div>
 
                 {/* Center - The Digital Mala */}
-                <div className="lg:col-span-2 bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl flex flex-col items-center justify-center relative overflow-hidden">
+                <div className="lg:col-span-2 bg-slate-900/80 backdrop-blur-md border border-slate-800/50 rounded-2xl p-8 shadow-2xl flex flex-col items-center justify-center relative overflow-hidden">
 
                     {/* Timer and Status */}
                     <div className="absolute top-8 left-8 right-8 flex justify-between items-center z-10">
@@ -442,7 +493,7 @@ export default function MantraTracker() {
                     )}
 
                     {count === 0 && !isMicEnabled && (
-                        <div className="text-slate-500 mt-4 text-center z-10">
+                        <div className="text-orange-100  mt-4 text-[20px] text-center z-10">
                             Tap the circle or press Spacebar to begin chanting. <br />
                             A bell will chime after 108 chants.
                         </div>

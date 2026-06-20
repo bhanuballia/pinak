@@ -1,5 +1,155 @@
 import React, { useState } from 'react';
 
+const PREDEFINED_QUESTIONS = {
+    "Marriage / Relationship": [
+        "Will I get married soon?",
+        "When will I get married?",
+        "Is this the right time for marriage?",
+        "Will my marriage be delayed?",
+        "Will I have a love marriage or arranged marriage?",
+        "Will my marriage proposal succeed?",
+        "Is the current relationship leading to marriage?",
+        "Will I marry the person I love?",
+        "Is there another marriage indication in my chart?",
+        "Will there be obstacles to my marriage?",
+        "Does my partner truly love me?",
+        "Is my partner loyal and faithful?",
+        "Will reconciliation happen after separation?",
+        "Will my ex return?",
+        "Is my current relationship stable?",
+        "Are hidden problems present in this relationship?",
+        "Should I continue this relationship?",
+        "Will our families approve?",
+        "Is there a third person involved?",
+        "Will this relationship end in commitment?"
+    ],
+    "Career / Job": [
+        "Will I get a job soon?",
+        "When will I receive employment?",
+        "Will I clear my interview?",
+        "Should I change my current job?",
+        "Will I receive a promotion?",
+        "Will my salary increase?",
+        "Should I continue in my present company?",
+        "Will I get a government job?",
+        "Is business better than service for me?",
+        "Will I get an overseas job opportunity?",
+        "Should I start my own business?",
+        "Will my startup succeed?",
+        "Will my career improve this year?",
+        "Is job loss indicated?",
+        "Will I be transferred?"
+    ],
+    "Wealth / Finance": [
+        "Will my financial condition improve?",
+        "Will I recover my blocked money?",
+        "Will I receive an inheritance?",
+        "Is this the right time to invest?",
+        "Will I gain profit from this business?",
+        "Should I purchase shares or mutual funds?",
+        "Will I be able to repay my debts?",
+        "Will I receive the expected payment?",
+        "Is there a chance of sudden wealth?",
+        "Will I buy a house this year?",
+        "Will I purchase a vehicle?",
+        "Is this property investment favorable?",
+        "Will my loan be approved?",
+        "Is there a risk of financial loss?",
+        "Will legal disputes affect my finances?"
+    ],
+    "Health / Disease": [
+        "Will I recover from my illness?",
+        "Is the disease serious?",
+        "What is the likely duration of this illness?",
+        "Will surgery be successful?",
+        "Should surgery be avoided?",
+        "Is hospitalization indicated?",
+        "Will medical treatment work?",
+        "Is there a hidden disease?",
+        "Will the patient regain full health?",
+        "Is this health condition temporary?",
+        "Are there chances of relapse?",
+        "Is stress affecting my health?",
+        "Should I seek a second medical opinion?",
+        "Is this the right time for treatment?",
+        "Will alternative therapies help?"
+    ],
+    "Missing Item / Property": [
+        "Will my lost item be recovered?",
+        "Where is the missing object located?",
+        "Was the item stolen or misplaced?",
+        "Who took the missing item?",
+        "Will the missing person return safely?",
+        "Will I recover my lost documents?",
+        "Is the property dispute resolvable?",
+        "Will I regain possession of my property?",
+        "Is the item nearby or far away?",
+        "How long will it take to recover it?",
+        "Is the missing item permanently lost?",
+        "Can legal action help recover it?",
+        "Was the loss caused by negligence?",
+        "Is someone hiding the object?",
+        "What direction should I search?"
+    ],
+    "Children": [
+        "Will I have children?",
+        "When will childbirth occur?",
+        "Is there delay in childbirth?",
+        "Will fertility treatment succeed?",
+        "Will I have a healthy child?",
+        "Is adoption indicated?",
+        "Will I have more than one child?",
+        "Is there a possibility of miscarriage?",
+        "Will the pregnancy proceed safely?",
+        "Will my child be successful?",
+        "Are there obstacles in conception?",
+        "Will I have a son or daughter?",
+        "Should medical intervention be pursued?",
+        "Will the child be born this year?",
+        "Is progeny yoga active?"
+    ],
+    "Travel / Education": [
+        "Will my planned journey be successful?",
+        "Is foreign travel indicated?",
+        "When will I travel abroad?",
+        "Will my visa be approved?",
+        "Is relocation favorable?",
+        "Should I postpone this trip?",
+        "Will my pilgrimage be successful?",
+        "Will business travel bring gains?",
+        "Is there risk during travel?",
+        "Will I settle overseas?",
+        "Will I pass my examinations?",
+        "Will I gain admission to my desired institution?",
+        "Should I pursue higher studies?",
+        "Will I complete my education successfully?",
+        "Is studying abroad favorable?",
+        "Will I receive a scholarship?",
+        "Which field of study suits me?",
+        "Will competitive exams be successful?",
+        "Should I change my academic path?",
+        "Will this educational investment benefit me?"
+    ],
+    "Litigation / Enemies": [
+        "Will I win the court case?",
+        "How long will the litigation continue?",
+        "Should I settle outside court?",
+        "Is compromise advisable?",
+        "Will my enemies succeed against me?",
+        "Will hidden enemies be exposed?",
+        "Will I face legal penalties?",
+        "Is imprisonment indicated?",
+        "Will I receive justice?",
+        "Will the dispute resolve peacefully?",
+        "Is the opposing party stronger?",
+        "Will I recover losses from litigation?",
+        "Should I proceed with the lawsuit?",
+        "Is arbitration favorable?",
+        "Will government authorities support me?"
+    ],
+    "Other": []
+};
+
 export default function PrashnaEngine() {
     const [question, setQuestion] = useState("");
     const [category, setCategory] = useState("Other");
@@ -100,6 +250,23 @@ export default function PrashnaEngine() {
                             >
                                 {categories.map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
+                            
+                            {category !== "Other" && PREDEFINED_QUESTIONS[category] && (
+                                <div className="mt-3 bg-slate-900/50 rounded-lg border border-slate-700/50 p-3">
+                                    <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Suggested Questions</label>
+                                    <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto custom-scrollbar">
+                                        {PREDEFINED_QUESTIONS[category].map((q, idx) => (
+                                            <button
+                                                key={idx}
+                                                onClick={() => setQuestion(q)}
+                                                className="text-xs bg-slate-800 hover:bg-slate-700 text-amber-100/90 hover:text-amber-400 px-3 py-1.5 rounded-full border border-slate-600 transition-colors text-left shadow-sm"
+                                            >
+                                                {q}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
                         </div>
                         
                         <div>

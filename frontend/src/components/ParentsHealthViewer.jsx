@@ -33,6 +33,7 @@ export default function ParentsHealthViewerWithErrorBoundary(props) {
 }
 
 function ParentsHealthViewer() {
+    const [isLightMode, setIsLightMode] = useState(false);
     const [insights, setInsights] = useState([]);
     const [personalData, setPersonalData] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -101,11 +102,33 @@ function ParentsHealthViewer() {
     const filteredInsights = filter === 'All' ? insights : insights.filter(item => item.category === filter);
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#020617', color: '#cbd5e1', fontFamily: 'serif', paddingBottom: '100px' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: isLightMode ? '#f8fafc' : '#020617', color: isLightMode ? '#a51e0dbd' : '#cbd5e1', fontFamily: 'serif', paddingBottom: '100px', position: 'relative' }}>
+
+            <button 
+                onClick={() => setIsLightMode(!isLightMode)}
+                style={{
+                    position: 'absolute',
+                    top: '20px',
+                    right: '100px',
+                    zIndex: 1000,
+                    background: isLightMode ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    padding: '6px 12px',
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    color: isLightMode ? 'white' : 'black',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+                }}
+            >
+                {isLightMode ? '🌙 Dark' : '☀️ Light'}
+            </button>
+
             {/* Premium Header */}
             <div style={{ 
                 padding: '80px 40px', 
-                background: 'linear-gradient(135deg, #0c4a6e 0%, #020617 100%)', 
+                background: isLightMode ? 'linear-gradient(135deg, #e0f2fe 0%, #f8fafc 100%)' : 'linear-gradient(135deg, #0c4a6e 0%, #020617 100%)', 
                 borderBottom: '1px solid rgba(14, 165, 233, 0.1)',
                 position: 'relative',
                 overflow: 'hidden',
@@ -128,7 +151,7 @@ function ParentsHealthViewer() {
                         boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
                     }}>👨‍👩‍👧</div>
                     <div>
-                        <h1 style={{ fontSize: '64px', fontWeight: 900, color: 'white', margin: 0, fontStyle: 'italic', letterSpacing: '-2px' }}>Parents Health Guide</h1>
+                        <h1 style={{ fontSize: '64px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', margin: 0, fontStyle: 'italic', letterSpacing: '-2px' }}>Parents Health Guide</h1>
                         <p style={{ color: '#0ea5e9', textTransform: 'uppercase', letterSpacing: '6px', fontSize: '14px', fontWeight: 900, marginTop: '10px' }}>
                             Lineage Vitality • Parental Well-being Diagnostic
                         </p>
@@ -176,7 +199,7 @@ function ParentsHealthViewer() {
                 {error && (
                     <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '40px', borderRadius: '40px', textAlign: 'center' }}>
                         <h3 style={{ fontSize: '24px', fontWeight: 900, color: '#ef4444', fontStyle: 'italic', marginBottom: '10px' }}>Connection Error</h3>
-                        <p style={{ color: '#94a3b8' }}>{error}</p>
+                        <p style={{ color: isLightMode ? '#475569' : '#94a3b8' }}>{error}</p>
                     </div>
                 )}
 
@@ -192,7 +215,7 @@ function ParentsHealthViewer() {
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px' }}>
                             {/* Mother Health Card */}
                             <div style={{ 
-                                background: 'linear-gradient(135deg, #0c4a6e 0%, #020617 100%)', 
+                                background: isLightMode ? 'linear-gradient(135deg, #e0f2fe 0%, #f8fafc 100%)' : 'linear-gradient(135deg, #0c4a6e 0%, #020617 100%)', 
                                 padding: '40px', 
                                 borderRadius: '50px', 
                                 border: '1px solid rgba(14,165,233,0.2)',
@@ -200,12 +223,12 @@ function ParentsHealthViewer() {
                                 textAlign: 'center'
                             }}>
                                 <p style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '4px', color: '#38bdf8', marginBottom: '15px' }}>👩 Mother's Health (4th House)</p>
-                                <p style={{ fontSize: '24px', fontWeight: 900, color: 'white', margin: '10px 0', lineHeight: '1.4' }}>{typeof personalData.mother === 'object' ? (Array.isArray(personalData.mother.notes) ? personalData.mother.notes.join(' ') : (personalData.mother.notes || personalData.mother.score)) : personalData.mother}</p>
+                                <p style={{ fontSize: '24px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', margin: '10px 0', lineHeight: '1.4' }}>{typeof personalData.mother === 'object' ? (Array.isArray(personalData.mother.notes) ? personalData.mother.notes.join(' ') : (personalData.mother.notes || personalData.mother.score)) : personalData.mother}</p>
                             </div>
 
                             {/* Father Health Card */}
                             <div style={{ 
-                                background: 'linear-gradient(135deg, #0c4a6e 0%, #020617 100%)', 
+                                background: isLightMode ? 'linear-gradient(135deg, #e0f2fe 0%, #f8fafc 100%)' : 'linear-gradient(135deg, #0c4a6e 0%, #020617 100%)', 
                                 padding: '40px', 
                                 borderRadius: '50px', 
                                 border: '1px solid rgba(14,165,233,0.2)',
@@ -213,12 +236,12 @@ function ParentsHealthViewer() {
                                 textAlign: 'center'
                             }}>
                                 <p style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '4px', color: '#38bdf8', marginBottom: '15px' }}>👨 Father's Health (9th House)</p>
-                                <p style={{ fontSize: '24px', fontWeight: 900, color: 'white', margin: '10px 0', lineHeight: '1.4' }}>{typeof personalData.father === 'object' ? (Array.isArray(personalData.father.notes) ? personalData.father.notes.join(' ') : (personalData.father.notes || personalData.father.score)) : personalData.father}</p>
+                                <p style={{ fontSize: '24px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', margin: '10px 0', lineHeight: '1.4' }}>{typeof personalData.father === 'object' ? (Array.isArray(personalData.father.notes) ? personalData.father.notes.join(' ') : (personalData.father.notes || personalData.father.score)) : personalData.father}</p>
                             </div>
 
                             {/* Deep Insights */}
                             <div style={{ 
-                                background: 'rgba(30,41,59,0.4)', 
+                                background: isLightMode ? 'rgba(255,255,255,0.8)' : 'rgba(30,41,59,0.4)', 
                                 padding: '40px', 
                                 borderRadius: '50px', 
                                 border: '1px solid rgba(255,255,255,0.05)',
@@ -226,8 +249,8 @@ function ParentsHealthViewer() {
                                 gridColumn: 'span 2',
                                 textAlign: 'center'
                             }}>
-                                <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#94a3b8', marginBottom: '20px' }}>Diagnostic Summary</p>
-                                <p style={{ fontSize: '20px', color: '#cbd5e1', fontStyle: 'italic', maxWidth: '800px', margin: '0 auto', lineHeight: '1.6' }}>
+                                <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: isLightMode ? '#475569' : '#94a3b8', marginBottom: '20px' }}>Diagnostic Summary</p>
+                                <p style={{ fontSize: '20px', color: isLightMode ? '#a51e0dbd' : '#cbd5e1', fontStyle: 'italic', maxWidth: '800px', margin: '0 auto', lineHeight: '1.6' }}>
                                     Your chart indicates that the parental energy is guided by the luminaries (Sun & Moon). Benefic influences on the 4th and 9th houses suggest stability, while any challenges can be mitigated through designated remedies.
                                 </p>
                             </div>
@@ -243,14 +266,14 @@ function ParentsHealthViewer() {
                 <section>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
                         <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.1))' }}></div>
-                        <h2 style={{ fontSize: '32px', color: 'white', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>Parental Care Wisdom</h2>
+                        <h2 style={{ fontSize: '32px', color: isLightMode ? '#0f172a' : 'white', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>Parental Care Wisdom</h2>
                         <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to left, transparent, rgba(255,255,255,0.1))' }}></div>
                     </div>
                     
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px' }}>
                         {filteredInsights.map((item, idx) => (
                             <div key={idx} style={{ 
-                                background: 'rgba(15, 23, 42, 0.6)', 
+                                background: isLightMode ? 'rgba(255,255,255,0.8)' : 'rgba(15, 23, 42, 0.6)', 
                                 padding: '40px', 
                                 borderRadius: '50px', 
                                 border: '1px solid rgba(255,255,255,0.05)',
@@ -260,8 +283,8 @@ function ParentsHealthViewer() {
                                     <span style={{ padding: '6px 15px', borderRadius: '100px', background: 'rgba(14, 165, 233, 0.05)', fontSize: '10px', color: '#0ea5e9', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', border: '1px solid rgba(14, 165, 233, 0.1)' }}>{item.category}</span>
                                     <span style={{ fontSize: '24px' }}>{item.icon || '👨‍👩‍👧'}</span>
                                 </div>
-                                <h3 style={{ fontSize: '24px', fontWeight: 900, color: 'white', marginBottom: '15px' }}>{item.title}</h3>
-                                <p style={{ fontSize: '18px', color: '#94a3b8', lineHeight: '1.7', fontStyle: 'italic' }}>{item.content}</p>
+                                <h3 style={{ fontSize: '24px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', marginBottom: '15px' }}>{item.title}</h3>
+                                <p style={{ fontSize: '18px', color: isLightMode ? '#475569' : '#94a3b8', lineHeight: '1.7', fontStyle: 'italic' }}>{item.content}</p>
                             </div>
                         ))}
                     </div>

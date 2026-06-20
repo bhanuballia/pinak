@@ -1,4 +1,6 @@
 import React from "react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 import ZodiacChart from "./ZodiacChart";
 
 export default function ChartView2({ data }) {
@@ -23,8 +25,27 @@ export default function ChartView2({ data }) {
         { id: 'd30', title: 'D30 Trimshamsha' },
     ];
 
+
+    const handleExportPDF = async () => {
+        const element = document.getElementById('pdf-classic-content');
+        if (!element) return;
+        try {
+            const canvas = await html2canvas(element, { scale: 1.5, useCORS: true, logging: false });
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF('l', 'mm', 'a4'); // landscape
+            const pdfWidth = pdf.internal.pageSize.getWidth();
+            const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+            pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+            pdf.save('ChartView2.pdf');
+        } catch (error) {
+            console.error("PDF Export failed:", error);
+            alert("Failed to export PDF.");
+        }
+    };
+
     return (
-        <div className="min-h-screen w-full bg-[#fff0d6] font-serif p-2 flex flex-col overflow-y-auto text-slate-800">
+        <div id="pdf-classic-content" className="min-h-screen w-full bg-[#fff0d6] font-serif p-2 flex flex-col overflow-y-auto text-slate-800">
+            <button onClick={handleExportPDF} className="absolute top-2 right-2 z-[100] bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-[12px] font-black uppercase shadow-lg border border-emerald-500/30 transition-all cursor-pointer">Export PDF</button>
             {/* Header */}
             <div className="flex justify-between items-end border-b-2 border-indigo-900/80 pb-1 mb-2 px-2 text-[11px] font-black uppercase tracking-wider text-indigo-950 shrink-0">
                 <span>{birthDataString}</span>

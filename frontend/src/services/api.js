@@ -185,6 +185,13 @@ export async function fetchMonthlyPanchang(lat, lon, tz, year, month) {
   return res.json();
 }
 
+export async function fetchNextAdhikMaas() {
+  const url = `${BASE}/api/panchang/next-adhik-maas`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch next Adhik Maas");
+  return res.json();
+}
+
 export async function fetchHoroscope(name, date, time, lat, lon, tz) {
   return fetchReportData({ name, date, time, lat, lon, tz_offset: tz });
 }

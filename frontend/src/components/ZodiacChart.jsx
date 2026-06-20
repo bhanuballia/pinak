@@ -89,34 +89,77 @@ const PLANET_ABBREV = {
   "Rahu": "Ra", "Ketu": "Ke", "Ascendant": "As"
 };
 
+const PLANET_HINDI = {
+  "Sun": "सू", "Moon": "चं", "Mars": "मं", "Mercury": "बु",
+  "Jupiter": "गु", "Venus": "शु", "Saturn": "श", "Rahu": "रा",
+  "Ketu": "के", "Ascendant": "ल", "Uranus": "अरु", "Neptune": "वरु", "Pluto": "यम"
+};
+
+const NAKSHATRA_HINDI = {
+  "Ashwini": "अश्", "Bharani": "भर", "Krittika": "कृत्", "Rohini": "रोहि",
+  "Mrigashira": "मृग", "Ardra": "आर्", "Punarvasu": "पुन", "Pushya": "पुष",
+  "Ashlesha": "आश्", "Magha": "मघा", "Purva Phalguni": "पू.फा", "Uttara Phalguni": "उ.फा",
+  "Hasta": "हस्", "Chitra": "चित", "Swati": "स्वा", "Vishakha": "विश",
+  "Anuradha": "अनु", "Jyeshtha": "ज्ये", "Mula": "मूल", "Purva Ashadha": "पू.षा",
+  "Uttara Ashadha": "उ.षा", "Shravana": "श्रव", "Dhanishta": "धनि",
+  "Shatabhisha": "शत", "Purva Bhadrapada": "पू.भा", "Uttara Bhadrapada": "उ.भा",
+  "Revati": "रेव"
+};
+
 const PLANET_COLORS = {
   "Sun": "#dc2626",  // Red
-  "Moon": "#475569",  // Slate
-  "Mars": "#b91c1c",  // Dark Red
-  "Mercury": "#15803d",  // Green
-  "Jupiter": "#b45309",  // Amber
-  "Venus": "#be185d",  // Pink
-  "Saturn": "#3730a3",  // Indigo
-  "Rahu": "#0f766e",  // Teal
-  "Ketu": "#92400e",  // Brown
+  "Moon": "#4f92f0fa",  // Slate
+  "Mars": "rgba(223, 52, 146, 1)",  // Dark Red
+  "Mercury": "#043f19ff",  // Green
+  "Jupiter": "#612d06ff",  // Amber
+  "Venus": "rgba(238, 63, 136, 1)",  // Pink
+  "Saturn": "#0c0569ff",  // Indigo
+  "Rahu": "rgba(214, 108, 22, 1)",  // Teal
+  "Ketu": "hsla(293, 83%, 49%, 1.00)",  // Brown
   "Ascendant": "#000000"   // Black
 };
 
-const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, variant = "modern", planetEffects = {}, scaleText = 1, planetPositions = [], defaultRect = false, hideLegend = false, defaultLang = "en" }) => {
+const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, variant = "modern", planetEffects = {}, scaleText = 1, planetPositions = [], defaultRect = false, hideLegend = false, hideOuterRect, defaultLang = "en", showFullscreenButton = false, onPopOut, bgColor, stackLayout = false }) => {
+  const isMainChart = title && (
+    title.toLowerCase().includes('birth') ||
+    title.toLowerCase().includes('lagna') ||
+    title.toLowerCase().includes('d1') ||
+    title.toLowerCase().includes('d-1') ||
+    title.toLowerCase().includes('navamsha') ||
+    title.toLowerCase().includes('navamsa') ||
+    title.toLowerCase().includes('d9') ||
+    title.toLowerCase().includes('d-9')
+  );
+
+  const isDoubleChart = transitHouses !== null;
+  const finalHideOuterRect = hideOuterRect !== undefined ? hideOuterRect : (!isMainChart && !isDoubleChart);
+
   const [lang, setLang] = useState(defaultLang);
   const [isRect, setIsRect] = useState(defaultRect);
   const [zoom, setZoom] = useState(1);
   const [useOriginalColors, setUseOriginalColors] = useState(false);
 
   const isLegacy = variant === "legacy";
-  const isDoubleChart = transitHouses !== null;
 
   if (isRect) {
-    return <ZodiacRectSign houses={houses} transitHouses={transitHouses} onPlanetClick={onPlanetClick} title={title} variant={variant} planetEffects={planetEffects} planetPositions={planetPositions} isRect={isRect} setIsRect={setIsRect} scaleText={scaleText} hideLegend={hideLegend} defaultLang={lang} />;
+    return <ZodiacRectSign houses={houses} transitHouses={transitHouses} onPlanetClick={onPlanetClick} title={title} variant={variant} planetEffects={planetEffects} planetPositions={planetPositions} isRect={isRect} setIsRect={setIsRect} scaleText={scaleText} hideLegend={hideLegend} hideOuterRect={finalHideOuterRect} defaultLang={lang} showFullscreenButton={showFullscreenButton} onPopOut={onPopOut} />;
   }
 
+  const containerRef = React.useRef(null);
+
+  const handleFullscreen = (e) => {
+    e.stopPropagation();
+    if (!document.fullscreenElement) {
+      containerRef.current?.requestFullscreen().catch(err => {
+        console.error(`Error attempting to enable fullscreen: ${err.message}`);
+      });
+    } else {
+      document.exitFullscreen();
+    }
+  };
+
   const getPlanetColor = (planet, isTransit = false) => {
-    if (useOriginalColors) {
+    if (useOriginalColors || isDoubleChart) {
       return PLANET_COLORS[planet] || "#727e96ff";
     }
     if (isTransit) {
@@ -128,7 +171,7 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
     const effect = planetEffects[planet];
     if (effect === "positive") return "#077e2fff"; // Green
     if (effect === "negative") return "rgba(199, 20, 20, 1)"; // Red
-    if (effect === "neutral") return "rgba(216, 203, 15, 1)";  // Blue
+    if (effect === "neutral") return "rgba(14, 5, 95, 1)";  // Blue
     return PLANET_COLORS[planet] || "#727e96ff";
   };
 
@@ -206,9 +249,16 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
     const displayedPlanets = planets.slice(0, 7); // Handle up to 7 items cleanly
     const totalItems = 1 + displayedPlanets.length;
 
-    // Layout 1: Symmetrical vertical stack (up to 3 items)
-    if (totalItems <= 3) {
-      const lineH = isDouble ? 3.8 : 4.5;
+    // stackLayout mode: always use vertical stack regardless of planet count
+    if (stackLayout || totalItems <= 3) {
+      // Scale lineH down for larger groups so all planets fit inside the cell
+      const baseLineH = isDouble ? 3.8 : 4.5;
+      const lineH = stackLayout && totalItems > 3
+        ? Math.max(isDouble ? 2.2 : 2.8, baseLineH - (totalItems - 3) * 0.55)
+        : baseLineH;
+      const fontSize = stackLayout && totalItems > 4
+        ? (isDouble ? 1.7 : 2.0) * scaleText
+        : (isDouble ? 2.2 : 2.5) * scaleText;
       const startY = cy - ((totalItems - 1) * lineH) / 2;
 
       return (
@@ -218,7 +268,7 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
             y={startY}
             textAnchor="middle"
             dominantBaseline="middle"
-            fontSize={(isDouble ? 2.5 : 5.5) * scaleText}
+            fontSize={fontSize}
             fill="#000"
             fontWeight="bold"
             fontFamily="Arial, sans-serif"
@@ -231,13 +281,17 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
             const isRetro = typeof p === 'object' ? p.is_retrograde : false;
             const isCombust = typeof p === 'object' ? p.is_combust : false;
 
-            let abbrev = PLANET_ABBREV[pName] || pName.substring(0, 2);
-            if (isRetro) abbrev += 'R';
-            if (isCombust) abbrev += '#';
+            let abbrev = lang === 'hi' ? (PLANET_HINDI[pName] || pName.substring(0, 2)) : (PLANET_ABBREV[pName] || pName.substring(0, 2));
             const nakshatra = typeof p === 'object' ? p.nakshatra : null;
             if (nakshatra && !isDouble) {
-              abbrev += ` (${nakshatra.substring(0, 3)})`;
+              let nakText = nakshatra.substring(0, 3);
+              if (lang === 'hi') {
+                nakText = NAKSHATRA_HINDI[nakshatra] || nakText;
+              }
+              abbrev += ` (${nakText})`;
             }
+            if (isRetro) abbrev += lang === 'hi' ? ' वक्री' : 'R';
+            if (isCombust) abbrev += '#';
 
             return (
               <text
@@ -246,7 +300,7 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
                 y={startY + (idx + 1) * lineH}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                fontSize={(isDouble ? 2.5 : 3.2) * scaleText}
+                fontSize={fontSize}
                 fill={getPlanetColor(pName)}
                 fontWeight="bold"
                 fontFamily="Arial, sans-serif"
@@ -284,7 +338,7 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
             y={coords[0].y}
             textAnchor="middle"
             dominantBaseline="middle"
-            fontSize={(isDouble ? 2.5 : 5.5) * scaleText}
+            fontSize={(isDouble ? 1.8 : 2.2) * scaleText}
             fill="#000"
             fontWeight="bold"
             fontFamily="Arial, sans-serif"
@@ -297,12 +351,16 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
             const isRetro = typeof p === 'object' ? p.is_retrograde : false;
             const isCombust = typeof p === 'object' ? p.is_combust : false;
 
-            let abbrev = PLANET_ABBREV[pName] || pName.substring(0, 2);
+            let abbrev = lang === 'hi' ? (PLANET_HINDI[pName] || pName.substring(0, 2)) : (PLANET_ABBREV[pName] || pName.substring(0, 2));
             if (isRetro) abbrev += 'R';
             if (isCombust) abbrev += '#';
             const nakshatra = typeof p === 'object' ? p.nakshatra : null;
             if (nakshatra && !isDouble) {
-              abbrev += ` (${nakshatra.substring(0, 3)})`;
+              let nakText = nakshatra.substring(0, 3);
+              if (lang === 'hi') {
+                nakText = NAKSHATRA_HINDI[nakshatra] || nakText;
+              }
+              abbrev += ` (${nakText})`;
             }
 
             const coord = coords[idx + 1] || { x: cx, y: cy };
@@ -314,9 +372,9 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
                 y={coord.y}
                 textAnchor="middle"
                 dominantBaseline="middle"
-                fontSize={(isDouble ? 2.5 : 4.2) * scaleText}
+                fontSize={(isDouble ? 1.6 : 2.1) * scaleText}
                 fill={getPlanetColor(pName)}
-                fontWeight="bold"
+                fontWeight="semibold"
                 fontFamily="Arial, sans-serif"
                 style={{ cursor: 'pointer' }}
                 onClick={(e) => {
@@ -354,7 +412,7 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
           y={coords[0].y}
           textAnchor="middle"
           dominantBaseline="middle"
-          fontSize={(isDouble ? 2.4 : 5.0) * scaleText}
+          fontSize={(isDouble ? 1.8 : 2.2) * scaleText}
           fill="#000"
           fontWeight="bold"
           fontFamily="Arial, sans-serif"
@@ -367,12 +425,16 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
           const isRetro = typeof p === 'object' ? p.is_retrograde : false;
           const isCombust = typeof p === 'object' ? p.is_combust : false;
 
-          let abbrev = PLANET_ABBREV[pName] || pName.substring(0, 2);
+          let abbrev = lang === 'hi' ? (PLANET_HINDI[pName] || pName.substring(0, 2)) : (PLANET_ABBREV[pName] || pName.substring(0, 2));
           if (isRetro) abbrev += 'R';
           if (isCombust) abbrev += '#';
           const nakshatra = typeof p === 'object' ? p.nakshatra : null;
           if (nakshatra && !isDouble) {
-            abbrev += ` (${nakshatra.substring(0, 3)})`;
+            let nakText = nakshatra.substring(0, 3);
+            if (lang === 'hi') {
+              nakText = NAKSHATRA_HINDI[nakshatra] || nakText;
+            }
+            abbrev += ` (${nakText})`;
           }
 
           const coord = coords[idx + 1] || { x: cx, y: cy };
@@ -384,9 +446,9 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
               y={coord.y}
               textAnchor="middle"
               dominantBaseline="middle"
-              fontSize={(isDouble ? 2.5 : 3.6) * scaleText}
+              fontSize={(isDouble ? 1.8 : 1.8) * scaleText}
               fill={getPlanetColor(pName)}
-              fontWeight="bold"
+              fontWeight="semibold"
               fontFamily="Arial, sans-serif"
               style={{ cursor: 'pointer' }}
               onClick={(e) => {
@@ -403,8 +465,8 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
   };
 
   return (
-    <div style={{
-      display: 'flex', flexDirection: 'column', width: '100%', height: '100%', background: isLegacy ? '#fdfbf7' : 'white',
+    <div ref={containerRef} style={{
+      display: 'flex', flexDirection: 'column', width: '100%', height: '100%', background: bgColor || (isLegacy ? '#fdfbf7' : 'white'),
       transform: `scale(${zoom})`,
       transformOrigin: 'center center',
       zIndex: zoom > 1 ? 50 : 1,
@@ -423,68 +485,50 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
           flexShrink: 0
         }}>
           <div style={{
-            fontSize: '12px',
-            fontWeight: 'bold',
-            color: '#0a4d7a',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px'
           }}>
-            {title}
+            <div style={{
+              fontSize: '12px',
+              fontWeight: 'bold',
+              color: '#0a4d7a',
+            }}>
+              {title}
+            </div>
+            {onPopOut && (
+              <button
+                onClick={(e) => { e.stopPropagation(); onPopOut(); }}
+                style={{
+                  background: 'rgba(15, 23, 42, 0.1)', color: '#334155', border: '1px solid #cbd5e1',
+                  padding: '0px 4px', borderRadius: '4px', fontSize: '9px',
+                  fontWeight: 'bold', cursor: 'pointer'
+                }}
+                title="Pop out chart to new window"
+              >
+                ⛶
+              </button>
+            )}
           </div>
           <div style={{ display: 'flex', gap: '4px' }}>
-            <button
-              onClick={(e) => { e.stopPropagation(); setLang(lang === 'en' ? 'hi' : 'en'); }}
-              style={{
-                background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1',
-                padding: '1px 6px', borderRadius: '4px', fontSize: '9px',
-                fontWeight: 'bold', cursor: 'pointer'
-              }}
-              title="Toggle Language (English/Hindi)"
-            >
-              {lang === 'en' ? 'अ' : 'A'}
-            </button>
-            <button
-              onClick={(e) => { e.stopPropagation(); setIsRect(!isRect); }}
-              style={{
-                background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1',
-                padding: '1px 6px', borderRadius: '4px', fontSize: '9px',
-                fontWeight: 'bold', cursor: 'pointer'
-              }}
-              title="Toggle Shape (Square/Rectangular)"
-            >
-              ▭
-            </button>
-            <button
-              onClick={(e) => { e.stopPropagation(); setZoom(z => Math.min(z + 0.25, 3)); }}
-              style={{
-                background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1',
-                padding: '1px 6px', borderRadius: '4px', fontSize: '9px',
-                fontWeight: 'bold', cursor: 'pointer'
-              }}
-              title="Zoom In (+)"
-            >
-              +
-            </button>
-            <button
-              onClick={(e) => { e.stopPropagation(); setZoom(z => Math.max(z - 0.25, 1)); }}
-              style={{
-                background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1',
-                padding: '1px 6px', borderRadius: '4px', fontSize: '9px',
-                fontWeight: 'bold', cursor: 'pointer'
-              }}
-              title="Zoom Out (-)"
-            >
-              -
-            </button>
-            <button
-              onClick={(e) => { e.stopPropagation(); setUseOriginalColors(c => !c); }}
-              style={{
-                background: useOriginalColors ? '#cbd5e1' : '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1',
-                padding: '1px 6px', borderRadius: '4px', fontSize: '9px',
-                fontWeight: 'bold', cursor: 'pointer'
-              }}
-              title="Toggle Original Colors"
-            >
-              🎨
-            </button>
+
+            {showFullscreenButton && (
+              <button
+                onClick={handleFullscreen}
+                style={{
+                  background: '#f1f5f9', color: '#334155', border: '1px solid #cbd5e1',
+                  padding: '1px 6px', borderRadius: '4px', fontSize: '9px',
+                  fontWeight: 'bold', cursor: 'pointer'
+                }}
+                title="Toggle Fullscreen"
+              >
+                ⛶
+              </button>
+            )}
+
+
+
+
           </div>
         </div>
       )}
@@ -510,7 +554,9 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
           </defs>
 
           {/* Background */}
-          <rect x="0" y="0" width="100" height="100" fill={isLegacy ? "rgba(235, 210, 161, 1)" : "white"} />
+          {bgColor !== "transparent" && (
+            <rect x="0" y="0" width="100" height="100" fill={bgColor || (isLegacy ? "hsla(0, 0%, 94%, 1.00)" : "white")} />
+          )}
 
           {/* Dynamic House Activation Highlighting */}
           {entries.map(({ houseNum, planets, transitPlanets }) => {
@@ -538,12 +584,14 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
           })}
 
           {/* Outer square */}
-          <rect
-            x="5" y="5" width="90" height="90"
-            fill="none"
-            stroke="#000"
-            strokeWidth={isLegacy ? "1.0" : "1.8"}
-          />
+          {!finalHideOuterRect && (
+            <rect
+              x="5" y="5" width="90" height="90"
+              fill="none"
+              stroke="#000"
+              strokeWidth={isLegacy ? "0.3" : "0.3"}
+            />
+          )}
 
           {isDoubleChart ? (
             <>
@@ -552,46 +600,46 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
                 x="20" y="20" width="60" height="60"
                 fill="none"
                 stroke="#000"
-                strokeWidth="1.2"
+                strokeWidth="0.3"
               />
 
               {/* Outer grid boundary lines for the 12 transit boxes */}
               {/* Perpendicular midlines */}
               {/* Top-edge dividers */}
-              <line x1="40" y1="5" x2="40" y2="20" stroke="#000" strokeWidth="0.8" />
-              <line x1="60" y1="5" x2="60" y2="20" stroke="#000" strokeWidth="0.8" />
+              <line x1="40" y1="5" x2="40" y2="20" stroke="#000" strokeWidth="0.3" />
+              <line x1="60" y1="5" x2="60" y2="20" stroke="#000" strokeWidth="0.3" />
 
               {/* Bottom-edge dividers */}
-              <line x1="40" y1="80" x2="40" y2="95" stroke="#000" strokeWidth="0.8" />
-              <line x1="60" y1="80" x2="60" y2="95" stroke="#000" strokeWidth="0.8" />
+              <line x1="40" y1="80" x2="40" y2="95" stroke="#000" strokeWidth="0.3" />
+              <line x1="60" y1="80" x2="60" y2="95" stroke="#000" strokeWidth="0.3" />
 
               {/* Left-edge dividers */}
-              <line x1="5" y1="40" x2="20" y2="40" stroke="#000" strokeWidth="0.8" />
-              <line x1="5" y1="60" x2="20" y2="60" stroke="#000" strokeWidth="0.8" />
+              <line x1="5" y1="40" x2="20" y2="40" stroke="#000" strokeWidth="0.3" />
+              <line x1="5" y1="60" x2="20" y2="60" stroke="#000" strokeWidth="0.3" />
 
               {/* Right-edge dividers */}
-              <line x1="80" y1="40" x2="95" y2="40" stroke="#000" strokeWidth="0.8" />
-              <line x1="80" y1="60" x2="95" y2="60" stroke="#000" strokeWidth="0.8" />
+              <line x1="80" y1="40" x2="95" y2="40" stroke="#000" strokeWidth="0.3" />
+              <line x1="80" y1="60" x2="95" y2="60" stroke="#000" strokeWidth="0.3" />
 
 
 
               {/* Corner diagonal lines */}
-              <line x1="5" y1="5" x2="20" y2="20" stroke="#000" strokeWidth="0.8" />
-              <line x1="80" y1="20" x2="95" y2="5" stroke="#000" strokeWidth="0.8" />
-              <line x1="5" y1="95" x2="20" y2="80" stroke="#000" strokeWidth="0.8" />
-              <line x1="80" y1="80" x2="95" y2="95" stroke="#000" strokeWidth="0.8" />
+              <line x1="5" y1="5" x2="20" y2="20" stroke="#000" strokeWidth="0.3" />
+              <line x1="80" y1="20" x2="95" y2="5" stroke="#000" strokeWidth="0.3" />
+              <line x1="5" y1="95" x2="20" y2="80" stroke="#000" strokeWidth="0.3" />
+              <line x1="80" y1="80" x2="95" y2="95" stroke="#000" strokeWidth="0.3" />
 
               {/* Inner Diamond (scaled) */}
               <polygon
                 points="50,20 80,50 50,80 20,50"
                 fill="none"
                 stroke="#000"
-                strokeWidth="1.0"
+                strokeWidth="0.3"
               />
 
               {/* Diagonals extending from outermost corners (5,5) to (95,95) for authentic style */}
-              <line x1="5" y1="5" x2="95" y2="95" stroke="rgba(26, 3, 3, 1)" strokeWidth="0.8" />
-              <line x1="95" y1="5" x2="5" y2="95" stroke="#0e0b0bff" strokeWidth="0.8" />
+              <line x1="5" y1="5" x2="95" y2="95" stroke="rgba(26, 3, 3, 1)" strokeWidth="0.3" />
+              <line x1="95" y1="5" x2="5" y2="95" stroke="#0e0b0bff" strokeWidth="0.3" />
             </>
           ) : (
             <>
@@ -600,15 +648,15 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
                 points="50,5 95,50 50,95 5,50"
                 fill="none"
                 stroke="#000"
-                strokeWidth={isLegacy ? "1.0" : "1.6"}
+                strokeWidth={isLegacy ? "0.3" : "0.3"}
               />
               {/* Center cross lines */}
 
 
 
               {/* Diagonal corner lines */}
-              <line x1="5" y1="5" x2="95" y2="95" stroke="#000" strokeWidth="0.8" />
-              <line x1="95" y1="5" x2="5" y2="95" stroke="#000" strokeWidth="0.8" />
+              <line x1="5" y1="5" x2="95" y2="95" stroke="#000" strokeWidth="0.3" />
+              <line x1="95" y1="5" x2="5" y2="95" stroke="#000" strokeWidth="0.3" />
             </>
           )}
 
@@ -630,9 +678,11 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
             if (isDoubleChart) {
               const outerCenter = OUTER_BOX_CENTER[houseNum];
               if (outerCenter) {
-                const tPlanets = transitPlanets.slice(0, 4);
+                // allow up to 6 planets in outer transit box since we are rendering 2 per line
+                const tPlanets = transitPlanets.slice(0, 6);
                 const tLineH = 3.6;
-                const tTotalItems = 1 + tPlanets.length;
+                const planetRows = tPlanets.length >= 2 ? Math.ceil(tPlanets.length / 2) : tPlanets.length;
+                const tTotalItems = 1 + planetRows;
                 const tStartY = outerCenter.y - ((tTotalItems - 1) * tLineH) / 2;
 
                 transitGroup = (
@@ -644,7 +694,7 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
                       textAnchor="middle"
                       dominantBaseline="middle"
                       fontSize="3.2"
-                      fill="#78350f" // Muted brownish red
+                      fill="rgba(8, 4, 1, 1)" // Muted brownish red
                       fontWeight="bold"
                       fontFamily="Arial, sans-serif"
                       style={{ userSelect: 'none', pointerEvents: 'none' }}
@@ -658,26 +708,40 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
                       const isRetro = typeof p === 'object' ? p.is_retrograde : false;
                       const isCombust = typeof p === 'object' ? p.is_combust : false;
 
-                      let abbrev = PLANET_ABBREV[pName] || pName.substring(0, 2);
+                      let abbrev = lang === 'hi' ? (PLANET_HINDI[pName] || pName.substring(0, 2)) : (PLANET_ABBREV[pName] || pName.substring(0, 2));
                       if (isRetro) abbrev += '*';
                       if (isCombust) abbrev += '#';
                       const nakshatra = typeof p === 'object' ? p.nakshatra : null;
                       if (nakshatra && !isDoubleChart) {
-                        abbrev += ` (${nakshatra.substring(0, 3)})`;
+                        let nakText = nakshatra.substring(0, 3);
+                        if (lang === 'hi') {
+                          nakText = NAKSHATRA_HINDI[nakshatra] || nakText;
+                        }
+                        abbrev += ` (${nakText})`;
                       }
 
                       const color = getPlanetColor(pName, true);
 
+                      let posX = outerCenter.x;
+                      let posY = tStartY + (idx + 1) * tLineH;
+
+                      if (tPlanets.length >= 2) {
+                        const row = Math.floor(idx / 2);
+                        const col = idx % 2;
+                        posX = outerCenter.x + (col === 0 ? -2.2 : 2.2);
+                        posY = tStartY + (row + 1) * tLineH;
+                      }
+
                       return (
                         <text
                           key={idx}
-                          x={outerCenter.x}
-                          y={tStartY + (idx + 1) * tLineH}
+                          x={posX}
+                          y={posY}
                           textAnchor="middle"
                           dominantBaseline="middle"
                           fontSize="3.0"
                           fill={color}
-                          fontWeight="black"
+                          fontWeight="bold"
                           fontFamily="Arial, sans-serif"
                         >
                           {abbrev}
@@ -698,7 +762,7 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
           })}
 
           {/* Legend Hint */}
-          {!hideLegend && (
+          {!hideLegend && (isMainChart || isDoubleChart) && (
             <text
               x="50"
               y="98"

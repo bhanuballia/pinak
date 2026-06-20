@@ -78,16 +78,47 @@ def compute_tithi(jd_ut: float) -> Dict[str, Any]:
         "tithi_fraction": float(tithi_progress),
     }
 
-def compute_nakshatra(jd_ut: float) -> Dict[str, Any]:
+def get_tithi_boundaries(jd_ut: float) -> Tuple[float, float]:
+    """Given a jd_ut, finds the exact start and end jd of the active tithi."""
+    current_tithi = compute_tithi(jd_ut)
+    t_idx = current_tithi["tithi_index"]
+    frac = current_tithi["tithi_fraction"]
+    
+    guess_start = jd_ut - frac
+    low = guess_start - 0.2
+    high = guess_start + 0.2
+    for _ in range(15):
+        mid = (low + high) / 2
+        if compute_tithi(mid)["tithi_index"] == t_idx:
+            high = mid
+        else:
+            low = mid
+    start_jd = high
+    
+    guess_end = jd_ut + (1 - frac)
+    low = guess_end - 0.2
+    high = guess_end + 0.2
+    for _ in range(15):
+        mid = (low + high) / 2
+        if compute_tithi(mid)["tithi_index"] == t_idx:
+            low = mid
+        else:
+            high = mid
+    end_jd = low
+    
+    return start_jd, end_jd
+
+def compute_nakshatra(jd_ut: float, manual_lon: float = None) -> Dict[str, Any]:
     """
-    Nakshatra and pada: based on Moon sidereal longitude.
+    Nakshatra and pada: based on Moon sidereal longitude (or manual_lon if provided).
     returns nakshatra_index (0..26), nakshatra_name, pada (1..4), nakshatra_fraction
     """
-    pos = get_all_planetary_positions(jd_ut)
-    moon_lon = float(pos["Moon"]["sidereal"]["lon"])
-    idx = int(moon_lon // NAK_DEG) % 27
-    frac = (moon_lon % NAK_DEG) / NAK_DEG
-    pada = int(frac * 4) + 1
+    if manual_lon is not None:
+        moon_lon = float(manual_lon)
+    else:
+        pos = get_all_planetary_positions(jd_ut)
+        moon_lon = float(pos["Moon"]["sidereal"]["lon"])
+        
     idx = int(moon_lon // NAK_DEG) % 27
     frac = (moon_lon % NAK_DEG) / NAK_DEG
     pada = int(frac * 4) + 1

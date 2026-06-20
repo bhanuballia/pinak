@@ -108,7 +108,7 @@ def _planet_lord_nakshatra_nearest(planet: str, birth_nak_idx: int) -> int:
     best = min(planet_naks, key=lambda n: (n - birth_nak_idx) % 27)
     return best
 
-def _build_prana_rows(
+def _build_dynamic_rows(
     mahadashas: List[Dict],
     birth_jd: float,
     birth_nak_idx: int,
@@ -117,18 +117,93 @@ def _build_prana_rows(
     ephe: Any = None,
     window_days: float = 3.0,
     birth_longitudes: Dict[str, float] = None,
+    target_levels: int = 5,
 ) -> List[Dict]:
-    """Walk the 5-level tree and return rows near current_jd."""
+    """Walk the tree up to target_levels and return rows near current_jd."""
     rows = []
     DENOM = 120.0
+
+    def append_row(start_jd, end_jd, lords_chain):
+        # Local datetime
+        dt = _jd_to_datetime(start_jd)
+        local_dt = dt + timedelta(hours=tz_offset)
+        
+        # Age
+        birth_dt = _jd_to_datetime(birth_jd)
+        age = int((dt - birth_dt).days / 365.25)
+        
+        # Tara
+        target_lord = lords_chain[-1]
+        nak_idx = _planet_lord_nakshatra_nearest(target_lord, birth_nak_idx)
+        tara_num, tara_name, nak_distance = _get_tara(birth_nak_idx, nak_idx)
+        
+        # Rashi distance
+        if birth_longitudes and "Moon" in birth_longitudes:
+            birth_moon_lon = birth_longitudes["Moon"]
+            birth_moon_rashi_idx = int(birth_moon_lon / 30) % 12
+            lord_lon = birth_longitudes.get(target_lord, 0.0)
+            lord_rashi_idx = int(lord_lon / 30) % 12
+            rashi_distance = (lord_rashi_idx - birth_moon_rashi_idx) % 12 + 1
+        else:
+            rashi_distance = tara_num
+            
+        chain = "-".join([PLANET_ABBR_HI.get(l, l) for l in lords_chain])
+        
+        # Transits
+        transits = []
+        for l in lords_chain:
+            transits.append(_get_planet_transit_sign(ephe, start_jd, l))
+        row_transit_str = "-".join(transits)
+        
+        # Fill missing slots for UI
+        md, ad, pt, sk, pr = (lords_chain + [""] * 5)[:5]
+        
+        rows.append({
+            "dasha_chain": chain,
+            "md": md, "ad": ad, "pt": pt, "sk": sk, "pr": pr,
+            "age": age,
+            "start_date": local_dt.strftime("%d-%m-%Y"),
+            "start_time": local_dt.strftime("%H:%M"),
+            "tara_name": tara_name,
+            "tara_num": tara_num,
+            "nak_distance": nak_distance,
+            "rashi_distance": rashi_distance,
+            "gochar": row_transit_str,
+            "is_current": start_jd <= current_jd < end_jd,
+            "jd_start": start_jd,
+        })
+
+    # Determine window sizes based on level
+    if target_levels <= 3:
+        past_days_md = 99999
+        future_days_md = 99999
+        past_days_ad = 99999
+        future_days_ad = 99999
+        past_days_pt = 99999
+        future_days_pt = 99999
+        max_rows = 99999
+    elif target_levels == 4:
+        past_days_md = 99999
+        future_days_md = 99999
+        past_days_ad = 99999
+        future_days_ad = 99999
+        past_days_pt = 99999
+        future_days_pt = 99999
+        max_rows = 99999
+    else:
+        past_days_md = 99999
+        future_days_md = 99999
+        past_days_ad = 99999
+        future_days_ad = 99999
+        past_days_pt = 99999
+        future_days_pt = 99999
+        max_rows = 99999
 
     for md in mahadashas:
         md_start_jd = md["start_jd"]
         md_end_jd = md["end_jd"]
-        if md_end_jd < current_jd - 30:
-            continue
-        if md_start_jd > current_jd + window_days * 4:
-            break
+        if md_end_jd < current_jd - past_days_md: continue
+        if md_start_jd > current_jd + future_days_md: break
 
         md_lord = md["lord"]
         md_dur = md["duration_years"]
@@ -136,10 +211,8 @@ def _build_prana_rows(
         for ad in md.get("antardashas", []):
             ad_start_jd = ad["start_jd"]
             ad_end_jd = ad["end_jd"]
-            if ad_end_jd < current_jd - 10:
-                continue
-            if ad_start_jd > current_jd + window_days * 3:
-                break
+            if ad_end_jd < current_jd - past_days_ad: continue
+            if ad_start_jd > current_jd + future_days_ad: break
 
             ad_lord = ad["lord"]
             ad_dur = ad["duration_years"]
@@ -151,11 +224,16 @@ def _build_prana_rows(
                 pt_lord = VIM_ORDER[(ad_idx + i_pt) % 9]
                 pt_dur = (ad_dur * VIM_DUR[pt_lord]) / DENOM
                 pt_end_jd = pt_start_jd + pt_dur * 365.2425
-                if pt_end_jd < current_jd - 3:
+                
+                if pt_end_jd < current_jd - past_days_pt:
                     pt_start_jd = pt_end_jd
                     continue
-                if pt_start_jd > current_jd + window_days * 2:
-                    break
+                if pt_start_jd > current_jd + future_days_pt: break
+
+                if target_levels == 3:
+                    append_row(pt_start_jd, pt_end_jd, [md_lord, ad_lord, pt_lord])
+                    pt_start_jd = pt_end_jd
+                    continue
 
                 # Sukshma level
                 sk_start_jd = pt_start_jd
@@ -164,11 +242,19 @@ def _build_prana_rows(
                     sk_lord = VIM_ORDER[(pt_idx + i_sk) % 9]
                     sk_dur = (pt_dur * VIM_DUR[sk_lord]) / DENOM
                     sk_end_jd = sk_start_jd + sk_dur * 365.2425
-                    if sk_end_jd < current_jd - 1:
+                    
+                    past_days_sk = 99999
+                    future_days_sk = 99999
+                    
+                    if sk_end_jd < current_jd - past_days_sk:
                         sk_start_jd = sk_end_jd
                         continue
-                    if sk_start_jd > current_jd + window_days:
-                        break
+                    if sk_start_jd > current_jd + future_days_sk: break
+
+                    if target_levels == 4:
+                        append_row(sk_start_jd, sk_end_jd, [md_lord, ad_lord, pt_lord, sk_lord])
+                        sk_start_jd = sk_end_jd
+                        continue
 
                     # Prana level
                     pr_start_jd = sk_start_jd
@@ -178,77 +264,18 @@ def _build_prana_rows(
                         pr_dur = (sk_dur * VIM_DUR[pr_lord]) / DENOM
                         pr_end_jd = pr_start_jd + pr_dur * 365.2425
 
-                        if pr_end_jd < current_jd - 0.25:
+                        if pr_end_jd < current_jd - 99999:
                             pr_start_jd = pr_end_jd
                             continue
-                        if pr_start_jd > current_jd + window_days:
-                            break
+                        if pr_start_jd > current_jd + 99999: break
 
-                        # Convert to local datetime
-                        pr_dt = _jd_to_datetime(pr_start_jd)
-                        local_dt = pr_dt + timedelta(hours=tz_offset)
-
-                        # Age at start
-                        birth_dt = _jd_to_datetime(birth_jd)
-                        age = int((pr_dt - birth_dt).days / 365.25)
-
-                        # Tara — based on Prana lord's nearest nakshatra from birth
-                        pr_nak_idx = _planet_lord_nakshatra_nearest(pr_lord, birth_nak_idx)
-                        tara_num, tara_name, nak_distance = _get_tara(birth_nak_idx, pr_nak_idx)
-
-                        # Rashi distance from birth Moon
-                        if birth_longitudes and "Moon" in birth_longitudes:
-                            birth_moon_lon = birth_longitudes["Moon"]
-                            birth_moon_rashi_idx = int(birth_moon_lon / 30) % 12
-                            lord_lon = birth_longitudes.get(pr_lord, 0.0)
-                            lord_rashi_idx = int(lord_lon / 30) % 12
-                            rashi_distance = (lord_rashi_idx - birth_moon_rashi_idx) % 12 + 1
-                        else:
-                            rashi_distance = tara_num
-
-                        chain = "-".join([
-                            PLANET_ABBR_HI.get(md_lord, md_lord),
-                            PLANET_ABBR_HI.get(ad_lord, ad_lord),
-                            PLANET_ABBR_HI.get(pt_lord, pt_lord),
-                            PLANET_ABBR_HI.get(sk_lord, sk_lord),
-                            PLANET_ABBR_HI.get(pr_lord, pr_lord),
-                        ])
-
-                        # Dynamic transit of the dasha lords at pr_start_jd
-                        t_md = _get_planet_transit_sign(ephe, pr_start_jd, md_lord)
-                        t_ad = _get_planet_transit_sign(ephe, pr_start_jd, ad_lord)
-                        t_pt = _get_planet_transit_sign(ephe, pr_start_jd, pt_lord)
-                        t_sk = _get_planet_transit_sign(ephe, pr_start_jd, sk_lord)
-                        t_pr = _get_planet_transit_sign(ephe, pr_start_jd, pr_lord)
-                        row_transit_str = f"{t_md}-{t_ad}-{t_pt}-{t_sk}-{t_pr}"
-
-                        rows.append({
-                            "dasha_chain": chain,
-                            "md": md_lord,
-                            "ad": ad_lord,
-                            "pt": pt_lord,
-                            "sk": sk_lord,
-                            "pr": pr_lord,
-                            "age": age,
-                            "start_date": local_dt.strftime("%d-%m-%Y"),
-                            "start_time": local_dt.strftime("%H:%M"),
-                            "tara_name": tara_name,
-                            "tara_num": tara_num,
-                            "nak_distance": nak_distance,
-                            "rashi_distance": rashi_distance,
-                            "gochar": row_transit_str,
-                            "is_current": pr_start_jd <= current_jd < pr_end_jd,
-                            "jd_start": pr_start_jd,
-                        })
+                        if target_levels >= 5:
+                            append_row(pr_start_jd, pr_end_jd, [md_lord, ad_lord, pt_lord, sk_lord, pr_lord])
 
                         pr_start_jd = pr_end_jd
-                        if len(rows) >= 120:
-                            return rows
-
+                        if len(rows) >= max_rows: return rows
                     sk_start_jd = sk_end_jd
-
                 pt_start_jd = pt_end_jd
-
     return rows
 
 
@@ -417,8 +444,26 @@ async def vimshottari_table(payload: Dict[str, Any] = Body(...)):
                 ephe=ephe,
                 birth_longitudes=birth_longitudes,
             )
+        elif levels == 1:
+            # We don't have a 1-level specific row builder, but since 2 is MD-AD
+            # we can fallback to _build_antardasha_rows for now, or build one.
+            # For simplicity, if levels=1 we could filter the 2-level, but let's just default
+            # to dynamic rows starting at target_levels=1 if we supported it. 
+            # Since _build_dynamic_rows starts at level 3, we just use levels=3 as a minimum for dynamic rows,
+            # wait! _build_dynamic_rows handles levels 3,4,5. 
+            # Let's just use it!
+            # Wait, 1 and 2 are usually handled by antardasha_rows.
+            rows = _build_antardasha_rows(
+                mahadashas=mahadashas,
+                birth_jd=birth_jd,
+                birth_nak_idx=birth_nak_idx,
+                current_jd=current_jd,
+                tz_offset=tz_offset,
+                ephe=ephe,
+                birth_longitudes=birth_longitudes,
+            )
         else:
-            rows = _build_prana_rows(
+            rows = _build_dynamic_rows(
                 mahadashas=mahadashas,
                 birth_jd=birth_jd,
                 birth_nak_idx=birth_nak_idx,
@@ -427,6 +472,7 @@ async def vimshottari_table(payload: Dict[str, Any] = Body(...)):
                 ephe=ephe,
                 window_days=60.0,
                 birth_longitudes=birth_longitudes,
+                target_levels=levels,
             )
 
         # Sort by jd_start and trim

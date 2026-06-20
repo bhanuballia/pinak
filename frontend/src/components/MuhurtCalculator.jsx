@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import MuhurtHeatmap from './MuhurtHeatmap';
 
 export default function MuhurtCalculator() {
     const [ceremony, setCeremony] = useState("Marriage");
@@ -7,6 +8,19 @@ export default function MuhurtCalculator() {
     const [results, setResults] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [worksheetData, setWorksheetData] = useState(null);
+
+    useEffect(() => {
+        const savedData = localStorage.getItem('worksheetData');
+        if (savedData) {
+            try {
+                setWorksheetData(JSON.parse(savedData));
+            } catch (e) {
+                console.error("Failed to parse worksheetData inside MuhurtCalculator", e);
+            }
+        }
+    }, []);
+
 
     const ceremonies = [
         "Marriage", "Namkaran", "Anna Prashan", "Mundan", "Upnayan", "Sagai", "Tilak", "Vadhu Pravesh", "Grih Pravesh", "Bhoomi Pujan", "Vehicle Purchase"
@@ -103,6 +117,14 @@ export default function MuhurtCalculator() {
                     </div>
 
                     {error && <div style={{ color: '#ef4444', textAlign: 'center', padding: '20px' }}>{error}</div>}
+
+                    {/* Auspiciousness Heatmap Panel */}
+                    <div style={{ marginTop: '50px', marginBottom: '50px' }}>
+                        <h2 style={{ fontSize: '13px', textTransform: 'uppercase', letterSpacing: '4px', color: '#10b981', fontWeight: 900, marginBottom: '20px', textAlign: 'center' }}>
+                            Interactive Auspiciousness Heatmap Calendar
+                        </h2>
+                        <MuhurtHeatmap data={worksheetData} />
+                    </div>
 
                     {results && (
                         <div style={{ marginTop: '40px' }}>

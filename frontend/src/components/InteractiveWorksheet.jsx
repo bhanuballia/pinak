@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import LanguageSwitcher from "./LanguageSwitcher";
 import ZodiacChart from "./ZodiacChart";
 import ShadbalaChart from "./ShadbalaChart";
 import AshtakavargaViewer from "./AshtakavargaViewer";
 import PlanetaryRemediesViewer from "./PlanetaryRemediesViewer";
 import VimsopakaAssessment from "./VimsopakaAssessment";
 import DashaDashboard from "../pages/DashaDashboard";
+import BhavbalaView from "./BhavbalaView";
 import VimshottariTable from "./VimshottariTable";
 import VimshottariLifeTable from "./VimshottariLifeTable";
 import VimshottariGridTimeline from "./VimshottariGridTimeline";
@@ -14,6 +19,7 @@ import PromotionMeter from './d10/PromotionMeter';
 import CareerAlerts from './d10/CareerAlerts';
 import WealthActivation from './d10/WealthActivation';
 import TransitTimeControl from './worksheet/TransitTimeControl';
+import CompactTransitControl from './worksheet/CompactTransitControl';
 import PanchPakshiTable from './PanchPakshiTable';
 import PlanetaryRelationshipsViewer from "./PlanetaryRelationshipsViewer";
 import KPChartViewer from "./KPChartViewer";
@@ -24,6 +30,7 @@ import KrishanaMurthyChart from "./KrishanaMurthyChart";
 import KrishanaMurthySignificators from "./KrishanaMurthySignificators";
 import ShodashvargaSummary from "./ShodashvargaSummary";
 import BhriguBinduAnalysis from "./BhriguBinduAnalysis";
+import AIOraclePanel from "./AIOraclePanel";
 
 const BulletInterpretation = ({ text, colorClass = "text-slate-600" }) => {
   if (!text) return null;
@@ -379,7 +386,7 @@ export const SATURN_HOUSE_INTERPRETATIONS = {
 };
 
 const CELL_CONTENTS = [
-  { id: "lagna", label: "Lagna - Main", category: "Charts" },
+
   { id: "d1", label: "D1 - Rashi Chart", category: "Charts" },
   { id: "d2", label: "D2 - Hora Chart", category: "Charts" },
   { id: "d3", label: "D3 - Drekkana Chart", category: "Charts" },
@@ -400,57 +407,85 @@ const CELL_CONTENTS = [
   { id: "d40", label: "D40 - Khavedamsa Chart", category: "Charts" },
   { id: "d45", label: "D45 - Akshavedamsa", category: "Charts" },
   { id: "d60", label: "D60 - Shashtiamsha", category: "Charts" },
-  { id: "transit_compare", label: "Transit Compare", category: "Charts" },
-  { id: "transit_compare2", label: "Compare Transit 2", category: "Charts" },
-  { id: "planets_table", label: "Pl-Tables", category: "Tables" },
-  { id: "panchang", label: "Panchang", category: "Tables" },
-  { id: "dignity", label: "Dignity", category: "Tables" },
+  { id: "advanced_nakshatra", label: "ADV. Nakshatra", category: "Misc" },
+  { id: "shadbala", label: "Shadbala Chart", category: "Charts" },
   { id: "vimshottari", label: "Vimshottari", category: "Dasha" },
+  { id: "vimsopaka", label: "Vimsopaka Bala", category: "Tables" },
+  { id: "bhavbala", label: "Bhavbala", category: "Tables" },
+  { id: "shodashvarga_summary", label: "Shodashvarga Summary", category: "Tables" },
+  { id: "relationships", label: "Relationships", category: "Misc" },
+  { id: "planets_table", label: "Pl-Tables", category: "Tables" },
   { id: "shodashottari", label: "Shodashottari", category: "Dasha" },
   { id: "chaturshitisama", label: "Chaturshitisama", category: "Dasha" },
+  { id: "ashtottari", label: "Ashtottari", category: "Dasha" },
+  { id: "dwisaptatisama", label: "Dwisaptatisama", category: "Dasha" },
+  { id: "dwadashottari", label: "Dwadashottari", category: "Dasha" },
+  { id: "panchottari", label: "Panchottari", category: "Dasha" },
+  { id: "shatabdika", label: "Shatabdika", category: "Dasha" },
+  { id: "shashtihayani", label: "Shashtihayani", category: "Dasha" },
+  { id: "chara", label: "Chara Dasha", category: "Dasha" },
+  { id: "sthira", label: "Sthira Dasha", category: "Dasha" },
+  { id: "shoola", label: "Shoola Dasha", category: "Dasha" },
+  { id: "niryaana_shoola", label: "Niryana Shoola", category: "Dasha" },
+  { id: "mandooka", label: "Mandooka Dasha", category: "Dasha" },
+  { id: "drig", label: "Drig Dasha", category: "Dasha" },
+  { id: "sudasha", label: "Sudasha", category: "Dasha" },
+  { id: "panchang", label: "Panchang", category: "Tables" },
+  { id: "dignity", label: "Dignity", category: "Tables" },
   { id: "numerical", label: "Numerology", category: "Misc" },
-  { id: "shadbala", label: "Shadbala Chart", category: "Charts" },
   { id: "ashtakavarga", label: "Ashtakavarga", category: "Charts" },
-  { id: "ashtakavarga_reduction", label: "Ashtakavarga Reduction", category: "Charts" },
-  { id: "bhinnastavarga", label: "Bhinnastavarga", category: "Charts" },
+  { id: "ashtakavarga_reduction", label: "Asthakavarga Reduction", category: "Charts" },
   { id: "krishnamurthy_chart", label: "Krishana Murthy Chart", category: "Charts" },
   { id: "krishnamurthy_significators", label: "KP Significators", category: "Tables" },
-  { id: "shodashvarga_summary", label: "Shodashvarga Summary", category: "Tables" },
   { id: "aspects_summary", label: "Aspects Summary", category: "Tables" },
   { id: "gemstones", label: "Ratna", category: "Misc" },
   { id: "transit_gemstones", label: "Gochar Ratna", category: "Misc" },
-  { id: "transit", label: "Today-Gochar", category: "Charts" },
-  { id: "current_positions", label: "Current Planet Position", category: "Charts" },
-  { id: "vimsopaka", label: "Vimsopaka Bala", category: "Tables" },
   { id: "panch_pakshi", label: "Panch Pakshi", category: "Misc" },
-  { id: "relationships", label: "Relationships", category: "Misc" },
   { id: "kp", label: "Krishnamurti Chart", category: "Misc" },
   { id: "empty", label: "Empty Cell", category: "System" }
 ];
 
 
 const calculatePlanetEffects = (data) => {
-  const strengths = data?.strength?.planets || {};
   const effects = {};
   const planets = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
 
+  let lagnaSignIndex = 0;
+  const lagnaHouse = data?.charts?.houses?.[1] || data?.charts?.houses?.["1"];
+  if (lagnaHouse) {
+    lagnaSignIndex = lagnaHouse.sign_index !== undefined ? lagnaHouse.sign_index : Math.floor(lagnaHouse.cusp_deg / 30);
+  } else if (data?.charts?.ascendant_sign_index !== undefined) {
+    lagnaSignIndex = data.charts.ascendant_sign_index;
+  }
+
+  const lagnaMap = {
+    0: { benefic: ["Sun", "Moon", "Mars", "Jupiter"], malefic: ["Mercury", "Venus", "Saturn"] },
+    1: { benefic: ["Sun", "Mercury", "Saturn", "Mars"], malefic: ["Moon", "Jupiter", "Venus"] },
+    2: { benefic: ["Venus"], malefic: ["Sun", "Mars", "Jupiter"] },
+    3: { benefic: ["Moon", "Mars", "Jupiter"], malefic: ["Mercury", "Venus", "Saturn"] },
+    4: { benefic: ["Sun", "Mars", "Jupiter"], malefic: ["Moon", "Mercury", "Venus", "Saturn"] },
+    5: { benefic: ["Venus"], malefic: ["Moon", "Mars", "Jupiter"] },
+    6: { benefic: ["Mercury", "Saturn", "Venus"], malefic: ["Sun", "Moon", "Mars", "Jupiter"] },
+    7: { benefic: ["Moon", "Sun", "Jupiter"], malefic: ["Mercury", "Venus", "Saturn"] },
+    8: { benefic: ["Sun", "Mars"], malefic: ["Venus", "Saturn", "Mercury"] },
+    9: { benefic: ["Mercury", "Venus", "Saturn"], malefic: ["Moon", "Mars", "Jupiter"] },
+    10: { benefic: ["Venus", "Saturn", "Mars"], malefic: ["Moon", "Jupiter"] },
+    11: { benefic: ["Moon", "Mars", "Jupiter"], malefic: ["Sun", "Venus", "Saturn"] }
+  };
+  const lagnaData = lagnaMap[lagnaSignIndex] || { benefic: [], malefic: [] };
+
   planets.forEach(p => {
-    const s = strengths[p];
-    if (s) {
-      const ishta = s.ishta_phala || 0;
-      const kashta = s.kashta_phala || 0;
-      if (ishta > kashta + 3) {
-        effects[p] = "positive";
-      } else if (kashta > ishta + 3) {
-        effects[p] = "negative";
-      } else {
-        effects[p] = "neutral";
-      }
+    if (p === "Rahu" || p === "Ketu") {
+      effects[p] = "negative";
+    } else if (lagnaData.benefic.includes(p)) {
+      effects[p] = "positive";
+    } else if (lagnaData.malefic.includes(p)) {
+      effects[p] = "negative";
     } else {
-      const malefics = ["Sun", "Mars", "Saturn", "Rahu", "Ketu"];
-      effects[p] = malefics.includes(p) ? "negative" : "positive";
+      effects[p] = "neutral";
     }
   });
+
   effects["Ascendant"] = "neutral";
   return effects;
 };
@@ -1288,14 +1323,27 @@ const DignityTable = ({ data, planetEffects }) => {
               const statusText = nature === "benefic" ? "Benefic" : nature === "malefic" ? "Malefic" : "Neutral";
               const statusColor = nature === "benefic" ? "text-green-600" : nature === "malefic" ? "text-red-600" : "text-amber-600";
 
+              const SIGNS_LOCAL = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+              const signIdx = Math.floor(p.degree / 30);
+              const signName = SIGNS_LOCAL[signIdx];
+              const dignityObj = typeof getDignityStatus === "function" ? getDignityStatus(p.planet, signName) : null;
+              let backendDignity = pStrength?.dignity;
+              if (["Rahu", "Ketu"].includes(p.planet) && (!backendDignity || backendDignity === "Neutral" || backendDignity === "Unknown")) {
+                backendDignity = "";
+              }
+              const dignityDisplay = backendDignity || (dignityObj ? dignityObj.label.replace(/[★↓◆♥✕]/g, '').trim() : "Own");
+
+              const vbScore = data?.vimsopaka_bala?.shodashvarga?.[p.planet];
+              const vbDisplay = vbScore !== undefined ? (typeof vbScore === 'number' ? vbScore.toFixed(1) : vbScore) : "-";
+
               return (
                 <tr key={p.planet} className="border-b border-[#f1f5f9] hover:bg-white transition-colors">
                   <td className="p-1 font-bold" style={{ color: color }}>
-                    {p.planet.substring(0, 2)}{p.is_retrograde ? '*' : ''}{p.is_combust ? '#' : ''}
+                    {p.planet}{p.is_retrograde ? '*' : ''}{p.is_combust ? '#' : ''}
                   </td>
-                  <td className="p-1">{pStrength?.dignity || "Own"}</td>
+                  <td className="p-1">{dignityDisplay}</td>
                   <td className="p-1">{(sb * 10).toFixed(0)}</td>
-                  <td className="p-1">12</td>
+                  <td className="p-1">{vbDisplay}</td>
                   <td className={`p-1 font-bold ${statusColor}`}>{statusText}</td>
                 </tr>
               );
@@ -1429,15 +1477,153 @@ const NumericalPanel = ({ data }) => {
 };
 
 const SecondaryDashaPanel = ({ data, type }) => {
+  const [expanded, setExpanded] = useState(null);
   const list = data?.[type] || [];
-  const title = type === 'shodashottari' ? 'Shodashottari' : 'Chaturshitisama';
-  const totalYears = type === 'shodashottari' ? 116 : 84;
+  const planetStrengths = data?.strength?.planets || {};
+  const maraka = data?.maraka || { signs: [], planets: [] };
+
+  const DASHA_META = {
+    shodashottari: { title: "Shodashottari", years: 116 },
+    chaturshitisama: { title: "Chaturshitisama", years: 84 },
+    ashtottari: { title: "Ashtottari", years: 108 },
+    dwisaptatisama: { title: "Dwisaptatisama", years: 72 },
+    dwadashottari: { title: "Dwadashottari", years: 112 },
+    panchottari: { title: "Panchottari", years: 105 },
+    shatabdika: { title: "Shatabdika", years: 100 },
+    shashtihayani: { title: "Shashtihayani", years: 60 },
+    chara: { title: "Chara", years: 120 },
+    sthira: { title: "Sthira", years: 120 },
+    shoola: { title: "Shoola", years: 120 },
+    niryaana_shoola: { title: "Niryana Shoola", years: 120 },
+    mandooka: { title: "Mandooka", years: 120 },
+    drig: { title: "Drig", years: 120 },
+    sudasha: { title: "Sudasha", years: 120 },
+    panch_pakshi: { title: "Panch Pakshi", years: 120 }
+  };
+
+  const ITEM_META = {
+    Sun: { color: '#f97316', bg: 'bg-orange-50', border: 'border-orange-200', badge: 'bg-orange-100 text-orange-700', symbol: '☀️' },
+    Moon: { color: '#6366f1', bg: 'bg-indigo-50', border: 'border-indigo-200', badge: 'bg-indigo-100 text-indigo-700', symbol: '🌙' },
+    Mars: { color: '#ef4444', bg: 'bg-red-50', border: 'border-red-200', badge: 'bg-red-100 text-red-700', symbol: '🔴' },
+    Rahu: { color: '#0ea5e9', bg: 'bg-sky-50', border: 'border-sky-200', badge: 'bg-sky-100 text-sky-700', symbol: '🌑' },
+    Jupiter: { color: '#f59e0b', bg: 'bg-amber-50', border: 'border-amber-200', badge: 'bg-amber-100 text-amber-700', symbol: '🟡' },
+    Saturn: { color: '#64748b', bg: 'bg-slate-50', border: 'border-slate-200', badge: 'bg-slate-100 text-slate-700', symbol: '⏳' },
+    Mercury: { color: '#10b981', bg: 'bg-emerald-50', border: 'border-emerald-200', badge: 'bg-emerald-100 text-emerald-700', symbol: '🟢' },
+    Ketu: { color: '#8b5cf6', bg: 'bg-purple-50', border: 'border-purple-200', badge: 'bg-purple-100 text-purple-700', symbol: '💥' },
+    Venus: { color: '#ec4899', bg: 'bg-pink-50', border: 'border-pink-200', badge: 'bg-pink-100 text-pink-700', symbol: '💖' },
+    Aries: { color: '#ef4444', bg: 'bg-red-50', border: 'border-red-200', badge: 'bg-red-100 text-red-700', symbol: '♈' },
+    Taurus: { color: '#f59e0b', bg: 'bg-amber-50', border: 'border-amber-200', badge: 'bg-amber-100 text-amber-700', symbol: '♉' },
+    Gemini: { color: '#10b981', bg: 'bg-emerald-50', border: 'border-emerald-200', badge: 'bg-emerald-100 text-emerald-700', symbol: '♊' },
+    Cancer: { color: '#6366f1', bg: 'bg-indigo-50', border: 'border-indigo-200', badge: 'bg-indigo-100 text-indigo-700', symbol: '♋' },
+    Leo: { color: '#f97316', bg: 'bg-orange-50', border: 'border-orange-200', badge: 'bg-orange-100 text-orange-700', symbol: '♌' },
+    Virgo: { color: '#10b981', bg: 'bg-emerald-50', border: 'border-emerald-200', badge: 'bg-emerald-100 text-emerald-700', symbol: '♍' },
+    Libra: { color: '#ec4899', bg: 'bg-pink-50', border: 'border-pink-200', badge: 'bg-pink-100 text-pink-700', symbol: '♎' },
+    Scorpio: { color: '#ef4444', bg: 'bg-red-50', border: 'border-red-200', badge: 'bg-red-100 text-red-700', symbol: '♏' },
+    Sagittarius: { color: '#f59e0b', bg: 'bg-amber-50', border: 'border-amber-200', badge: 'bg-amber-100 text-amber-700', symbol: '♐' },
+    Capricorn: { color: '#64748b', bg: 'bg-slate-50', border: 'border-slate-200', badge: 'bg-slate-100 text-slate-700', symbol: '♑' },
+    Aquarius: { color: '#0ea5e9', bg: 'bg-sky-50', border: 'border-sky-200', badge: 'bg-sky-100 text-sky-700', symbol: '♒' },
+    Pisces: { color: '#6366f1', bg: 'bg-indigo-50', border: 'border-indigo-200', badge: 'bg-indigo-100 text-indigo-700', symbol: '♓' },
+  };
+
+  const metaInfo = DASHA_META[type] || { title: type.charAt(0).toUpperCase() + type.slice(1), years: 120 };
+  const title = metaInfo.title;
+  const totalYears = metaInfo.years;
+
+  const basic = data?.basic_details || {};
+  const metaData = data?.meta || {};
+  const birthDateStr = basic.birth_date || metaData.date || null;
+
+  let birthDateObj = null;
+  if (birthDateStr) {
+    let y, m, d;
+    if (birthDateStr.includes('/')) {
+      [d, m, y] = birthDateStr.split('/').map(Number);
+      birthDateObj = new Date(y, m - 1, d);
+    } else {
+      [y, m, d] = birthDateStr.split('-').map(Number);
+      birthDateObj = new Date(y, m - 1, d);
+    }
+  }
+
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const calculateDate = (years) => {
+    if (!birthDateObj || isNaN(birthDateObj.getTime())) return "—";
+    const d = new Date(birthDateObj.getTime() + years * 365.2425 * 24 * 60 * 60 * 1000);
+    return `${d.getDate()}-${MONTHS[d.getMonth()]}, ${d.getFullYear()}`;
+  };
+
+  const currentDateObj = new Date();
+  const currentAgeAsFloat = birthDateObj && !isNaN(birthDateObj.getTime())
+    ? (currentDateObj.getTime() - birthDateObj.getTime()) / (365.2425 * 24 * 60 * 60 * 1000)
+    : null;
+
+  const calculateExactDate = (years) => {
+    if (!birthDateObj || isNaN(birthDateObj.getTime())) return "—";
+    const d = new Date(birthDateObj.getTime() + years * 365.2425 * 24 * 60 * 60 * 1000);
+    return `${String(d.getDate()).padStart(2, '0')}-${String(d.getMonth() + 1).padStart(2, '0')}-${d.getFullYear()}`;
+  };
+
+  const UDU_DASHAS = ['shodashottari', 'chaturshitisama', 'ashtottari', 'dwisaptatisama', 'dwadashottari', 'panchottari', 'shatabdika', 'shashtihayani'];
+  const SIGN_DASHAS = ['chara', 'sthira', 'shoola', 'niryaana_shoola', 'drig', 'mandooka', 'sudasha'];
+  const ZODIAC = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
+  const AAYU_DASHAS = ['shoola', 'niryaana_shoola', 'sthira'];
+
+  const isMaraka = (name) => {
+    if (!AAYU_DASHAS.includes(type) || !name) return false;
+    return maraka.signs.includes(name) || maraka.planets.includes(name);
+  };
+
+  const getAntardashas = (md) => {
+    if (UDU_DASHAS.includes(type)) {
+      const seq = [];
+      const seen = new Set();
+      let totalYears = 0;
+      for (const d of list) {
+        const name = d.lord || d.sign || d.item;
+        if (name && !seen.has(name)) {
+          seen.add(name);
+          seq.push({ name, duration: parseFloat(d.duration) });
+          totalYears += parseFloat(d.duration);
+        }
+      }
+      const mdName = md.lord || md.sign || md.item;
+      const startIndex = seq.findIndex(s => s.name === mdName);
+      if (startIndex === -1 || totalYears === 0) return [];
+
+      const antardashas = [];
+      let currentStart = parseFloat(md.start);
+      for (let i = 0; i < seq.length; i++) {
+        const adItem = seq[(startIndex + i) % seq.length];
+        const adDur = (parseFloat(md.duration) * adItem.duration) / totalYears;
+        antardashas.push({ name: adItem.name, start: currentStart, end: currentStart + adDur });
+        currentStart += adDur;
+      }
+      return antardashas;
+    }
+
+    if (SIGN_DASHAS.includes(type)) {
+      const mdName = md.lord || md.sign || md.item;
+      const startIndex = ZODIAC.indexOf(mdName);
+      if (startIndex === -1) return [];
+
+      const antardashas = [];
+      const adDur = parseFloat(md.duration) / 12;
+      let currentStart = parseFloat(md.start);
+      for (let i = 0; i < 12; i++) {
+        const adName = ZODIAC[(startIndex + i) % 12];
+        antardashas.push({ name: adName, start: currentStart, end: currentStart + adDur });
+        currentStart += adDur;
+      }
+      return antardashas;
+    }
+    return [];
+  };
 
   if (!list.length) {
     return (
       <div className="flex flex-col h-full bg-white font-serif">
-        <div className="w-full text-center py-1.5 border-b bg-gradient-to-r from-teal-100 to-white border-teal-200 text-teal-900 font-serif font-black text-[9px] uppercase italic tracking-widest">
-          ⏳ {title} Dasha
+        <div className="w-full text-center py-1.5 border-b bg-gradient-to-r from-slate-200 to-slate-50 border-[#94a3b8] text-[#1e293b] font-serif font-black text-xs uppercase italic tracking-widest shadow-sm">
+          ⏳ {title} Mahadasha
         </div>
         <div className="flex-1 flex flex-col items-center justify-center p-6 gap-3 text-center">
           <span className="text-3xl opacity-40">⏳</span>
@@ -1448,23 +1634,129 @@ const SecondaryDashaPanel = ({ data, type }) => {
     );
   }
 
+  const toggleRow = (i) => setExpanded(expanded === i ? null : i);
+
   return (
-    <div className="flex flex-col h-full bg-white font-serif">
-      <div className="w-full text-center py-1.5 border-b bg-gradient-to-r from-teal-100 to-white border-teal-200 text-teal-900 font-serif font-black text-[15px] uppercase italic tracking-widest">
-        ⏳ {title} Dasha
+    <div className="bg-white font-serif flex flex-col h-full">
+      <div className="px-4 py-3 bg-gradient-to-r from-slate-800 to-slate-700 flex items-center gap-3 shrink-0">
+        <div className="w-6 h-6 rounded bg-amber-400 flex items-center justify-center text-black font-black text-sm">⏳</div>
+        <div>
+          <h2 className="text-white text-sm font-black uppercase tracking-widest leading-none">{title} Mahadasha</h2>
+          <p className="text-slate-400 text-[9px] uppercase tracking-wider mt-0.5">Conditional Dasha System</p>
+        </div>
+        <div className="ml-auto text-[9px] text-slate-400 font-sans">{totalYears} Year Cycle</div>
       </div>
-      <div className="flex-1 overflow-auto custom-scrollbar">
-        <table className="w-full border-collapse">
-          <tbody>
-            {list.map((d, i) => (
-              <tr key={i} className="border-b border-gray-50 text-[15px]">
-                <td className="p-1 px-2 font-bold text-gray-700">{d.lord}</td>
-                <td className="p-1 text-gray-900 font-mono italic">{(d.start ?? 0).toFixed(1)}y - {(d.end ?? 0).toFixed(1)}y</td>
-                <td className="p-1 text-right text-teal-600 font-bold px-2">{d.duration}y</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+      <div className="grid grid-cols-[2fr_0.5fr_0.5fr_0.5fr_1.1fr_1.1fr] border-b-2 border-slate-800 bg-slate-100 shrink-0">
+        <div className="px-4 py-2 text-[9px] font-black text-slate-700 uppercase tracking-widest">Mahadasha</div>
+        <div className="px-1 py-2 text-[9px] font-black text-slate-700 uppercase tracking-widest text-center">Yrs</div>
+        <div className="px-1 py-2 text-[9px] font-black text-slate-700 uppercase tracking-widest text-center">From Age</div>
+        <div className="px-1 py-2 text-[9px] font-black text-slate-700 uppercase tracking-widest text-center">To Age</div>
+        <div className="px-3 py-2 text-[9px] font-black text-slate-700 uppercase tracking-widest">Start</div>
+        <div className="px-3 py-2 text-[9px] font-black text-slate-700 uppercase tracking-widest">End</div>
+      </div>
+
+      <div className="flex-1 overflow-auto custom-scrollbar divide-y divide-slate-100">
+        {list.map((d, i) => {
+          const itemName = d.lord || d.sign || d.item || "Unknown";
+          const itemMeta = ITEM_META[itemName] || { color: '#666', bg: 'bg-white', border: 'border-slate-100', badge: 'bg-slate-100 text-slate-700', symbol: '⭐' };
+
+          const strength = planetStrengths[itemName];
+          const isStrong = strength ? (strength.total_score >= 5.5) : null;
+          const isOpen = expanded === i;
+          const isCurrentDasha = currentAgeAsFloat !== null && d.start <= currentAgeAsFloat && currentAgeAsFloat < d.end;
+          const isMarakaDasha = isMaraka(itemName);
+
+          const startAge = Math.floor(d.start ?? 0);
+          const endAge = Math.floor(d.end ?? 0);
+
+          return (
+            <div key={i} className={`transition-all ${isOpen ? itemMeta.bg : (isCurrentDasha ? 'bg-indigo-50/30' : '')} ${isMarakaDasha ? 'bg-red-50/30 border-l-red-500' : ''}`}>
+              <div
+                className={`grid grid-cols-[2fr_0.5fr_0.5fr_0.5fr_1.1fr_1.1fr] cursor-pointer hover:bg-slate-50 transition-colors group border-l-4`}
+                style={{ borderLeftColor: isMarakaDasha ? '#dc2626' : (isCurrentDasha ? itemMeta.color : (isOpen ? itemMeta.color : 'transparent')) }}
+                onClick={() => toggleRow(i)}
+              >
+                <div className="px-4 py-3 flex items-center gap-2">
+                  <span className="text-lg leading-none">{itemMeta.symbol}</span>
+                  <div>
+                    <span className="font-black text-sm text-slate-800">{itemName}</span>
+                    <span className={`ml-2 text-[9px] font-bold px-1.5 py-0.5 rounded-full ${itemMeta.badge}`}>
+                      {parseFloat(d.duration).toFixed(1)} yrs
+                    </span>
+                    {isStrong !== null && (
+                      <span className={`ml-1 text-[8px] font-bold px-1 py-0.5 rounded ${isStrong ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}`}>
+                        {isStrong ? '▲ Strong' : '▼ Weak'}
+                      </span>
+                    )}
+                    {isMarakaDasha && (
+                      <span className="ml-1 text-[8px] font-bold px-1.5 py-0.5 rounded bg-red-600 text-white shadow-sm border border-red-800 animate-pulse">
+                        💀 MARAKA
+                      </span>
+                    )}
+                    {isCurrentDasha && (
+                      <span className="ml-1 text-[8px] font-bold px-1.5 py-0.5 rounded bg-indigo-600 text-white animate-pulse shadow-sm">
+                        CURRENT
+                      </span>
+                    )}
+                  </div>
+                  <span className="ml-auto text-slate-300 group-hover:text-slate-500 text-[10px] transition-all">
+                    {isOpen ? '▲' : '▼'}
+                  </span>
+                </div>
+                <div className="px-1 py-3 flex items-center justify-center">
+                  <span className="text-xs font-black" style={{ color: itemMeta.color }}>{parseFloat(d.duration).toFixed(1)}</span>
+                </div>
+                <div className="px-1 py-3 flex items-center justify-center">
+                  <span className="text-xs font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded-full">
+                    {startAge}
+                  </span>
+                </div>
+                <div className="px-1 py-3 flex items-center justify-center">
+                  <span className="text-xs font-bold text-slate-600 bg-slate-100 px-1.5 py-0.5 rounded-full">
+                    {endAge}
+                  </span>
+                </div>
+                <div className="px-3 py-3 flex items-center">
+                  <span className="text-xs font-semibold text-indigo-600">{calculateDate(d.start ?? 0)}</span>
+                </div>
+                <div className="px-3 py-3 flex items-center">
+                  <span className="text-xs font-semibold text-rose-600">{calculateDate(d.end ?? 0)}</span>
+                </div>
+              </div>
+
+              {isOpen && (
+                <div className="px-6 py-4 bg-amber-50/20 border-t border-slate-100 animate-fade-in font-serif">
+                  <table className="w-full text-[13px] border-collapse">
+                    <thead>
+                      <tr className="border-t border-b border-red-600 bg-amber-100/50">
+                        <th className="text-left py-1.5 font-bold px-2 text-black">Antar</th>
+                        <th className="text-left py-1.5 font-bold px-2 text-black">Beginning</th>
+                        <th className="text-left py-1.5 font-bold px-2 text-black">Ending</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {getAntardashas(d).map((ad, j) => {
+                        const adMetaInfo = ITEM_META[ad.name] || { color: '#000' };
+                        const isMarakaAd = isMaraka(ad.name);
+                        return (
+                          <tr key={j} className={`border-b border-gray-100 last:border-b-2 last:border-red-600 ${isMarakaAd ? 'bg-red-100/50' : ''}`}>
+                            <td className="py-1 px-2 font-bold flex items-center gap-2" style={{ color: adMetaInfo.color }}>
+                              {ad.name}
+                              {isMarakaAd && <span className="text-[8px] font-black tracking-wider px-1 py-0.5 bg-red-600 text-white rounded">⚠️ DANGER</span>}
+                            </td>
+                            <td className="py-1 px-2 text-black">{calculateExactDate(ad.start)}</td>
+                            <td className="py-1 px-2 text-black">{calculateExactDate(ad.end)}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -1620,7 +1912,8 @@ const getDignityStatus = (planet, signName) => {
   return { label: 'Neutral', bg: 'bg-slate-100', text: 'text-slate-600', border: 'border-slate-200' };
 };
 
-export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', fullSize = false }) => {
+export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', fullSize = false, onChartClick }) => {
+  const [language, setLanguage] = useState('en');
   const chartData = baseChartKey === 'charts' ? data.charts : (data.vargas?.[baseChartKey] || data.charts);
   const lagnaHouse = chartData?.houses?.[1] || chartData?.houses?.["1"] || {};
   let lagnaSignIndex = lagnaHouse.sign_index;
@@ -1691,12 +1984,23 @@ export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', 
   return (
     <div className="flex flex-col h-full bg-[#fdfbf7]">
       <div className="flex-1 p-0 bg-white overflow-auto custom-scrollbar flex flex-col min-h-0">
-        <div className={fullSize ? "flex-1 w-full h-full min-h-0 flex items-center justify-center" : "mb-4 w-[550px] h-[550px] mx-auto shrink-0"}>
+        <div
+          className={(fullSize ? "flex-1 w-full h-full min-h-0 flex items-center justify-center cursor-pointer " : "mb-4 w-[550px] h-[550px] mx-auto shrink-0 cursor-pointer ") + "relative"}
+          onClick={onChartClick}
+        >
+          <button
+            onClick={(e) => { e.stopPropagation(); setLanguage(l => l === 'en' ? 'hi' : 'en'); }}
+            className="absolute top-2 right-2 z-50 px-3 py-1.5 bg-amber-500 text-slate-900 font-bold rounded shadow-sm hover:bg-amber-400 transition text-[10px] uppercase tracking-wide"
+          >
+            {language === 'en' ? 'A → अ (Hindi)' : 'अ → A (English)'}
+          </button>
           <ZodiacChart planetPositions={chartData?.planet_positions || data?.planet_positions}
             houses={chartData?.houses || data.charts?.houses}
             transitHouses={transitHouses}
             title="Today Transit Gochar"
             variant="legacy"
+            defaultLang={language}
+            key={`transit-chart-${language}`}
             planetEffects={transitEffects} scaleText={1.5} />
         </div>
 
@@ -1762,7 +2066,7 @@ export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', 
                         <div>
                           <p className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {signName}</p>
                           <p className="text-sm leading-relaxed text-slate-700 font-serif">
-                            {signEffect.length > 300 ? signEffect.slice(0, 300) + '…' : signEffect}
+                            {signEffect}
                           </p>
                         </div>
                       ) : (
@@ -1772,7 +2076,7 @@ export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', 
                         <div className="pt-3 border-t border-indigo-50">
                           <p className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {houseLabel} House (Transiting)</p>
                           <p className="text-sm leading-relaxed text-slate-700 font-serif">
-                            {houseEffect.length > 350 ? houseEffect.slice(0, 350) + '…' : houseEffect}
+                            {houseEffect}
                           </p>
                         </div>
                       )}
@@ -2049,7 +2353,7 @@ const TransitGemstonePanel = ({ data, transitPositions }) => {
 
 
 
-const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSelectContent, onPlanetClick, onFullScreen }) => {
+const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSelectContent, onPlanetClick, onFullScreen, onTransitChange, isBlankSheet }) => {
   const [showSelector, setShowSelector] = useState(false);
   const planetEffects = calculatePlanetEffects(data);
 
@@ -2061,7 +2365,7 @@ const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSele
       return (
         <div className="h-full flex flex-col bg-slate-50/50">
           <div className="shrink-0 relative">
-            <ZodiacChart planetPositions={data?.planet_positions} houses={vData?.houses} onPlanetClick={onPlanetClick} title="D10 Dashamsha" variant="legacy" planetEffects={planetEffects} scaleText={1.5} />
+            <ZodiacChart planetPositions={data?.planet_positions} houses={vData?.houses} onPlanetClick={onPlanetClick} title="D10 Dashamsha" variant="legacy" planetEffects={planetEffects} scaleText={1.5} defaultRect={isBlankSheet} />
             <div className="absolute top-6 right-2 px-1.5 py-0.5 bg-indigo-600 text-[6px] font-black text-white rounded-full shadow-sm uppercase tracking-tighter">Iyer Method</div>
           </div>
           <div className="px-2 pb-2 mt-auto">
@@ -2082,15 +2386,55 @@ const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSele
     if (contentId.startsWith('d') && contentId !== 'dignity' && contentId !== 'dasha') {
       const vData = (contentId === 'd1') ? data.charts : data.vargas?.[contentId];
       const title = CELL_CONTENTS.find(c => c.id === contentId)?.label || contentId.toUpperCase();
-      return <ZodiacChart planetPositions={data?.planet_positions} houses={vData?.houses} onPlanetClick={onPlanetClick} title={title} variant="legacy" planetEffects={planetEffects} scaleText={1.5} />;
+      return <ZodiacChart planetPositions={data?.planet_positions} houses={vData?.houses} onPlanetClick={onPlanetClick} title={title} variant="legacy" planetEffects={planetEffects} scaleText={1.5} defaultRect={isBlankSheet} />;
     }
 
     switch (contentId) {
-      case "lagna":
+      case "lagna": {
+        const lagnaSignIndex = data?.charts?.ascendant_sign_index !== undefined ? data.charts.ascendant_sign_index :
+          (data?.charts?.houses?.[1]?.sign_index !== undefined ? data.charts.houses[1].sign_index : Math.floor((data?.charts?.houses?.[1]?.cusp_deg || 0) / 30));
+
+        let computedTransitHouses = null;
+        let formattedTransitPositions = data?.planet_positions;
+        if (transitPositions) {
+          computedTransitHouses = {};
+          const valid = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
+          Object.entries(transitPositions).forEach(([planet, pos]) => {
+            if (!valid.includes(planet)) return;
+            const signIdx = pos.sidereal?.sign_index !== undefined ? pos.sidereal.sign_index : Math.floor((pos.sidereal?.lon || pos.lon) / 30);
+            const houseNum = (signIdx - lagnaSignIndex + 12) % 12 + 1;
+            if (!computedTransitHouses[houseNum]) computedTransitHouses[houseNum] = { planets: [] };
+            computedTransitHouses[houseNum].planets.push(planet);
+          });
+
+          formattedTransitPositions = Object.entries(transitPositions).map(([k, v]) => ({
+            planet: k,
+            degree: v.sidereal?.lon || v.lon,
+            is_retrograde: v.is_retrograde || v.sidereal?.is_retrograde,
+            is_combust: v.is_combust || v.sidereal?.is_combust
+          }));
+        }
+
         return (
           <div className="h-full flex flex-col overflow-auto custom-scrollbar">
+            {onTransitChange && (
+              <div className="shrink-0 border-b border-gray-200 bg-indigo-50/50 p-2">
+                <div className="text-xs font-bold text-indigo-800 mb-1">Transit Control (Over Natal Lagna)</div>
+                <CompactTransitControl lat={data?.basic_details?.lat} lon={data?.basic_details?.lon} onTransitChange={onTransitChange} />
+              </div>
+            )}
             <div className="shrink-0">
-              <ZodiacChart planetPositions={data?.planet_positions} houses={data.charts?.houses} onPlanetClick={onPlanetClick} title="Lagna Chart" variant="legacy" defaultRect={true} planetEffects={planetEffects} scaleText={1.5} />
+              <ZodiacChart
+                planetPositions={transitPositions ? formattedTransitPositions : data?.planet_positions}
+                houses={data.charts?.houses}
+                transitHouses={computedTransitHouses}
+                onPlanetClick={onPlanetClick}
+                title="Lagna Chart"
+                variant="legacy"
+                defaultRect={true}
+                planetEffects={planetEffects}
+                scaleText={1.5}
+              />
             </div>
             <div className="px-2 pb-4">
               <HouseEffectTable data={data} planetEffects={planetEffects} />
@@ -2098,25 +2442,48 @@ const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSele
             </div>
           </div>
         );
+      }
       case "planets_table":
         return <PlanetTable data={data} onPlanetClick={onPlanetClick} />;
       case "panchang":
         return <PanchangPanel data={data} />;
       case "numerical":
         return <NumericalPanel data={data} />;
-      case "shodashottari":
-        return <SecondaryDashaPanel data={data} type="shodashottari" />;
-      case "chaturshitisama":
-        return <SecondaryDashaPanel data={data} type="chaturshitisama" />;
+      case "shodashottari": return <SecondaryDashaPanel data={data} type="shodashottari" />;
+      case "chaturshitisama": return <SecondaryDashaPanel data={data} type="chaturshitisama" />;
+      case "ashtottari": return <SecondaryDashaPanel data={data} type="ashtottari" />;
+      case "dwisaptatisama": return <SecondaryDashaPanel data={data} type="dwisaptatisama" />;
+      case "dwadashottari": return <SecondaryDashaPanel data={data} type="dwadashottari" />;
+      case "panchottari": return <SecondaryDashaPanel data={data} type="panchottari" />;
+      case "shatabdika": return <SecondaryDashaPanel data={data} type="shatabdika" />;
+      case "shashtihayani": return <SecondaryDashaPanel data={data} type="shashtihayani" />;
+      case "chara": return <SecondaryDashaPanel data={data} type="chara" />;
+      case "sthira": return <SecondaryDashaPanel data={data} type="sthira" />;
+      case "shoola": return <SecondaryDashaPanel data={data} type="shoola" />;
+      case "niryaana_shoola": return <SecondaryDashaPanel data={data} type="niryaana_shoola" />;
+      case "mandooka": return <SecondaryDashaPanel data={data} type="mandooka" />;
+      case "drig": return <SecondaryDashaPanel data={data} type="drig" />;
+      case "sudasha": return <SecondaryDashaPanel data={data} type="sudasha" />;
       case "dignity":
         return <DignityTable data={data} planetEffects={planetEffects} />;
       case "vimsopaka":
-        return <VimsopakaAssessment data={data} />;
+        return <VimsopakaAssessment data={data} onlyMatrix={isBlankSheet} />;
+      case "bhavbala":
+        return <BhavbalaView data={data} onlyTable={isBlankSheet} />;
       case "panch_pakshi":
         return <PanchPakshiTable data={data} />;
       case "kp":
         return <div className="h-full overflow-y-auto"><KPChartViewer formData={data} /></div>;
       case "vimshottari":
+        if (isBlankSheet) {
+          return (
+            <div className="flex flex-col h-full overflow-auto custom-scrollbar">
+              <div className="flex-1 min-h-[280px]">
+                <VimshottariTable data={data} transitDate={dashaSimDate} />
+              </div>
+            </div>
+          );
+        }
         return (
           <div className="flex flex-col h-full overflow-auto custom-scrollbar">
             <div className="shrink-0" style={{ minHeight: '280px' }}>
@@ -2134,7 +2501,7 @@ const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSele
           </div>
         );
       case "shadbala":
-        return <ShadbalaChart data={data.strength} title="Shad Bala" />;
+        return <ShadbalaChart data={data.strength} title="Shad Bala" onlyRatio={true} />;
       case "ashtakavarga":
         return <AshtakavargaViewer data={data} />;
       case "ashtakavarga_reduction":
@@ -2220,7 +2587,7 @@ const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSele
           </div>
         </div>
       ) : (
-        <div className="flex-1 w-full relative">
+        <div className="flex-1 w-full relative overflow-y-auto custom-scrollbar">
           {renderContent()}
         </div>
       )}
@@ -2229,7 +2596,34 @@ const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSele
 };
 
 
-const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) => {
+const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, isBlankSheet = false }) => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  const [blankSheetItems, setBlankSheetItems] = useState([]);
+  const [pendingChartSelection, setPendingChartSelection] = useState(null);
+  const { t } = useTranslation();
+  const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true');
+  const [clickCount, setClickCount] = useState(0);
+
+  const handleSecretClick = () => {
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+    if (newCount >= 7) {
+      if (isAdmin) {
+        localStorage.removeItem('isAdmin');
+        setIsAdmin(false);
+        alert("Admin mode locked!");
+      } else {
+        localStorage.setItem('isAdmin', 'true');
+        setIsAdmin(true);
+        alert("Admin mode unlocked!");
+      }
+      setClickCount(0); // Reset count so it can be toggled again
+    }
+  };
+
   const [transitCompareBaseChart, setTransitCompareBaseChart] = useState('charts');
   const [data, setData] = useState(incomingData);
   const [showAstroCharts, setShowAstroCharts] = useState(true);
@@ -2354,12 +2748,19 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
   }, [data]);
 
   const [upperRightChart, setUpperRightChart] = useState("d9");
-  const [lowerCells, setLowerCells] = useState(["vimshottari", "gemstones", "dignity", "shadbala"]);
+  const [lowerCells, setLowerCells] = useState(["vimshottari", "dignity", "shadbala"]);
   const [selectedPlanet, setSelectedPlanet] = useState(null);
   const [transitPositions, setTransitPositions] = useState(null);
   const [timeControlledPositions, setTimeControlledPositions] = useState(null);
   const [timeControlledDate, setTimeControlledDate] = useState(null);
   const [dashaSimDate, setDashaSimDate] = useState(null);
+  const [showStandaloneTransit, setShowStandaloneTransit] = useState(false);
+  const [showVimshottariTransitControl, setShowVimshottariTransitControl] = useState(false);
+
+  const handleTransitChange = (positions, dt) => {
+    setTimeControlledPositions(positions);
+    setTimeControlledDate(dt);
+  };
 
   const oracle_items = [
     { id: "ascendant", label: "Ascendant", icon: "👤", color: "from-stone-500 to-stone-700" },
@@ -2412,6 +2813,10 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
   }, [data]);
 
   const handleMaximizeInNewWindow = (id) => {
+    if (isBlankSheet) {
+      setPendingChartSelection(id);
+      return;
+    }
     const oracleIds = [
       'ascendant', 'study', 'career', 'marriage', 'finance', 'business', 'health',
       'parents_health', 'spouse_health', 'children_health', 'mental_peace',
@@ -2422,8 +2827,42 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
       handleOracleClick(id);
       return;
     }
+
+    // If we're not in blank sheet mode and the chart isn't an oracle item, standard full screen logic applies.
     localStorage.setItem('worksheetData', JSON.stringify(data));
     window.open(`/?worksheet=true&fullScreen=${id}`, `Full_${id}_${Date.now()}`, 'width=1100,height=850,menubar=no,toolbar=no,location=no,status=no');
+  };
+
+  const handleAddGridItem = (size) => {
+    if (pendingChartSelection) {
+      setBlankSheetItems([
+        ...blankSheetItems,
+        {
+          uniqueId: Date.now().toString() + Math.random().toString(36).substr(2, 5),
+          contentId: pendingChartSelection,
+          size: size
+        }
+      ]);
+      setPendingChartSelection(null);
+    }
+  };
+
+  const handleRemoveGridItem = (uniqueId) => {
+    setBlankSheetItems(blankSheetItems.filter(item => item.uniqueId !== uniqueId));
+  };
+
+  const getSizeClasses = (size) => {
+    switch (size) {
+      case '1x1': return 'col-span-1 row-span-1 h-[350px]';
+      case '1x2': return 'col-span-1 row-span-2 h-[720px]';
+      case '2x1': return 'col-span-2 row-span-1 h-[350px]';
+      case '2x2': return 'col-span-2 row-span-2 h-[720px]';
+      case '3x1': return 'col-span-3 row-span-1 h-[350px]';
+      case '3x2': return 'col-span-3 row-span-2 h-[720px]';
+      case '4x1': return 'col-span-4 row-span-1 h-[350px]';
+      case '4x2': return 'col-span-4 row-span-2 h-[720px]';
+      default: return 'col-span-1 row-span-1 h-[350px]';
+    }
   };
 
   const handlePlanetClick = (planet, house) => {
@@ -2459,30 +2898,76 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
   const urlCid = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('fullScreen') : null;
   const cid = fullScreenInitial || urlCid;
 
+  const handleStandaloneExportPDF = async () => {
+    const element = document.getElementById('pdf-content-standalone');
+    if (!element) return;
+
+    try {
+      const canvas = await html2canvas(element, { scale: 1.5, useCORS: true, logging: false });
+      const imgData = canvas.toDataURL('image/png');
+
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Astro_Chart_${cid}.pdf`);
+    } catch (error) {
+      console.error("PDF Export failed:", error);
+      alert("Failed to export PDF.");
+    }
+  };
+
   if (cid) {
     const effects = calculatePlanetEffects(data);
 
     return (
-      <div className="h-screen w-screen bg-[#fdfbf7] flex flex-col overflow-hidden">
+      <div id="pdf-content-standalone" className="h-screen w-screen bg-[#fdfbf7] flex flex-col overflow-hidden">
         <style>{`
           button, button span, button div, button p, button h4 {
             color: black !important;
           }
         `}</style>
 
-        <div className="bg-slate-900 px-6 py-3 flex justify-between items-center shrink-0 shadow-lg z-50">
+        <div className="bg-white px-6 py-3 flex justify-between items-center shrink-0 shadow-lg z-50">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center text-black font-bold">✨</div>
             <div>
-              <h2 className="text-white text-sm font-serif italic tracking-widest uppercase leading-none">
+              <h2 className="text-slate-900 text-[15px] font-bold font-serif italic tracking-widest uppercase leading-none">
                 {CELL_CONTENTS.find(c => c.id === cid)?.label || cid.toUpperCase()}
               </h2>
-              <p className="text-[8px] text-indigo-400 font-black uppercase tracking-[0.3em] mt-0.5">Standalone Diagnostic View</p>
+              <p className="text-[10px] text-black font-black uppercase tracking-[0.3em] mt-0.5">Standalone Diagnostic View</p>
             </div>
           </div>
+
+          {(cid === 'lagna' || cid === 'd1') && (
+            <div className="flex-1 px-4 flex justify-center">
+              <div className="flex flex-row items-center gap-4 bg-indigo-50/50 px-5 py-1 rounded-full border border-indigo-100 shadow-inner h-[50px]">
+                <div className="text-[10px] font-black text-indigo-900 uppercase tracking-widest flex items-center gap-1.5 shrink-0">
+                  <span className="text-sm">⏱️</span> Transit
+                </div>
+                <button
+                  onClick={() => setShowStandaloneTransit(!showStandaloneTransit)}
+                  className={`px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest transition-all border shadow-sm shrink-0 ${showStandaloneTransit ? 'bg-white text-indigo-900 border-indigo-200 hover:bg-indigo-100' : 'bg-white text-black border-indigo-700 hover:bg-indigo-700'}`}
+                >
+                  {showStandaloneTransit ? "Birth Chart" : "Transit Chart"}
+                </button>
+                <div className={`flex items-center justify-center transform scale-[0.8] origin-left transition-opacity duration-300 ${showStandaloneTransit ? 'opacity-100' : 'opacity-40 pointer-events-none'}`}>
+                  <CompactTransitControl lat={data?.basic_details?.lat} lon={data?.basic_details?.lon} onTransitChange={handleTransitChange} />
+                </div>
+              </div>
+            </div>
+          )}
+
+          <button
+            onClick={handleStandaloneExportPDF}
+            className="bg-rose-100 hover:bg-indigo-700 text-black px-4 py-1.5 rounded-lg text-[14px] font-black uppercase tracking-widest transition-all border border-emerald-500/30 shrink-0 mr-2"
+          >
+            Export PDF
+          </button>
           <button
             onClick={() => window.close()}
-            className="bg-white/75 hover:bg-white/20 text-black px-4 py-1.5 rounded-lg text-[14px] font-black uppercase tracking-widest transition-all border border-white/10"
+            className="bg-white/75 hover:bg-white/20 text-black px-4 py-1.5 rounded-lg text-[14px] font-black uppercase tracking-widest transition-all border border-white/10 shrink-0"
           >
             Close Window
           </button>
@@ -2490,18 +2975,89 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
 
         <div className={`flex-1 overflow-auto custom-scrollbar ${(cid === 'transit_compare' || cid === 'vimshottari') ? '' : 'p-4 md:p-8 flex flex-col items-center'}`}>
           <div className={(cid === 'transit_compare' || cid === 'vimshottari') ? 'w-full h-full' : 'w-full max-w-full mx-auto'}>
-            {(cid === 'lagna' || cid === 'd1') && (
-              <div className="flex flex-col items-center gap-8 animate-in fade-in duration-700">
-                <div className="w-full max-w-full bg-white p-10 rounded-[3rem] border border-slate-200 shadow-2xl relative">
-                  <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-[15rem] font-serif pointer-events-none -mr-10 -mt-10">D1</div>
-                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.charts?.houses} onPlanetClick={handlePlanetClick} title="Birth Chart (Lagna)" variant="legacy" defaultRect={true} planetEffects={effects} scaleText={1.5} />
+            {(cid === 'lagna' || cid === 'd1') && (() => {
+              const lagnaSignIndex = data?.charts?.ascendant_sign_index !== undefined ? data.charts.ascendant_sign_index :
+                (data?.charts?.houses?.[1]?.sign_index !== undefined ? data.charts.houses[1].sign_index : Math.floor((data?.charts?.houses?.[1]?.cusp_deg || 0) / 30));
+
+              let computedTransitHouses = null;
+              let formattedTransitPositions = data?.planet_positions;
+              if ((timeControlledPositions || transitPositions) && showStandaloneTransit) {
+                const positionsToUse = timeControlledPositions || transitPositions;
+
+                // Deep copy natal houses to preserve signs, but clear their planets
+                computedTransitHouses = JSON.parse(JSON.stringify(data.charts?.houses || {}));
+                Object.keys(computedTransitHouses).forEach(h => {
+                  computedTransitHouses[h].planets = [];
+                });
+
+                const valid = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
+                Object.entries(positionsToUse).forEach(([planet, pos]) => {
+                  if (!valid.includes(planet)) return;
+                  const signIdx = pos.sidereal?.sign_index !== undefined ? pos.sidereal.sign_index : Math.floor((pos.sidereal?.lon || pos.lon) / 30);
+                  const houseNum = (signIdx - lagnaSignIndex + 12) % 12 + 1;
+                  if (!computedTransitHouses[houseNum]) computedTransitHouses[houseNum] = { planets: [] };
+                  computedTransitHouses[houseNum].planets.push(planet);
+                });
+
+                // Ensure Ascendant stays in house 1
+                if (computedTransitHouses[1]) {
+                  computedTransitHouses[1].planets.unshift("Ascendant");
+                }
+
+                formattedTransitPositions = Object.entries(positionsToUse).filter(([k]) => valid.includes(k)).map(([k, v]) => {
+                  const signIdx = v.sidereal?.sign_index !== undefined ? v.sidereal.sign_index : Math.floor((v.sidereal?.lon || v.lon) / 30);
+                  const houseNum = (signIdx - lagnaSignIndex + 12) % 12 + 1;
+
+                  let nakStr = "Unknown";
+                  const rawNak = v.sidereal?.nakshatra || v.nakshatra;
+                  if (typeof rawNak === 'string') {
+                    nakStr = rawNak;
+                  } else if (rawNak && typeof rawNak === 'object') {
+                    nakStr = rawNak.name || "Unknown";
+                  }
+
+                  return {
+                    planet: k,
+                    degree: Number(v.sidereal?.lon || v.lon || 0),
+                    nakshatra: nakStr,
+                    house: houseNum,
+                    sign: v.sidereal?.sign || v.sign || "Unknown",
+                    sign_lord: v.sidereal?.sign_lord || v.sign_lord || "Unknown",
+                    is_retrograde: v.is_retrograde || v.sidereal?.is_retrograde,
+                    is_combust: v.is_combust || v.sidereal?.is_combust
+                  };
+                });
+              }
+
+              return (
+                <div className="flex flex-col items-center gap-8 animate-in fade-in duration-700 w-full">
+                  <div className="w-full max-w-full bg-white p-10 rounded-[3rem] border border-slate-200 shadow-2xl relative">
+                    <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-[15rem] font-serif pointer-events-none -mr-10 -mt-10">D1</div>
+
+                    <ZodiacChart
+                      planetPositions={formattedTransitPositions}
+                      houses={((timeControlledPositions || transitPositions) && showStandaloneTransit) ? computedTransitHouses : data.charts?.houses}
+                      transitHouses={null}
+                      onPlanetClick={handlePlanetClick}
+                      title={(timeControlledDate && showStandaloneTransit) ? `Birth Chart (Lagna) + Transit (${new Date(timeControlledDate).toLocaleDateString()})` : "Birth Chart (Lagna)"}
+                      variant="legacy"
+                      defaultRect={true}
+                      planetEffects={effects}
+                      scaleText={1.5}
+                    />
+                  </div>
+
+                  <div className="w-full bg-white p-8 rounded-[3rem] shadow-2xl border border-slate-200">
+                    <PlanetTable data={{ ...data, planet_positions: formattedTransitPositions }} onPlanetClick={handlePlanetClick} />
+                  </div>
+
+                  <div className="w-full">
+                    <HouseEffectTable data={data} planetEffects={effects} customPositions={formattedTransitPositions} />
+                    <ConjunctionAnalysis houses={((timeControlledPositions || transitPositions) && showStandaloneTransit) ? computedTransitHouses : data.charts?.houses} />
+                  </div>
                 </div>
-                <div className="w-full">
-                  <HouseEffectTable data={data} planetEffects={effects} />
-                  <ConjunctionAnalysis houses={data.charts?.houses} />
-                </div>
-              </div>
-            )}
+              );
+            })()}
 
             {cid === 'bhrigu_bindu' && (
               <div className="w-full max-w-5xl mx-auto">
@@ -3007,24 +3563,61 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
             )}
 
             {(cid === 'transit_compare' || cid === 'transit_compare2') && (
-              <div style={{ width: '100%', maxWidth: '100%', display: 'flex', gap: 0, minHeight: 'calc(100vh - 80px)', alignItems: 'stretch' }}>
+              <div style={{ width: '100%', maxWidth: '100%', display: 'flex', gap: 0, height: 'calc(100vh - 56px)', alignItems: 'stretch' }}>
                 {/* ── Left sidebar: Time Control Engine ── */}
-                {cid === 'transit_compare' && (
-                  <div style={{
-                    width: 260, flexShrink: 0,
-                    background: 'linear-gradient(180deg, #e5e9f1ff 0%, #f3f2faff 100%)',
-                    borderRight: '1px solid rgba(99,102,241,0.25)',
-                    padding: '12px 10px',
-                    overflowY: 'auto',
-                  }}>
-                    <TransitTimeControl
-                      lat={data?.basic_details?.lat || 28.6}
-                      lon={data?.basic_details?.lon || 77.2}
-                      onTransitChange={(positions, dt) => {
-                        setTimeControlledPositions(positions);
-                        setTimeControlledDate(dt);
+                {(cid === 'transit_compare' || cid === 'transit_compare2') && (
+                  <div
+                    onClick={() => {
+                      if (!showVimshottariTransitControl) setShowVimshottariTransitControl(true);
+                    }}
+                    style={{
+                      width: showVimshottariTransitControl ? 260 : 40, flexShrink: 0,
+                      background: 'linear-gradient(180deg, hsla(220, 71%, 24%, 1.00) 0%, hsla(245, 83%, 36%, 1.00) 100%)',
+                      borderRight: '0.2px solid rgba(99,102,241,0.25)',
+                      padding: showVimshottariTransitControl ? '12px 10px' : '12px 4px',
+                      overflowY: 'auto',
+                      display: 'flex', flexDirection: 'column', alignItems: 'center',
+                      cursor: showVimshottariTransitControl ? 'default' : 'pointer'
+                    }}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowVimshottariTransitControl(!showVimshottariTransitControl);
                       }}
-                    />
+                      className="w-full bg-rose-200 hover:bg-white/20 text-white rounded py-2 mb-4 text-[14px] font-bold flex items-center justify-center gap-2"
+                      title={showVimshottariTransitControl ? "Close Time Control" : "Open Time Control"}
+                    >
+                      {showVimshottariTransitControl ? "◀ Close" : "⏱️"}
+                    </button>
+                    {!showVimshottariTransitControl && (
+                      <div className="flex-1 flex flex-col items-center justify-center opacity-70 pointer-events-none pb-20">
+                        <span style={{
+                          writingMode: 'vertical-rl',
+                          textOrientation: 'mixed',
+                          transform: 'rotate(180deg)',
+                          color: 'hsla(354, 55%, 83%, 1.00)',
+                          letterSpacing: '0.25em',
+                          textTransform: 'uppercase',
+                          fontSize: '18px',
+                          fontWeight: '900',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          Transit Time Control
+                        </span>
+                      </div>
+                    )}
+                    {showVimshottariTransitControl && (
+                      <div className="w-full animate-in slide-in-from-left duration-300">
+                        <TransitTimeControl
+                          lat={data?.basic_details?.lat || 28.6}
+                          lon={data?.basic_details?.lon || 77.2}
+                          onTransitChange={(positions, dt) => {
+                            setTimeControlledPositions(positions);
+                            setTimeControlledDate(dt);
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -3032,24 +3625,42 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
                 <div style={{ flex: 1, overflowY: 'auto', padding: '16px 20px' }}>
                   {/* Header strip */}
                   <div style={{
-                    background: 'linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%)',
+                    background: 'linear-gradient(135deg, hsla(30, 57%, 97%, 1.00) 0%, hsla(30, 7%, 94%, 1.00) 100%)',
                     borderRadius: 14, padding: '14px 20px', marginBottom: 16,
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                     boxShadow: '0 4px 24px rgba(0,0,0,0.35)',
                   }}>
                     <div>
-                      <h3 style={{ color: '#e0e7ff', fontSize: 18, fontWeight: 900, fontStyle: 'italic', letterSpacing: '0.08em', textTransform: 'uppercase', margin: 0 }}>
+                      <h3 style={{ color: '#1031a0ff', fontSize: 18, fontWeight: 900, fontStyle: 'italic', letterSpacing: '0.08em', textTransform: 'uppercase', margin: 0 }}>
                         Transit Diagnostic Matrix
                       </h3>
-                      <p style={{ color: '#6366f1', fontSize: 10, fontWeight: 700, letterSpacing: '0.2em', margin: '3px 0 0', textTransform: 'uppercase' }}>
+                      <p style={{ color: 'rgba(1, 1, 15, 0.84)', fontSize: 14, fontWeight: 700, letterSpacing: '0.2em', margin: '3px 0 0', textTransform: 'uppercase' }}>
                         Inner: Janma (Birth) · Outer: Gochar (Transit)
                       </p>
                     </div>
+
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: 18, fontWeight: 900, color: 'rgba(187, 38, 18, 1)' }}>
+                        {timeControlledDate ? timeControlledDate.toLocaleDateString('hi-IN') : new Date().toLocaleDateString('hi-IN')}
+                      </div>
+                      <p style={{ fontSize: 12, color: '#475569', margin: '2px 0 0' }}>
+                        {timeControlledDate ? timeControlledDate.toLocaleTimeString() : 'Real-time'}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Combined Janma + Gochar double-ring chart */}
+                  <div style={{
+                    background: '#fff', borderRadius: 20, padding: 20,
+                    border: '1px solid #e2e8f0', boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+                    marginBottom: 16,
+                    position: 'relative'
+                  }}>
                     {cid === 'transit_compare2' && (
-                      <div className="flex items-center gap-2">
-                        <label className="text-white text-xs font-bold uppercase">Base Chart:</label>
+                      <div className="absolute top-16 right-4 flex items-center gap-2 z-10">
+                        <label className="text-indigo-900 text-[10px] font-black uppercase tracking-widest">Base Chart:</label>
                         <select
-                          className="bg-indigo-900 text-white text-xs p-1 rounded border border-indigo-700 outline-none"
+                          className="bg-indigo-50 text-indigo-900 text-[11px] font-bold py-1 px-2 rounded-md border border-indigo-200 outline-none shadow-sm cursor-pointer hover:bg-indigo-100 transition-colors"
                           value={transitCompareBaseChart}
                           onChange={(e) => setTransitCompareBaseChart(e.target.value)}
                         >
@@ -3073,49 +3684,12 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
                         </select>
                       </div>
                     )}
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: 16, fontWeight: 900, color: '#fbbf24' }}>
-                        {timeControlledDate ? timeControlledDate.toLocaleDateString('hi-IN') : new Date().toLocaleDateString('hi-IN')}
-                      </div>
-                      <p style={{ fontSize: 9, color: '#475569', margin: '2px 0 0' }}>
-                        {timeControlledDate ? timeControlledDate.toLocaleTimeString() : 'Real-time'}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Combined Janma + Gochar double-ring chart */}
-                  <div style={{
-                    background: '#fff', borderRadius: 20, padding: 20,
-                    border: '1px solid #e2e8f0', boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-                    marginBottom: 16,
-                  }}>
-                    {cid === 'transit_compare2' ? (
-                      <div className="flex flex-col xl:flex-row gap-6 items-start justify-center">
-                        <div className="w-full xl:w-[320px] bg-slate-900 rounded-xl p-4 shrink-0 shadow-lg border border-slate-700">
-                          <TransitTimeControl
-                            lat={data?.basic_details?.lat || 28.6}
-                            lon={data?.basic_details?.lon || 77.2}
-                            onTransitChange={(positions, dt) => {
-                              setTimeControlledPositions(positions);
-                              setTimeControlledDate(dt);
-                            }}
-                          />
-                        </div>
-                        <div className="flex-1 w-full min-w-0 max-w-full">
-                          <TransitPanel
-                            data={data}
-                            transitPositions={timeControlledPositions || transitPositions}
-                            baseChartKey={cid === 'transit_compare2' ? transitCompareBaseChart : 'charts'}
-                          />
-                        </div>
-                      </div>
-                    ) : (
-                      <TransitPanel
-                        data={data}
-                        transitPositions={timeControlledPositions || transitPositions}
-                        baseChartKey={cid === 'transit_compare2' ? transitCompareBaseChart : 'charts'}
-                      />
-                    )}
+                    <TransitPanel
+                      data={data}
+                      transitPositions={timeControlledPositions || transitPositions}
+                      baseChartKey={cid === 'transit_compare2' ? transitCompareBaseChart : 'charts'}
+                      onChartClick={() => setShowVimshottariTransitControl(true)}
+                    />
                   </div>
                 </div>
               </div>
@@ -3128,24 +3702,75 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
               if (cid === 'numerical') return <div className="p-10"><NumericalPanel data={data} /></div>;
               if (cid === 'shodashottari') return <div className="p-10"><SecondaryDashaPanel data={data} type="shodashottari" /></div>;
               if (cid === 'chaturshitisama') return <div className="p-10"><SecondaryDashaPanel data={data} type="chaturshitisama" /></div>;
+              if (cid === 'ashtottari') return <div className="p-10"><SecondaryDashaPanel data={data} type="ashtottari" /></div>;
+              if (cid === 'dwisaptatisama') return <div className="p-10"><SecondaryDashaPanel data={data} type="dwisaptatisama" /></div>;
+              if (cid === 'dwadashottari') return <div className="p-10"><SecondaryDashaPanel data={data} type="dwadashottari" /></div>;
+              if (cid === 'panchottari') return <div className="p-10"><SecondaryDashaPanel data={data} type="panchottari" /></div>;
+              if (cid === 'shatabdika') return <div className="p-10"><SecondaryDashaPanel data={data} type="shatabdika" /></div>;
+              if (cid === 'shashtihayani') return <div className="p-10"><SecondaryDashaPanel data={data} type="shashtihayani" /></div>;
+              if (cid === 'chara') return <div className="p-10"><SecondaryDashaPanel data={data} type="chara" /></div>;
+              if (cid === 'sthira') return <div className="p-10"><SecondaryDashaPanel data={data} type="sthira" /></div>;
+              if (cid === 'shoola') return <div className="p-10"><SecondaryDashaPanel data={data} type="shoola" /></div>;
+              if (cid === 'niryaana_shoola') return <div className="p-10"><SecondaryDashaPanel data={data} type="niryaana_shoola" /></div>;
+              if (cid === 'mandooka') return <div className="p-10"><SecondaryDashaPanel data={data} type="mandooka" /></div>;
+              if (cid === 'drig') return <div className="p-10"><SecondaryDashaPanel data={data} type="drig" /></div>;
+              if (cid === 'sudasha') return <div className="p-10"><SecondaryDashaPanel data={data} type="sudasha" /></div>;
               if (cid === 'dignity') return <div className="p-10"><DignityTable data={data} planetEffects={effects} /></div>;
+              if (cid === 'ai_oracle') return <div className="w-full h-full overflow-y-auto"><AIOraclePanel data={data} /></div>;
               if (cid === 'vimshottari') return (
                 <div style={{ width: '100%', maxWidth: '100%', display: 'flex', gap: 0, height: 'calc(100vh - 56px)', alignItems: 'stretch' }}>
                   {/* ── Left sidebar: Time Control Engine ── */}
-                  <div style={{
-                    width: 260, flexShrink: 0,
-                    background: 'linear-gradient(180deg, #0f172a 0%, #1e1b4b 100%)',
-                    borderRight: '1px solid rgba(99,102,241,0.25)',
-                    padding: '12px 10px',
-                    overflowY: 'auto',
-                  }}>
-                    <TransitTimeControl
-                      lat={data?.basic_details?.lat || 28.6}
-                      lon={data?.basic_details?.lon || 77.2}
-                      onTransitChange={(positions, dt) => {
-                        setDashaSimDate(dt);
+                  <div
+                    onClick={() => {
+                      if (!showVimshottariTransitControl) setShowVimshottariTransitControl(true);
+                    }}
+                    style={{
+                      width: showVimshottariTransitControl ? 260 : 40, flexShrink: 0,
+                      background: 'linear-gradient(180deg, hsla(220, 71%, 24%, 1.00) 0%, hsla(245, 83%, 36%, 1.00) 100%)',
+                      borderRight: '0.2px solid rgba(99,102,241,0.25)',
+                      padding: showVimshottariTransitControl ? '12px 10px' : '12px 4px',
+                      overflowY: 'auto',
+                      display: 'flex', flexDirection: 'column', alignItems: 'center',
+                      cursor: showVimshottariTransitControl ? 'default' : 'pointer'
+                    }}>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowVimshottariTransitControl(!showVimshottariTransitControl);
                       }}
-                    />
+                      className="w-full bg-rose-200 hover:bg-white/20 text-white rounded py-2 mb-4 text-[14px] font-bold flex items-center justify-center gap-2"
+                      title={showVimshottariTransitControl ? "Close Time Control" : "Open Time Control"}
+                    >
+                      {showVimshottariTransitControl ? "◀ Close" : "⏱️"}
+                    </button>
+                    {!showVimshottariTransitControl && (
+                      <div className="flex-1 flex flex-col items-center justify-center opacity-70 pointer-events-none pb-20">
+                        <span style={{
+                          writingMode: 'vertical-rl',
+                          textOrientation: 'mixed',
+                          transform: 'rotate(180deg)',
+                          color: 'hsla(354, 55%, 83%, 1.00)',
+                          letterSpacing: '0.25em',
+                          textTransform: 'uppercase',
+                          fontSize: '18px',
+                          fontWeight: '900',
+                          whiteSpace: 'nowrap'
+                        }}>
+                          Transit Time Control
+                        </span>
+                      </div>
+                    )}
+                    {showVimshottariTransitControl && (
+                      <div className="w-full animate-in slide-in-from-left duration-300">
+                        <TransitTimeControl
+                          lat={data?.basic_details?.lat || 28.6}
+                          lon={data?.basic_details?.lon || 77.2}
+                          onTransitChange={(positions, dt) => {
+                            setDashaSimDate(dt);
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
 
                   {/* ── Right side: Vimshottari Table/Dashboard ── */}
@@ -3165,7 +3790,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
                   </div>
                 </div>
               );
-              if (cid === 'shadbala') return <div className="p-10"><ShadbalaChart data={data.strength} /></div>;
+              if (cid === 'shadbala') return <div className="p-10"><ShadbalaChart data={data.strength} onlyRatio={false} /></div>;
               if (cid === 'ashtakavarga') return <div className="h-[600px] overflow-hidden"><AshtakavargaViewer data={data} /></div>;
               if (cid === 'ashtakavarga_reduction') return <div className="w-full h-full overflow-y-auto bg-white p-4"><AsthavargaReduction data={data} /></div>;
               if (cid === 'bhinnastavarga') return <div className="w-full h-full overflow-y-auto bg-white p-4"><BhinnastaVarga data={data} /></div>;
@@ -3177,6 +3802,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
               if (cid === 'transit_gemstones') return <div className="p-10"><TransitGemstonePanel data={data} transitPositions={transitPositions} /></div>;
               if (cid === 'transit') return <div className="p-10"><TransitPanel data={data} transitPositions={transitPositions} /></div>;
               if (cid === 'vimsopaka') return <div className="p-10 w-full max-w-full mx-auto"><VimsopakaAssessment data={data} /></div>;
+              if (cid === 'bhavbala') return <div className="p-10 w-full max-w-full mx-auto"><BhavbalaView data={data} /></div>;
               if (cid === 'panch_pakshi') return <div className="p-8 w-full max-w-[95%] mx-auto"><PanchPakshiTable data={data} /></div>;
               if (cid === 'kp') return <div className="w-full h-full overflow-y-auto bg-white"><KPChartViewer formData={data} /></div>;
               return null;
@@ -3223,13 +3849,34 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
     window.open('/?matchmaking=true', 'DivineCompatibility', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
   };
 
+  const handleExportPDF = async () => {
+    const element = document.getElementById('pdf-content');
+    if (!element) return;
+
+    try {
+      const canvas = await html2canvas(element, { scale: 1.5, useCORS: true, logging: false });
+      const imgData = canvas.toDataURL('image/png');
+
+      const pdf = new jsPDF('p', 'mm', 'a4');
+      const pdfWidth = pdf.internal.pageSize.getWidth();
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+      pdf.save(`Astro_Report_${profileInfo.name.replace(/\s+/g, '_')}.pdf`);
+    } catch (error) {
+      console.error("PDF Export failed:", error);
+      alert("Failed to export PDF.");
+    }
+  };
+
   return (
-    <div className="flex flex-col min-h-screen h-auto bg-[#f1f5f9] font-serif overflow-y-auto overflow-x-hidden w-full">
+    <div id="pdf-content" className="flex flex-col min-h-screen h-auto bg-[#f1f5f9] font-serif overflow-y-auto overflow-x-hidden w-full">
       <style>{`
         button, button span, button div, button p, button h4 {
           color: black !important;
         }
       `}</style>
+
 
       <div className="bg-[#fffcf5] border-b border-amber-100 py-1.5 shadow-sm shrink-0 overflow-hidden">
         <div className="animate-marquee whitespace-nowrap flex gap-12 items-center">
@@ -3243,137 +3890,236 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
 
       <div className="flex items-center justify-between p-3 bg-[#e3f2fd] text-Red shadow-md z-50 shrink-0">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center font-bold text-lg">✨</div>
+          <div onClick={handleSecretClick} className="w-9 h-9 rounded-full bg-white/20 flex items-center justify-center font-bold text-lg cursor-pointer select-none">✨</div>
           <div>
             <h2 className="text-md font-serif italic font-black uppercase tracking-widest leading-none">Interactive Vedic Worksheet</h2>
             <p className="text-[9px] opacity-70 uppercase font-sans tracking-tighter mt-1">Astro Consult : Legacy Workstation</p>
           </div>
 
-          <div className="ml-8 hidden lg:block relative group/content z-[100]">
-            <button className="bg-indigo-300 text-white px-4 py-2 rounded-xl text-[14px] font-bold shadow-lg outline-none cursor-pointer tracking-wider border border-indigo-700 hover:bg-orange-400 transition-colors flex items-center gap-2">
-              ⚙️ SELECT CONTENT (POP-OUT) <span className="text-[10px]">▼</span>
-            </button>
+          <div className="ml-8 hidden lg:flex items-center gap-4 z-[100]">
+            <div className="relative group/varga">
+              <button className="bg-rose-100 hover:bg-indigo-200 text-black px-4 py-1.5 rounded-lg text-[12px] font-black uppercase tracking-widest transition-all shadow-lg border border-emerald-500/30 outline-none cursor-pointer flex items-center gap-2">
+                VARGA CHARTS <span className="text-[10px]">▼</span>
+              </button>
 
-            <div className="absolute top-full left-0 mt-2 w-56 bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/content:opacity-100 group-hover/content:visible transition-all duration-200 py-2">
-
-              {/* Astro Chart Item */}
-              <div className="relative group/astro">
-                <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between transition-colors">
-                  Astro Chart <span className="text-[10px]">▶</span>
-                </button>
-                <div className="absolute top-0 left-full ml-1 w-48 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/astro:opacity-100 group-hover/astro:visible transition-all duration-200 py-2">
-                  <button onClick={() => window.open('/?classic_layout=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View</button>
-                  <button onClick={() => window.open('/?classic_layout_2=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View 2</button>
-                  <button onClick={() => window.open('/?classic_layout_3=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View 3</button>
-                  <button onClick={() => window.open('/?classic_layout_4=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View 4</button>
-                  <button onClick={() => window.open('/?chart_view_1=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Chart View 1</button>
-                  <button onClick={() => window.open('/?chart_view_2=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Chart View 2</button>
-                  <button onClick={() => window.open('/?chart_view_3=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Chart View 3</button>
-                  <button onClick={() => window.open('/?lordships=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Lordships</button>
-                  <button onClick={() => window.open('/?varga_sign_chart=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Varga Sign Chart</button>
-                  <button onClick={() => window.open('/?bala_strengths=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Bala Strengths</button>
-                  <button onClick={() => window.open('/?bhavbala=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Bhavbala</button>
-                  <button onClick={() => window.open('/?gochara_wheel=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Gochar Wheel</button>
-                  <button onClick={() => window.open('/?gochara_wheel_1=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Gochar Wheel 1</button>
-                  <button onClick={() => window.open('/?nakshatra_dasha=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Nakshatra Dasha</button>
-                  <button onClick={() => window.open('/?rashi_dashas=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Rashi Dashas</button>
-                  <button onClick={() => window.open('/?lagnas=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Lagnas</button>
-                  <button onClick={() => window.open('/?jaimini_karakas=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Jaimini Karakas</button>
-                  <button onClick={() => window.open('/?sbc_dashboard=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Sarvatobhadra Dashboard</button>
-                  <button onClick={() => window.open('/?bhrigu_bindu=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Bhrigu Bindu</button>
-                  <button onClick={() => window.open('/?d108=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">D108</button>
-                  <button onClick={() => window.open('/?ayanamsha=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Ayanamsha</button>
-                  <button onClick={() => window.open('/?sanghatta=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Sanghatta</button>
-                  <button onClick={() => window.open('/?karaka=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Karakas</button>
-                  <button onClick={() => window.open('/?tithi=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Tithi Pravesha</button>
-                </div>
+              <div className="absolute top-full left-0 mt-2 w-48 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/varga:opacity-100 group-hover/varga:visible transition-all duration-200 py-2">
+                <button onClick={() => window.open('/?chart_view_1=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Chart View 1</button>
+                <button onClick={() => window.open('/?chart_view_2=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Chart View 2</button>
+                <button onClick={() => window.open('/?chart_view_3=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Chart View 3</button>
+                {['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60'].map(v => (
+                  <button
+                    key={v}
+                    onClick={() => handleMaximizeInNewWindow(v)}
+                    className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight"
+                  >
+                    {v.toUpperCase()} Chart
+                  </button>
+                ))}
               </div>
-
-              {/* Varga Charts Item */}
-              <div className="relative group/varga">
-                <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between transition-colors">
-                  Varga Charts <span className="text-[10px]">▶</span>
-                </button>
-                <div className="absolute top-0 left-full ml-1 w-48 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/varga:opacity-100 group-hover/varga:visible transition-all duration-200 py-2">
-                  {['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60'].map(v => (
-                    <button
-                      key={v}
-                      onClick={() => handleMaximizeInNewWindow(v)}
-                      className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors"
-                    >
-                      {v.toUpperCase()} Chart
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Other Worksheets Item */}
-              <div className="relative group/other">
-                <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between border-t border-indigo-50 transition-colors">
-                  Other Worksheets <span className="text-[10px]">▶</span>
-                </button>
-                <div className="absolute top-0 left-full ml-1 w-56 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/other:opacity-100 group-hover/other:visible transition-all duration-200 py-2">
-                  {CELL_CONTENTS.filter(c => c.category !== "System" && c.id !== "transit_compare" && !['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60'].includes(c.id)).map(c => (
-                    <button
-                      key={c.id}
-                      onClick={() => handleMaximizeInNewWindow(c.id)}
-                      className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight"
-                    >
-                      {c.label.split(' - ')[0]}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* External Apps Item */}
-              <div className="relative group/external">
-                <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between border-t border-indigo-50 transition-colors">
-                  External Apps <span className="text-[10px]">▶</span>
-                </button>
-                <div className="absolute top-0 left-full ml-1 w-56 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/external:opacity-100 group-hover/external:visible transition-all duration-200 py-2">
-                  {[
-                    { label: "Compare Transit", action: () => window.open('/?transit_compare=true', '_blank') },
-                    { label: "Compare Transit 2", action: () => window.open('/?transit_compare2=true', '_blank') },
-                    { label: "Solar Return", action: () => window.open('/?solar_return=true', '_blank') },
-                    { label: "Daily Solar", action: () => window.open('/?daily_solar=true', '_blank') },
-                    { label: "Annual Varshaphala", action: () => window.open('/?annual_varshaphala=true', '_blank') },
-                    { label: "Adv. Nakshatra", action: () => window.open('/?advanced_nakshatra=true', '_blank') },
-                    { label: "Animated Transits", action: () => window.open('/?animated_transits=true', '_blank') },
-                    { label: "Navamsha Ages", action: () => window.open('/?navamsha_ages=true', '_blank') },
-                    { label: "KP Chart", action: () => window.open('/?kp_chart=true', '_blank') },
-                    { label: "Sunrise Chart", action: () => window.open('/?sunrise_chart=true', '_blank') },
-                    { label: "Match Making", action: handleOpenMatchmaking }
-                  ].map((app, i) => (
-                    <button
-                      key={i}
-                      onClick={app.action}
-                      className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight"
-                    >
-                      {app.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Oracle Tools Item */}
-              <div className="relative group/oracle">
-                <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between border-t border-indigo-50 transition-colors">
-                  Oracle Tools <span className="text-[10px]">▶</span>
-                </button>
-                <div className="absolute top-0 left-full ml-1 w-56 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/oracle:opacity-100 group-hover/oracle:visible transition-all duration-200 py-2">
-                  {oracle_items.map(item => (
-                    <button
-                      key={item.id}
-                      onClick={() => handleOracleClick(item.id)}
-                      className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight flex items-center gap-2"
-                    >
-                      <span className="text-sm">{item.icon}</span> {item.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
             </div>
+
+            <div className="relative group/other">
+              <button className="bg-rose-100 hover:bg-indigo-200 text-black px-4 py-1.5 rounded-lg text-[12px] font-black uppercase tracking-widest transition-all shadow-lg border border-emerald-500/30 outline-none cursor-pointer flex items-center gap-2">
+                ASTRO REPORTS <span className="text-[10px]">▼</span>
+              </button>
+              <div className="absolute top-full left-0 mt-2 w-56 bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/other:opacity-100 group-hover/other:visible transition-all duration-200 py-2">
+
+                {/* Readings Subcategory */}
+                <div className="relative group/readings">
+                  <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between border-b border-indigo-50 transition-colors">
+                    Readings <span className="text-[10px]">▶</span>
+                  </button>
+                  <div className="absolute top-0 left-full ml-1 w-56 bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/readings:opacity-100 group-hover/readings:visible transition-all duration-200 py-2">
+                    <button onClick={() => window.open('/?advanced_nakshatra=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">ADV. Nakshatra</button>
+                    <button onClick={() => window.open('/?astro_tm=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Astro TM</button>
+                    <button onClick={() => window.open('/?dasa_timeline=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Dasha Time</button>
+                    <button onClick={() => window.open('/?longevity=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Longevity Analysis</button>
+                    <button onClick={() => window.open('/?naming=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Naming</button>
+                    <button onClick={() => window.open('/?solarsystem3d=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">3D Solar System</button>
+                    <button onClick={() => handleMaximizeInNewWindow('ai_oracle')} className="w-full text-left px-4 py-2 text-xs font-black bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-transparent bg-clip-text animate-pulse hover:bg-indigo-50 transition-all uppercase tracking-widest flex items-center justify-between">
+                      <span>AI Oracle</span>
+                      <span className="text-pink-500 animate-bounce">✨</span>
+                    </button>
+                    {CELL_CONTENTS.filter(c => ["planets_table", "panchang", "numerical", "gemstones", "transit_gemstones", "d11"].includes(c.id)).map(c => (
+                      <button
+                        key={c.id}
+                        onClick={() => handleMaximizeInNewWindow(c.id)}
+                        className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight"
+                      >
+                        {c.label.split(' - ')[0]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Evaluation Subcategory */}
+                <div className="relative group/evaluation">
+                  <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between border-b border-indigo-50 transition-colors">
+                    Evaluation <span className="text-[10px]">▶</span>
+                  </button>
+                  <div className="absolute top-0 left-full ml-1 w-56 bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/evaluation:opacity-100 group-hover/evaluation:visible transition-all duration-200 py-2">
+                    <button onClick={() => window.open('/?bala_strengths=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Bala Strengths</button>
+                    {CELL_CONTENTS.filter(c => ["shadbala", "bhavbala", "vimsopaka", "shodashvarga_summary", "dignity", "relationships", "aspects_summary", "ashtakavarga", "ashtakavarga_reduction", "krishnamurthy_chart", "krishnamurthy_significators"].includes(c.id)).map(c => (
+                      <React.Fragment key={c.id}>
+                        <button
+                          onClick={() => handleMaximizeInNewWindow(c.id)}
+                          className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight"
+                        >
+                          {c.label.split(' - ')[0]}
+                        </button>
+                        {c.id === 'relationships' && (
+                          <button onClick={() => window.open('/?navamsha_ages=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Navamsha Ages</button>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Graha Dasha Subcategory */}
+                <div className="relative group/grahadasha">
+                  <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between border-b border-indigo-50 transition-colors">
+                    Graha Dasha <span className="text-[10px]">▶</span>
+                  </button>
+                  <div className="absolute top-0 left-full ml-1 w-56 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/grahadasha:opacity-100 group-hover/grahadasha:visible transition-all duration-200 py-2 z-50">
+                    {CELL_CONTENTS.filter(c => ["vimshottari", "shodashottari", "chaturshitisama", "ashtottari", "dwisaptatisama", "dwadashottari", "panchottari", "shatabdika", "shashtihayani", "panch_pakshi"].includes(c.id)).map(c => (
+                      <button
+                        key={c.id}
+                        onClick={() => handleMaximizeInNewWindow(c.id)}
+                        className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight"
+                      >
+                        {c.label.split(' - ')[0]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Rashi Dasha Subcategory */}
+                <div className="relative group/rashidasha">
+                  <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between border-b border-indigo-50 transition-colors">
+                    Rashi Dasha <span className="text-[10px]">▶</span>
+                  </button>
+                  <div className="absolute top-0 left-full ml-1 w-56 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/rashidasha:opacity-100 group-hover/rashidasha:visible transition-all duration-200 py-2 z-50">
+                    {CELL_CONTENTS.filter(c => ["chara", "mandooka", "drig", "sudasha"].includes(c.id)).map(c => (
+                      <button
+                        key={c.id}
+                        onClick={() => handleMaximizeInNewWindow(c.id)}
+                        className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight"
+                      >
+                        {c.label.split(' - ')[0]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Aayu Dasha (Longevity) Subcategory */}
+                <div className="relative group/aayudasha">
+                  <button className="w-full text-left px-4 py-3 text-sm font-bold text-red-900 hover:bg-red-50 flex items-center justify-between border-b border-indigo-50 transition-colors">
+                    Aayu Dasha (Longevity) <span className="text-[10px]">▶</span>
+                  </button>
+                  <div className="absolute top-0 left-full ml-1 w-56 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-red-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/aayudasha:opacity-100 group-hover/aayudasha:visible transition-all duration-200 py-2 z-50">
+                    {CELL_CONTENTS.filter(c => ["shoola", "niryaana_shoola", "sthira"].includes(c.id)).map(c => (
+                      <button
+                        key={c.id}
+                        onClick={() => handleMaximizeInNewWindow(c.id)}
+                        className="w-full text-left px-4 py-2 text-xs font-bold text-red-700 hover:bg-red-50 hover:text-red-900 transition-colors uppercase tracking-tight"
+                      >
+                        {c.label.split(' - ')[0]}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Vrasphal Subcategory */}
+                <div className="relative group/vrasphal">
+                  <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between border-b border-indigo-50 transition-colors">
+                    Vrasphal <span className="text-[10px]">▶</span>
+                  </button>
+                  <div className="absolute top-0 left-full ml-1 w-56 bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/vrasphal:opacity-100 group-hover/vrasphal:visible transition-all duration-200 py-2">
+                    <button onClick={() => window.open('/?annual_varshaphala=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Annual Varshaphala</button>
+                    <button onClick={() => window.open('/?varshaphala_details=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Varshaphala Details</button>
+                    <button onClick={() => window.open('/?detailed_charts=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Detailed Charts</button>
+                    <button onClick={() => window.open('/?harsha_bala=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Harsh Bala</button>
+                    <button onClick={() => window.open('/?tajika_yogas=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Tajika Yogas</button>
+                    <button onClick={() => window.open('/?tripataki_chakra=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Tripataki Chakra</button>
+                  </div>
+                </div>
+
+                {CELL_CONTENTS.filter(c => c.category !== "System" && c.id !== "transit_compare" && !['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60', 'shadbala', 'bhavbala', 'vimsopaka', 'shodashvarga_summary', 'dignity', 'relationships', 'aspects_summary', 'ashtakavarga', 'ashtakavarga_reduction', 'krishnamurthy_chart', 'krishnamurthy_significators', 'planets_table', 'panchang', 'numerical', 'gemstones', 'transit_gemstones', 'vimshottari', 'shodashottari', 'chaturshitisama', 'ashtottari', 'dwisaptatisama', 'dwadashottari', 'panchottari', 'shatabdika', 'shashtihayani', 'chara', 'sthira', 'shoola', 'niryaana_shoola', 'mandooka', 'drig', 'sudasha', 'panch_pakshi', 'advanced_nakshatra', 'd11'].includes(c.id)).map(c => (
+                  <button
+                    key={c.id}
+                    onClick={() => {
+                      if (c.id === 'advanced_nakshatra') {
+                        window.open('/?advanced_nakshatra=true', '_blank');
+                      } else {
+                        handleMaximizeInNewWindow(c.id);
+                      }
+                    }}
+                    className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight"
+                  >
+                    {c.label.split(' - ')[0]}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <div className="relative group/astro">
+              <button className="bg-rose-100 hover:bg-indigo-200 text-black px-4 py-1.5 rounded-lg text-[12px] font-black uppercase tracking-widest transition-all shadow-lg border border-emerald-500/30 outline-none cursor-pointer flex items-center gap-2">
+                ASTRO CHARTS <span className="text-[10px]">▼</span>
+              </button>
+
+              <div className="absolute top-full left-0 mt-2 w-48 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/astro:opacity-100 group-hover/astro:visible transition-all duration-200 py-2">
+                <button onClick={() => handleMaximizeInNewWindow('lagna')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Lagna</button>
+                <button onClick={() => window.open('/?classic_layout=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View</button>
+                <button onClick={() => window.open('/?classic_layout_2=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View 2</button>
+                <button onClick={() => window.open('/?kalachakra=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Kalachakra Diagram</button>
+                <button onClick={() => window.open('/?classic_layout_3=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View 3</button>
+                <button onClick={() => window.open('/?classic_layout_4=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View 4</button>
+                <button onClick={() => window.open('/?transit_compare=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Compare Transit</button>
+                <button onClick={() => window.open('/?transit_compare2=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Compare Transit 2</button>
+                <button onClick={() => window.open('/?animated_transits=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Animated Transit</button>
+                <button onClick={() => window.open('/?sunrise_chart=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Sunrise Chart</button>
+                <button onClick={() => window.open('/?solar_return=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Solar Return</button>
+                <button onClick={() => window.open('/?daily_solar=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Daily Solar</button>
+                <button onClick={() => window.open('/?kp_chart=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">KP Chart</button>
+                <button onClick={() => handleMaximizeInNewWindow('transit')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Today Gochar</button>
+                <button onClick={() => handleMaximizeInNewWindow('current_positions')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Current Planet Position</button>
+                <button onClick={() => handleMaximizeInNewWindow('bhinnastavarga')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Bhinnashtavarga</button>
+                <button onClick={() => window.open('/?lordships=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Lordships</button>
+                <button onClick={() => window.open('/?varga_sign_chart=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Varga Sign Chart</button>
+                <button onClick={() => window.open('/?gochara_wheel=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Gochar Wheel</button>
+                <button onClick={() => window.open('/?gochara_wheel_1=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Gochar Wheel 1</button>
+                <button onClick={() => window.open('/?nakshatra_dasha=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Nakshatra Dasha</button>
+                <button onClick={() => window.open('/?rashi_dashas=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Rashi Dashas</button>
+                <button onClick={() => window.open('/?lagnas=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Lagnas</button>
+                <button onClick={() => window.open('/?jaimini_karakas=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Jaimini Karakas</button>
+                <button onClick={() => window.open('/?sbc_dashboard=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Sarvatobhadra Dashboard</button>
+                <button onClick={() => window.open('/?bhrigu_bindu=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Bhrigu Bindu</button>
+                <button onClick={() => window.open('/?d108=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">D108</button>
+                <button onClick={() => window.open('/?ayanamsha=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Ayanamsha</button>
+                <button onClick={() => window.open('/?sanghatta=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Sanghatta</button>
+                <button onClick={() => window.open('/?karaka=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Karakas</button>
+                <button onClick={() => window.open('/?tithi=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Tithi Pravesha</button>
+              </div>
+            </div>
+
+            <div className="relative group/oracle">
+              <button className="bg-rose-100 hover:bg-indigo-200 text-black px-4 py-1.5 rounded-lg text-[12px] font-black uppercase tracking-widest transition-all shadow-lg border border-emerald-500/30 outline-none cursor-pointer flex items-center gap-2">
+                ORACLE TOOLS <span className="text-[10px]">▼</span>
+              </button>
+              <div className="absolute top-full left-0 mt-2 w-56 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/oracle:opacity-100 group-hover/oracle:visible transition-all duration-200 py-2">
+                {oracle_items.map(item => (
+                  <button
+                    key={item.id}
+                    onClick={() => handleOracleClick(item.id)}
+                    className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight flex items-center gap-2"
+                  >
+                    <span className="text-sm">{item.icon}</span> {item.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+
           </div>
         </div>
 
@@ -3382,405 +4128,498 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
             <span className="text-[10px] uppercase opacity-60">Native</span>
             <span className="text-xs font-black text-amber-400">{meta.name || basic.name || "Astro Native"}</span>
           </div>
-          <button className="bg-emerald-600 hover:bg-emerald-700 text-black px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all shadow-lg border border-emerald-500/30">
+          <button onClick={handleExportPDF} className="bg-rose-100 hover:bg-emerald-700 text-black px-4 py-1.5 rounded-lg text-[12px] font-black uppercase tracking-widest transition-all shadow-lg border border-emerald-500/30">
             Export Report PDF
           </button>
         </div>
       </div>
 
-      <div className="w-full flex-1 p-4 bg-[#d1d5db] flex flex-col gap-4 min-h-[650px] overflow-y-auto">
-        <div className="flex gap-4 h-[500px] shrink-0">
-          {/* User Profile Column */}
-          <div className="w-[30%] bg-[#fdfbf7] rounded-xl border border-gray-300 shadow-inner flex flex-col overflow-hidden shrink-0">
-            <div className="bg-indigo-900 py-1.5 px-3">
-              <span className="text-[12px] font-black uppercase text-white tracking-widest">User Profile</span>
-            </div>
-            <div className="flex-1 p-3 flex flex-col gap-3.5 bg-gradient-to-b from-white to-indigo-50/30 overflow-y-auto custom-scrollbar">
-              <div className="space-y-0.5">
-                <p className="text-[12px] font-black uppercase text-black tracking-tighter">Full Name</p>
-                <p className="text-[14px] font-bold text-indigo-950 truncate leading-none">{profileInfo.name}</p>
+      <div className="w-full flex-1 p-4 bg-rose-100 flex flex-col gap-4 min-h-[650px] overflow-y-auto">
+        {isBlankSheet ? (
+          <div className="flex-1 w-full flex flex-col relative">
+            {blankSheetItems.length > 0 ? (
+              <div className="grid grid-cols-4 gap-4 w-full auto-rows-min pb-20">
+                {blankSheetItems.map((item) => (
+                  <div key={item.uniqueId} className={`relative bg-white rounded-2xl shadow-xl border border-indigo-100 flex flex-col overflow-hidden ${getSizeClasses(item.size)} group`}>
+                    <button
+                      onClick={() => handleRemoveGridItem(item.uniqueId)}
+                      className="absolute top-2 right-2 z-50 bg-red-500 hover:bg-red-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shadow-md opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="Remove Chart"
+                    >
+                      ✖
+                    </button>
+                    <div className="flex-1 w-full h-full relative">
+                      <WorksheetCell
+                        contentId={item.contentId}
+                        data={data}
+                        transitPositions={transitPositions}
+                        dashaSimDate={dashaSimDate}
+                        planetEffects={planetEffects}
+                        onSelectContent={(newCid) => {
+                          setBlankSheetItems(items => items.map(i => i.uniqueId === item.uniqueId ? { ...i, contentId: newCid } : i));
+                        }}
+                        onPlanetClick={handlePlanetClick}
+                        onFullScreen={() => { }}
+                        isBlankSheet={true}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="space-y-0.5">
-                <p className="text-[12px] font-black uppercase text-black tracking-tighter">Date of Birth</p>
-                <p className="text-[14px] font-bold text-slate-800 leading-none">{profileInfo.dob}</p>
+            ) : (
+              <div className="flex-1 flex flex-col items-center justify-center text-slate-400 bg-white/50 rounded-3xl border-2 border-dashed border-slate-300">
+                <span className="text-6xl mb-4">✨</span>
+                <h2 className="text-2xl font-serif italic mb-2">Dashboard Builder</h2>
+                <p className="text-sm font-bold uppercase tracking-widest text-slate-500">Select any chart from the menu below to add to grid</p>
               </div>
-              <div className="space-y-0.5">
-                <p className="text-[12px] font-black uppercase text-black tracking-tighter">Birth Location</p>
-                <p className="text-[14px] font-bold text-slate-800 leading-none truncate">{profileInfo.location}</p>
+            )}
+
+            {/* Size Selection Modal */}
+            {pendingChartSelection && (
+              <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/60 backdrop-blur-sm">
+                <div className="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-lg border border-indigo-100">
+                  <div className="flex justify-between items-center mb-6 border-b pb-3">
+                    <h3 className="text-xl font-serif font-black text-indigo-900">Select Grid Size</h3>
+                    <button onClick={() => setPendingChartSelection(null)} className="text-slate-400 hover:text-slate-700 text-2xl font-bold">&times;</button>
+                  </div>
+                  <p className="text-sm text-slate-600 mb-4">Choose how much space this chart should occupy on your 4-column dashboard.</p>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <button onClick={() => handleAddGridItem('1x1')} className="p-3 border-2 border-indigo-100 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all flex flex-col items-center gap-2">
+                      <div className="w-8 h-8 bg-indigo-200 rounded"></div>
+                      <span className="text-xs font-bold text-indigo-900">1x1 (Small)</span>
+                    </button>
+                    <button onClick={() => handleAddGridItem('2x1')} className="p-3 border-2 border-indigo-100 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all flex flex-col items-center gap-2">
+                      <div className="w-16 h-8 bg-indigo-200 rounded"></div>
+                      <span className="text-xs font-bold text-indigo-900">2x1 (Wide)</span>
+                    </button>
+                    <button onClick={() => handleAddGridItem('2x2')} className="p-3 border-2 border-indigo-100 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all flex flex-col items-center gap-2">
+                      <div className="w-16 h-16 bg-indigo-200 rounded"></div>
+                      <span className="text-xs font-bold text-indigo-900">2x2 (Large Square)</span>
+                    </button>
+                    <button onClick={() => handleAddGridItem('1x2')} className="p-3 border-2 border-indigo-100 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all flex flex-col items-center gap-2">
+                      <div className="w-8 h-16 bg-indigo-200 rounded"></div>
+                      <span className="text-xs font-bold text-indigo-900">1x2 (Tall)</span>
+                    </button>
+                    <button onClick={() => handleAddGridItem('3x1')} className="p-3 border-2 border-indigo-100 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all flex flex-col items-center gap-2">
+                      <div className="w-24 h-8 bg-indigo-200 rounded"></div>
+                      <span className="text-xs font-bold text-indigo-900">3x1 (Extra Wide)</span>
+                    </button>
+                    <button onClick={() => handleAddGridItem('4x1')} className="p-3 border-2 border-indigo-100 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all flex flex-col items-center gap-2">
+                      <div className="w-full h-8 bg-indigo-200 rounded border border-indigo-300"></div>
+                      <span className="text-xs font-bold text-indigo-900">4x1 (Full Width Banner)</span>
+                    </button>
+                    <button onClick={() => handleAddGridItem('4x2')} className="p-3 border-2 border-indigo-100 rounded-xl hover:border-indigo-500 hover:bg-indigo-50 transition-all flex flex-col items-center gap-2 col-span-2">
+                      <div className="w-full h-16 bg-indigo-200 rounded border border-indigo-300"></div>
+                      <span className="text-xs font-bold text-indigo-900">4x2 (Full Width Huge)</span>
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-2 pt-1">
-                <div className="space-y-0.5 group relative">
-                  <div className="flex justify-between items-start">
+            )}
+          </div>
+        ) : (
+          <>
+            <div className="flex gap-4 h-[400px] shrink-0">
+              {/* User Profile Column */}
+              <div className="w-[30%] bg-[#fdfbf7] rounded-xl border border-gray-300 shadow-inner flex flex-col overflow-hidden shrink-0">
+                <div className="bg-indigo-900 py-1.5 px-3">
+                  <span className="text-[12px] font-black uppercase text-white tracking-widest">User Profile</span>
+                </div>
+                <div className="flex-1 p-3 flex flex-col gap-3.5 bg-gradient-to-b from-white to-indigo-50/30 overflow-y-auto custom-scrollbar">
+                  <div className="space-y-0.5">
+                    <p className="text-[12px] font-black uppercase text-black tracking-tighter">Full Name</p>
+                    <p className="text-[14px] font-bold text-indigo-950 truncate leading-none">{profileInfo.name}</p>
+                  </div>
+                  <div className="space-y-0.5">
+                    <p className="text-[12px] font-black uppercase text-black tracking-tighter">Date of Birth</p>
+                    <p className="text-[14px] font-bold text-slate-800 leading-none">{profileInfo.dob}</p>
+                  </div>
+                  <div className="space-y-0.5">
+                    <p className="text-[12px] font-black uppercase text-black tracking-tighter">Birth Location</p>
+                    <p className="text-[14px] font-bold text-slate-800 leading-none truncate">{profileInfo.location}</p>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 pt-1">
+                    <div className="space-y-0.5 group relative">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="text-[12px] font-black uppercase text-black tracking-tighter">Moon Sign</p>
+                          <p className="text-[14px] font-bold text-blue-700 leading-none mt-0.5">{profileInfo.moonSign}</p>
+                        </div>
+                        <button
+                          onClick={() => window.open('/?moonSign=true', '_blank')}
+                          className="bg-blue-100 hover:bg-blue-200 text-blue-800 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider border border-blue-200 shadow-sm transition-colors"
+                        >
+                          Analyze
+                        </button>
+                      </div>
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="text-[12px] font-black uppercase text-black tracking-tighter">Sun Sign</p>
+                      <p className="text-[14px] font-bold text-red-600 leading-none">{profileInfo.sunSign}</p>
+                    </div>
+                  </div>
+                  <div className="space-y-0.5 border-t border-indigo-100 pt-2">
+                    <p className="text-[12px] font-black uppercase text-black tracking-tighter">Birth Nakshatra</p>
+                    <p className="text-[14px] font-black text-emerald-700 leading-none uppercase tracking-tighter">{profileInfo.nakshatra}</p>
+                  </div>
+                  <div className="space-y-0.5 border-t border-indigo-100 pt-2 flex justify-between items-center">
                     <div>
-                      <p className="text-[12px] font-black uppercase text-black tracking-tighter">Moon Sign</p>
-                      <p className="text-[14px] font-bold text-blue-700 leading-none mt-0.5">{profileInfo.moonSign}</p>
+                      <p className="text-[12px] font-black uppercase text-black tracking-tighter">Sade Sati Status</p>
+                      {(() => {
+                        const SIGNS_LIST = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+                        const moonIdx = SIGNS_LIST.indexOf(profileInfo.moonSign);
+                        const saturnPos = transitPositions?.["Saturn"];
+                        if (moonIdx !== -1 && saturnPos) {
+                          const saturnSignIdx = saturnPos.sidereal?.sign_index !== undefined ? saturnPos.sidereal.sign_index : Math.floor(saturnPos.sidereal.lon / 30);
+                          const s12 = (moonIdx - 1 + 12) % 12;
+                          const s1 = moonIdx;
+                          const s2 = (moonIdx + 1) % 12;
+
+                          let status = "Inactive";
+                          let phase = "";
+                          let color = "text-emeral-600";
+
+                          if (saturnSignIdx === s12) { status = "Active"; phase = "Rising"; color = "text-amber-600"; }
+                          else if (saturnSignIdx === s1) { status = "Active"; phase = "Peak"; color = "text-red-600"; }
+                          else if (saturnSignIdx === s2) { status = "Active"; phase = "Setting"; color = "text-orange-600"; }
+
+                          return (
+                            <div className="flex flex-col">
+                              <span className={`text-[13px] font-black ${color} leading-none`}>{status}</span>
+                              {phase && <span className="text-[7px] font-bold text-slate-400 uppercase mt-0.5">{phase} Phase</span>}
+                            </div>
+                          );
+                        }
+                        return <p className="text-[9px] font-bold text-slate-600 leading-none mt-0.5">Calculating...</p>;
+                      })()}
                     </div>
                     <button
-                      onClick={() => window.open('/?moonSign=true', '_blank')}
-                      className="bg-blue-100 hover:bg-blue-200 text-blue-800 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider border border-blue-200 shadow-sm transition-colors"
+                      onClick={() => window.open('/?sadesati_report=true', '_blank')}
+                      className="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider border border-indigo-200 shadow-sm transition-colors"
                     >
                       Analyze
                     </button>
                   </div>
                 </div>
-                <div className="space-y-0.5">
-                  <p className="text-[12px] font-black uppercase text-black tracking-tighter">Sun Sign</p>
-                  <p className="text-[14px] font-bold text-red-600 leading-none">{profileInfo.sunSign}</p>
+              </div>
+
+              <div className="flex-1 bg-[#fdfbf7] rounded-xl border border-gray-300 shadow-inner overflow-hidden relative group">
+                <div className="h-full flex flex-col overflow-auto custom-scrollbar">
+                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.charts?.houses} onPlanetClick={handlePlanetClick} variant="legacy" title="Main Birth Chart (D1)" defaultRect={true} planetEffects={planetEffects} scaleText={1.5} hideLegend={true} showFullscreenButton={true} onPopOut={() => handleMaximizeInNewWindow('d1')} />
+                  <div className="px-4 pb-4">
+                    <HouseEffectTable data={data} planetEffects={planetEffects} />
+                    <ConjunctionAnalysis houses={data.charts?.houses} />
+                  </div>
                 </div>
               </div>
-              <div className="space-y-0.5 border-t border-indigo-100 pt-2">
-                <p className="text-[12px] font-black uppercase text-black tracking-tighter">Birth Nakshatra</p>
-                <p className="text-[14px] font-black text-emerald-700 leading-none uppercase tracking-tighter">{profileInfo.nakshatra}</p>
-              </div>
-              <div className="space-y-0.5 border-t border-indigo-100 pt-2 flex justify-between items-center">
-                <div>
-                  <p className="text-[12px] font-black uppercase text-black tracking-tighter">Sade Sati Status</p>
+            </div>
+
+            <div className="flex gap-4 h-[450px] shrink-0">
+              <div className="w-[50%] flex-1 bg-[#fdfbf7] rounded-xl border border-gray-300 shadow-inner overflow-hidden relative group flex flex-col">
+                <div className="absolute top-2 left-2 z-20 px-3 py-1 bg-white/80 backdrop-blur rounded-lg border border-slate-200 shadow-sm flex items-center gap-2">
+                  <span className="text-[10px] font-black uppercase text-indigo-900">Alternative Vargas View</span>
+                  <select
+                    value={upperRightChart}
+                    onChange={(e) => setUpperRightChart(e.target.value)}
+                    className="bg-transparent text-[10px] font-bold border-none focus:ring-0 cursor-pointer text-black"
+                  >
+                    {CELL_CONTENTS.filter(c => c.id.startsWith('d') && c.id !== 'dignity').map(c => (
+                      <option key={c.id} value={c.id} className="text-black">{c.label}</option>
+                    ))}
+                  </select>
+                </div>
+                <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex gap-1">
+                  <button onClick={() => handleMaximizeInNewWindow(upperRightChart)} className="bg-gray-800/80 text-black rounded p-1 text-[10px] shadow hover:bg-black hover:text-white">⛶</button>
+                </div>
+                <div className="flex-1 flex flex-col pt-8 overflow-auto custom-scrollbar">
                   {(() => {
-                    const SIGNS_LIST = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
-                    const moonIdx = SIGNS_LIST.indexOf(profileInfo.moonSign);
-                    const saturnPos = transitPositions?.["Saturn"];
-                    if (moonIdx !== -1 && saturnPos) {
-                      const saturnSignIdx = saturnPos.sidereal?.sign_index !== undefined ? saturnPos.sidereal.sign_index : Math.floor(saturnPos.sidereal.lon / 30);
-                      const s12 = (moonIdx - 1 + 12) % 12;
-                      const s1 = moonIdx;
-                      const s2 = (moonIdx + 1) % 12;
-
-                      let status = "Inactive";
-                      let phase = "";
-                      let color = "text-emeral-600";
-
-                      if (saturnSignIdx === s12) { status = "Active"; phase = "Rising"; color = "text-amber-600"; }
-                      else if (saturnSignIdx === s1) { status = "Active"; phase = "Peak"; color = "text-red-600"; }
-                      else if (saturnSignIdx === s2) { status = "Active"; phase = "Setting"; color = "text-orange-600"; }
-
-                      return (
-                        <div className="flex flex-col">
-                          <span className={`text-[13px] font-black ${color} leading-none`}>{status}</span>
-                          {phase && <span className="text-[7px] font-bold text-slate-400 uppercase mt-0.5">{phase} Phase</span>}
+                    const vData = (upperRightChart === 'd1') ? data.charts : data.vargas?.[upperRightChart];
+                    const vPos = getPlanetPositionsFromHouses(vData?.houses);
+                    return (
+                      <>
+                        <ZodiacChart planetPositions={data?.planet_positions} houses={vData?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={planetEffects} scaleText={1.5} />
+                        <div className="px-4 pb-4">
+                          <HouseEffectTable data={data} planetEffects={planetEffects} customPositions={vPos} />
+                          <ConjunctionAnalysis houses={vData?.houses} />
                         </div>
-                      );
-                    }
-                    return <p className="text-[9px] font-bold text-slate-600 leading-none mt-0.5">Calculating...</p>;
+                      </>
+                    );
                   })()}
                 </div>
-                <button
-                  onClick={() => window.open('/?sadesati_report=true', '_blank')}
-                  className="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 rounded px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wider border border-indigo-200 shadow-sm transition-colors"
-                >
-                  Analyze
-                </button>
+                <div className="p-2 border-t border-gray-100 bg-gray-50/50 flex justify-center">
+                  <button
+                    onClick={() => handleMaximizeInNewWindow(upperRightChart)}
+                    className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all shadow-sm flex items-center gap-2"
+                  >
+                    <span>Full Screen View</span>
+                    <span className="text-xs font-bold text-black">⛶</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Separate Planet Degrees Column */}
+              <div className="w-[30%] bg-rose-100 rounded-xl border border-gray-300 shadow-inner flex flex-col overflow-hidden shrink-0">
+                <div className="bg-indigo-900 py-1.5 px-3 flex justify-between items-center">
+                  <span className="text-[12px] font-black uppercase text-white tracking-widest">Planet Positions & Degrees</span>
+                  <button
+                    onClick={() => handleMaximizeInNewWindow('planets_table')}
+                    className="bg-white/20 hover:bg-white/30 text-white rounded px-2 py-0.5 text-[12px] font-bold transition-all flex items-center gap-1 shadow-sm border border-white/10"
+                    title="Full Screen View"
+                  >
+                    <span className="text-[12px] uppercase tracking-tighter">Full</span>
+                    <span className="text-xs text-white">⛶</span>
+                  </button>
+                </div>
+                <div className="flex-1 overflow-y-auto custom-scrollbar p-2 bg-gradient-to-b from-white to-indigo-50/20">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="border-b border-indigo-100 text-[12px] uppercase text-slate-500 font-black">
+                        <th className="text-left py-1">Planet</th>
+                        <th className="text-left py-1">Sign</th>
+                        <th className="text-center py-1">House</th>
+                        <th className="text-right py-1">Degree</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {(data.planet_positions || []).map(p => (
+                        <tr
+                          key={p.planet}
+                          className="hover:bg-white cursor-pointer transition-colors group"
+                          onClick={() => handlePlanetClick?.(p.planet, p.house)}
+                        >
+                          <td className="py-1.5 text-[12px] font-bold" style={{ color: PLANET_COLORS[p.planet] || "#000" }}>
+                            {p.planet}{p.is_retrograde ? '*' : ''}{p.is_combust ? '#' : ''}
+                          </td>
+                          <td className="py-1.5 text-[12px] text-black group-hover:text-slate-900">{p.sign}</td>
+                          <td className="py-1.5 text-center text-[12px] font-black text-indigo-900 bg-indigo-50/30 rounded">{p.house}</td>
+                          <td className="py-1.5 text-right text-[12px] font-mono text-black font-medium">
+                            {Math.floor(p.degree)}°{Math.floor((p.degree % 1) * 60).toString().padStart(2, '0')}'
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="p-1.5 border-t border-gray-200 bg-white/80 text-[7px] text-slate-400 italic flex justify-around">
+                  <span>* Retrograde (Vakri)</span>
+                  <span># Combust (Asth)</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex-1 bg-[#fdfbf7] rounded-xl border border-gray-300 shadow-inner overflow-hidden relative group">
-            <div className="absolute top-1 right-32 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-              <button onClick={() => handleMaximizeInNewWindow('d1')} className="bg-gray-800/80 text-black rounded p-1 text-[10px] shadow hover:bg-black hover:text-white">⛶</button>
+            <div className={`grid gap-2 h-[400px] shrink-0 ${lowerCells.length === 3 ? 'grid-cols-3' : lowerCells.length === 4 ? 'grid-cols-4' : 'grid-cols-2'}`}>
+              {lowerCells.map((cid, idx) => (
+                <WorksheetCell
+                  key={idx}
+                  contentId={cid}
+                  data={data}
+                  transitPositions={transitPositions}
+                  dashaSimDate={dashaSimDate}
+                  planetEffects={planetEffects}
+                  onSelectContent={(newCid) => {
+                    const newCells = [...lowerCells];
+                    newCells[idx] = newCid;
+                    setLowerCells(newCells);
+                  }}
+                  onPlanetClick={handlePlanetClick}
+                  onFullScreen={handleMaximizeInNewWindow}
+                />
+              ))}
             </div>
-            <div className="h-full flex flex-col overflow-auto custom-scrollbar">
-              <ZodiacChart planetPositions={data?.planet_positions} houses={data.charts?.houses} onPlanetClick={handlePlanetClick} variant="legacy" title="Main Birth Chart (D1)" defaultRect={true} planetEffects={planetEffects} scaleText={1.5} hideLegend={true} />
-              <div className="px-4 pb-4">
-                <HouseEffectTable data={data} planetEffects={planetEffects} />
-                <ConjunctionAnalysis houses={data.charts?.houses} />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="flex gap-4 h-[500px] shrink-0">
-          <div className="flex-1 bg-[#fdfbf7] rounded-xl border border-gray-300 shadow-inner overflow-hidden relative group flex flex-col">
-            <div className="absolute top-2 left-2 z-20 px-3 py-1 bg-white/80 backdrop-blur rounded-lg border border-slate-200 shadow-sm flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase text-indigo-900">Alternative Vargas View</span>
-              <select
-                value={upperRightChart}
-                onChange={(e) => setUpperRightChart(e.target.value)}
-                className="bg-transparent text-[10px] font-bold border-none focus:ring-0 cursor-pointer text-black"
-              >
-                {CELL_CONTENTS.filter(c => c.id.startsWith('d') && c.id !== 'dignity').map(c => (
-                  <option key={c.id} value={c.id} className="text-black">{c.label}</option>
-                ))}
-              </select>
-            </div>
-            <div className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity z-10 flex gap-1">
-              <button onClick={() => handleMaximizeInNewWindow(upperRightChart)} className="bg-gray-800/80 text-black rounded p-1 text-[10px] shadow hover:bg-black hover:text-white">⛶</button>
-            </div>
-            <div className="flex-1 flex flex-col pt-8 overflow-auto custom-scrollbar">
-              {(() => {
-                const vData = (upperRightChart === 'd1') ? data.charts : data.vargas?.[upperRightChart];
-                const vPos = getPlanetPositionsFromHouses(vData?.houses);
-                return (
-                  <>
-                    <ZodiacChart planetPositions={data?.planet_positions} houses={vData?.houses} onPlanetClick={handlePlanetClick} variant="legacy" defaultRect={true} planetEffects={planetEffects} scaleText={1.5} />
-                    <div className="px-4 pb-4">
-                      <HouseEffectTable data={data} planetEffects={planetEffects} customPositions={vPos} />
-                      <ConjunctionAnalysis houses={vData?.houses} />
-                    </div>
-                  </>
-                );
-              })()}
-            </div>
-            <div className="p-2 border-t border-gray-100 bg-gray-50/50 flex justify-center">
-              <button
-                onClick={() => handleMaximizeInNewWindow(upperRightChart)}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all shadow-sm flex items-center gap-2"
-              >
-                <span>Full Screen View</span>
-                <span className="text-xs font-bold text-black">⛶</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Separate Planet Degrees Column */}
-          <div className="w-[30%] bg-[#fdfbf7] rounded-xl border border-gray-300 shadow-inner flex flex-col overflow-hidden shrink-0">
-            <div className="bg-indigo-900 py-1.5 px-3 flex justify-between items-center">
-              <span className="text-[9px] font-black uppercase text-white tracking-widest">Planet Positions & Degrees</span>
-              <button
-                onClick={() => handleMaximizeInNewWindow('planets_table')}
-                className="bg-white/20 hover:bg-white/30 text-white rounded px-2 py-0.5 text-[10px] font-bold transition-all flex items-center gap-1 shadow-sm border border-white/10"
-                title="Full Screen View"
-              >
-                <span className="text-[8px] uppercase tracking-tighter">Full</span>
-                <span className="text-xs text-white">⛶</span>
-              </button>
-            </div>
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-2 bg-gradient-to-b from-white to-indigo-50/20">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-indigo-100 text-[8px] uppercase text-slate-500 font-black">
-                    <th className="text-left py-1">Planet</th>
-                    <th className="text-left py-1">Sign</th>
-                    <th className="text-center py-1">House</th>
-                    <th className="text-right py-1">Degree</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {(data.planet_positions || []).map(p => (
-                    <tr
-                      key={p.planet}
-                      className="hover:bg-white cursor-pointer transition-colors group"
-                      onClick={() => handlePlanetClick?.(p.planet, p.house)}
-                    >
-                      <td className="py-1.5 text-[10px] font-bold" style={{ color: PLANET_COLORS[p.planet] || "#000" }}>
-                        {p.planet}{p.is_retrograde ? '*' : ''}{p.is_combust ? '#' : ''}
-                      </td>
-                      <td className="py-1.5 text-[10px] text-slate-600 group-hover:text-slate-900">{p.sign}</td>
-                      <td className="py-1.5 text-center text-[10px] font-black text-indigo-900 bg-indigo-50/30 rounded">{p.house}</td>
-                      <td className="py-1.5 text-right text-[10px] font-mono text-slate-500 font-medium">
-                        {Math.floor(p.degree)}°{Math.floor((p.degree % 1) * 60).toString().padStart(2, '0')}'
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-            <div className="p-1.5 border-t border-gray-200 bg-white/80 text-[7px] text-slate-400 italic flex justify-around">
-              <span>* Retrograde (Vakri)</span>
-              <span># Combust (Asth)</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-4 gap-2 h-[450px] shrink-0">
-          {lowerCells.map((cid, idx) => (
-            <WorksheetCell
-              key={idx}
-              contentId={cid}
-              data={data}
-              transitPositions={transitPositions}
-              dashaSimDate={dashaSimDate}
-              planetEffects={planetEffects}
-              onSelectContent={(newCid) => {
-                const newCells = [...lowerCells];
-                newCells[idx] = newCid;
-                setLowerCells(newCells);
-              }}
-              onPlanetClick={handlePlanetClick}
-              onFullScreen={handleMaximizeInNewWindow}
-            />
-          ))}
-        </div>
+          </>
+        )}
       </div>
 
       {/* --- UNIFIED CONTROL DASHBOARD (BOTTOM) --- */}
       <div className="bg-slate-100 shrink-0 shadow-[0_-10px_40px_-10px_rgba(0,0,0,0.5)] border-t border-slate-700 flex flex-col z-50">
 
-        {/* Row 1: Astro Charts */}
-        <div className="px-4 py-2 border-b border-slate-300 flex flex-col gap-2">
-          <div className="flex items-center gap-2 cursor-pointer hover:bg-slate-200/50 p-1 rounded-md transition-colors w-full" onClick={() => setShowAstroCharts(!showAstroCharts)}>
-            <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Astro Charts</span>
-            <span className="text-[9px] font-bold text-slate-500 ml-auto">{showAstroCharts ? '▼ HIDE' : '▶ SHOW'}</span>
-          </div>
-          {showAstroCharts && (
-            <div className="flex flex-wrap items-center gap-3 pt-1 pb-2">
-              <button onClick={() => window.open('/?classic_layout=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">🏛️</span> Classic View
-              </button>
-              <button onClick={() => window.open('/?classic_layout_2=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">🖥️</span> Classic View 2
-              </button>
-              <button onClick={() => window.open('/?classic_layout_3=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">📊</span> Classic View 3
-              </button>
-              <button onClick={() => window.open('/?classic_layout_4=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">🔮</span> Classic View 4
-              </button>
-              <button onClick={() => window.open('/?chart_view_1=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">📐</span> Chart View 1
-              </button>
-              <button onClick={() => window.open('/?chart_view_2=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">📐</span> Chart View 2
-              </button>
-              <button onClick={() => window.open('/?chart_view_3=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">📐</span> Chart View 3
-              </button>
-              <button onClick={() => window.open('/?lordships=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">👑</span> Lordship
-              </button>
-              <button onClick={() => window.open('/?varga_sign_chart=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">📊</span> Varga Sign Chart
-              </button>
-              <button onClick={() => window.open('/?bala_strengths=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">💪</span> Bala strengths
-              </button>
-              <button onClick={() => window.open('/?bhavbala=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">📈</span> Bhavbala
-              </button>
-              <button onClick={() => window.open('/?gochara_wheel=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">🎡</span> Gochara Wheel
-              </button>
-              <button onClick={() => window.open('/?gochara_wheel_1=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">🎡</span> Gochara Wheel 1
-              </button>
-              <button onClick={() => window.open('/?nakshatra_dasha=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">🌟</span> Nakshtra Dasha
-              </button>
-              <button onClick={() => window.open('/?rashi_dashas=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">♈</span> Rashi Dashas
-              </button>
-              <button onClick={() => window.open('/?lagnas=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">🔺</span> Lagnas
-              </button>
-              <button onClick={() => window.open('/?jaimini_karakas=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">✨</span> Jaimini Karakas
-              </button>
-              <button onClick={() => window.open('/?sbc=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">☸️</span> Sarvatobhadra Chakra
-              </button>
-              <button onClick={() => window.open('/?sbc_dashboard=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">🚀</span> Sarvatobhadra Dashboard
-              </button>
-              <button onClick={() => {
-                localStorage.setItem('worksheetData', JSON.stringify(data));
-                window.open('/?worksheet=true&fullScreen=bhrigu_bindu', '_blank', 'width=1100,height=850,menubar=no,toolbar=no,location=no,status=no');
-              }} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">🌟</span> Bhrigu Bindu
-              </button>
-              <button onClick={() => window.open('/?d108=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">🔮</span> D108
-              </button>
-              <button onClick={() => window.open('/?ayanamsha=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">⚙️</span> Ayanamsha
-              </button>
-              <button onClick={() => window.open('/?sanghatta=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">🔥</span> Sanghatta
-              </button>
-              <button onClick={() => window.open('/?karaka=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">🧘</span> Karakas
-              </button>
-              <button onClick={() => window.open('/?tithi=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
-                <span className="text-base leading-none">🌙</span> Tithi Pravesha
-              </button>
-            </div>
-
-          )}
-        </div>
-        {/* Row 2: External Apps Popouts */}
-        <div className="px-4 py-2 border-b border-slate-300 flex flex-col gap-2">
-          <div className="flex items-center gap-2 cursor-pointer hover:bg-slate-200/50 p-1 rounded-md transition-colors w-full" onClick={() => setShowExternalApps(!showExternalApps)}>
-            <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">External Apps Popouts</span>
-            <span className="text-[9px] font-bold text-slate-500 ml-auto">{showExternalApps ? '▼ HIDE' : '▶ SHOW'}</span>
-          </div>
-          {showExternalApps && (
-            <div className="flex flex-wrap items-center gap-3 pt-1 pb-2">
-
-              <button onClick={() => window.open('/?transit_compare=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-sky-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
-                <span className="text-base leading-none">🔄</span> Compare Transit
-              </button>
-              <button onClick={() => window.open('/?transit_compare2=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-sky-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
-                <span className="text-base leading-none">🔄</span> Compare Transit 2
-              </button>
-              <button onClick={() => window.open('/?solar_return=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-amber-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
-                <span className="text-base leading-none">☀️</span> Solar Return
-              </button>
-              <button onClick={() => window.open('/?daily_solar=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-yellow-300 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
-                <span className="text-base leading-none">🌞</span> Daily Solar
-              </button>
-              <button onClick={() => window.open('/?annual_varshaphala=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-cyan-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
-                <span className="text-base leading-none">🌍</span> Annual Varshaphala
-              </button>
-              <button onClick={() => window.open('/?advanced_nakshatra=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-indigo-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
-                <span className="text-base leading-none">🌌</span> Adv. Nakshatra
-              </button>
-              <button onClick={() => window.open('/?animated_transits=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-pink-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
-                <span className="text-base leading-none">🔄</span> Animated Transits
-              </button>
-              <button onClick={() => window.open('/?navamsha_ages=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
-                <span className="text-base leading-none">🔢</span> Navamsha Ages
-              </button>
-              <button onClick={() => window.open('/?kp_chart=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-purple-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
-                <span className="text-base leading-none">🔮</span> KP Chart
-              </button>
-              <button onClick={() => window.open('/?sunrise_chart=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-orange-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
-                <span className="text-base leading-none">🌅</span> Sunrise Chart
-              </button>
-              <button onClick={handleOpenMatchmaking} className="shrink-0 bg-rose-900/40 hover:bg-rose-900/60 text-rose-300 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-rose-500/30">
-                <span className="text-base leading-none">💏</span> Match Making
-              </button>
-
-            </div>
-          )}
-          {/* Row 2: Oracle & In-page Tools */}
-          <div className="px-4 py-2 flex flex-col gap-2">
-            <div className="flex items-center gap-2 cursor-pointer hover:bg-slate-200/50 p-1 rounded-md transition-colors w-full" onClick={() => setShowOracleTools(!showOracleTools)}>
-              <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Oracle & In-page Tools</span>
-              <span className="text-[9px] font-bold text-slate-500 ml-auto">{showOracleTools ? '▼ HIDE' : '▶ SHOW'}</span>
-            </div>
-            {showOracleTools && (
-              <div className="flex flex-wrap items-center gap-4 pt-1 pb-2">
-                {oracle_items.map(item => (
-                  <button
-                    key={item.id}
-                    onClick={() => handleOracleClick(item.id)}
-                    className="flex items-center gap-2 group transition-all shrink-0 bg-slate-800/50 hover:bg-slate-800 px-4 py-2 rounded-xl border border-slate-700/50 hover:border-slate-500"
-                    title={item.label}
-                  >
-                    <span className="text-xl group-hover:scale-110 transition-transform filter drop-shadow-md">{item.icon}</span>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300 group-hover:text-white">{item.label}</span>
-                  </button>
-                ))}
-
-                <div className="ml-auto flex items-center shrink-0">
-                  <p className="text-[10px] text-slate-500 italic uppercase pl-4 border-l border-slate-700 font-semibold tracking-widest">
-                    Astro Consult Workspace
-                  </p>
-                </div>
+        {isAdmin && (
+          <>
+            {/* Row 1: Astro Charts */}
+            <div className="px-4 py-2 border-b border-slate-300 flex flex-col gap-2">
+              <div className="flex items-center gap-2 cursor-pointer hover:bg-slate-200/50 p-1 rounded-md transition-colors w-full" onClick={() => setShowAstroCharts(!showAstroCharts)}>
+                <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">{t('astro_charts')}</span>
+                <span className="text-[9px] font-bold text-slate-500 ml-auto">{showAstroCharts ? `▼ ${t('hide')}` : `▶ ${t('show')}`}</span>
               </div>
-            )}
-          </div>
-        </div>
+              {showAstroCharts && (
+                <div className="flex flex-wrap items-center gap-3 pt-1 pb-2">
+                  <button onClick={() => window.open('/?annual_varshaphala=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">☀️</span> {t('annual_vrasphal')}
+                  </button>
+                  <button onClick={() => window.open('/?classic_layout=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">🏛️</span> {t('classic_view')}
+                  </button>
+                  <button onClick={() => window.open('/?classic_layout_2=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">🖥️</span> {t('classic_view_2')}
+                  </button>
+                  <button onClick={() => window.open('/?classic_layout_3=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">📊</span> {t('classic_view_3')}
+                  </button>
+                  <button onClick={() => window.open('/?classic_layout_4=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">🔮</span> {t('classic_view_4')}
+                  </button>
+                  <button onClick={() => window.open('/?chart_view_1=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">📐</span> {t('chart_view_1')}
+                  </button>
+                  <button onClick={() => window.open('/?chart_view_2=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">📐</span> {t('chart_view_2')}
+                  </button>
+                  <button onClick={() => window.open('/?chart_view_3=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">📐</span> {t('chart_view_3')}
+                  </button>
+                  <button onClick={() => window.open('/?lordships=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">👑</span> {t('lordship')}
+                  </button>
+                  <button onClick={() => window.open('/?varga_sign_chart=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">📊</span> {t('varga_sign_chart')}
+                  </button>
+                  <button onClick={() => window.open('/?bala_strengths=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">💪</span> {t('bala_strengths')}
+                  </button>
+                  <button onClick={() => window.open('/?bhavbala=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">📈</span> {t('bhavbala')}
+                  </button>
+                  <button onClick={() => window.open('/?gochara_wheel=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">🎡</span> {t('gochara_wheel')}
+                  </button>
+                  <button onClick={() => window.open('/?gochara_wheel_1=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">🎡</span> {t('gochara_wheel_1')}
+                  </button>
+                  <button onClick={() => window.open('/?nakshatra_dasha=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">🌟</span> {t('nakshatra_dasha')}
+                  </button>
+                  <button onClick={() => window.open('/?rashi_dashas=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">♈</span> {t('rashi_dashas')}
+                  </button>
+                  <button onClick={() => window.open('/?lagnas=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">🔺</span> {t('lagnas')}
+                  </button>
+                  <button onClick={() => window.open('/?jaimini_karakas=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">✨</span> {t('jaimini_karakas')}
+                  </button>
+                  <button onClick={() => window.open('/?sbc=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">☸️</span> {t('sarvatobhadra_chakra')}
+                  </button>
+                  <button onClick={() => window.open('/?sbc_dashboard=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">🚀</span> {t('sarvatobhadra_dashboard')}
+                  </button>
+                  <button onClick={() => {
+                    localStorage.setItem('worksheetData', JSON.stringify(data));
+                    window.open('/?worksheet=true&fullScreen=bhrigu_bindu', '_blank', 'width=1100,height=850,menubar=no,toolbar=no,location=no,status=no');
+                  }} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">🌟</span> {t('bhrigu_bindu')}
+                  </button>
+                  <button onClick={() => window.open('/?d108=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">🔮</span> {t('d108')}
+                  </button>
+                  <button onClick={() => window.open('/?ayanamsha=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">⚙️</span> {t('ayanamsha')}
+                  </button>
+                  <button onClick={() => window.open('/?sanghatta=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">🔥</span> {t('sanghatta')}
+                  </button>
+                  <button onClick={() => window.open('/?karaka=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">🧘</span> {t('karakas')}
+                  </button>
+                  <button onClick={() => window.open('/?tithi=true', '_blank')} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
+                    <span className="text-base leading-none">🌙</span> {t('tithi_pravesha')}
+                  </button>
+                </div>
+
+              )}
+            </div>
+            {/* Row 2: External Apps Popouts */}
+            <div className="px-4 py-2 border-b border-slate-300 flex flex-col gap-2">
+              <div className="flex items-center gap-2 cursor-pointer hover:bg-slate-200/50 p-1 rounded-md transition-colors w-full" onClick={() => setShowExternalApps(!showExternalApps)}>
+                <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">{t('external_apps_popouts')}</span>
+                <span className="text-[9px] font-bold text-slate-500 ml-auto">{showExternalApps ? `▼ ${t('hide')}` : `▶ ${t('show')}`}</span>
+              </div>
+              {showExternalApps && (
+                <div className="flex flex-wrap items-center gap-3 pt-1 pb-2">
+
+                  <button onClick={() => window.open('/?transit_compare=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-sky-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                    <span className="text-base leading-none">🔄</span> {t('compare_transit')}
+                  </button>
+                  <button onClick={() => window.open('/?transit_compare2=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-sky-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                    <span className="text-base leading-none">🔄</span> {t('compare_transit_2')}
+                  </button>
+                  <button onClick={() => window.open('/?solar_return=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-amber-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                    <span className="text-base leading-none">☀️</span> {t('solar_return')}
+                  </button>
+                  <button onClick={() => window.open('/?daily_solar=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-yellow-300 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                    <span className="text-base leading-none">🌞</span> {t('daily_solar')}
+                  </button>
+                  <button onClick={() => window.open('/?annual_varshaphala=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-cyan-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                    <span className="text-base leading-none">🌍</span> {t('annual_varshaphala')}
+                  </button>
+                  <button onClick={() => window.open('/?varshaphala_details=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-amber-500 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                    <span className="text-base leading-none">📜</span> {t('varshaphala_detail')}
+                  </button>
+                  <button onClick={() => window.open('/?detailed_charts=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-red-500 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                    <span className="text-base leading-none">📊</span> {t('varshaphala_detailed_charts')}
+                  </button>
+                  <button onClick={() => window.open('/?advanced_nakshatra=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-indigo-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                    <span className="text-base leading-none">🌌</span> {t('adv_nakshatra')}
+                  </button>
+                  <button onClick={() => window.open('/?animated_transits=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-pink-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                    <span className="text-base leading-none">🔄</span> {t('animated_transits')}
+                  </button>
+                  <button onClick={() => window.open('/?navamsha_ages=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-emerald-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                    <span className="text-base leading-none">🔢</span> {t('navamsha_ages')}
+                  </button>
+                  <button onClick={() => window.open('/?kp_chart=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-purple-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                    <span className="text-base leading-none">🔮</span> {t('kp_chart')}
+                  </button>
+                  <button onClick={() => window.open('/?sunrise_chart=true', '_blank')} className="shrink-0 bg-slate-200 hover:bg-slate-700 text-orange-400 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-slate-700">
+                    <span className="text-base leading-none">🌅</span> {t('sunrise_chart')}
+                  </button>
+                  <button onClick={handleOpenMatchmaking} className="shrink-0 bg-rose-900/40 hover:bg-rose-900/60 text-rose-300 px-3 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-rose-500/30">
+                    <span className="text-base leading-none">💏</span> {t('match_making')}
+                  </button>
+
+                </div>
+              )}
+              {/* Row 2: Oracle & In-page Tools */}
+              <div className="px-4 py-2 flex flex-col gap-2">
+                <div className="flex items-center gap-2 cursor-pointer hover:bg-slate-200/50 p-1 rounded-md transition-colors w-full" onClick={() => setShowOracleTools(!showOracleTools)}>
+                  <span className="text-[10px] font-black text-slate-700 uppercase tracking-widest">{t('oracle_in_page_tools')}</span>
+                  <span className="text-[9px] font-bold text-slate-500 ml-auto">{showOracleTools ? `▼ ${t('hide')}` : `▶ ${t('show')}`}</span>
+                </div>
+                {showOracleTools && (
+                  <div className="flex flex-wrap items-center gap-4 pt-1 pb-2">
+                    {oracle_items.map(item => (
+                      <button
+                        key={item.id}
+                        onClick={() => handleOracleClick(item.id)}
+                        className="flex items-center gap-2 group transition-all shrink-0 bg-slate-800/50 hover:bg-slate-800 px-4 py-2 rounded-xl border border-slate-700/50 hover:border-slate-500"
+                        title={item.label}
+                      >
+                        <span className="text-xl group-hover:scale-110 transition-transform filter drop-shadow-md">{item.icon}</span>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300 group-hover:text-white">{item.label}</span>
+                      </button>
+                    ))}
+
+
+                  </div>
+                )}
+              </div>
+            </div>
+          </>
+        )}
 
         {selectedPlanet && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[200] flex items-center justify-center p-4">
             <div className="w-full max-w-lg bg-white shadow-2xl rounded-2xl overflow-hidden">
               <div className="flex items-center justify-between p-4 bg-[#1a237e] text-white">
-                <h4 className="text-lg font-serif italic">{selectedPlanet.name} Details</h4>
+                <h4 className="text-lg font-serif italic">{selectedPlanet.name} {t('details')}</h4>
                 <button onClick={() => setSelectedPlanet(null)} className="text-black hover:text-white text-2xl leading-none">&times;</button>
               </div>
               <div className="p-6 space-y-3 font-serif">
-                <div className="flex justify-between border-b pb-1"><span>House Placement:</span> <b>{selectedPlanet.house}</b></div>
-                <div className="flex justify-between border-b pb-1"><span>Zodiac Sign:</span> <b>{selectedPlanet.sign}</b></div>
-                <div className="flex justify-between border-b pb-1"><span>Precise Degree:</span> <b>{selectedPlanet.degree?.toFixed(4)}°</b></div>
-                <div className="flex justify-between border-b pb-1"><span>Nakshatra:</span> <b>{selectedPlanet.nakshatra}</b></div>
+                <div className="flex justify-between border-b pb-1"><span>{t('house_placement')}</span> <b>{selectedPlanet.house}</b></div>
+                <div className="flex justify-between border-b pb-1"><span>{t('zodiac_sign')}</span> <b>{selectedPlanet.sign}</b></div>
+                <div className="flex justify-between border-b pb-1"><span>{t('precise_degree')}</span> <b>{selectedPlanet.degree?.toFixed(4)}°</b></div>
+                <div className="flex justify-between border-b pb-1"><span>{t('nakshatra_label')}</span> <b>{selectedPlanet.nakshatra}</b></div>
               </div>
             </div>
           </div>
@@ -3788,13 +4627,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null }) 
       </div>
     </div>
   );
-
 }
-
-
-
-
-
 
 export default InteractiveWorksheet;
 

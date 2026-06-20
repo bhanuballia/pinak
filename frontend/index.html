@@ -65,8 +65,8 @@
       transition: all 0.3s ease;
     }
 
-    /* Show the translate dropdown when hovering over the wrapper */
-    .translate-wrapper:hover .translate-content {
+    /* Show the translate dropdown when clicking the wrapper */
+    .translate-wrapper.active .translate-content {
       margin-right: 0;
       opacity: 1;
       visibility: visible;
@@ -101,9 +101,9 @@
     }
   </style>
 
-  <!-- Hoverable Vertical Translate Tab -->
-  <div class="translate-wrapper">
-    <div class="translate-btn">
+  <!-- Clickable Vertical Translate Tab -->
+  <div class="translate-wrapper" id="translateWrapper">
+    <div class="translate-btn" id="translateBtn">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
         stroke-linecap="round" stroke-linejoin="round">
         <path d="m5 8 6 6"></path>
@@ -113,12 +113,56 @@
         <path d="m22 22-5-10-5 10"></path>
         <path d="M14 18h6"></path>
       </svg>
-      <span class="translate-text">Langague</span>
+      <span class="translate-text">Language</span>
     </div>
     <div class="translate-content">
       <div id="google_translate_element"></div>
     </div>
   </div>
+
+  <script>
+    const translateWrapper = document.getElementById('translateWrapper');
+    const translateBtn = document.getElementById('translateBtn');
+
+    let isDragging = false;
+    let startY;
+    let startTop;
+
+    translateBtn.addEventListener('mousedown', (e) => {
+      // Prevent default behavior like text selection
+      e.preventDefault();
+      startY = e.clientY;
+      const rect = translateWrapper.getBoundingClientRect();
+      // Calculate top including the translateY(-50%) adjustment
+      startTop = rect.top + (rect.height / 2);
+      isDragging = false;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (startY == null) return;
+      const dy = e.clientY - startY;
+      
+      // Only start dragging if moved more than 3 pixels
+      if (Math.abs(dy) > 3) {
+        isDragging = true;
+        // Keep within window bounds roughly
+        let newTop = startTop + dy;
+        newTop = Math.max(50, Math.min(window.innerHeight - 50, newTop));
+        translateWrapper.style.top = newTop + 'px';
+      }
+    });
+
+    document.addEventListener('mouseup', () => {
+      startY = null;
+    });
+
+    // Handle the click logic and prevent it if dragging occurred
+    translateBtn.addEventListener('click', (e) => {
+      if (!isDragging) {
+        translateWrapper.classList.toggle('active');
+      }
+    });
+  </script>
   <script type="text/javascript">
     function googleTranslateElementInit() {
       new google.translate.TranslateElement({

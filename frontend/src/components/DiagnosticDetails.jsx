@@ -57,7 +57,7 @@ export default function DiagnosticDetails({ domain, worksheetData }) {
     if (!domainInfo) return null;
 
     const housesData = worksheetData.chart.houses;
-    
+
     // Check for Yogas (Simple logic for UI)
     const yogas = [];
     if (domain === 'finance') {
@@ -86,15 +86,15 @@ export default function DiagnosticDetails({ domain, worksheetData }) {
             <h3 style={{ fontSize: '28px', fontWeight: 900, color: 'white', fontStyle: 'italic', marginBottom: '20px', borderBottom: '1px solid rgba(212,175,55,0.2)', paddingBottom: '10px' }}>
                 {domainInfo.title}
             </h3>
-            
+
             <div style={{ display: 'grid', gap: '20px' }}>
                 {domainInfo.houses.map(hNum => {
                     const houseObj = housesData[hNum] || housesData[hNum.toString()];
                     if (!houseObj) return null;
-                    
+
                     const planets = houseObj.planets || [];
                     const planetNames = planets.map(p => typeof p === 'object' ? p.name : p);
-                    
+
                     return (
                         <div key={hNum} style={{
                             backgroundColor: 'rgba(30, 41, 59, 0.6)',
@@ -108,7 +108,7 @@ export default function DiagnosticDetails({ domain, worksheetData }) {
                             <p style={{ fontSize: '16px', marginBottom: '15px' }}>
                                 <strong style={{ color: 'white' }}>Responsible Sign:</strong> {houseObj.sign_name || "Unknown"}
                             </p>
-                            
+
                             <div>
                                 <strong style={{ color: 'white', display: 'block', marginBottom: '10px' }}>Planets Present in this House:</strong>
                                 {planetNames.length > 0 ? (
@@ -136,7 +136,7 @@ export default function DiagnosticDetails({ domain, worksheetData }) {
                         </div>
                     );
                 })}
-                
+
                 {yogas.length > 0 && (
                     <div style={{
                         background: 'linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(15,23,42,0.1) 100%)',

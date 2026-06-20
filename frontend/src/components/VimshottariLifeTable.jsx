@@ -145,7 +145,7 @@ export default function VimshottariLifeTable({ data }) {
           const meta = PLANET_META[d.lord] || { color: '#666', years: '?', bg: 'bg-white', border: 'border-slate-100', badge: 'bg-slate-100 text-slate-700', symbol: '⭐' };
           const effects = MAHADASHA_EFFECTS[d.lord];
           const strength = planetStrengths[d.lord];
-          const isStrong = strength ? (strength.ishta_phala || 0) > (strength.kashta_phala || 0) : null;
+          const isStrong = strength ? (strength.total_score >= 5.5) : null;
           const isOpen = expanded === i;
           const nextD = list[i + 1];
           const endDate = d.end_date || (nextD ? nextD.start_date : '—');

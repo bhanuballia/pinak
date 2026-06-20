@@ -18,7 +18,7 @@ def generate_nadi_reading(nadi_data: Dict[str, Any], gender: str = "Male") -> st
     try:
         api_key = os.getenv("GEMINI_API_KEY")
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel("gemini-pro")
+        model = genai.GenerativeModel("gemini-flash-latest")
         
         # In BNN, Jiva (Soul) is Jupiter for Male, Venus for Female
         jiva_planet = "Jupiter" if gender.lower() == "male" else "Venus"

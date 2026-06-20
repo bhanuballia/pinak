@@ -17,7 +17,7 @@ export default function Prashna() {
             const date = now.toISOString().split('T')[0];
             const time = now.toTimeString().split(' ')[0];
             const tz = (now.getTimezoneOffset() / -60.0);
-            
+
             // We'll use Mumbai (Ujjain proxy) or the user's last coordinates if available
             let lat = 19.0760, lon = 72.8777;
             const savedData = localStorage.getItem('worksheetData');
@@ -32,7 +32,7 @@ export default function Prashna() {
             const res = await fetchHoroscope("Horary Query", date, time, lat, lon, tz);
             console.log("Horary Response:", res);
             setChartData(res);
-            
+
             // Corrected property access based on backend structure
             const mainChart = res.chart || res.charts?.d1 || res.charts;
             if (!mainChart || !mainChart.houses) {
@@ -41,11 +41,11 @@ export default function Prashna() {
 
             const house1 = mainChart.houses[1] || mainChart.houses["1"];
             const ascendant = house1?.sign_name || "Unknown";
-            
+
             const moonPos = res.planet_positions?.find(p => p.planet === 'Moon');
             const moonSign = moonPos?.sign || "Unknown";
             const moonNak = moonPos?.nakshatra || "Unknown";
-            
+
             setInsight({
                 ascendant,
                 moonSign,
@@ -60,7 +60,7 @@ export default function Prashna() {
     };
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#020617', color: 'white', fontFamily: 'serif', padding: '40px' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: 'hsla(234, 83%, 5%, 1.00)', color: 'white', fontFamily: 'serif', padding: '40px' }}>
             <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
                 <header style={{ textAlign: 'center', marginBottom: '60px' }}>
                     <h4 style={{ color: '#d4af37', textTransform: 'uppercase', letterSpacing: '4px', fontSize: '12px' }}>Prashna Shastra</h4>
@@ -72,8 +72,8 @@ export default function Prashna() {
                     <div style={{ marginBottom: '40px' }}>
                         <label style={{ display: 'block', fontSize: '12px', color: '#d4af37', textTransform: 'uppercase', fontWeight: 900, marginBottom: '10px' }}>Your Divine Question</label>
                         <div style={{ display: 'flex', gap: '20px' }}>
-                            <input 
-                                type="text" 
+                            <input
+                                type="text"
                                 value={question}
                                 onChange={(e) => setQuestion(e.target.value)}
                                 placeholder="e.g., Will I succeed in this venture?"
@@ -88,14 +88,14 @@ export default function Prashna() {
                                     fontFamily: 'serif'
                                 }}
                             />
-                            <button 
+                            <button
                                 onClick={calculateHorary}
                                 disabled={loading || !question.trim()}
                                 style={{
                                     padding: '0 40px',
                                     borderRadius: '15px',
                                     background: '#d4af37',
-                                    color: '#020617',
+                                    color: '#020720ff',
                                     fontWeight: 900,
                                     fontSize: '14px',
                                     textTransform: 'uppercase',
@@ -112,8 +112,8 @@ export default function Prashna() {
                     {chartData && (
                         <div style={{ display: 'flex', gap: '60px', alignItems: 'center', marginTop: '60px', paddingTop: '60px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                             <div style={{ flex: '1 1 400px' }}>
-                                <ZodiacChart 
-                                    houses={chartData.chart?.houses || chartData.charts?.houses} 
+                                <ZodiacChart
+                                    houses={chartData.chart?.houses || chartData.charts?.houses}
                                     title="Prashna Chart"
                                     variant="legacy"
                                 />
@@ -141,7 +141,7 @@ export default function Prashna() {
                 </div>
 
                 <div style={{ textAlign: 'center', marginTop: '60px' }}>
-                    <button 
+                    <button
                         onClick={() => window.close()}
                         style={{
                             background: 'transparent',
