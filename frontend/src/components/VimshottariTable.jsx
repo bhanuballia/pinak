@@ -24,6 +24,7 @@ export default function VimshottariTable({ data: worksheetData, transitDate }) {
   const [page, setPage] = useState(0);
   const [currentIdx, setCurrentIdx] = useState(0);
   const [levels, setLevels] = useState(5); // 2 = MD-AD, 5 = Panchastariya
+  const [showWindowsModal, setShowWindowsModal] = useState(false);
   const PAGE_SIZE = 12;
   const currentRowRef = useRef(null);
 
@@ -117,6 +118,54 @@ export default function VimshottariTable({ data: worksheetData, transitDate }) {
     );
   }
 
+  const jumpTime = (yearsToAdd) => {
+    if (rows.length === 0) return;
+    const currentFirstRow = rows[page * PAGE_SIZE] || rows[0];
+    const currentDate = new Date(currentFirstRow.start_date);
+
+    if (isNaN(currentDate.getTime())) {
+      setPage(p => Math.max(0, Math.min(totalPages - 1, p + Math.sign(yearsToAdd) * 5)));
+      return;
+    }
+
+    currentDate.setFullYear(currentDate.getFullYear() + yearsToAdd);
+    const targetTime = currentDate.getTime();
+
+    let closestIdx = 0;
+    let minDiff = Infinity;
+
+    for (let i = 0; i < rows.length; i++) {
+      const d = new Date(rows[i].start_date);
+      if (!isNaN(d.getTime())) {
+        const diff = Math.abs(d.getTime() - targetTime);
+        if (diff < minDiff) {
+          minDiff = diff;
+          closestIdx = i;
+        }
+      }
+    }
+
+    setPage(Math.floor(closestIdx / PAGE_SIZE));
+  };
+  const nextMarriageRow = rows.slice(currentIdx).find(r => r.marriage_favorable);
+  const getUpcomingWindows = () => {
+    const list = [];
+    const seenChains = new Set();
+    for (let i = currentIdx; i < rows.length; i++) {
+      const r = rows[i];
+      if (r.marriage_favorable) {
+        const key = `${r.md}-${r.ad}`;
+        if (!seenChains.has(key)) {
+          seenChains.add(key);
+          list.push({ ...r, index: i });
+          if (list.length >= 3) break;
+        }
+      }
+    }
+    return list;
+  };
+  const upcomingWindows = getUpcomingWindows();
+
   return (
     <div className="flex flex-col h-full bg-white font-sans overflow-hidden">
       <Header
@@ -124,16 +173,36 @@ export default function VimshottariTable({ data: worksheetData, transitDate }) {
         totalPages={totalPages}
         onPrev={() => setPage(p => Math.max(0, p - 1))}
         onNext={() => setPage(p => Math.min(totalPages - 1, p + 1))}
-        onFirst={() => setPage(0)}
-        onLast={() => setPage(totalPages - 1)}
+        onFirst={() => jumpTime(-1)}
+        onLast={() => jumpTime(1)}
         onCurrent={goToCurrent}
         rowCount={rows.length}
         levels={levels}
         onLevelsChange={setLevels}
       />
 
+      {nextMarriageRow && (
+        <div className="shrink-0 bg-pink-50 border-b border-pink-100 px-3 py-2 flex items-center justify-between text-xs text-pink-900 font-medium">
+          <span className="flex items-center gap-1.5">
+            <span className="text-sm">💍</span>
+            <span>
+              {nextMarriageRow.is_current 
+                ? <strong>Active Marriage Dasha!</strong> 
+                : <span>Next Marriage Dasha:</span>}
+              {' '}{nextMarriageRow.dasha_chain} starting at age <strong>{nextMarriageRow.age}</strong> ({nextMarriageRow.start_date})
+            </span>
+          </span>
+          <button 
+            onClick={() => setShowWindowsModal(true)}
+            className="text-[9px] font-black uppercase tracking-widest text-pink-600 bg-pink-100 hover:bg-pink-200 px-2.5 py-1 rounded-lg transition-all border border-pink-200/50"
+          >
+            Show Windows
+          </button>
+        </div>
+      )}
+
       {/* Column Headers */}
-      <div className="shrink-0 grid grid-cols-[2.2fr_0.4fr_1fr_0.5fr_0.9fr_0.4fr_1.6fr] bg-rose-100 text-slate-800 text-[12px] font-black uppercase tracking-wider border-b border-slate-700">
+      <div className="shrink-0 grid grid-cols-[2.2fr_0.4fr_1fr_0.5fr_0.9fr_0.4fr_1.6fr] bg-indigo-100 text-black text-[12px] font-black uppercase tracking-wider border-b border-slate-700">
         <div className="px-1.5 py-1.5 border-r border-slate-600">दशाएँ</div>
         <div className="px-1 py-1.5 border-r border-slate-600 text-center">उम्र</div>
         <div className="px-1.5 py-1.5 border-r border-slate-600">आरम्भ दिनांक</div>
@@ -164,10 +233,13 @@ export default function VimshottariTable({ data: worksheetData, transitDate }) {
             >
               {/* Dasha Chain */}
               <div className="px-1.5 py-1 flex items-center gap-1 border-r border-slate-100 overflow-hidden">
-                <div className="w-1 h-full min-h-[18px] rounded-full shrink-0" style={{ backgroundColor: mdColor }}></div>
+                <div className="w-1 h-full min-h-[12px] rounded-full shrink-0" style={{ backgroundColor: mdColor }}></div>
                 <span className="font-bold text-slate-800 truncate tracking-tight leading-tight" title={row.dasha_chain}>
                   {row.dasha_chain}
                 </span>
+                {row.marriage_favorable && (
+                  <span className="shrink-0 text-[10px]" title="Favorable Marriage Period">💍</span>
+                )}
                 {isCurrent && (
                   <span className="ml-auto shrink-0 text-[12px] bg-amber-500 text-white px-1 rounded font-black">●</span>
                 )}
@@ -211,6 +283,62 @@ export default function VimshottariTable({ data: worksheetData, transitDate }) {
           पृष्ठ {page + 1} / {totalPages}
         </p>
       </div>
+
+      {showWindowsModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50 p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full p-6 relative border border-slate-100">
+            <button
+              onClick={() => setShowWindowsModal(false)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 transition-colors text-lg"
+            >
+              ✕
+            </button>
+            <h4 className="text-lg font-serif italic font-bold text-slate-900 mb-4 flex items-center gap-2">
+              <span>💍</span> Favorable Marriage Windows
+            </h4>
+            <p className="text-xs text-slate-500 mb-4">
+              Here are the next upcoming favorable Vimshottari dasha periods for marriage:
+            </p>
+            
+            <div className="space-y-3 mb-4">
+              {upcomingWindows.map((win, idx) => (
+                <div key={idx} className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center justify-between hover:border-pink-200 hover:bg-pink-50/20 transition-all">
+                  <div>
+                    <span className="text-[10px] font-black text-pink-500 uppercase tracking-widest block mb-1">
+                      Window #{idx + 1} {win.is_current && "(Active)"}
+                    </span>
+                    <span className="text-base font-bold text-slate-800 block">
+                      {win.dasha_chain}
+                    </span>
+                    <span className="text-xs text-slate-500">
+                      Starts Age {win.age} · {win.start_date}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setPage(Math.floor(win.index / PAGE_SIZE));
+                      setShowWindowsModal(false);
+                    }}
+                    className="px-4 py-2 bg-slate-900 hover:bg-pink-600 text-white rounded-xl text-xs font-bold transition-all shadow-md hover:shadow-lg"
+                  >
+                    Jump to Row
+                  </button>
+                </div>
+              ))}
+              {upcomingWindows.length === 0 && (
+                <p className="text-xs text-slate-400 italic text-center py-4">No upcoming favorable marriage windows found in this sequence.</p>
+              )}
+            </div>
+            
+            <button
+              onClick={() => setShowWindowsModal(false)}
+              className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -225,19 +353,19 @@ function Header({ page, totalPages, onPrev, onNext, onFirst, onLast, rowCount, l
   };
 
   return (
-    <div className="shrink-0 flex items-center justify-between px-2 py-1 bg-rose-100 border-b border-slate-700">
+    <div className="shrink-0 flex items-center justify-between px-2 py-1 bg-indigo-100 border-b border-slate-700">
       <div className="flex items-center gap-2">
         <div className="w-5 h-5 rounded bg-white flex items-center justify-center text-white text-[10px] font-black">⏳</div>
-        <span className="text-slate-900 text-[14px] font-black font-serif tracking-widest uppercase">विंशोत्तरी</span>
+        <span className="text-black text-[14px] font-black font-serif tracking-widest uppercase">विंशोत्तरी</span>
         {rowCount > 0 && (
-          <span className="text-[12px] text-black font-bold bg-rose-100 px-1.5 py-0.5 rounded-full ml-1">
+          <span className="text-[12px] text-black font-bold bg-indigo-100 px-1.5 py-0.5 rounded-full ml-1">
             {levelNames[levels]}
           </span>
         )}
       </div>
 
       {/* Levels Selector Switch */}
-      <div className="flex items-center rounded border border-black mx-2 overflow-hidden bg-rose-100">
+      <div className="flex items-center rounded border border-black mx-2 overflow-hidden bg-amber-100">
         <button
           onClick={() => onLevelsChange && onLevelsChange(Math.max(1, levels - 1))}
           disabled={levels <= 1}
@@ -260,10 +388,10 @@ function Header({ page, totalPages, onPrev, onNext, onFirst, onLast, rowCount, l
       </div>
 
       <div className="flex items-center gap-1">
-        <NavBtn onClick={onFirst} title="प्रथम" disabled={page === 0}>⟪</NavBtn>
+        <NavBtn onClick={onFirst} title="-1 वर्ष" disabled={page === 0}>⟪</NavBtn>
         <NavBtn onClick={onPrev} title="पिछला" disabled={page === 0}>◀</NavBtn>
         <NavBtn onClick={onNext} title="अगला" disabled={page >= totalPages - 1}>▶</NavBtn>
-        <NavBtn onClick={onLast} title="अंतिम" disabled={page >= totalPages - 1}>⟫</NavBtn>
+        <NavBtn onClick={onLast} title="+1 वर्ष" disabled={page >= totalPages - 1}>⟫</NavBtn>
       </div>
     </div>
   );

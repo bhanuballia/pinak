@@ -64,7 +64,7 @@ const AshtakavargaChart = ({ title, housesData, defaultRect = false }) => {
         </div>
       </div>
       <div className="p-2 flex items-center justify-center bg-yellow-50/30 flex-1 min-h-0">
-        <svg viewBox={`0 0 ${100 * aspectRatio} 100`} preserveAspectRatio="none" className={`w-full h-full drop-shadow-sm ${isRect ? 'max-w-full' : 'max-w-[250px] aspect-square'}`}>
+        <svg viewBox={`0 0 ${100 * aspectRatio} 100`} preserveAspectRatio="none" className={`w-full h-full drop-shadow-sm ${isRect ? 'max-w-full' : 'w-full max-w-full aspect-square'}`}>
           {/* Background and border */}
           <rect x={5 * aspectRatio} y="5" width={90 * aspectRatio} height="90" fill="#fcfcfc" stroke="#475569" strokeWidth="0.5" />
 
@@ -81,17 +81,17 @@ const AshtakavargaChart = ({ title, housesData, defaultRect = false }) => {
                 <polygon
                   points={scalePolygon(HOUSE_POLYGON[houseNum], aspectRatio)}
                   fill="none"
-                  stroke="#475569"
+                  stroke="rgba(72, 105, 151, 0.86)"
                   strokeWidth="0.5"
                 />
 
                 {/* Bindu points */}
                 <text
                   x={center.x * aspectRatio}
-                  y={center.y + 1.5}
+                  y={center.y + 3}
                   textAnchor="middle"
                   dominantBaseline="middle"
-                  className="text-[6px] font-bold fill-slate-800"
+                  className="text-[5px] font-medium fill-slate-800"
                 >
                   {hData.points}
                 </text>
@@ -100,10 +100,10 @@ const AshtakavargaChart = ({ title, housesData, defaultRect = false }) => {
                 {signNum && (
                   <text
                     x={center.x * aspectRatio}
-                    y={center.y - 6}
+                    y={center.y - 2.5}
                     textAnchor="middle"
                     dominantBaseline="middle"
-                    className="text-[3px] fill-slate-500 font-medium"
+                    className="text-[5px] fill-amber-900 font-medium"
                   >
                     {signNum}
                   </text>

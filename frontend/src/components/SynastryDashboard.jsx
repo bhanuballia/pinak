@@ -102,7 +102,7 @@ export default function SynastryDashboard({ p1Data, p2Data, standalone = true })
         readingCard: isDark ? "bg-slate-800/50 border-slate-700/50 text-slate-300" : "bg-white border-rose-100/60 text-slate-800",
         readingTitle: isDark ? "text-indigo-400" : "text-indigo-600",
         readingBorder: isDark ? "border-indigo-900/50" : "border-rose-100",
-        readingText: isDark ? "text-slate-300" : "text-slate-600",
+        readingText: isDark ? "text-slate-300" : "text-slate-900",
     };
 
     const formatReading = (text) => {
@@ -131,9 +131,9 @@ export default function SynastryDashboard({ p1Data, p2Data, standalone = true })
                     <div className="flex justify-between items-center mb-8">
                         <div>
                             <h1 className="text-3xl font-bold text-indigo-500 flex items-center gap-3">
-                                <span className="text-4xl">🔮</span> Relationship Matrix (Synastry)
+                                <span className="text-4xl">🔮</span>Relationship Matrix (Synastry)
                             </h1>
-                            <p className="text-slate-400 mt-1">Exact geometric planetary alignments between two people.</p>
+
                         </div>
                         <button onClick={() => window.close()} className="text-slate-400 hover:text-white">✕ Close</button>
                     </div>
@@ -142,7 +142,8 @@ export default function SynastryDashboard({ p1Data, p2Data, standalone = true })
                 {!standalone && (
                     <div className="text-center mb-12">
                         <h3 className={`text-[10px] font-black uppercase tracking-[0.5em] mb-2 ${theme.subtitle}`}>Advanced Synchronization</h3>
-                        <h2 className={`text-4xl font-serif italic ${theme.title}`}>Planetary Relationship Matrix</h2>
+                        <h2 className={`text-4xl font-serif italic ${theme.title}`}>Graha Maitri Chakra</h2>
+
                     </div>
                 )}
 

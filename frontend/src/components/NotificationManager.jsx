@@ -99,9 +99,10 @@ export default function NotificationManager() {
 
   return (
     <>
-      <button
-        onClick={handleSubscribe}
-        style={{
+      <div className="print:hidden">
+        <button
+          onClick={handleSubscribe}
+          style={{
           position: 'fixed',
           top: '20px',
           right: '20px',
@@ -121,6 +122,7 @@ export default function NotificationManager() {
       >
         <span>{isSubscribed ? '✨ Alerts Active' : '🔔 Enable Transit Alerts'}</span>
       </button>
+      </div>
 
       {/* Foreground Notification Toast */}
       {showToast && (

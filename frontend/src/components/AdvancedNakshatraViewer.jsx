@@ -180,6 +180,7 @@ const ORACLE_CATEGORIES = [
 ];
 
 const AdvancedNakshatraViewer = () => {
+  const onlyPlanetary = new URLSearchParams(window.location.search).get('only_planetary') === 'true';
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -193,6 +194,9 @@ const AdvancedNakshatraViewer = () => {
   const [selectedCategory, setSelectedCategory] = useState(ORACLE_CATEGORIES[0].name);
   const [oracleResponse, setOracleResponse] = useState(null);
   const [oracleLoading, setOracleLoading] = useState(false);
+  const [futureOracleResponse, setFutureOracleResponse] = useState(null);
+  const [futureOracleLoading, setFutureOracleLoading] = useState(false);
+  const [futureDaysCount, setFutureDaysCount] = useState(7);
   const [userData, setUserData] = useState(null);
 
   // Load user data on mount
@@ -233,6 +237,7 @@ const AdvancedNakshatraViewer = () => {
     setOracleQuestion(q);
     setOracleLoading(true);
     setOracleResponse(null);
+    setFutureOracleResponse(null);
 
     try {
       const payload = {
@@ -240,7 +245,7 @@ const AdvancedNakshatraViewer = () => {
         time: userData.time,
         lat: parseFloat(userData.lat),
         lon: parseFloat(userData.lon),
-        tz_offset: parseFloat(userData.tz_offset || 0),
+        tz_offset: (userData.tz_offset !== undefined && userData.tz_offset !== null && userData.tz_offset !== "") ? parseFloat(userData.tz_offset) : 5.5,
         question: q
       };
 
@@ -265,6 +270,46 @@ const AdvancedNakshatraViewer = () => {
       });
     } finally {
       setOracleLoading(false);
+    }
+  };
+
+  const handleCheckFutureDays = async (days = 7) => {
+    if (!userData) return;
+    setFutureOracleLoading(true);
+    setFutureOracleResponse(null);
+
+    try {
+      const payload = {
+        date: userData.date,
+        time: userData.time,
+        lat: parseFloat(userData.lat),
+        lon: parseFloat(userData.lon),
+        tz_offset: (userData.tz_offset !== undefined && userData.tz_offset !== null && userData.tz_offset !== "") ? parseFloat(userData.tz_offset) : 5.5,
+        question: oracleQuestion || "General",
+        days: parseInt(futureDaysCount, 10) || 7
+      };
+
+      if (!isLive && viewDate) {
+        payload.target_datetime = viewDate.toISOString();
+      }
+
+      const response = await fetch('http://localhost:8000/api/nakshatra_advanced/personalized_oracle_future', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) throw new Error("Failed to consult Oracle for future");
+      const result = await response.json();
+      setFutureOracleResponse(result);
+    } catch (err) {
+      console.error(err);
+      setFutureOracleResponse({
+        error: true,
+        response: "The Oracle is currently meditating and unavailable for future predictions. Please try again later."
+      });
+    } finally {
+      setFutureOracleLoading(false);
     }
   };
 
@@ -333,64 +378,66 @@ const AdvancedNakshatraViewer = () => {
 
   return (
     <div className="min-h-screen bg-rose-100 text-black flex flex-col font-sans">
-      <div className="bg-rose-50 border-b border-[#333] flex justify-between items-center px-4 py-3 text-[18px] font-bold  text-black shadow-md">
-        <span>Cosmic Time Machine Dashboard</span>
+      {!onlyPlanetary && (
+        <div className="bg-rose-50 border-b border-[#333] flex justify-between items-center px-4 py-3 text-[18px] font-bold  text-black shadow-md">
+          <span>Cosmic Time Machine Dashboard</span>
 
-        <div className="flex items-center gap-4">
-          {!isLive && (
-            <button
-              onClick={() => {
-                setIsLive(true);
-                setViewDate(new Date());
-              }}
-              className="bg-red-900/20 hover:bg-red-800/80 text-black px-3 py-1 rounded-full text-xl font-bold uppercase tracking-wider flex items-center gap-1 border border-red-500/50 transition-colors"
-            >
-              ⏱️ Reset to Live
-            </button>
-          )}
+          <div className="flex items-center gap-4">
+            {!isLive && (
+              <button
+                onClick={() => {
+                  setIsLive(true);
+                  setViewDate(new Date());
+                }}
+                className="bg-red-900/20 hover:bg-red-800/80 text-black px-3 py-1 rounded-full text-xl font-bold uppercase tracking-wider flex items-center gap-1 border border-red-500/50 transition-colors"
+              >
+                ⏱️ Reset to Live
+              </button>
+            )}
 
-          <div className="flex items-center bg-orange-100 rounded-full border border-[#333] p-1">
-            <button
-              onClick={() => {
-                const newD = new Date(viewDate);
-                newD.setDate(newD.getDate() - 1);
-                setViewDate(newD);
-                setIsLive(false);
-              }}
-              className="px-2 py-1 text-gray-400 hover:text-white transition-colors"
-              title="Previous Day"
-            >
-              ⏮️
-            </button>
-            <input
-              type="datetime-local"
-              // slice out seconds/milliseconds, keeping standard HTML datetime-local format
-              value={new Date(viewDate.getTime() - (viewDate.getTimezoneOffset() * 60000)).toISOString().slice(0, 16)}
-              onChange={(e) => {
-                if (e.target.value) {
-                  setViewDate(new Date(e.target.value));
+            <div className="flex items-center bg-orange-100 rounded-full border border-[#333] p-1">
+              <button
+                onClick={() => {
+                  const newD = new Date(viewDate);
+                  newD.setDate(newD.getDate() - 1);
+                  setViewDate(newD);
                   setIsLive(false);
-                }
-              }}
-              className="bg-transparent text-black text-xl font-bold outline-none px-2 text-center"
-            />
-            <button
-              onClick={() => {
-                const newD = new Date(viewDate);
-                newD.setDate(newD.getDate() + 1);
-                setViewDate(newD);
-                setIsLive(false);
-              }}
-              className="px-2 py-1 text-gray-400 hover:text-white transition-colors"
-              title="Next Day"
-            >
-              ⏭️
-            </button>
-          </div>
+                }}
+                className="px-2 py-1 text-gray-400 hover:text-white transition-colors"
+                title="Previous Day"
+              >
+                ⏮️
+              </button>
+              <input
+                type="datetime-local"
+                // slice out seconds/milliseconds, keeping standard HTML datetime-local format
+                value={new Date(viewDate.getTime() - (viewDate.getTimezoneOffset() * 60000)).toISOString().slice(0, 16)}
+                onChange={(e) => {
+                  if (e.target.value) {
+                    setViewDate(new Date(e.target.value));
+                    setIsLive(false);
+                  }
+                }}
+                className="bg-transparent text-black text-xl font-bold outline-none px-2 text-center"
+              />
+              <button
+                onClick={() => {
+                  const newD = new Date(viewDate);
+                  newD.setDate(newD.getDate() + 1);
+                  setViewDate(newD);
+                  setIsLive(false);
+                }}
+                className="px-2 py-1 text-gray-400 hover:text-white transition-colors"
+                title="Next Day"
+              >
+                ⏭️
+              </button>
+            </div>
 
-          <span className="text-black hidden md:inline ml-2">Displaying: {data.timestamp}</span>
+            <span className="text-black hidden md:inline ml-2">Displaying: {data.timestamp}</span>
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="flex-1 p-6 flex flex-col gap-6 max-w-[1200px] w-full mx-auto">
         <div className="bg-[#16213e] rounded-xl shadow-lg border border-[#333] overflow-hidden">
@@ -433,9 +480,11 @@ const AdvancedNakshatraViewer = () => {
           </div>
         </div>
 
-        {data.muhurat && data.muhurat.nature && (
-          <div className="bg-[#16213e] rounded-xl shadow-lg border border-[#333] overflow-hidden mt-2">
-            <div className="p-6">
+        {!onlyPlanetary && (
+          <>
+            {data.muhurat && data.muhurat.nature && (
+              <div className="bg-[#16213e] rounded-xl shadow-lg border border-[#333] overflow-hidden mt-2">
+                <div className="p-6">
               <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
                 <span className="text-yellow-400">✨</span> Live Muhurat Analysis
               </h2>
@@ -579,6 +628,62 @@ const AdvancedNakshatraViewer = () => {
                     <div className="text-gray-200 leading-relaxed whitespace-pre-wrap text-base">
                       {oracleResponse.response}
                     </div>
+                    <div className="mt-6 pt-4 border-t border-[#333]">
+                      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                        <div className="flex items-center gap-2">
+                          <label className="text-sm font-bold text-gray-300">Days to check:</label>
+                          <input 
+                            type="number" 
+                            min="1" 
+                            max="30" 
+                            value={futureDaysCount} 
+                            onChange={(e) => setFutureDaysCount(e.target.value)} 
+                            className="w-16 bg-[#0f172a] border border-[#333] text-white px-2 py-1 rounded-md focus:outline-none focus:border-purple-500 text-center"
+                          />
+                        </div>
+                        <button
+                          onClick={() => handleCheckFutureDays()}
+                          disabled={futureOracleLoading}
+                          className={`px-4 py-2 rounded-xl text-sm font-bold tracking-wider transition-all ${futureOracleLoading
+                            ? 'bg-gray-600 text-gray-300 cursor-not-allowed'
+                            : 'bg-[#1a264a] hover:bg-[#233566] text-white border border-purple-500/50 hover:border-purple-500'
+                            }`}
+                        >
+                          {futureOracleLoading ? 'Consulting the Future...' : `Check Coming ${futureDaysCount} Days`}
+                        </button>
+                      </div>
+
+                      {futureOracleResponse && !futureOracleResponse.error && (
+                        <div className="mt-4 overflow-x-auto">
+                          <h4 className="text-[#00ffcc] text-xs font-bold uppercase tracking-wider mb-3">{futureDaysCount}-Day Forecast based on {futureOracleResponse.natal_nakshatra} (Your Birth Star)</h4>
+                          <div className="flex gap-3 min-w-max pb-2">
+                            {futureOracleResponse.future_days?.map((day, idx) => (
+                              <div key={idx} className={`flex flex-col p-3 rounded-lg border-2 min-w-[120px] ${
+                                day.quality.includes('Auspicious') ? 'bg-green-900/20 border-green-500/50' :
+                                day.quality === 'Inauspicious' ? 'bg-red-900/20 border-red-500/50' :
+                                'bg-yellow-900/20 border-yellow-500/50'
+                              }`}>
+                                <div className="text-xs text-gray-400 mb-1">{day.date}</div>
+                                <div className="text-sm font-bold text-white mb-0.5">{day.nakshatra}</div>
+                                <div className="text-[10px] text-gray-300 mb-1 italic">until {day.end_time}</div>
+                                <div className={`text-xs font-semibold ${
+                                  day.quality.includes('Auspicious') ? 'text-green-400' :
+                                  day.quality === 'Inauspicious' ? 'text-red-400' :
+                                  'text-yellow-400'
+                                }`}>
+                                  {day.tara_name}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {futureOracleResponse && futureOracleResponse.error && (
+                        <div className="mt-4 p-3 rounded-lg border-l-4 border-red-500 bg-red-900/20 text-red-200 text-sm">
+                          {futureOracleResponse.response}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
 
@@ -591,6 +696,8 @@ const AdvancedNakshatraViewer = () => {
             )}
           </div>
         </div>
+          </>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ZodiacRectSign from './ZodiacRectSign';
 
 const PREDEFINED_QUESTIONS = {
     "Marriage / Relationship": [
@@ -156,7 +157,7 @@ export default function PrashnaEngine() {
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState(null);
     const [error, setError] = useState(null);
-    
+
     const categories = [
         "Other",
         "Marriage / Relationship",
@@ -184,7 +185,7 @@ export default function PrashnaEngine() {
                 async (position) => {
                     const lat = position.coords.latitude;
                     const lon = position.coords.longitude;
-                    
+
                     try {
                         const response = await fetch("http://localhost:8000/api/prashna/ask", {
                             method: "POST",
@@ -196,7 +197,7 @@ export default function PrashnaEngine() {
                                 category: category
                             })
                         });
-                        
+
                         const data = await response.json();
                         if (response.ok) {
                             setResult(data);
@@ -226,31 +227,31 @@ export default function PrashnaEngine() {
                     <h1 className="text-3xl font-bold text-amber-400 flex items-center gap-3">
                         <span className="text-4xl">🔮</span> Prashna Kundali Engine
                     </h1>
-                    <button 
+                    <button
                         onClick={() => window.close()}
                         className="text-slate-400 hover:text-white"
                     >
                         ✕ Close
                     </button>
                 </div>
-                
+
                 <div className="bg-slate-800 rounded-xl shadow-2xl p-6 border border-slate-700">
                     <p className="text-slate-300 mb-6 text-sm">
-                        Horary astrology uses the exact moment and location you ask a question to cast a chart. 
+                        Horary astrology uses the exact moment and location you ask a question to cast a chart.
                         Focus your mind on the question, type it below, and the stars will provide guidance.
                     </p>
-                    
+
                     <div className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-slate-400 mb-1">Category</label>
-                            <select 
+                            <select
                                 value={category}
                                 onChange={(e) => setCategory(e.target.value)}
                                 className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-slate-200 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all"
                             >
                                 {categories.map(c => <option key={c} value={c}>{c}</option>)}
                             </select>
-                            
+
                             {category !== "Other" && PREDEFINED_QUESTIONS[category] && (
                                 <div className="mt-3 bg-slate-900/50 rounded-lg border border-slate-700/50 p-3">
                                     <label className="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">Suggested Questions</label>
@@ -268,10 +269,10 @@ export default function PrashnaEngine() {
                                 </div>
                             )}
                         </div>
-                        
+
                         <div>
                             <label className="block text-sm font-medium text-slate-400 mb-1">Your Question</label>
-                            <textarea 
+                            <textarea
                                 value={question}
                                 onChange={(e) => setQuestion(e.target.value)}
                                 placeholder="e.g. Will I get the job offer this week?"
@@ -279,8 +280,8 @@ export default function PrashnaEngine() {
                                 className="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-slate-200 focus:ring-2 focus:ring-amber-500 focus:border-transparent outline-none transition-all resize-none"
                             ></textarea>
                         </div>
-                        
-                        <button 
+
+                        <button
                             onClick={askPrashna}
                             disabled={loading}
                             className={`w-full py-3 rounded-lg font-bold text-lg shadow-lg transition-all flex justify-center items-center gap-2 ${loading ? 'bg-slate-700 text-slate-500 cursor-not-allowed' : 'bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white hover:shadow-amber-500/25'}`}
@@ -294,7 +295,7 @@ export default function PrashnaEngine() {
                                 <>✨ Ask the Stars</>
                             )}
                         </button>
-                        
+
                         {error && (
                             <div className="bg-red-900/30 border border-red-500/50 text-red-200 p-4 rounded-lg text-sm mt-4">
                                 {error}
@@ -302,7 +303,7 @@ export default function PrashnaEngine() {
                         )}
                     </div>
                 </div>
-                
+
                 {result && (
                     <div className="mt-8 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
                         <div className="bg-gradient-to-br from-indigo-900 to-slate-800 rounded-xl shadow-2xl p-6 border border-indigo-500/30 relative overflow-hidden">
@@ -312,7 +313,7 @@ export default function PrashnaEngine() {
                                 {result.reading}
                             </div>
                         </div>
-                        
+
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 text-center">
                                 <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">Querent (You)</div>
@@ -333,6 +334,24 @@ export default function PrashnaEngine() {
                                 <div className="font-bold text-indigo-400 text-sm">{new Date(result.timestamp).toLocaleTimeString()}</div>
                             </div>
                         </div>
+
+                        {result.chart && (
+                            <div className="mt-8 bg-slate-800 rounded-xl p-6 border border-slate-700 shadow-2xl">
+                                <h2 className="text-xl font-bold text-amber-400 mb-6 text-center border-b border-slate-700 pb-4">
+                                    <span className="mr-2">🌌</span> Visual Horary Chart
+                                </h2>
+                                <div className="flex justify-center">
+                                    <div className="w-full max-w-2xl bg-white p-4 rounded-lg shadow-inner">
+                                        <ZodiacRectSign
+                                            houses={result.chart.houses}
+                                            title="Prashna Kundali"
+                                            hideOuterRect={true}
+                                            scaleText={1.5}
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 )}
             </div>

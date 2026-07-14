@@ -99,6 +99,12 @@
     body {
       top: 0px !important;
     }
+
+    @media print {
+      .translate-wrapper {
+        display: none !important;
+      }
+    }
   </style>
 
   <!-- Clickable Vertical Translate Tab -->
@@ -141,7 +147,7 @@
     document.addEventListener('mousemove', (e) => {
       if (startY == null) return;
       const dy = e.clientY - startY;
-      
+
       // Only start dragging if moved more than 3 pixels
       if (Math.abs(dy) > 3) {
         isDragging = true;

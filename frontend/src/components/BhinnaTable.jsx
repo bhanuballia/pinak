@@ -1,83 +1,107 @@
 import React from 'react';
 
-const SIGNS = [
-  "Mesha", "Vrishabha", "Mithuna", "Karka", 
-  "Simha", "Kanya", "Tula", "Vrischika", 
-  "Dhanu", "Makara", "Kumbha", "Meena"
-];
+const BASE_SIGN_NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+const SOURCES = ["Saturn", "Jupiter", "Mars", "Sun", "Venus", "Mercury", "Moon", "Ascendant"];
 
-const SOURCES = ["Sun", "Moon", "Mercury", "Venus", "Mars", "Jupiter", "Saturn", "Ascendant"];
+const PLANET_COLORS = {
+  Saturn: "text-blue-700",
+  Jupiter: "text-amber-600",
+  Mars: "text-red-600",
+  Sun: "text-rose-700",
+  Venus: "text-fuchsia-600",
+  Mercury: "text-emerald-700",
+  Moon: "text-slate-800",
+  Ascendant: "text-amber-800"
+};
 
-const BhinnaTable = ({ planet, breakdown }) => {
+const BhinnaTable = ({ planet, breakdown, startSign = 1 }) => {
   // breakdown structure: { signIndex: { sourcePlanet: 1|0 } }
-  
+
   if (!breakdown) return null;
 
-  // Calculate column totals
-  const columnTotals = {};
+  const displaySigns = [...BASE_SIGN_NUMBERS.slice(startSign - 1), ...BASE_SIGN_NUMBERS.slice(0, startSign - 1)];
+
+  // Calculate row totals (Totals for each Source)
+  const rowTotals = {};
   SOURCES.forEach(source => {
-    columnTotals[source] = 0;
+    rowTotals[source] = 0;
     for (let sign = 0; sign < 12; sign++) {
-      columnTotals[source] += breakdown[sign]?.[source] || 0;
+      rowTotals[source] += breakdown[sign]?.[source] || 0;
     }
   });
-  
+
+  // Calculate column totals (Totals for each Sign)
+  const columnTotals = {};
+  displaySigns.forEach((num) => {
+    const signIndex = num - 1;
+    columnTotals[signIndex] = 0;
+    SOURCES.forEach(source => {
+      columnTotals[signIndex] += breakdown[signIndex]?.[source] || 0;
+    });
+  });
+
   // Calculate grand total
-  const grandTotal = Object.values(columnTotals).reduce((a, b) => a + b, 0);
+  const grandTotal = Object.values(rowTotals).reduce((a, b) => a + b, 0);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-slate-200 overflow-hidden mb-8">
-      <div className="bg-slate-50 px-4 py-3 border-b border-slate-200">
-        <h3 className="font-black text-slate-800 text-lg">
-          {planet} (Bhinnashtaka Varga)
+    <div className="bg-white overflow-hidden mb-8 text-xs font-serif">
+      <div className="text-center mb-1">
+        <h3 className="font-bold text-red-700 text-base">
+          {planet}
         </h3>
       </div>
-      
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm text-center">
+
+      <div className="overflow-x-auto print:overflow-visible flex">
+        <table className="w-[700px] h-[300px] text-center table-auto border-collapse border-2 border-black">
           <thead>
-            <tr className="bg-white border-b border-slate-200 text-slate-700">
-              <th className="py-3 px-4 text-left font-bold border-r border-slate-100">Sign</th>
-              {SOURCES.map(source => (
-                <th key={source} className="py-3 px-2 font-bold border-r border-slate-100">
-                  {source}
+            <tr>
+              <th className="py-1 px-1 text-left font-normal border border-black w-24 align-top">
+                <div className="leading-tight">
+                  <div>{planet}</div>
+                  <div>Sign</div>
+                </div>
+              </th>
+              {displaySigns.map(num => (
+                <th key={num} className="py-1 px-1 font-normal border border-black w-6 text-black">
+                  {num}
                 </th>
               ))}
-              <th className="py-3 px-4 font-black">Total</th>
+              <th className="py-1 px-1 font-normal border border-black w-8"></th>
             </tr>
           </thead>
           <tbody>
-            {SIGNS.map((sign, index) => {
-              const signData = breakdown[index] || {};
-              // Calculate row total
-              const rowTotal = SOURCES.reduce((sum, source) => sum + (signData[source] || 0), 0);
-              
+            {SOURCES.map(source => {
+              const colorClass = PLANET_COLORS[source] || "text-black";
               return (
-                <tr key={sign} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                  <td className="py-2.5 px-4 text-left font-medium text-slate-600 border-r border-slate-100 bg-white">
-                    {sign}
+                <tr key={source}>
+                  <td className={`py-0.5 px-2 text-left border-r border-black font-medium ${colorClass}`}>
+                    {source === "Ascendant" ? "Lagna" : source}
                   </td>
-                  {SOURCES.map(source => (
-                    <td key={source} className="py-2.5 px-2 border-r border-slate-100 text-slate-700">
-                      {signData[source] ? "1" : ""}
-                    </td>
-                  ))}
-                  <td className="py-2.5 px-4 font-bold text-slate-800 bg-slate-50/50">
-                    {rowTotal}
+                  {displaySigns.map(num => {
+                    const sIdx = num - 1;
+                    const val = breakdown[sIdx]?.[source] || 0;
+                    return (
+                      <td key={num} className="py-1 px-1 border border-black text-slate-900">
+                        {val}
+                      </td>
+                    );
+                  })}
+                  <td className="py-0.5 px-1 border-r border-black text-black">
+                    {rowTotals[source]}
                   </td>
                 </tr>
               );
             })}
           </tbody>
           <tfoot>
-            <tr className="bg-slate-50 border-t-2 border-slate-200 font-bold text-slate-800">
-              <td className="py-3 px-4 text-left border-r border-slate-100">Total</td>
-              {SOURCES.map(source => (
-                <td key={source} className="py-3 px-2 border-r border-slate-100">
-                  {columnTotals[source]}
+            <tr className="font-bold border-t-2 border-black">
+              <td className="py-1 px-2 text-left border-r border-black text-black">Totals</td>
+              {displaySigns.map(num => (
+                <td key={num} className="py-1 px-1 font-bold border border-black text-black">
+                  {columnTotals[num - 1]}
                 </td>
               ))}
-              <td className="py-3 px-4 font-black text-indigo-700">
+              <td className="py-1 px-1 border-l-2 border-black text-black">
                 {grandTotal}
               </td>
             </tr>
@@ -89,3 +113,4 @@ const BhinnaTable = ({ planet, breakdown }) => {
 };
 
 export default BhinnaTable;
+

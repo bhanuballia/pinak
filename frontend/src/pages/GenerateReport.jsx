@@ -37,6 +37,7 @@ export default function GenerateReport() {
   const [timezonesError, setTimezonesError] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [reportSuccess, setReportSuccess] = useState(false);
+  const [showWelcomePoster, setShowWelcomePoster] = useState(true);
 
   // MongoDB state
   const [savedProfiles, setSavedProfiles] = useState([]);
@@ -250,6 +251,10 @@ export default function GenerateReport() {
     window.open('/?matchmaking=true', 'DivineCompatibility', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
   };
 
+  const handleOpenBiodata = () => {
+    window.open('/?biodata=true', 'BiodataGenerator', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no');
+  };
+
   const handleKnowIshtaDev = () => {
     if (!reportData) {
       setError("Please generate a report first.");
@@ -341,6 +346,21 @@ export default function GenerateReport() {
 
   const handleOpenPrashna = () => {
     const win = window.open('/?prashna=true', 'PrashnaEngine', 'width=1000,height=800,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenAshtamangala = () => {
+    const win = window.open('/?ashtamangala=true', 'AshtamangalaPrasna', 'width=1000,height=800,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenBTR = () => {
+    const win = window.open('/?btr=true', 'BTRWizard', 'width=1000,height=800,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenKPAstrology = () => {
+    const win = window.open('/?kp_astrology=true', 'KPEngine', 'width=1000,height=800,menubar=no,toolbar=no,location=no,status=no');
     if (win) win.focus();
   };
 
@@ -497,8 +517,78 @@ export default function GenerateReport() {
     if (win) win.focus();
   };
 
+  const handleOpenVastu = () => {
+    const params = new URLSearchParams({
+      vastu: 'true',
+      name: name || '',
+      date: date || '',
+      time: time || '',
+      lat: latLon?.lat || '',
+      lon: latLon?.lon || '',
+      tz: tzOffset || '5.5',
+      loc: latLon?.display_name || ''
+    });
+    const win = window.open(`/?${params.toString()}`, 'VastuAnalyzer', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenNumerology = () => {
+    const params = new URLSearchParams({
+      numerology: 'true',
+      name: name || '',
+      date: date || '',
+      time: time || '',
+      lat: latLon?.lat || '',
+      lon: latLon?.lon || '',
+      tz: tzOffset || '5.5',
+      loc: latLon?.display_name || ''
+    });
+    const win = window.open(`/?${params.toString()}`, 'NumerologyDashboard', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-6 relative">
+      {/* Welcome Poster Modal */}
+      {showWelcomePoster && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-in fade-in duration-300">
+          <div className="relative max-w-lg w-full bg-transparent animate-in zoom-in-95 duration-300 mt-16">
+
+            {/* Overlapping Circular Video Badge (Ganesh Ji position) */}
+            <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full border-4 border-amber-500 bg-white overflow-hidden shadow-2xl z-20 flex items-center justify-center">
+              <video
+                src="/deities/navgrah.mp4"
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            {/* Main Poster Content */}
+            <div className="relative rounded-3xl overflow-hidden border-4 border-amber-500 shadow-2xl bg-white flex flex-col">
+              <button
+                onClick={() => setShowWelcomePoster(false)}
+                className="absolute top-4 right-4 z-50 bg-black/60 hover:bg-black/80 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl font-bold transition-all shadow-lg hover:scale-110 active:scale-95 cursor-pointer"
+                title="Close"
+              >
+                ✖
+              </button>
+              <img
+                src="/deities/shekar4.png"
+                alt="Welcome Poster"
+                className="w-full h-auto object-contain"
+              />
+              <div className="w-full bg-amber-500 py-3 text-center text-black text-[25px] font-black uppercase tracking-widest border-t border-amber-600 shadow-inner">
+                "हमारे ज्योतिषाचार्य श्री चंद्रशेखर जी"
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
+
       {/* Success Toast */}
       {reportSuccess && (
         <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] animate-bounce">
@@ -673,7 +763,8 @@ export default function GenerateReport() {
                 onChange={(e) => setLanguageMode(e.target.value)}
                 className="mt-1 w-full border rounded p-2"
               >
-                <option value="english">{t('english_default')}</option>
+                <option value="english">{t('english_default', 'English (Default)')}</option>
+                <option value="hi">{t('hindi', 'Hindi (Native)')}</option>
               </select>
             </label>
           </div>
@@ -752,6 +843,18 @@ export default function GenerateReport() {
                   <span>💏</span> {t('match_making')}
                 </button>
                 <button
+                  onClick={() => window.open('/?compatibility-hub=true', 'LoveCalculator', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-100 text-black shadow hover:bg-rose-700 flex items-center gap-2"
+                >
+                  <span>💖</span> Love Calculator
+                </button>
+                <button
+                  onClick={handleOpenBiodata}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-emerald-100 text-black shadow hover:bg-emerald-600 flex items-center gap-2"
+                >
+                  <span>📋</span> Bio Data
+                </button>
+                <button
                   onClick={handleOpenAdvancedMuhurt}
                   className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-teal-100 text-black shadow hover:bg-teal-700 flex items-center gap-2"
                 >
@@ -765,6 +868,24 @@ export default function GenerateReport() {
                 className="px-4 py-1.5 rounded-full text-[15px]  font-bold transition-all bg-amber-100 text-black shadow hover:bg-amber-600 flex items-center gap-2"
               >
                 <span>🔮</span> {t('ask_prashna')}
+              </button>
+              <button
+                onClick={handleOpenAshtamangala}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-red-100 text-black shadow hover:bg-red-700 flex items-center gap-2"
+              >
+                <span>🐚</span> Astamangala Prasna
+              </button>
+              <button
+                onClick={handleOpenBTR}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-indigo-100 text-black shadow hover:bg-indigo-700 flex items-center gap-2"
+              >
+                <span>⏱️</span> Birth Time Rectification
+              </button>
+              <button
+                onClick={handleOpenKPAstrology}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-teal-100 text-black shadow hover:bg-teal-700 flex items-center gap-2"
+              >
+                <span>⭐</span> KP Astrology
               </button>
               <button
                 onClick={handleOpenNadi}
@@ -784,6 +905,45 @@ export default function GenerateReport() {
               >
                 <span>🌅</span> {t('brahma_muhurt')}
               </button>
+              <button
+                onClick={() => {
+                  const win = window.open('/?kurma_chakra=true', 'KurmaChakraViewer', 'width=1100,height=800,menubar=no,toolbar=no,location=no,status=no');
+                  if (win) win.focus();
+                }}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-indigo-100 text-black shadow hover:bg-indigo-700 flex items-center gap-2"
+              >
+                <span>🐢</span> Kurma Chakra
+              </button>
+              <button
+                onClick={() => {
+                  const win = window.open('/?chaitra_chart=true', 'ChaitraChartViewer', 'width=1200,height=800,menubar=no,toolbar=no,location=no,status=no');
+                  if (win) win.focus();
+                }}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-amber-100 text-black shadow hover:bg-amber-600 flex items-center gap-2"
+              >
+                <span>👑</span> Chaitra Chart (Yearly)
+              </button>
+              <button
+                onClick={() => {
+                  const win = window.open('/?sanghatta=true', 'SanghattaDashboard', 'width=1000,height=800,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes');
+                  if (win) win.focus();
+                }}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-100 text-black shadow hover:bg-rose-600 flex items-center gap-2"
+              >
+                <span>⚔️</span> Sanghatta Chakra
+              </button>
+              <button
+                onClick={handleOpenVastu}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-50 text-black shadow hover:bg-rose-600 flex items-center gap-2"
+              >
+                <span>🏡</span> Vastu Shastra
+              </button>
+              <button
+                onClick={handleOpenNumerology}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-50 text-black shadow hover:bg-rose-600 flex items-center gap-2"
+              >
+                <span>🔮</span> Numerology
+              </button>
 
             </div>
           </div>
@@ -796,6 +956,10 @@ export default function GenerateReport() {
               </div>
             </div>
           )}
+
+          <footer className="w-full text-center py-8 text-slate-500 text-xs font-semibold mt-12 border-t border-slate-100">
+            Copyright © 2026 Phanom Technologies. All Rights Reserved
+          </footer>
         </div>
       </div>
     </div>

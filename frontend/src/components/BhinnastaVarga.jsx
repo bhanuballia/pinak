@@ -28,7 +28,7 @@ export default function BhinnastaVarga({ data }) {
         time: bd.birth_time,
         lat: bd.lat,
         lon: bd.lon,
-        tz_offset: bd.tz_offset || 0,
+        tz_offset: (bd.tz_offset !== undefined && bd.tz_offset !== null && bd.tz_offset !== "") ? parseFloat(bd.tz_offset) : 5.5,
       };
     } else {
       try {
@@ -42,7 +42,7 @@ export default function BhinnastaVarga({ data }) {
               time: bd.birth_time,
               lat: bd.lat,
               lon: bd.lon,
-              tz_offset: bd.tz_offset || 0,
+              tz_offset: (bd.tz_offset !== undefined && bd.tz_offset !== null && bd.tz_offset !== "") ? parseFloat(bd.tz_offset) : 5.5,
             };
           }
         }

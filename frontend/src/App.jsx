@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { fetchReportData } from './services/api';
 import GenerateReport from './pages/GenerateReport';
 import MatchmakingPage from './pages/matchmaking/MatchmakingPage';
+import CompatibilityHub from './pages/compatibility/CompatibilityHub';
+import BiodataGenerator from './pages/biodata/BiodataGenerator';
 import InteractiveWorksheet from './components/InteractiveWorksheet';
 import IshtaDevViewer from './components/IshtaDevViewer';
 import ClassicLayoutViewer from './components/ClassicLayoutViewer';
@@ -49,6 +52,12 @@ import SarvatobhadraDashboard from './pages/SarvatobhadraDashboard';
 import D108Dashboard from './components/D108Dashboard';
 import AyanamshaDashboard from './components/AyanamshaDashboard';
 import SanghattaDashboard from './components/SanghattaDashboard';
+import KotaChakraViewer from './components/KotaChakraViewer';
+import KurmaChakraViewer from './components/KurmaChakraViewer';
+import ChaitraChartViewer from './components/ChaitraChartViewer';
+import MedicalAstrologyDashboard from './components/MedicalAstrologyDashboard';
+import DoshaDashboard from './components/DoshaDashboard';
+import DigbalaCompass from './components/DigbalaCompass';
 import KarakaDashboard from './components/KarakaDashboard';
 import TithiDashboard from './components/TithiDashboard';
 import SolarReturnViewer from './components/SolarReturnViewer';
@@ -60,7 +69,6 @@ import TajikaYogasViewer from './components/TajikaYogasViewer';
 import TripatakiChakraViewer from './components/TripatakiChakraViewer';
 import KalachakraViewer from './components/KalachakraViewer';
 import LongevityViewer from './components/LongevityViewer';
-
 import ZodiacPDFchart from './components/ZodiacPDFchart';
 import VarshaphalaDetailedCharts from './components/VarshaphalaDetailedCharts';
 import AnimatedTransitsViewer from './components/AnimatedTransitsViewer';
@@ -73,6 +81,7 @@ import BhriguBinduAnalysis from './components/BhriguBinduAnalysis';
 import AdvancedMuhurtaSearch from './components/AdvancedMuhurtaSearch';
 import NotificationManager from './components/NotificationManager';
 import PrashnaEngine from './components/PrashnaEngine';
+import KPEngine from './components/KPEngine';
 import NadiViewer from './components/NadiViewer';
 import MantraTracker from './components/MantraTracker';
 import SynastryDashboard from './components/SynastryDashboard';
@@ -80,6 +89,12 @@ import BrahmaMuhurtViewer from './components/BrahmaMuhurtViewer';
 import NamingCalculator from './components/NamingCalculator';
 import DasaTimeline from './components/DasaTimeline';
 import DeepHoroscopeViewer from './components/DeepHoroscopeViewer.jsx';
+import AshtamangalaPrasna from './components/AshtamangalaPrasna';
+import BTRWizard from './components/BTRWizard';
+import AdvancedJaiminiDashboard from './components/AdvancedJaiminiDashboard';
+import AyurdayaViewer from './components/AyurdayaViewer';
+import VastuAnalyzer from './pages/VastuAnalyzer';
+import NumerologyDashboard from './pages/NumerologyDashboard';
 function App() {
     useWindowNavigation();
     const [isWorksheetMode, setIsWorksheetMode] = useState(false);
@@ -126,10 +141,18 @@ function App() {
     const [moonSignMode, setMoonSignMode] = useState(false);
     const [sadesatiReportMode, setSadesatiReportMode] = useState(false);
     const [matchmakingMode, setMatchmakingMode] = useState(false);
+    const [compatibilityHubMode, setCompatibilityHubMode] = useState(false);
+    const [biodataMode, setBiodataMode] = useState(false);
     const [sbcGridMode, setSbcGridMode] = useState(false);
     const [sbcDashboardMode, setSbcDashboardMode] = useState(false);
     const [d108Mode, setD108Mode] = useState(false);
     const [ayanamshaMode, setAyanamshaMode] = useState(false);
+    const [kotaChakraMode, setKotaChakraMode] = useState(false);
+    const [kurmaChakraMode, setKurmaChakraMode] = useState(false);
+    const [chaitraChartMode, setChaitraChartMode] = useState(false);
+    const [medicalAstrologyMode, setMedicalAstrologyMode] = useState(false);
+    const [doshaMode, setDoshaMode] = useState(false);
+    const [digbalaMode, setDigbalaMode] = useState(false);
     const [sanghattaMode, setSanghattaMode] = useState(false);
     const [karakaMode, setKarakaMode] = useState(false);
     const [tithiMode, setTithiMode] = useState(false);
@@ -160,6 +183,12 @@ function App() {
     const [astroTmMode, setAstroTmMode] = useState(false);
     const [deepHoroscopeMode, setDeepHoroscopeMode] = useState(false);
     const [deepHoroscopeType, setDeepHoroscopeType] = useState(null);
+    const [ashtamangalaMode, setAshtamangalaMode] = useState(false);
+    const [btrMode, setBtrMode] = useState(false);
+    const [advancedJaiminiMode, setAdvancedJaiminiMode] = useState(false);
+    const [ayurdayaMode, setAyurdayaMode] = useState(false);
+    const [vastuMode, setVastuMode] = useState(false);
+    const [numerologyMode, setNumerologyMode] = useState(false);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -167,19 +196,55 @@ function App() {
         // Define oracle categories that should trigger OracleViewer
         const categories = [
             'mental_peace', 'home_peace',
-            'manglik', 'kalsarp', 'pitra', 'sadesati', 'rahu', 'ketu', 'loshu'
+            'manglik', 'kalsarp', 'pitra', 'sadesati', 'rahu', 'ketu', 'loshu', 'business_naming'
         ];
 
         if (params.get('worksheet') === 'true') {
             setIsWorksheetMode(true);
             const fs = params.get('fullScreen');
             if (fs) setFullScreenParam(fs);
-            const savedData = localStorage.getItem('worksheetData');
-            if (savedData) {
-                try {
-                    setWorksheetData(JSON.parse(savedData));
-                } catch (e) {
-                    console.error("Failed to parse worksheet data", e);
+
+            const urlDate = params.get("date");
+            const urlTime = params.get("time");
+            const urlLat = params.get("lat");
+            const urlLon = params.get("lon");
+            const urlName = params.get("name") || "";
+            const urlTz = params.get("tz_offset");
+            const urlLocName = params.get("location_name") || "Birth Place";
+            const urlGender = params.get("gender") || "Male";
+
+            if (urlDate && urlTime && urlLat && urlLon) {
+                const tzVal = urlTz ? parseFloat(urlTz) : 5.5;
+                const payload = {
+                    name: urlName,
+                    date: urlDate,
+                    time: urlTime,
+                    tz_offset: tzVal,
+                    lat: parseFloat(urlLat),
+                    lon: parseFloat(urlLon),
+                    style: "minimal",
+                    language: "english",
+                    gender: urlGender,
+                    location_name: urlLocName,
+                };
+                
+                (async () => {
+                    try {
+                        const detailedData = await fetchReportData(payload);
+                        localStorage.setItem('worksheetData', JSON.stringify(detailedData));
+                        setWorksheetData(detailedData);
+                    } catch (e) {
+                        console.error("Failed to dynamically fetch/save report data:", e);
+                    }
+                })();
+            } else {
+                const savedData = localStorage.getItem('worksheetData');
+                if (savedData) {
+                    try {
+                        setWorksheetData(JSON.parse(savedData));
+                    } catch (e) {
+                        console.error("Failed to parse worksheet data", e);
+                    }
                 }
             }
         } else if (params.get('transit_compare') === 'true') {
@@ -386,6 +451,26 @@ function App() {
             setMonthlyPanchangMode(true);
         } else if (params.get('horary') === 'true') {
             setHoraryMode(true);
+        } else if (params.get('btr') === 'true') {
+            setBtrMode(true);
+        } else if (params.get('jaimini_advanced') === 'true') {
+            setAdvancedJaiminiMode(true);
+            const savedData = localStorage.getItem('worksheetData');
+            if (savedData) {
+                try {
+                    setWorksheetData(JSON.parse(savedData));
+                } catch (e) { }
+            }
+        } else if (params.get('ayurdaya') === 'true') {
+            setAyurdayaMode(true);
+            const savedData = localStorage.getItem('worksheetData');
+            if (savedData) {
+                try {
+                    setWorksheetData(JSON.parse(savedData));
+                } catch (e) { }
+            }
+        } else if (params.get('ashtamangala') === 'true') {
+            setAshtamangalaMode(true);
         } else if (params.get('chakra') === 'true') {
             setChakraMode(true);
         } else if (params.get('yantra') === 'true') {
@@ -418,6 +503,10 @@ function App() {
             setSadesatiReportMode(true);
         } else if (params.get('matchmaking') === 'true') {
             setMatchmakingMode(true);
+        } else if (params.get('compatibility-hub') === 'true') {
+            setCompatibilityHubMode(true);
+        } else if (params.get('biodata') === 'true') {
+            setBiodataMode(true);
         } else if (params.get('sbc') === 'true') {
             setSbcGridMode(true);
         } else if (params.get('sbc_dashboard') === 'true') {
@@ -432,6 +521,18 @@ function App() {
             setD108Mode(true);
         } else if (params.get('ayanamsha') === 'true') {
             setAyanamshaMode(true);
+        } else if (params.get('kota_chakra') === 'true') {
+            setKotaChakraMode(true);
+        } else if (params.get('kurma_chakra') === 'true') {
+            setKurmaChakraMode(true);
+        } else if (params.get('chaitra_chart') === 'true') {
+            setChaitraChartMode(true);
+        } else if (params.get('medical_astrology') === 'true') {
+            setMedicalAstrologyMode(true);
+        } else if (params.get('dosha') === 'true') {
+            setDoshaMode(true);
+        } else if (params.get('digbala') === 'true') {
+            setDigbalaMode(true);
         } else if (params.get('sanghatta') === 'true') {
             setSanghattaMode(true);
         } else if (params.get('karaka') === 'true') {
@@ -444,6 +545,10 @@ function App() {
                     setWorksheetData(JSON.parse(savedData));
                 } catch (e) { }
             }
+        } else if (params.get('vastu') === 'true') {
+            setVastuMode(true);
+        } else if (params.get('numerology') === 'true') {
+            setNumerologyMode(true);
         } else if (params.get('solar_return') === 'true') {
             setSolarReturnMode(true);
         } else if (params.get('daily_solar') === 'true') {
@@ -605,6 +710,22 @@ function App() {
         return <Prashna />;
     }
 
+    if (ashtamangalaMode) {
+        return <AshtamangalaPrasna />;
+    }
+
+    if (btrMode) {
+        return <BTRWizard />;
+    }
+
+    if (advancedJaiminiMode) {
+        return <AdvancedJaiminiDashboard data={worksheetData} />;
+    }
+
+    if (ayurdayaMode) {
+        return <AyurdayaViewer data={worksheetData} />;
+    }
+
     if (chakraMode) {
         return <Chakra />;
     }
@@ -613,6 +734,7 @@ function App() {
         return <Remedy />;
     }
     const isPrashnaMode = new URLSearchParams(window.location.search).get('prashna') === 'true';
+    const isKPAstrologyMode = new URLSearchParams(window.location.search).get('kp_astrology') === 'true';
     const isNadiMode = new URLSearchParams(window.location.search).get('nadi') === 'true';
     const isMantraMode = new URLSearchParams(window.location.search).get('mantra') === 'true';
     const isSynastryMode = new URLSearchParams(window.location.search).get('synastry') === 'true';
@@ -653,8 +775,16 @@ function App() {
         return <PrashnaEngine />;
     }
 
+    if (isKPAstrologyMode) {
+        return <KPEngine />;
+    }
+
     if (matchmakingMode) {
         return <MatchmakingPage />;
+    }
+
+    if (compatibilityHubMode) {
+        return <CompatibilityHub />;
     }
 
     if (ishtaDevMode) {
@@ -711,6 +841,9 @@ function App() {
 
     if (matchmakingMode) {
         return <MatchmakingPage />;
+    }
+    if (biodataMode) {
+        return <BiodataGenerator />;
     }
 
     if (sbcGridMode) {
@@ -813,13 +946,61 @@ function App() {
         );
     }
 
+    if (kotaChakraMode) {
+        return (
+            <div className="p-4 bg-slate-900 min-h-screen">
+                <KotaChakraViewer />
+            </div>
+        );
+    }
+
+    if (kurmaChakraMode) {
+        return (
+            <KurmaChakraViewer />
+        );
+    }
+
+    if (chaitraChartMode) {
+        return (
+            <ChaitraChartViewer />
+        );
+    }
+
+    if (medicalAstrologyMode) {
+        return (
+            <MedicalAstrologyDashboard />
+        );
+    }
+
+    if (doshaMode) {
+        return (
+            <DoshaDashboard />
+        );
+    }
+
+    if (digbalaMode) {
+        return (
+            <DigbalaCompass />
+        );
+    }
+
     if (sanghattaMode) {
         return (
-            <div className="min-h-screen bg-gray-50 flex justify-center py-10">
-                <div className="w-full max-w-7xl">
-                    <SanghattaDashboard />
-                </div>
+            <div className="h-screen w-full bg-slate-900 overflow-hidden">
+                <SanghattaDashboard />
             </div>
+        );
+    }
+
+    if (vastuMode) {
+        return (
+            <VastuAnalyzer />
+        );
+    }
+
+    if (numerologyMode) {
+        return (
+            <NumerologyDashboard />
         );
     }
 

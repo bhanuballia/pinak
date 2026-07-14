@@ -6,14 +6,14 @@ const MarriageTimeline = ({ report }) => {
   const years = timing.favorable_years || [];
 
   return (
-    <div className="bg-purple-900/20 p-6 rounded-[2rem] border border-purple-500/20 backdrop-blur-md relative overflow-hidden">
+    <div className="bg-purple-900/80 p-6 rounded-[2rem] border border-purple-500/20 backdrop-blur-md relative overflow-hidden">
       <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
-      
+
       <div className="flex items-center space-x-3 mb-6 relative z-10">
         <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-400">
           ⏳
         </div>
-        <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-purple-300">
+        <h4 className="text-[14px] font-black uppercase tracking-[0.3em] text-purple-300">
           Marriage Timeline
         </h4>
       </div>
@@ -27,7 +27,7 @@ const MarriageTimeline = ({ report }) => {
                 </div>
                 <div className="w-[calc(100%-2.5rem)] md:w-[calc(50%-1.25rem)] p-3 rounded-xl bg-white/5 border border-purple-500/10 shadow-sm">
                   <div className="font-bold text-white text-lg">{year}</div>
-                  <div className="text-[9px] text-purple-300 uppercase tracking-widest mt-1">High Probability Window</div>
+                  <div className="text-[12px] text-black font-bold uppercase tracking-widest mt-1">High Probability Window</div>
                 </div>
               </div>
             ))}

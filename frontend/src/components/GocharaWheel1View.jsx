@@ -96,7 +96,7 @@ export default function GocharaWheel1View({ data }) {
         let birthDetails = null;
         if (data && data.basic_details) {
             const bd = data.basic_details;
-            birthDetails = { date: bd.birth_date, time: bd.birth_time, lat: bd.lat, lon: bd.lon, tz_offset: bd.tz_offset || 0 };
+            birthDetails = { date: bd.birth_date, time: bd.birth_time, lat: bd.lat, lon: bd.lon, tz_offset: (bd.tz_offset !== undefined && bd.tz_offset !== null && bd.tz_offset !== "") ? parseFloat(bd.tz_offset) : 5.5 };
         } else {
             try {
                 const stored = localStorage.getItem('worksheetData');
@@ -104,7 +104,7 @@ export default function GocharaWheel1View({ data }) {
                     const parsed = JSON.parse(stored);
                     if (parsed.basic_details) {
                         const bd = parsed.basic_details;
-                        birthDetails = { date: bd.birth_date, time: bd.birth_time, lat: bd.lat, lon: bd.lon, tz_offset: bd.tz_offset || 0 };
+                        birthDetails = { date: bd.birth_date, time: bd.birth_time, lat: bd.lat, lon: bd.lon, tz_offset: (bd.tz_offset !== undefined && bd.tz_offset !== null && bd.tz_offset !== "") ? parseFloat(bd.tz_offset) : 5.5 };
                     }
                 }
             } catch (e) { /* ignore */ }

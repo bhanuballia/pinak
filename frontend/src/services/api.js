@@ -70,21 +70,21 @@ export async function createReport(payload) {
 // Static timezone list — same 15 zones the backend serves.
 // Hardcoded here to eliminate the network round-trip entirely.
 const STATIC_TIMEZONES = [
-  { name: "UTC",                  tz_offset_hours: 0    },
-  { name: "Asia/Kolkata",         tz_offset_hours: 5.5  },
-  { name: "Asia/Dubai",           tz_offset_hours: 4    },
-  { name: "Asia/Singapore",       tz_offset_hours: 8    },
-  { name: "Asia/Tokyo",           tz_offset_hours: 9    },
-  { name: "Europe/London",        tz_offset_hours: 1    },
-  { name: "Europe/Paris",         tz_offset_hours: 2    },
-  { name: "Europe/Berlin",        tz_offset_hours: 2    },
-  { name: "America/New_York",     tz_offset_hours: -4   },
-  { name: "America/Chicago",      tz_offset_hours: -5   },
-  { name: "America/Denver",       tz_offset_hours: -6   },
-  { name: "America/Los_Angeles",  tz_offset_hours: -7   },
-  { name: "Australia/Sydney",     tz_offset_hours: 10   },
-  { name: "Australia/Perth",      tz_offset_hours: 8    },
-  { name: "Pacific/Auckland",     tz_offset_hours: 12   },
+  { name: "UTC", tz_offset_hours: 0 },
+  { name: "Asia/Kolkata", tz_offset_hours: 5.5 },
+  { name: "Asia/Dubai", tz_offset_hours: 4 },
+  { name: "Asia/Singapore", tz_offset_hours: 8 },
+  { name: "Asia/Tokyo", tz_offset_hours: 9 },
+  { name: "Europe/London", tz_offset_hours: 1 },
+  { name: "Europe/Paris", tz_offset_hours: 2 },
+  { name: "Europe/Berlin", tz_offset_hours: 2 },
+  { name: "America/New_York", tz_offset_hours: -4 },
+  { name: "America/Chicago", tz_offset_hours: -5 },
+  { name: "America/Denver", tz_offset_hours: -6 },
+  { name: "America/Los_Angeles", tz_offset_hours: -7 },
+  { name: "Australia/Sydney", tz_offset_hours: 10 },
+  { name: "Australia/Perth", tz_offset_hours: 8 },
+  { name: "Pacific/Auckland", tz_offset_hours: 12 },
 ];
 
 // Returns instantly — no network call needed since the list is static.
@@ -162,8 +162,8 @@ export async function fetchLalKitabRemedies(planet) {
   const url = `${BASE}/api/lalkitab/remedies/${planet}`;
   const res = await fetch(url);
   if (!res.ok) {
-        if (res.status === 404) return null;
-        throw new Error("Failed to fetch Lal Kitab remedies");
+    if (res.status === 404) return null;
+    throw new Error("Failed to fetch Lal Kitab remedies");
   }
   return res.json();
 }
@@ -171,7 +171,7 @@ export async function fetchLalKitabRemedies(planet) {
 export async function fetchDailyPanchang(lat, lon, tz, dateStr = "") {
   let url = `${BASE}/api/panchang/daily?lat=${lat}&lon=${lon}&tz=${tz}`;
   if (dateStr) {
-      url += `&date=${dateStr}`;
+    url += `&date=${dateStr}`;
   }
   const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch Daily Panchang");
@@ -322,5 +322,48 @@ export async function fetchChildrenHealthInsights() {
   const url = `${BASE}/api/family-health/children`;
   const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch Children's Health insights");
+  return res.json();
+}
+
+export async function fetchVastuAnalysis(payload) {
+  const url = `${BASE}/api/vastu/analyze`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to fetch Vastu Analysis");
+  }
+  return res.json();
+
+}
+
+export async function fetchAISectionInsight(payload) {
+  const url = `${BASE}/api/ai-section-insights`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to fetch AI section insights");
+  }
+  return res.json();
+}
+
+export async function fetchAshtamangala(payload) {
+  const url = `${BASE}/api/prashna/ashtamangala-ask`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to fetch Ashtamangala");
+  }
   return res.json();
 }

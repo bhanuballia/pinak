@@ -1,4 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
+import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
+import AIInsightBox from './AIInsightBox';
+import { createReport } from '../services/api';
+
+const A4Page = ({ children }) => (
+  <div className="a4-page w-[210mm] min-h-[297mm] bg-white mx-auto shadow-2xl border border-gray-200 relative overflow-visible px-[1in] pt-[0.4in] pb-[1in] print:shadow-none print:border-none print:m-0 print:w-auto print:min-h-0 print:p-0 print:break-after-page" style={{ boxSizing: 'border-box', pageBreakAfter: 'always', breakAfter: 'page' }}>
+    {children}
+  </div>
+);
+
+
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import ZodiacRectSign from './ZodiacPDFchart';
 import AshtakavargaChart from './AshtakavargaChart';
@@ -74,7 +87,7 @@ const getSAVBand = (score) => {
 };
 
 const SectionTitle = ({ children }) => (
-  <h2 className="section-heading text-2xl font-serif font-bold text-indigo-900 border-b-2 border-indigo-100 pb-2 mb-4 mt-8 print:break-before-page" style={{ pageBreakBefore: 'always', backgroundColor: 'white' }}>
+  <h2 className="section-heading text-2xl font-serif font-bold text-indigo-900 border-b-2 border-indigo-100 pb-2 mb-4 mt-8" style={{ backgroundColor: 'white' }}>
     {children}
   </h2>
 );
@@ -146,9 +159,370 @@ const OPTIONAL_SECTIONS = [
 
 const KundaliReportView = ({ data }) => {
   const [activeSections, setActiveSections] = useState({});
+  const [aiInsightActive, setAiInsightActive] = useState({});
+  const [analysisLang, setAnalysisLang] = useState('en');
+
+  const [layoutOrder, setLayoutOrder] = useState([
+    'cover', 'invocation_sloka', 'classic_cover', 'basic_and_planets', 'd1_and_strengths', 'd1_analysis',
+    'chart_analysis', 'dasha_timeline', 'auspicious_factors', 'yogas', 'dasha',
+    'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27',
+    'd30', 'd40', 'd45', 'd60', 'ashtakavarga', 'destiny_timeline', 'cosmic_life_map',
+    'destiny_matrix', 'wealth_analysis', 'life_events', 'dosha', 'remedies', 'soul_archetype',
+    'akashic', 'omniscient', 'quantum', 'dimensional', 'astral', 'cosmic_core', 'maharishi',
+    'brahma', 'paramarshi', 'planetary_wisdom', 'oracle', 'karma_timeline',
+    'life_events_narrative', 'probability_matrix', 'neural_summary', 'destiny_signature',
+    'life_vector', 'sarva_chancha', 'bhinna_tables', 'ashtakavarga_reduction', 'vimsopaka', 'gemstones',
+    'life_analysis', 'rituals', 'predictive_logic', 'universal_wisdom', 'master_engine', 'back_cover'
+  ]);
+
+  const onDragEnd = (result) => {
+    if (!result.destination) return;
+    const items = Array.from(layoutOrder);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setLayoutOrder(items);
+  };
+
+  const isSectionActive = (id) => {
+    switch (id) {
+      case 'cover':
+      case 'invocation_sloka':
+      case 'classic_cover':
+      case 'basic_and_planets':
+      case 'd1_and_strengths':
+      case 'd1_analysis':
+      case 'chart_analysis':
+      case 'back_cover':
+        return true;
+      case 'dasha_timeline':
+        return data?.dasha && data?.dasha?.list;
+      case 'sarva_chancha':
+      case 'bhinna_tables':
+        return activeSections.sarva_chancha && (data?.ashtakavarga || (data?.master_engine && data?.master_engine?.ashtakavarga));
+      case 'ashtakavarga_reduction':
+        return activeSections.ashtakavarga_reduction && data?.av_reductions && Object.keys(data.av_reductions).length > 0;
+      case 'vimsopaka':
+        return activeSections.vimsopaka && data?.vimsopaka_assessment;
+      case 'gemstones':
+        return activeSections.gemstones;
+      case 'life_analysis':
+        return activeSections.life_analysis && data?.ai_life_analysis && Object.keys(data.ai_life_analysis).length > 0;
+      case 'master_engine':
+        return activeSections.master_engine && data?.master_engine;
+      case 'rituals': return activeSections.rituals;
+      case 'predictive_logic': return activeSections.predictive_logic;
+      case 'universal_wisdom': return activeSections.universal_wisdom;
+      default:
+        return !!activeSections[id];
+    }
+  };
+
+  const getSectionContent = (id) => {
+    switch (id) {
+      case 'cover': return (
+        <A4Page>
+          <div className="min-h-[85vh] flex flex-col items-center justify-center text-center mb-16 pb-12 border-b-4 border-indigo-900 relative z-10 print:h-full print:border-b-0 print:mb-0 print:pb-0">
+            <div className="w-36 h-36 mx-auto bg-[#ff6347] rounded-full flex items-center justify-center text-white shadow-xl border-4 border-[#ffbeb2] mb-8 print:mb-2 ring-4 ring-[#ff6347]/30">
+              <span className="text-7xl font-serif">ॐ</span>
+            </div>
+            <h2 className="text-3xl font-bold text-amber-600 mb-2">AstroConsult</h2>
+            <p className="text-sm font-bold text-slate-800 mb-16">www.astroconsult.com</p>
+            <h1 className="text-4xl md:text-5xl font-serif font-black text-amber-500 mb-20 uppercase tracking-widest">Vedic Astrology Report</h1>
+            <div className="text-left max-w-lg mx-auto w-full bg-white/80 p-8 rounded-xl border border-slate-200 mb-20 shadow-sm print:bg-transparent print:border-none print:shadow-none print:break-inside-avoid">
+              <div className="mb-4 text-lg">
+                <span className="font-bold text-slate-900 inline-block w-32">Name:</span>
+                <span className="text-slate-800">{data.meta?.name || 'User'}</span>
+              </div>
+              <div className="mb-4 text-lg">
+                <span className="font-bold text-slate-900 inline-block w-32">Date of Birth:</span>
+                <span className="text-slate-800">{data.meta?.birth_datetime || '-'}</span>
+              </div>
+              <div className="text-lg">
+                <span className="font-bold text-slate-900 inline-block w-32">Birth Place:</span>
+                <span className="text-slate-800">{data.meta?.location || '-'}</span>
+              </div>
+            </div>
+            <p className="text-sm text-slate-600 mt-auto">Generated using Vedic Astrology Engine</p>
+          </div>
+        </A4Page>
+      );
+      case 'invocation_sloka': return (
+        <A4Page>
+          <div className="min-h-[85vh] flex flex-col items-center justify-center text-center p-12 print:h-full print:bg-transparent">
+            <h2 className="text-3xl font-bold text-orange-800 mb-12 border-b-2 border-orange-200 pb-4 font-serif">मंगल कामना</h2>
+
+            <div className="mb-12">
+              <p className="text-2xl md:text-3xl font-bold text-red-900 mb-4 leading-relaxed font-serif">
+                आदित्यादिग्रहाः सर्वे नक्षत्राणि च राशयः।<br />
+                आयुः कुर्वन्तु ते नित्यं यस्यैषा जन्मपत्रिका॥
+              </p>
+            </div>
+
+            <div className="max-w-2xl text-left space-y-6">
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-orange-100 print:border-none print:shadow-none">
+                <p className="text-sm uppercase tracking-widest text-orange-600 font-bold mb-2">Meaning (English)</p>
+                <p className="text-gray-800 font-serif leading-relaxed text-lg italic">
+                  "May all the planetary bodies (like the Sun), the constellations, and the zodiac signs perpetually bless and protect the longevity of the person to whom this birth chart (Janmapatri) belongs."
+                </p>
+              </div>
+
+              <div className="bg-white p-6 rounded-lg shadow-sm border border-orange-100 print:border-none print:shadow-none">
+                <p className="text-sm uppercase tracking-widest text-orange-600 font-bold mb-2">भावार्थ (Hindi)</p>
+                <p className="text-gray-800 font-serif leading-relaxed text-lg">
+                  "सूर्य आदि सभी ग्रह, नक्षत्र और राशियां जिस व्यक्ति की यह जन्मपत्रिका है, उसे हमेशा उत्तम आयु (दीर्घायु) प्रदान करें।"
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-16 w-20 h-20 opacity-30 mx-auto flex items-center justify-center">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-orange-800 w-full h-full">
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="4"></circle>
+                <line x1="21.17" y1="8" x2="12" y2="8"></line>
+                <line x1="3.95" y1="6.06" x2="8.54" y2="14"></line>
+                <line x1="10.88" y1="21.94" x2="15.46" y2="14"></line>
+              </svg>
+            </div>
+          </div>
+        </A4Page>
+      );
+      case 'classic_cover': return <A4Page>{renderClassicCoverPage()}</A4Page>;
+      case 'basic_and_planets': return (
+        <A4Page>
+          <SectionTitle>Birth Details & Demographics</SectionTitle>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 print:mb-2 bg-slate-50 p-6 rounded-lg border border-slate-200">
+            <div><p className="text-sm text-gray-500 uppercase font-bold">Ascendant</p><p className="font-medium text-lg">{data.meta?.ascendant || '-'}</p></div>
+            <div><p className="text-sm text-gray-500 uppercase font-bold">Moon Sign</p><p className="font-medium text-lg">{data.meta?.moon_sign || '-'}</p></div>
+            <div><p className="text-sm text-gray-500 uppercase font-bold">Nakshatra</p><p className="font-medium text-lg">{data.meta?.nakshatra || '-'}</p></div>
+            <div><p className="text-sm text-gray-500 uppercase font-bold">Gender</p><p className="font-medium text-lg">{data.meta?.gender || '-'}</p></div>
+          </div>
+
+          <h2 className="section-heading text-2xl font-serif font-bold text-indigo-900 border-b-2 border-indigo-100 pb-2 mb-4 mt-8" style={{ backgroundColor: 'white' }}>
+            Planetary Positions
+          </h2>
+          {renderPlanetTable()}
+        </A4Page>
+      );
+
+      case 'd1_analysis': return (
+        <>
+          {renderD1DetailedAnalysis()}
+        </>
+      );
+      case 'chart_analysis': return (
+        <A4Page>
+          <SectionTitle>Chart Analysis & Life Predictions</SectionTitle>
+          <AIInsightBox
+            sectionId="chart_analysis"
+            sectionTitle="Chart Analysis & Life Predictions"
+            chartData={data}
+            onInsightStateChange={(isActive) => setAiInsightActive(prev => ({ ...prev, chart_analysis: isActive }))}
+          />
+          {!aiInsightActive.chart_analysis && (
+            <>
+              <p className="text-gray-600 mb-6 print:mb-2 italic">The following analysis is derived from your D1 birth chart placements.</p>
+              {renderPredictions()}
+            </>
+          )}
+        </A4Page>
+      );
+      case 'd1_and_strengths': return (
+        <A4Page>
+          <SectionTitle>Birth Chart</SectionTitle>
+          {renderD1Chart()}
+          <h2 className="section-heading text-2xl font-serif font-bold text-indigo-900 border-b-2 border-indigo-100 pb-2 mb-2 print:mb-1 mt-4 print:mt-1" style={{ backgroundColor: 'white' }}>
+            Planetary Strengths (Shadbala)
+          </h2>
+          {renderStrengths()}
+        </A4Page>
+      );
+      case 'dasha_timeline': return (
+        <A4Page>
+          <SectionTitle>Vimshottari Dasha Life Timeline</SectionTitle>
+          <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2 overflow-hidden rounded-xl border border-slate-200 shadow-sm print:shadow-none print:border-none print:bg-transparent">
+            <VimshottariGridTimeline data={data} />
+          </div>
+        </A4Page>
+      );
+      case 'auspicious_factors': return <A4Page><SectionTitle>Auspicious Factors</SectionTitle><AIInsightBox sectionId="auspicious_factors" sectionTitle="Auspicious Factors" chartData={data} />{renderFavourable()}</A4Page>;
+      case 'yogas': return <A4Page><SectionTitle>Classical Yogas</SectionTitle>{renderYogas()}</A4Page>;
+      case 'dasha': return <A4Page><SectionTitle>Current Dasha (Planetary Periods)</SectionTitle>{renderDasha()}</A4Page>;
+      case 'd2': return <A4Page><SectionTitle>Hora Chart (D2 - Wealth & Finances)</SectionTitle>{renderD2Chart()}<VargaAnalysisPanel vargaKey="D2" vargaNum={2} /></A4Page>;
+      case 'd3': return <A4Page><SectionTitle>Drekkana Chart (D3 - Siblings & Courage)</SectionTitle>{renderD3Chart()}<VargaAnalysisPanel vargaKey="D3" vargaNum={3} /></A4Page>;
+      case 'd4': return <A4Page><SectionTitle>Chaturthamsha Chart (D4 - Fortune & Properties)</SectionTitle>{renderD4Chart()}<VargaAnalysisPanel vargaKey="D4" vargaNum={4} /></A4Page>;
+      case 'd5': return <A4Page><SectionTitle>Panchamsha Chart (D5 - Power & Authority)</SectionTitle>{renderD5Chart()}<VargaAnalysisPanel vargaKey="D5" vargaNum={5} /></A4Page>;
+      case 'd6': return <A4Page><SectionTitle>Shashthamsha Chart (D6 - Health & Enemies)</SectionTitle>{renderD6Chart()}<VargaAnalysisPanel vargaKey="D6" vargaNum={6} /></A4Page>;
+      case 'd7': return <A4Page><SectionTitle>Saptamsha Chart (D7 - Children & Progeny)</SectionTitle>{renderD7Chart()}<VargaAnalysisPanel vargaKey="D7" vargaNum={7} /></A4Page>;
+      case 'd8': return <A4Page><SectionTitle>Ashtamsha Chart (D8 - Longevity & Unexpected Events)</SectionTitle>{renderD8Chart()}<VargaAnalysisPanel vargaKey="D8" vargaNum={8} /></A4Page>;
+      case 'd9': return <A4Page><SectionTitle>Navamsha Chart (D9 - Marriage & Inner Self)</SectionTitle>{renderD9Chart()}<VargaAnalysisPanel vargaKey="D9" vargaNum={9} /></A4Page>;
+      case 'd10': return <A4Page><SectionTitle>Dashamsha Chart (D10 - Career & Profession)</SectionTitle>{renderD10Chart()}<VargaAnalysisPanel vargaKey="D10" vargaNum={10} /></A4Page>;
+      case 'd12': return <A4Page><SectionTitle>Dwadashamsha Chart (D12 - Parents & Ancestry)</SectionTitle>{renderD12Chart()}<VargaAnalysisPanel vargaKey="D12" vargaNum={12} /></A4Page>;
+      case 'd16': return <A4Page><SectionTitle>Shodashamsha Chart (D16 - Vehicles & Happiness)</SectionTitle>{renderD16Chart()}<VargaAnalysisPanel vargaKey="D16" vargaNum={16} /></A4Page>;
+      case 'd20': return <A4Page><SectionTitle>Vimshamsha Chart (D20 - Spiritual Progress)</SectionTitle>{renderD20Chart()}<VargaAnalysisPanel vargaKey="D20" vargaNum={20} /></A4Page>;
+      case 'd24': return <A4Page><SectionTitle>Chaturvimshamsha Chart (D24 - Education & Knowledge)</SectionTitle>{renderD24Chart()}<VargaAnalysisPanel vargaKey="D24" vargaNum={24} /></A4Page>;
+      case 'd27': return <A4Page><SectionTitle>Saptavimshamsha Chart (D27 - Strengths & Weaknesses)</SectionTitle>{renderD27Chart()}<VargaAnalysisPanel vargaKey="D27" vargaNum={27} /></A4Page>;
+      case 'd30': return <A4Page><SectionTitle>Trimshamsha Chart (D30 - Misfortunes & Evils)</SectionTitle>{renderD30Chart()}<VargaAnalysisPanel vargaKey="D30" vargaNum={30} /></A4Page>;
+      case 'd40': return <A4Page><SectionTitle>Khavedamsha Chart (D40 - Auspicious & Inauspicious Effects)</SectionTitle>{renderD40Chart()}<VargaAnalysisPanel vargaKey="D40" vargaNum={40} /></A4Page>;
+      case 'd45': return <A4Page><SectionTitle>Akshavedamsha Chart (D45 - General Indications)</SectionTitle>{renderD45Chart()}<VargaAnalysisPanel vargaKey="D45" vargaNum={45} /></A4Page>;
+      case 'd60': return <A4Page><SectionTitle>Shashtiamsha Chart (D60 - Past Life Karma & Micro-Level Destiny)</SectionTitle>{renderD60Chart()}<VargaAnalysisPanel vargaKey="D60" vargaNum={60} /></A4Page>;
+      case 'ashtakavarga': return <A4Page><SectionTitle>Sarvashtakavarga (Overall Strength Wheel)</SectionTitle>{renderAshtakavarga()}</A4Page>;
+      case 'destiny_timeline': return <A4Page><SectionTitle>Destiny Timeline (10-Year Forecast)</SectionTitle><AIInsightBox sectionId="destiny_timeline" sectionTitle="Destiny Timeline (10-Year Forecast)" chartData={data} />{renderDestinyTimeline()}{renderDestinyGraph()}</A4Page>;
+      case 'cosmic_life_map': return <A4Page><SectionTitle>5D Cosmic Life Map</SectionTitle><AIInsightBox sectionId="cosmic_life_map" sectionTitle="5D Cosmic Life Map" chartData={data} />{renderCosmicLifeMap()}</A4Page>;
+      case 'destiny_matrix': return <A4Page><SectionTitle>Destiny Matrix Visualizer</SectionTitle><AIInsightBox sectionId="destiny_matrix" sectionTitle="Destiny Matrix Visualizer" chartData={data} />{renderDestinyMatrixVisualizer()}</A4Page>;
+      case 'wealth_analysis': return <A4Page><SectionTitle>Wealth & Prosperity Analysis</SectionTitle><AIInsightBox sectionId="wealth_analysis" sectionTitle="Wealth & Prosperity Analysis" chartData={data} />{renderWealthPrediction()}</A4Page>;
+      case 'life_events': return <A4Page><SectionTitle>Life Event Predictions (2025-2035)</SectionTitle><AIInsightBox sectionId="life_events" sectionTitle="Life Event Predictions (2025-2035)" chartData={data} />{renderLifeEvents()}</A4Page>;
+      case 'dosha': return <A4Page><SectionTitle>Dosha Summary</SectionTitle><AIInsightBox sectionId="dosha" sectionTitle="Dosha Summary" chartData={data} />{renderDoshas()}{renderSadeSatiAnalysis()}</A4Page>;
+      case 'remedies': return <A4Page><SectionTitle>Recommended Remedies & Mitigation</SectionTitle><AIInsightBox sectionId="remedies" sectionTitle="Recommended Remedies & Mitigation" chartData={data} />{renderRemedies()}</A4Page>;
+      case 'soul_archetype': return <A4Page><SectionTitle>Soul Archetype & Destiny</SectionTitle><AIInsightBox sectionId="soul_archetype" sectionTitle="Soul Archetype & Destiny" chartData={data} />{renderSentient()}</A4Page>;
+      case 'akashic': return <A4Page><SectionTitle>Akashic Soul Record</SectionTitle><AIInsightBox sectionId="akashic" sectionTitle="Akashic Soul Record" chartData={data} />{renderAkashic()}</A4Page>;
+      case 'omniscient': return <A4Page><SectionTitle>Omniscient Analysis</SectionTitle><AIInsightBox sectionId="omniscient" sectionTitle="Omniscient Analysis" chartData={data} />{renderOmniscient()}</A4Page>;
+      case 'quantum': return <A4Page><SectionTitle>Quantum Forecast Analysis</SectionTitle><AIInsightBox sectionId="quantum" sectionTitle="Quantum Forecast Analysis" chartData={data} />{renderQuantum()}</A4Page>;
+      case 'dimensional': return <A4Page><SectionTitle>Dimensional Destiny Analysis</SectionTitle><AIInsightBox sectionId="dimensional" sectionTitle="Dimensional Destiny Analysis" chartData={data} />{renderDimensional()}</A4Page>;
+      case 'astral': return <A4Page><SectionTitle>Astral Matrix Destiny Analysis</SectionTitle><AIInsightBox sectionId="astral" sectionTitle="Astral Matrix Destiny Analysis" chartData={data} />{renderAstral()}</A4Page>;
+      case 'cosmic_core': return <A4Page><SectionTitle>Cosmic Core Destiny Analysis</SectionTitle><AIInsightBox sectionId="cosmic_core" sectionTitle="Cosmic Core Destiny Analysis" chartData={data} />{renderCosmicCore()}</A4Page>;
+      case 'maharishi': return <A4Page><SectionTitle>Maharishi Destiny Analysis</SectionTitle><AIInsightBox sectionId="maharishi" sectionTitle="Maharishi Destiny Analysis" chartData={data} />{renderMaharishi()}</A4Page>;
+      case 'brahma': return <A4Page><SectionTitle>Brahma Destiny Analysis</SectionTitle><AIInsightBox sectionId="brahma" sectionTitle="Brahma Destiny Analysis" chartData={data} />{renderBrahma()}</A4Page>;
+      case 'paramarshi': return <A4Page><SectionTitle>Paramarshi Advisor Analysis</SectionTitle><AIInsightBox sectionId="paramarshi" sectionTitle="Paramarshi Advisor Analysis" chartData={data} />{renderParamarshi()}</A4Page>;
+      case 'planetary_wisdom': return <A4Page><SectionTitle>Planetary Wisdom: Deep Placement Analysis</SectionTitle><AIInsightBox sectionId="planetary_wisdom" sectionTitle="Planetary Wisdom: Deep Placement Analysis" chartData={data} />{renderPlanetaryWisdom()}</A4Page>;
+      case 'oracle': return <A4Page><SectionTitle>Sage Insights & Divine Oracle</SectionTitle><AIInsightBox sectionId="oracle" sectionTitle="Sage Insights & Divine Oracle" chartData={data} />{renderOracle()}</A4Page>;
+      case 'karma_timeline': return <A4Page><SectionTitle>Advanced Karma Projection (2025-2045)</SectionTitle>{renderKarmaTimeline()}</A4Page>;
+      case 'life_events_narrative': return <A4Page><SectionTitle>Life Events Narrative: The Journey Ahead</SectionTitle>{renderLifeEventsNarrative()}</A4Page>;
+      case 'probability_matrix': return <A4Page><SectionTitle>Probability Matrix Engine</SectionTitle><AIInsightBox sectionId="probability_matrix" sectionTitle="Probability Matrix Engine" chartData={data} />{renderProbabilityMatrix()}</A4Page>;
+      case 'neural_summary': return <A4Page><SectionTitle>Cosmic Neural Summary</SectionTitle>{renderNeuralSummary()}</A4Page>;
+      case 'destiny_signature': return <A4Page><SectionTitle>Destiny Signature</SectionTitle>{renderDestinySignature()}</A4Page>;
+      case 'life_vector': return <A4Page><SectionTitle>AI Life Vector Analysis</SectionTitle><AIInsightBox sectionId="life_vector" sectionTitle="AI Life Vector Analysis" chartData={data} />{renderLifeVectorPredictions()}</A4Page>;
+      case 'sarva_chancha': return (
+        <>
+          <A4Page>
+            <SectionTitle>Sarva Chancha Chakra</SectionTitle>
+            <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2 overflow-hidden rounded-xl border border-slate-200 shadow-sm print:shadow-none print:border-gray-300">
+              <SarvaChanchaChakra avData={data.ashtakavarga || (data.master_engine && data.master_engine.ashtakavarga)} stacked={true} onlyChart={true} />
+            </div>
+          </A4Page>
+          <A4Page>
+            <SectionTitle>Prastarashtaka Varga (PAV)</SectionTitle>
+            <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2 overflow-hidden rounded-xl border border-slate-200 shadow-sm print:shadow-none print:border-gray-300">
+              <SarvaChanchaChakra avData={data.ashtakavarga || (data.master_engine && data.master_engine.ashtakavarga)} stacked={true} onlyTable={true} />
+            </div>
+          </A4Page>
+        </>
+      );
+      case 'bhinna_tables': return (
+        <A4Page>
+          <SectionTitle>Bhinnashtakavarga Detailed Tables</SectionTitle>
+          <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2 max-w-4xl mx-auto w-full">
+            {['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Ascendant'].map(planet => {
+              const ashtakavargaData = data.ashtakavarga || (data.master_engine && data.master_engine.ashtakavarga);
+              if (!ashtakavargaData?.bhinna_breakdown?.[planet]) return null;
+              return (
+                <div key={planet} className="mb-6 print:mb-2">
+                  <BhinnaTable planet={planet} breakdown={ashtakavargaData.bhinna_breakdown[planet]} />
+                </div>
+              );
+            })}
+          </div>
+        </A4Page>
+      );
+      case 'ashtakavarga_reduction': return (
+        <>
+          <SectionTitle>Ashtakavarga Reduction</SectionTitle>
+          <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2 overflow-hidden rounded-xl border border-slate-200 shadow-sm print:shadow-none print:break-inside-avoid print:border-gray-300">
+            <AsthavargaReduction data={data} />
+          </div>
+        </>
+      );
+      case 'vimsopaka': return (
+        <>
+          <SectionTitle>Varga Strength Matrix (Vimsopaka Bala)</SectionTitle>
+          <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2 overflow-hidden rounded-xl border border-slate-200 shadow-sm print:shadow-none print:break-inside-avoid print:border-gray-300 bg-white min-h-[300px] print:break-inside-avoid">
+            <VimsopakaAssessment data={data} />
+          </div>
+        </>
+      );
+      case 'gemstones': return (
+        <A4Page>
+          <SectionTitle>Recommended Gemstones (Ratna)</SectionTitle>
+          {renderGemstones()}
+        </A4Page>
+      );
+      case 'life_analysis': return (
+        <>
+          <SectionTitle>Detailed Life Analysis</SectionTitle>
+          <AIInsightBox sectionId="life_analysis" sectionTitle="Detailed Life Analysis" chartData={data} />
+          <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
+            {LIFE_ANALYSIS_SECTIONS.map((sec, idx) => {
+              const content = data.ai_life_analysis[sec.key];
+              if (!content) return null;
+              return (
+                <div key={idx} className="mb-6 print:mb-2 p-6 bg-white rounded-xl shadow-sm border border-slate-200">
+                  <h4 className="text-xl font-bold text-indigo-900 mb-3 flex items-center gap-3">
+                    <span className="text-2xl">{sec.icon}</span> {sec.en}
+                  </h4>
+                  <p className="text-gray-700 leading-relaxed font-serif text-lg whitespace-pre-wrap">
+                    {content}
+                  </p>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      );
+      case 'rituals': return renderDetailedRemedialRituals();
+      case 'predictive_logic': return renderAdvancedPredictiveLogic();
+      case 'universal_wisdom': return renderUniversalWisdom();
+      case 'master_engine': return (
+        <>
+          <SectionTitle>Premium Cosmic Insights</SectionTitle>
+          <p className="text-gray-600 mb-6 print:mb-2 italic">The following analysis is generated by advanced astrological AI engines, exploring deep karmic, dimensional, and spiritual patterns.</p>
+          {renderMasterEngine()}
+        </>
+      );
+      case 'back_cover': return (
+        <A4Page>
+          <div className="min-h-[85vh] flex flex-col items-center justify-center text-center mt-20 pt-12 border-t-4 border-indigo-900 relative z-10 print:h-full print:border-t-0 print:mt-0 print:pt-0">
+            <h2 className="text-3xl font-bold text-indigo-900 mb-12 border-b-2 border-indigo-200 pb-4 font-serif">ईश्वर वंदना</h2>
+
+            <div className="mb-12">
+              <p className="text-xl md:text-2xl font-bold text-indigo-900 mb-4 leading-relaxed font-serif">
+                शान्ताकारं भुजगशयनं पद्मनाभं सुरेशं।<br />
+                विश्वाधारं गगनसद्रशं मेघवर्णं शुभाङ्गम्॥
+              </p>
+            </div>
+
+            <div className="max-w-3xl text-left space-y-6 mb-16">
+              <div className="bg-indigo-50/50 p-6 rounded-lg border border-indigo-100 print:border-none print:bg-transparent">
+                <p className="text-sm uppercase tracking-widest text-indigo-600 font-bold mb-2">Meaning (English)</p>
+                <p className="text-gray-800 font-serif leading-relaxed text-md italic">
+                  "I bow to the Divine who possesses a perfectly calm and peaceful form, who rests serenely upon the cosmic serpent, from whose navel springs the lotus of creation, and who sustains the entire universe. He is as vast as the sky, dark like the clouds, and beautifully auspicious."
+                </p>
+              </div>
+
+              <div className="bg-indigo-50/50 p-6 rounded-lg border border-indigo-100 print:border-none print:bg-transparent">
+                <p className="text-sm uppercase tracking-widest text-indigo-600 font-bold mb-2">भावार्थ (Hindi)</p>
+                <p className="text-gray-800 font-serif leading-relaxed text-md">
+                  "मैं उन ईश्वर को नमन करता हूँ जिनका स्वरूप परम शांत है, जो शेषनाग की शय्या पर शयन करते हैं, जिनकी नाभि से सृष्टि का कमल उत्पन्न होता है और जो पूरे ब्रह्मांड के आधार हैं। जो आकाश के समान सर्वव्यापी और बादलों के रंग जैसे परम कल्याणकारी हैं।"
+                </p>
+              </div>
+            </div>
+
+            <h3 className="text-2xl font-bold text-indigo-900 mb-4 mt-auto">May the Stars Guide You</h3>
+            <p className="text-lg text-gray-600 mb-8">Thank you for exploring your cosmic blueprint with us.</p>
+            <div className="w-20 h-20 mx-auto bg-indigo-50 rounded-full flex items-center justify-center text-indigo-400 mb-6 border border-indigo-100 print:border-none">
+              <span className="text-4xl font-serif">ॐ</span>
+            </div>
+            <p className="text-sm font-bold text-slate-800">AstroConsult © 2024</p>
+          </div>
+        </A4Page>
+      );
+      default: return null;
+    }
+  };
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [printDropdownOpen, setPrintDropdownOpen] = useState(false);
   const [expandedVargas, setExpandedVargas] = useState({});
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+  const reportRef = useRef(null);
 
   const toggleVarga = (vargaKey) => {
     setExpandedVargas(prev => ({
@@ -198,20 +572,20 @@ const KundaliReportView = ({ data }) => {
           if (el) el.remove();
         }, 1500);
       }
-      
+
       // Block Ctrl+C (Copy), Ctrl+P (Print), Ctrl+S (Save)
       if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'p' || e.key === 's' || e.key === 'a')) {
         e.preventDefault();
       }
     };
-    
+
     const handleContextMenu = (e) => {
       e.preventDefault(); // Disable Right Click
     };
 
     window.addEventListener('keydown', handleKeyDown);
     window.addEventListener('contextmenu', handleContextMenu);
-    
+
     // Inject global CSS to disable selection and physical printing
     const style = document.createElement('style');
     style.innerHTML = `
@@ -220,9 +594,6 @@ const KundaliReportView = ({ data }) => {
         -moz-user-select: none !important;
         -ms-user-select: none !important;
         user-select: none !important;
-      }
-      @media print {
-        body { display: none !important; }
       }
     `;
     document.head.appendChild(style);
@@ -238,6 +609,60 @@ const KundaliReportView = ({ data }) => {
 
   const handlePrint = () => {
     window.print();
+  };
+
+  const handleDownloadPDF = async () => {
+    setIsGeneratingPDF(true);
+    setPrintDropdownOpen(false);
+
+    try {
+      const activeSectionsList = layoutOrder.filter(id => isSectionActive(id));
+
+      let tzOffset = 5.5; // default to IST
+      if (data?.meta?.timezone) {
+        const tzStr = data.meta.timezone; // format: UTC+05:30
+        const match = tzStr.match(/UTC([+-])(\d+):(\d+)/);
+        if (match) {
+          const sign = match[1] === '+' ? 1 : -1;
+          const hours = parseInt(match[2], 10);
+          const mins = parseInt(match[3], 10);
+          tzOffset = sign * (hours + mins / 60);
+        }
+      }
+
+      const payload = {
+        name: data?.meta?.name || data?.basic_details?.name || "User",
+        date: data?.basic_details?.birth_date || "1990-01-01",
+        time: data?.basic_details?.birth_time || "12:00:00",
+        tz_offset: tzOffset,
+        lat: data?.basic_details?.lat || 28.6139,
+        lon: data?.basic_details?.lon || 77.2090,
+        style: "premium",
+        language: "english",
+        gender: data?.meta?.gender || "",
+        location_name: data?.meta?.location || data?.basic_details?.birth_place || "",
+        active_sections: activeSectionsList,
+      };
+
+      const fileUrl = await createReport(payload);
+      if (fileUrl) {
+        // Create an invisible anchor tag to download the file directly
+        const a = document.createElement('a');
+        a.href = fileUrl;
+        a.target = '_blank';
+        a.download = `Kundali_Report_${payload.name.replace(/\s+/g, '_')}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        throw new Error("Failed to get PDF URL from backend");
+      }
+    } catch (err) {
+      console.error("PDF generation failed:", err);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsGeneratingPDF(false);
+    }
   };
 
   const renderPlanetTable = () => {
@@ -392,6 +817,7 @@ const KundaliReportView = ({ data }) => {
     return (
       <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
         <SectionTitle>Detailed Remedial Rituals & Cosmic Tuning</SectionTitle>
+        <AIInsightBox sectionId="rituals" sectionTitle="Detailed Remedial Rituals & Cosmic Tuning" chartData={data} />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 print:gap-2 mt-6 print:mt-2">
           {remedies.map((r, idx) => (
             <div key={idx} className="bg-orange-50 p-6 rounded-xl border border-orange-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
@@ -473,9 +899,9 @@ const KundaliReportView = ({ data }) => {
   const renderD1Chart = () => {
     if (!data.chart || !data.chart.houses) return null;
     return (
-      <div className="mb-8 print:mb-2 bg-amber-50 p-6 rounded-xl border border-amber-200 flex flex-col items-center shadow-inner print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
-        <h4 className="font-bold text-[15px] text-amber-900 mb-4 uppercase tracking-widest text-center">Lagna Chart (D1)</h4>
-        <div className="w-full max-w-3xl mx-auto bg-white rounded-lg shadow-sm border border-amber-100 print:border-none print:shadow-none print:break-inside-avoid" style={{ height: '350px' }}>
+      <div className="mb-8 print:mb-2 bg-amber-50 p-6 print:p-2 rounded-xl border border-amber-200 flex flex-col items-center shadow-inner print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
+        <h4 className="font-bold text-[15px] text-amber-900 mb-4 print:mb-1 uppercase tracking-widest text-center">Lagna Chart (D1)</h4>
+        <div className="w-full max-w-3xl mx-auto bg-white rounded-lg shadow-sm border border-amber-100 print:border-none print:shadow-none print:break-inside-avoid h-[350px] print:h-[300px]">
           <ZodiacRectSign houses={data.chart.houses} planetPositions={data.planet_positions} title="Lagna Chart (D1)" hideOuterRect={true} />
         </div>
       </div>
@@ -483,13 +909,15 @@ const KundaliReportView = ({ data }) => {
   };
 
   const RichPlanetEffect = ({ p, data }) => {
-    const rich = data.rich_planet_effects?.[p.planet]?.[p.house];
+    // Determine the translation to use based on analysisLang state
+    const richRaw = data.rich_planet_effects?.[p.planet]?.[p.house];
+    const rich = richRaw?.[analysisLang] || richRaw; // Support both nested format {"en":{}, "hi":{}} or flat format (legacy)
     const fallbackText = PLANET_INTERP_MAP[p.planet]?.[p.house];
 
-    if (!rich) {
+    if (!rich || Object.keys(rich).length === 0 || !rich.summary) {
       if (!fallbackText) return null;
       return (
-        <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
+        <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm print:bg-transparent print:border-none print:shadow-none print:break-inside-avoid">
           <h4 className="font-bold text-[12px] text-slate-800 mb-2 uppercase">{p.planet} in House {p.house}</h4>
           <p className="text-gray-800 leading-relaxed font-serif whitespace-pre-line">{fallbackText}</p>
         </div>
@@ -499,7 +927,7 @@ const KundaliReportView = ({ data }) => {
     const { summary, key_effects, considerations, area, ordinal } = rich;
 
     return (
-      <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid mb-6 print:mb-2">
+      <div className="bg-slate-50 p-6 rounded-xl border border-slate-200 shadow-sm print:bg-transparent print:border-none print:shadow-none print:break-inside-avoid mb-6 print:mb-2 print:p-0">
         <h4 className="font-bold text-lg text-slate-800 mb-1 uppercase text-amber-600">
           {p.planet} in the {ordinal || p.house} House {area ? `— ${area}` : ''}
         </h4>
@@ -546,14 +974,42 @@ const KundaliReportView = ({ data }) => {
 
   const renderD1DetailedAnalysis = () => {
     if (!data.planet_positions) return null;
-    return (
-      <div className="space-y-6 mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
-        {data.planet_positions.map((p, idx) => {
-          if (p.planet === "Ascendant" || p.planet === "Lagna") return null;
-          return <RichPlanetEffect key={idx} p={p} data={data} />;
-        })}
-      </div>
-    );
+
+    const validPlanets = data.planet_positions.filter(p => p.planet !== "Ascendant" && p.planet !== "Lagna");
+    const chunks = [];
+    for (let i = 0; i < validPlanets.length; i += 2) {
+      chunks.push(validPlanets.slice(i, i + 2));
+    }
+
+    return chunks.map((chunk, chunkIdx) => (
+      <A4Page key={`d1-analysis-page-${chunkIdx}`}>
+        {chunkIdx === 0 && (
+          <>
+            <div className="flex justify-between items-center mb-2">
+              <SectionTitle>Detailed D1 Planetary Analysis</SectionTitle>
+              <button
+                onClick={() => setAnalysisLang(prev => prev === 'en' ? 'hi' : 'en')}
+                className="print:hidden ml-4 px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium rounded-full shadow-sm transition-colors text-sm border border-indigo-200 flex items-center gap-2"
+              >
+                <span>🌐</span>
+                {analysisLang === 'en' ? 'View in Hindi (हिंदी)' : 'View in English'}
+              </button>
+            </div>
+            <p className="text-gray-600 mb-6 print:mb-2 italic">In-depth house-by-house interpretations for your Lagna Chart.</p>
+          </>
+        )}
+        {chunkIdx > 0 && (
+          <h3 className="section-heading text-xl font-medium text-indigo-800 mb-6 mt-6 print:hidden">
+            Planetary Analysis (Continued)
+          </h3>
+        )}
+        <div className="space-y-6 mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
+          {chunk.map((p, pIdx) => (
+            <RichPlanetEffect key={pIdx} p={p} data={data} />
+          ))}
+        </div>
+      </A4Page>
+    ));
   };
 
   const VargaAnalysisPanel = ({ vargaKey, vargaNum }) => {
@@ -581,24 +1037,46 @@ const KundaliReportView = ({ data }) => {
     }
 
     const significance_map = {
-      2: "This chart analyzes your wealth, family values, and speech.",
-      3: "This chart focuses on your siblings, courage, and creative talents.",
-      4: "This chart reveals your destiny regarding property, vehicles, and inner happiness.",
-      5: "This chart relates to power, authority, and spiritual inclinations.",
-      6: "This chart deals with health, diseases, and enemies.",
-      7: "This chart is dedicated to children, legacy, and creative fruits.",
-      8: "This chart focuses on longevity, sudden events, and transformations.",
-      9: "The most important divisional chart, representing the fruit of your actions and marital life.",
-      10: "This chart analyzes your career, professional status, and societal impact.",
-      12: "This chart focuses on your parents and your relationship with your ancestry.",
-      16: "This chart provides deep insights into your mental happiness and luxury.",
-      20: "This chart is used for analyzing spiritual growth and religious inclinations.",
-      24: "This chart focused on higher learning, scholarship, and wisdom.",
-      27: "This chart represents your inherent strengths and soul's resilience.",
-      30: "This chart reveals the sub-conscious flaws and the strength of character.",
-      40: "This chart provides a fine-grained analysis of auspicious results in life.",
-      45: "This chart focuses on the moral and ethical conduct belonging to your soul.",
-      60: "The most subtle chart, showing the results of karma across multiple lifetimes."
+      en: {
+        2: "The D2 (Hora) chart analyzes your wealth, financial prosperity, family values, and speech. It provides deep insights into your ability to accumulate resources and sustain your family. This chart impacts your financial stability and the level of support you receive from your lineage. A strong D2 ensures steady income and harmonious family relations, whereas afflictions may require careful financial planning.",
+        3: "The D3 (Drekkana) chart focuses on your siblings, courage, initiative, and creative talents. It impacts your drive to take action, face challenges, and your relationship with co-borns. This chart reveals your underlying vitality and the effort you are willing to put into achieving your goals. A well-placed D3 gives you the bravery and stamina to overcome life's obstacles and succeed through self-effort.",
+        4: "The D4 (Chaturthamsha) chart reveals your destiny regarding property, real estate, vehicles, and inner happiness. It impacts your sense of security, domestic peace, and the assets you acquire over your lifetime. This chart shows where and how you will find emotional comfort and stability. A strong D4 brings comfort in the form of homes and vehicles, contributing significantly to your overall peace of mind.",
+        5: "The D5 (Panchamsha) chart relates to power, authority, intelligence, and spiritual inclinations. It impacts your creative potential, intellectual pursuits, and your ability to gain recognition. This chart also sheds light on your moral compass, past life karmas, and the blessings you carry forward. Understanding your D5 helps you navigate positions of authority and intellectual endeavors with wisdom and grace.",
+        6: "The D6 (Shashthamsha) chart deals with health, diseases, debts, and hidden enemies. It impacts your physical resilience and your ability to overcome competitive situations and litigation. This chart reveals the areas of vulnerability in your life and how you can fortify your defenses. By analyzing the D6, you can preemptively address health concerns and navigate conflicts with greater strategic awareness.",
+        7: "The D7 (Saptamsha) chart is dedicated to children, legacy, creative fruits, and romantic partnerships. It impacts your ability to create a lasting legacy, whether through biological offspring or significant creative projects. This chart provides insights into the joy and challenges brought by the younger generation and your creative legacy. A well-disposed D7 indicates fulfillment through progeny and creative self-expression.",
+        8: "The D8 (Ashtamsha) chart focuses on longevity, sudden events, inheritance, and transformations. It impacts how you handle crises, sudden changes, and the hidden aspects of life. This chart is crucial for understanding profound transformations, occult knowledge, and resources shared with others. Analyzing your D8 prepares you for life's unpredictable shifts and helps you navigate deep, transformative experiences.",
+        9: "The D9 (Navamsha) is the most important divisional chart, representing your soul's underlying strength, marital life, and the ultimate fruit of your actions. It impacts your true inner nature, your spouse, and the second half of your life. Without the D9, a natal chart is considered incomplete, as it confirms the true strength of all planets. A strong Navamsha guarantees resilience, enduring partnerships, and spiritual evolution.",
+        10: "The D10 (Dashamsha) chart analyzes your career, professional status, societal impact, and public image. It impacts your ambitions, the nature of your profession, and the heights you can reach in your chosen field. This chart reveals your true calling and how the world will remember your contributions. A powerful D10 leads to significant achievements, fame, and a fulfilling professional journey.",
+        12: "The D12 (Dwadashamsha) chart focuses on your parents, your ancestry, and your relationship with your lineage. It impacts the genetic and karmic traits you inherit and the support you receive from your elders. This chart helps you understand your roots, familial duties, and the spiritual blessings from your ancestors. Analyzing the D12 fosters a deeper connection with your heritage and the karmic patterns passed down.",
+        16: "The D16 (Shodashamsha) chart provides deep insights into your mental happiness, luxury, conveyances, and comforts. It impacts your capacity to enjoy the finer things in life and your inner psychological well-being. This chart reveals your emotional foundation and the level of peace you experience daily. A well-placed D16 ensures a life filled with comfort, contentment, and freedom from severe mental distress.",
+        20: "The D20 (Vimshamsha) chart is used for analyzing spiritual growth, religious inclinations, and devotion. It impacts your spiritual path, your connection with the divine, and your dedication to spiritual practices. This chart reveals your capacity for meditation, inner peace, and achieving higher states of consciousness. A strong D20 indicates a naturally contemplative mind and a fulfilling journey towards spiritual enlightenment.",
+        24: "The D24 (Chaturvimshamsha) chart focuses on higher learning, scholarship, wisdom, and intellectual achievements. It impacts your academic pursuits, your ability to absorb complex knowledge, and your ongoing intellectual growth. This chart is essential for understanding your educational trajectory and your capacity for profound understanding. A powerful D24 blesses you with a sharp intellect, success in education, and a lifelong love for learning.",
+        27: "The D27 (Saptavimshamsha or Nakshatramsha) chart represents your inherent strengths, physical endurance, and your soul's resilience. It impacts your ability to withstand physical and emotional challenges, revealing your core vitality. This chart provides a deeper look into your constitutional strength and your raw, unrefined energy. Analyzing the D27 helps you understand your foundational fortitude and how to maintain your overall well-being.",
+        30: "The D30 (Trimshamsha) chart reveals subconscious flaws, the strength of your character, and your vulnerability to misfortunes. It impacts your ethical boundaries, hidden weaknesses, and karmic retribution. This chart is crucial for identifying deep-seated psychological patterns that may lead to self-sabotage or illness. By understanding your D30, you can consciously work on your flaws and protect yourself from hidden pitfalls.",
+        40: "The D40 (Khavedamsha) chart provides a fine-grained analysis of auspicious and inauspicious results in your life. It impacts the subtle karmic influences that dictate the overall quality and luck of your existence. This chart helps differentiate between superficial success and true, lasting fulfillment. Analyzing the D40 offers a microscopic view of your destiny, highlighting specific areas where divine grace is most active.",
+        45: "The D45 (Akshavedamsha) chart focuses on the moral and ethical conduct belonging to your soul, and your paternal legacy. It impacts your deepest values, your integrity, and the overarching karmic theme of your life. This chart reveals the moral compass guiding your actions and the spiritual lessons you are here to learn. A strong D45 indicates a life lived with high ethical standards and profound spiritual integrity.",
+        60: "The D60 (Shashtiamsha) is the most subtle and critical chart, showing the results of karma across multiple lifetimes. It impacts every aspect of your current existence, acting as the final say in astrological predictions. This chart reveals the intricate web of past actions and their precise manifestation in your current life. A deep analysis of the D60 unlocks the ultimate reasons behind your life's events and your spiritual destiny."
+      },
+      hi: {
+        2: "D2 (होरा) चार्ट आपके धन, वित्तीय समृद्धि, पारिवारिक मूल्यों और वाणी का विश्लेषण करता है। यह संसाधनों को संचित करने और अपने परिवार को बनाए रखने की आपकी क्षमता में गहरी अंतर्दृष्टि प्रदान करता है। एक मजबूत D2 स्थिर आय सुनिश्चित करता है।",
+        3: "D3 (द्रेष्काण) चार्ट आपके भाई-बहनों, साहस, पहल और रचनात्मक प्रतिभा पर केंद्रित है। यह चुनौतियों का सामना करने और लक्ष्य प्राप्त करने के लिए आपके प्रयास को दर्शाता है। एक अच्छी तरह से स्थित D3 आपको जीवन की बाधाओं को दूर करने की बहादुरी देता है।",
+        4: "D4 (चतुर्थांश) चार्ट संपत्ति, अचल संपत्ति, वाहन और आंतरिक खुशी के संबंध में आपकी नियति को प्रकट करता है। यह आपकी सुरक्षा की भावना और घरेलू शांति को प्रभावित करता है। एक मजबूत D4 आराम और मानसिक शांति लाता है।",
+        5: "D5 (पंचांश) चार्ट शक्ति, अधिकार, बुद्धिमत्ता और आध्यात्मिक झुकाव से संबंधित है। यह आपकी रचनात्मक क्षमता और मान्यता प्राप्त करने की क्षमता को प्रभावित करता है। D5 को समझना ज्ञान और अनुग्रह के साथ अधिकार को नेविगेट करने में मदद करता है।",
+        6: "D6 (षष्ठांश) चार्ट स्वास्थ्य, रोग, ऋण और छिपे हुए दुश्मनों से संबंधित है। यह आपकी शारीरिक लचीलापन और प्रतिस्पर्धी स्थितियों को दूर करने की क्षमता को प्रभावित करता है। D6 का विश्लेषण करके, आप स्वास्थ्य संबंधी चिंताओं को दूर कर सकते हैं।",
+        7: "D7 (सप्तांश) चार्ट बच्चों, विरासत, रचनात्मक फलों और रोमांटिक साझेदारी को समर्पित है। यह रचनात्मक परियोजनाओं के माध्यम से एक स्थायी विरासत बनाने की आपकी क्षमता को प्रभावित करता है। एक अच्छा D7 संतानों के माध्यम से पूर्णता का संकेत देता है।",
+        8: "D8 (अष्टमांश) चार्ट दीर्घायु, अचानक घटनाओं, विरासत और परिवर्तनों पर केंद्रित है। यह प्रभावित करता है कि आप संकटों और जीवन के छिपे हुए पहलुओं को कैसे संभालते हैं। आपके D8 का विश्लेषण आपको जीवन के अप्रत्याशित बदलावों के लिए तैयार करता है।",
+        9: "D9 (नवांश) सबसे महत्वपूर्ण वर्ग चार्ट है, जो आपकी आत्मा की शक्ति, वैवाहिक जीवन और आपके कार्यों के अंतिम फल का प्रतिनिधित्व करता है। D9 के बिना, जन्म कुंडली अधूरी मानी जाती है। एक मजबूत नवांश लचीलापन और आध्यात्मिक विकास की गारंटी देता है।",
+        10: "D10 (दशांश) चार्ट आपके करियर, पेशेवर स्थिति, सामाजिक प्रभाव और सार्वजनिक छवि का विश्लेषण करता है। यह आपकी महत्वाकांक्षाओं और क्षेत्र में आपके द्वारा प्राप्त की जा सकने वाली ऊंचाइयों को प्रभावित करता है। एक शक्तिशाली D10 महत्वपूर्ण उपलब्धियों की ओर ले जाता है।",
+        12: "D12 (द्वादशांश) चार्ट आपके माता-पिता, आपके वंश और आपके वंश के साथ आपके संबंधों पर केंद्रित है। यह विरासत में मिले आनुवंशिक और कर्म संबंधी लक्षणों को प्रभावित करता है। D12 का विश्लेषण आपकी विरासत के साथ गहरे संबंध को बढ़ावा देता है।",
+        16: "D16 (षोडशांश) चार्ट आपकी मानसिक खुशी, विलासिता, वाहन और आराम में गहरी अंतर्दृष्टि प्रदान करता है। यह जीवन में बेहतर चीजों का आनंद लेने की आपकी क्षमता को प्रभावित करता है। एक अच्छी तरह से स्थित D16 आराम और संतोष से भरा जीवन सुनिश्चित करता है।",
+        20: "D20 (विंशांश) चार्ट का उपयोग आध्यात्मिक विकास, धार्मिक झुकाव और भक्ति का विश्लेषण करने के लिए किया जाता है। यह आपके आध्यात्मिक मार्ग और अभ्यास के प्रति आपके समर्पण को प्रभावित करता है। एक मजबूत D20 एक स्वाभाविक रूप से चिंतनशील मन को दर्शाता है।",
+        24: "D24 (चतुर्विंशांश) चार्ट उच्च शिक्षा, छात्रवृत्ति, ज्ञान और बौद्धिक उपलब्धियों पर केंद्रित है। यह आपके शैक्षिक कार्यों और जटिल ज्ञान को अवशोषित करने की आपकी क्षमता को प्रभावित करता है। एक शक्तिशाली D24 आपको तेज बुद्धि का आशीर्वाद देता है।",
+        27: "D27 (सप्तविंशांश) चार्ट आपकी अंतर्निहित ताकत, शारीरिक सहनशक्ति और आपकी आत्मा के लचीलेपन का प्रतिनिधित्व करता है। यह आपकी कोर जीवन शक्ति को प्रकट करता है। D27 का विश्लेषण करने से आपको अपने समग्र कल्याण को बनाए रखने के तरीके को समझने में मदद मिलती है।",
+        30: "D30 (त्रिंशांश) चार्ट अवचेतन खामियों, आपके चरित्र की ताकत और दुर्भाग्य के प्रति आपकी भेद्यता को प्रकट करता है। यह आपके नैतिक बंधनों और छिपी कमजोरियों को प्रभावित करता है। D30 को समझकर, आप अपनी खामियों पर काम कर सकते हैं।",
+        40: "D40 (खवेदांश) चार्ट आपके जीवन में शुभ और अशुभ परिणामों का सूक्ष्म विश्लेषण प्रदान करता है। यह उन सूक्ष्म कर्म प्रभावों को प्रभावित करता है जो आपके अस्तित्व की समग्र गुणवत्ता को निर्धारित करते हैं। D40 का विश्लेषण आपकी नियति का एक सूक्ष्म दृश्य प्रस्तुत करता है।",
+        45: "D45 (अक्षवेदांश) चार्ट आपकी आत्मा से संबंधित नैतिक आचरण और आपकी पैतृक विरासत पर केंद्रित है। यह आपके सबसे गहरे मूल्यों और जीवन के समग्र कर्म विषय को प्रभावित करता है। एक मजबूत D45 उच्च नैतिक मानकों के साथ जिए गए जीवन का संकेत देता है।",
+        60: "D60 (षष्ट्यंश) सबसे सूक्ष्म और महत्वपूर्ण चार्ट है, जो कई जन्मों के कर्मों के परिणाम दिखाता है। यह आपके वर्तमान अस्तित्व के हर पहलू को प्रभावित करता है, और ज्योतिषीय भविष्यवाणियों में अंतिम शब्द है। D60 का गहरा विश्लेषण आपके आध्यात्मिक भाग्य को खोलता है।"
+      }
     };
 
     if (!expl && planets.length === 0) return null;
@@ -606,31 +1084,59 @@ const KundaliReportView = ({ data }) => {
 
     return (
       <div className="mb-8 print:mb-2 mt-2">
-        <div className="flex justify-center mb-6 print:hidden">
+        {significance_map.en[vargaNum] && (
+          <div className={`mb-4 flex justify-center ${isExpanded ? 'print:hidden' : ''}`}>
+            <div className="text-[18px] font-medium text-indigo-800 bg-indigo-50/50 px-6 py-4 rounded-lg border border-indigo-100 max-w-5xl text-left shadow-sm">
+              <p className="mb-2 text-center text-[20px]">✨ {significance_map[analysisLang]?.[vargaNum] || significance_map.en[vargaNum]}</p>
+              {expl?.[analysisLang] && (
+                <div className="mt-3 pt-3 border-t border-indigo-200/60">
+                  <span className="font-bold text-indigo-900 text-sm uppercase tracking-wider mb-1 block">
+                    {analysisLang === 'hi' ? 'चार्ट विश्लेषण पूर्वावलोकन' : 'Chart Analysis Preview'}
+                  </span>
+                  <div
+                    className="text-gray-700 font-serif leading-relaxed line-clamp-5"
+                    dangerouslySetInnerHTML={{ __html: (expl[analysisLang] || expl.en).replace(/\n/g, '<br/>') }}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        <div className="flex justify-center mb-6 print:hidden items-center gap-4">
           <button
             onClick={() => toggleVarga(vargaKey)}
-            className="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold py-2 px-6 rounded-full transition-colors shadow-sm flex items-center gap-2"
+            className="bg-indigo-100 hover:bg-indigo-200 text-indigo-800 font-bold py-2 px-6 rounded-full transition-colors shadow-sm flex items-center gap-2 print:hidden"
           >
-            {isExpanded ? 'Hide Analysis 🔼' : 'Show Analysis 🔽'}
+            {isExpanded ? (analysisLang === 'hi' ? 'विश्लेषण छिपाएं 🔼' : 'Hide Analysis 🔼') : (analysisLang === 'hi' ? 'विश्लेषण दिखाएं 🔽' : 'Show Analysis 🔽')}
+          </button>
+          <button
+            onClick={() => setAnalysisLang(prev => prev === 'en' ? 'hi' : 'en')}
+            className="px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-medium rounded-full shadow-sm transition-colors text-sm border border-indigo-200 flex items-center gap-2 print:hidden"
+          >
+            <span>🌐</span>
+            {analysisLang === 'en' ? 'View in Hindi (हिंदी)' : 'View in English'}
           </button>
         </div>
 
-        <div className={isExpanded ? "space-y-6" : "hidden print:block"}>
-          {expl?.en && (
-            <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
-              <h4 className="font-bold text-lg text-indigo-900 mb-2">Detailed Chart Analysis</h4>
-              <p className="text-gray-800 leading-relaxed font-serif whitespace-pre-wrap mb-4">{expl.en}</p>
-              {significance_map[vargaNum] && (
-                <p className="text-sm font-semibold text-indigo-800 bg-white p-3 rounded border border-indigo-50">
-                  <b>Esoteric Significance:</b> {significance_map[vargaNum]}
-                </p>
-              )}
+        <div className={isExpanded ? "space-y-6 print:block" : "hidden"}>
+          {expl?.[analysisLang] && (
+            <div className="bg-indigo-50 p-6 rounded-xl border border-indigo-100 shadow-sm print:bg-transparent print:border-none print:shadow-none print:break-inside-avoid print:p-0">
+              <h4 className="font-bold text-lg text-indigo-900 mb-2">
+                {analysisLang === 'hi' ? 'विस्तृत चार्ट विश्लेषण' : 'Detailed Chart Analysis'}
+              </h4>
+              <div
+                className="text-gray-800 leading-relaxed font-serif"
+                dangerouslySetInnerHTML={{ __html: (expl[analysisLang] || expl.en).replace(/\n/g, '<br/><br/>') }}
+              />
             </div>
           )}
 
           {planets.length > 0 && (
             <div className="space-y-6">
-              <h4 className="font-bold text-lg text-slate-800 mb-2 mt-4 border-b border-slate-200 pb-2">Planetary Effects in Houses (D{vargaNum})</h4>
+              <h4 className="font-bold text-lg text-slate-800 mb-2 mt-4 border-b border-slate-200 pb-2">
+                {analysisLang === 'hi' ? `भावों में ग्रहों के प्रभाव (D${vargaNum})` : `Planetary Effects in Houses (D${vargaNum})`}
+              </h4>
               {planets.map((p, idx) => {
                 if (p.planet === "Ascendant" || p.planet === "Lagna") return null;
                 return <RichPlanetEffect key={idx} p={p} data={data} />;
@@ -910,17 +1416,17 @@ const KundaliReportView = ({ data }) => {
         <table className="min-w-full bg-white border border-gray-200">
           <thead className="bg-indigo-50">
             <tr>
-              <th className="py-2 px-4 border-b text-left text-sm font-bold text-gray-700">Planet</th>
-              <th className="py-2 px-4 border-b text-left text-sm font-bold text-gray-700">Total Strength (Rupas)</th>
-              <th className="py-2 px-4 border-b text-left text-sm font-bold text-gray-700">Status</th>
+              <th className="py-2 print:py-1 px-4 border-b text-left text-sm font-bold text-gray-700">Planet</th>
+              <th className="py-2 print:py-1 px-4 border-b text-left text-sm font-bold text-gray-700">Total Strength (Rupas)</th>
+              <th className="py-2 print:py-1 px-4 border-b text-left text-sm font-bold text-gray-700">Status</th>
             </tr>
           </thead>
           <tbody>
             {Object.entries(data.strength_analysis.planets).map(([p, info], idx) => (
               <tr key={idx} className="hover:bg-gray-50">
-                <td className="py-2 px-4 border-b text-sm font-medium">{p}</td>
-                <td className="py-2 px-4 border-b text-sm">{info.total ? info.total.toFixed(2) : '-'}</td>
-                <td className="py-2 px-4 border-b text-sm">{info.total > 6 ? 'Strong' : 'Average'}</td>
+                <td className="py-2 print:py-1 px-4 border-b text-sm font-medium">{p}</td>
+                <td className="py-2 print:py-1 px-4 border-b text-sm">{info.total ? info.total.toFixed(2) : '-'}</td>
+                <td className="py-2 print:py-1 px-4 border-b text-sm">{info.total > 6 ? 'Strong' : 'Average'}</td>
               </tr>
             ))}
           </tbody>
@@ -1338,15 +1844,21 @@ const KundaliReportView = ({ data }) => {
                       {evt.category || 'General'}
                     </span>
                   </td>
-                  <td className="p-4 border-b border-slate-100 print:border-gray-300 text-sm font-medium text-gray-700">{evt.event}</td>
+                  <td className="p-4 border-b border-slate-100 print:border-gray-300 text-sm font-medium text-gray-700">{evt.title || evt.event}</td>
                   <td className="p-4 border-b border-slate-100 print:border-gray-300">
                     <div className="flex items-center gap-2">
-                      <span className={`px-2 py-1 rounded text-xs font-bold ${(evt.intensity || 0) >= 80 ? 'bg-red-100 text-red-800' :
-                        (evt.intensity || 0) >= 50 ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-green-100 text-green-800'
-                        }`}>
-                        {evt.intensity || 0}/100
-                      </span>
+                      {(() => {
+                        const raw = evt.intensity || 0;
+                        const score = raw <= 10 ? Math.round(raw * 10) : Math.round(raw);
+                        return (
+                          <span className={`px-2 py-1 rounded text-xs font-bold ${score >= 80 ? 'bg-red-100 text-red-800' :
+                            score >= 50 ? 'bg-yellow-100 text-yellow-800' :
+                              'bg-green-100 text-green-800'
+                            }`}>
+                            {score}/100
+                          </span>
+                        );
+                      })()}
                     </div>
                   </td>
                 </tr>
@@ -1367,7 +1879,7 @@ const KundaliReportView = ({ data }) => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {data.remedies.map((remedy, idx) => (
-            <div key={idx} className="bg-amber-50 p-5 rounded-lg border border-amber-200 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
+            <div key={idx} className="bg-white p-5 rounded-lg border border-amber-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
               <div className="flex justify-between items-start mb-2">
                 <h4 className="font-bold text-lg text-amber-900">{remedy.type || 'General Remedy'}</h4>
                 {remedy.conviction && (
@@ -1387,27 +1899,64 @@ const KundaliReportView = ({ data }) => {
     );
   };
 
+  const renderGemstones = () => {
+    if (!data.gemstones || !Array.isArray(data.gemstones) || data.gemstones.length === 0) return null;
+
+    return (
+      <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
+        <p className="text-gray-600 mb-6 print:mb-2 italic">Gemstones act as cosmic filters, capturing the specific light frequencies of their ruling planets. Below are the highly calculated gemstone recommendations tailored for your unique planetary alignment.</p>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {data.gemstones.map((gem, idx) => (
+            <div key={idx} className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden print:border-gray-300 print:shadow-none print:break-inside-avoid flex flex-col">
+              <div className="bg-emerald-50 px-5 py-4 border-b border-emerald-100">
+                <div className="flex justify-between items-center mb-1">
+                  <h4 className="font-bold text-xl text-emerald-900">{gem.details?.gemstone || 'Gemstone'}</h4>
+                  <span className="text-sm font-bold text-emerald-700 bg-emerald-100/50 px-2 py-1 rounded-full">{gem.planet}</span>
+                </div>
+                <p className="text-sm text-emerald-800 italic font-medium">{gem.details?.sanskrit || ''}</p>
+              </div>
+              <div className="p-5 flex-1 flex flex-col gap-3">
+                <p className="text-gray-800 text-sm leading-relaxed mb-1"><strong className="text-emerald-900">Reason:</strong> {gem.reason}</p>
+                <div className="grid grid-cols-2 gap-y-3 gap-x-2 text-sm mt-auto border-t border-slate-100 pt-3">
+                  <div><span className="text-gray-500 block text-xs">Color</span><span className="font-semibold text-gray-800">{gem.details?.color}</span></div>
+                  <div><span className="text-gray-500 block text-xs">Metal</span><span className="font-semibold text-gray-800">{gem.details?.metal}</span></div>
+                  <div><span className="text-gray-500 block text-xs">Finger</span><span className="font-semibold text-gray-800">{gem.details?.finger}</span></div>
+                  <div><span className="text-gray-500 block text-xs">Day</span><span className="font-semibold text-gray-800">{gem.details?.day}</span></div>
+                </div>
+                <div className="mt-2 bg-slate-50 p-3 rounded-lg border border-slate-100 text-center">
+                  <span className="text-gray-500 block text-xs mb-1">Activation Mantra</span>
+                  <span className="font-medium text-emerald-700 italic">{gem.details?.mantra}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   const renderSentient = () => {
-    const sentient = data.sentient || (data.master_engine && data.master_engine.sentient);
-    if (!sentient || !sentient.sentient_story) return null;
+    const sentientStory = data.sentient_story || (data.sentient && data.sentient.sentient_story) || (data.master_engine && data.master_engine.sentient && data.master_engine.sentient.sentient_story);
+    if (!sentientStory) return null;
 
     return (
       <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
         <div className="bg-gradient-to-r from-indigo-50 to-purple-50 p-6 rounded-xl border border-indigo-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
-          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{sentient.sentient_story}</p>
+          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{sentientStory}</p>
         </div>
       </div>
     );
   };
 
   const renderAkashic = () => {
-    const akashic = data.akashic || (data.master_engine && data.master_engine.akashic);
-    if (!akashic || !akashic.akashic_story) return null;
+    const akashicStory = data.akashic_story || (data.akashic && data.akashic.akashic_story) || (data.master_engine && data.master_engine.akashic && data.master_engine.akashic.akashic_story);
+    if (!akashicStory) return null;
 
     return (
       <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
         <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-6 rounded-xl border border-amber-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
-          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{akashic.akashic_story}</p>
+          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{akashicStory}</p>
         </div>
       </div>
     );
@@ -1420,30 +1969,32 @@ const KundaliReportView = ({ data }) => {
     const archetype = omniscient.personality?.archetype || omniscient.archetype;
     const confidence = omniscient.confidence_score || omniscient.confidence;
     const emotion = omniscient.emotion_model || omniscient.emotion;
+    const predictions = omniscient.omniscient_predictions;
+    const remedies = omniscient.smart_remedies;
 
-    if (!archetype && !confidence && !emotion) return null;
+    if (!archetype && !confidence && !emotion && !predictions && !remedies) return null;
 
     return (
       <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
-        <div className="bg-slate-900 text-white p-6 rounded-xl border border-slate-700 shadow-md print:bg-white print:text-black print:border-gray-300 print:shadow-none print:break-inside-avoid relative overflow-hidden">
+        <div className="bg-white text-white p-6 rounded-xl border border-slate-700 shadow-md print:bg-white print:text-black print:border-gray-300 print:shadow-none print:break-inside-avoid relative overflow-hidden">
           {/* Decorative background element */}
-          <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500 rounded-full opacity-10 -mr-10 -mt-10 blur-xl print:hidden"></div>
+          <div className="absolute top-0 right-0 w-32 h-32 bg-white rounded-full opacity-10 -mr-10 -mt-10 blur-xl print:hidden"></div>
 
           <p className="text-slate-400 text-sm mb-4 italic print:text-gray-600 relative z-10">
-            The Omniscient Analysis Engine processes thousands of planetary algorithms to derive your core cosmic emotional model and personality archetype.
+            The Omniscient Analysis Engine processes thousands of planetary algorithms to derive your core cosmic emotional model, personality archetype, and life predictions.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 relative z-10">
             {archetype && (
-              <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 print:bg-gray-50 print:border-gray-200">
-                <p className="text-slate-400 text-xs uppercase tracking-wider mb-1 print:text-gray-500">Core Archetype</p>
+              <div className="bg-white p-4 rounded-lg border border-slate-700 print:bg-gray-50 print:border-gray-200">
+                <p className="text-slate-800 text-xs uppercase tracking-wider mb-1 print:text-gray-500">Core Archetype</p>
                 <p className="text-xl font-bold text-indigo-300 print:text-indigo-800">{archetype}</p>
               </div>
             )}
 
             {confidence && (
-              <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 print:bg-gray-50 print:border-gray-200">
-                <p className="text-slate-400 text-xs uppercase tracking-wider mb-1 print:text-gray-500">AI Confidence Score</p>
+              <div className="bg-white p-4 rounded-lg border border-slate-700 print:bg-gray-50 print:border-gray-200">
+                <p className="text-slate-800 text-xs uppercase tracking-wider mb-1 print:text-gray-500">AI Confidence Score</p>
                 <div className="flex items-end gap-2">
                   <p className="text-xl font-bold text-emerald-400 print:text-emerald-700">{confidence}</p>
                 </div>
@@ -1452,9 +2003,34 @@ const KundaliReportView = ({ data }) => {
           </div>
 
           {emotion && (
-            <div className="bg-slate-800 p-4 rounded-lg border border-slate-700 relative z-10 print:bg-gray-50 print:border-gray-200">
-              <p className="text-slate-400 text-xs uppercase tracking-wider mb-2 print:text-gray-500">Cosmic Emotional Model</p>
-              <p className="text-slate-200 leading-relaxed print:text-gray-800">{emotion}</p>
+            <div className="bg-white p-4 rounded-lg border border-slate-700 relative z-10 print:bg-gray-50 print:border-gray-200 mb-6">
+              <p className="text-slate-800 text-xs uppercase tracking-wider mb-2 print:text-gray-500">Cosmic Emotional Model</p>
+              <p className="text-slate-800 leading-relaxed print:text-gray-800">{emotion}</p>
+            </div>
+          )}
+
+          {predictions && Object.keys(predictions).filter(k => k !== 'timeline').length > 0 && (
+            <div className="mb-6 relative z-10">
+              <h4 className="text-lg font-bold text-indigo-300 mb-3 border-b border-slate-700 pb-2 print:text-indigo-800">Omniscient Predictions</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {Object.entries(predictions).filter(([k]) => k !== 'timeline').map(([key, pred], idx) => (
+                  <div key={idx} className="bg-white p-4 rounded-lg border border-slate-200 shadow-sm print:bg-gray-50 print:border-gray-200">
+                    <p className="text-indigo-600 text-xs uppercase tracking-wider mb-2 font-bold print:text-gray-500">{pred?.title || key.replace(/_/g, ' ')}</p>
+                    <p className="text-slate-800 text-sm leading-relaxed print:text-gray-800">{pred?.text || (typeof pred === 'string' ? pred : '')}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {remedies && remedies.length > 0 && (
+            <div className="relative z-10">
+              <h4 className="text-lg font-bold text-emerald-400 mb-3 border-b border-slate-700 pb-2 print:text-emerald-700">Smart Remedies</h4>
+              <ul className="list-disc pl-5 space-y-1">
+                {remedies.map((rem, idx) => (
+                  <li key={idx} className="text-slate-200 text-sm print:text-gray-800">{rem}</li>
+                ))}
+              </ul>
             </div>
           )}
         </div>
@@ -1464,25 +2040,133 @@ const KundaliReportView = ({ data }) => {
 
   const renderQuantum = () => {
     const quantum = data.quantum || (data.master_engine && data.master_engine.quantum);
-    if (!quantum || !quantum.narrative) return null;
+    if (!quantum) return null;
+
+    if (!quantum.narrative && (!quantum.windows || quantum.windows.length === 0)) return null;
 
     return (
       <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
-        <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
-          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{quantum.narrative}</p>
-        </div>
+        <p className="text-gray-600 mb-6 print:mb-2 italic">The Quantum Forecast analyzes specific age windows and cosmic activation periods to predict high-probability life phases.</p>
+
+        {quantum.narrative && (
+          <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-xl border border-blue-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid mb-6">
+            <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{quantum.narrative}</p>
+          </div>
+        )}
+
+        {quantum.windows && quantum.windows.length > 0 && (
+          <div className="space-y-4">
+            {quantum.windows.map((win, idx) => (
+              <div key={idx} className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
+                <div className="flex justify-between items-center mb-3 border-b border-slate-100 pb-2">
+                  <h4 className="font-bold text-lg text-indigo-900">{win.period}</h4>
+                  <div className={`px-3 py-1 rounded-full text-xs font-bold ${win.potential === 'High' ? 'bg-emerald-100 text-emerald-800' : 'bg-blue-100 text-blue-800'}`}>
+                    {win.potential} Potential
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase font-semibold">Ruling Lord</p>
+                    <p className="font-bold text-slate-800">{win.lord}</p>
+                  </div>
+                  <div>
+                    <p className="text-xs text-gray-500 uppercase font-semibold">Cosmic Strength</p>
+                    <p className="font-bold text-slate-800">{win.strength_score ? win.strength_score.toFixed(2) : 'N/A'}/10</p>
+                  </div>
+                </div>
+                {win.categories && win.categories.length > 0 && (
+                  <div className="mt-3">
+                    <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Active Domains</p>
+                    <div className="flex flex-wrap gap-2">
+                      {win.categories.map((cat, i) => (
+                        <span key={i} className="px-2 py-1 bg-slate-100 text-slate-700 rounded text-xs border border-slate-200">
+                          {cat}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   };
 
   const renderDimensional = () => {
     const dim = data.dimensional || (data.master_engine && data.master_engine.dimensional);
-    if (!dim || !dim.narrative) return null;
+    if (!dim) return null;
+
+    if (!dim.narrative && !dim.marriage && !dim.career && !dim.wealth) return null;
 
     return (
       <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
-        <div className="bg-gradient-to-r from-teal-50 to-emerald-50 p-6 rounded-xl border border-teal-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
-          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{dim.narrative}</p>
+        <p className="text-gray-600 mb-6 print:mb-2 italic">The Dimensional Destiny Engine cross-analyzes marriage, career, and wealth metrics to forecast multi-dimensional life trajectories.</p>
+
+        {dim.narrative && (
+          <div className="bg-gradient-to-r from-teal-50 to-emerald-50 p-6 rounded-xl border border-teal-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid mb-6">
+            <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{dim.narrative}</p>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {dim.marriage && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
+              <h4 className="font-bold text-lg text-rose-900 mb-3 border-b border-slate-100 pb-2">Marriage Dimension</h4>
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-sm text-gray-500 uppercase font-semibold">Probability</span>
+                <span className="font-bold text-rose-700">{(dim.marriage.probability * 100).toFixed(0)}%</span>
+              </div>
+              {dim.marriage.windows && dim.marriage.windows.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-500 uppercase font-semibold mb-2">High Probability Windows</p>
+                  <div className="flex flex-wrap gap-2">
+                    {dim.marriage.windows.map((yr, i) => (
+                      <span key={i} className="px-2 py-1 bg-rose-50 text-rose-700 rounded text-xs font-bold border border-rose-100">{yr}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {dim.career && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
+              <h4 className="font-bold text-lg text-blue-900 mb-3 border-b border-slate-100 pb-2">Career Dimension</h4>
+              <div className="mb-4">
+                <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Growth Status</p>
+                <p className="font-bold text-blue-800 text-lg">{dim.career.status}</p>
+              </div>
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-sm text-gray-500 uppercase font-semibold">Momentum Score</span>
+                <span className="font-bold text-blue-700">{dim.career.momentum ? dim.career.momentum.toFixed(2) : 'N/A'}</span>
+              </div>
+              {dim.career.advice && (
+                <div className="mt-3 p-3 bg-blue-50 rounded border border-blue-100">
+                  <p className="text-sm text-blue-900"><strong>Advice:</strong> {dim.career.advice}</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {dim.wealth && dim.wealth.length > 0 && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
+              <h4 className="font-bold text-lg text-emerald-900 mb-3 border-b border-slate-100 pb-2">Wealth Dimension</h4>
+              <p className="text-xs text-gray-500 uppercase font-semibold mb-3">Projected Wealth Index</p>
+              <div className="space-y-2">
+                {dim.wealth.slice(0, 4).map((w, i) => (
+                  <div key={i} className="flex justify-between items-center text-sm">
+                    <span className="text-gray-700 font-medium">Year {w.year}</span>
+                    <span className="font-bold text-emerald-600">{w.wealth_index ? w.wealth_index.toFixed(2) : 'N/A'}</span>
+                  </div>
+                ))}
+                {dim.wealth.length > 4 && (
+                  <p className="text-xs text-gray-400 italic mt-2 text-center">Data continues across timeline...</p>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -1490,12 +2174,70 @@ const KundaliReportView = ({ data }) => {
 
   const renderAstral = () => {
     const astral = data.astral_matrix || (data.master_engine && data.master_engine.astral_matrix);
-    if (!astral || !astral.astral_narrative) return null;
+    if (!astral) return null;
+
+    if (!astral.astral_narrative && !astral.marriage_matrix && !astral.career_matrix && (!astral.karma_cycles || astral.karma_cycles.length === 0)) return null;
 
     return (
       <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
-        <div className="bg-gradient-to-r from-fuchsia-50 to-pink-50 p-6 rounded-xl border border-fuchsia-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
-          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{astral.astral_narrative}</p>
+        <p className="text-gray-600 mb-6 print:mb-2 italic">The Astral Matrix analyzes subtle destiny karmas across relationship, profession, and spiritual evolution timelines.</p>
+
+        {astral.astral_narrative && (
+          <div className="bg-gradient-to-r from-fuchsia-50 to-pink-50 p-6 rounded-xl border border-fuchsia-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid mb-6">
+            <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{astral.astral_narrative}</p>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {astral.marriage_matrix && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
+              <h4 className="font-bold text-lg text-fuchsia-900 mb-3 border-b border-slate-100 pb-2">Relationship Karma</h4>
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-sm text-gray-500 uppercase font-semibold">Astral Score</span>
+                <span className="font-bold text-fuchsia-700">{(astral.marriage_matrix.score * 100).toFixed(0)}/100</span>
+              </div>
+              {astral.marriage_matrix.best_years && astral.marriage_matrix.best_years.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Favourable Cycles (Years)</p>
+                  <div className="flex flex-wrap gap-2">
+                    {astral.marriage_matrix.best_years.map((yr, i) => (
+                      <span key={i} className="px-2 py-1 bg-fuchsia-50 text-fuchsia-700 rounded text-xs font-bold border border-fuchsia-100">{yr}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {astral.career_matrix && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
+              <h4 className="font-bold text-lg text-indigo-900 mb-3 border-b border-slate-100 pb-2">Professional Destiny</h4>
+              <div className="mb-4">
+                <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Career Phase</p>
+                <p className="font-bold text-indigo-800 text-lg">{astral.career_matrix.career_phase}</p>
+              </div>
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-sm text-gray-500 uppercase font-semibold">Career Index</span>
+                <span className="font-bold text-indigo-700">{astral.career_matrix.career_index ? astral.career_matrix.career_index.toFixed(2) : 'N/A'}</span>
+              </div>
+            </div>
+          )}
+
+          {astral.karma_cycles && astral.karma_cycles.length > 0 && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
+              <h4 className="font-bold text-lg text-amber-900 mb-3 border-b border-slate-100 pb-2">Karmic Cycles</h4>
+              <div className="space-y-3">
+                {astral.karma_cycles.slice(0, 5).map((cyc, i) => (
+                  <div key={i} className="flex justify-between items-center text-sm border-b border-gray-50 pb-2 last:border-0 last:pb-0">
+                    <span className="text-gray-700 font-medium">Year {cyc.year}</span>
+                    <span className={`font-bold px-2 py-1 rounded text-xs ${cyc.type === 'Expansion Cycle' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
+                      {cyc.type}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -1503,12 +2245,55 @@ const KundaliReportView = ({ data }) => {
 
   const renderCosmicCore = () => {
     const cosmic = data.cosmic_core || (data.master_engine && data.master_engine.cosmic_core);
-    if (!cosmic || !cosmic.cosmic_narrative) return null;
+    if (!cosmic) return null;
+
+    if (!cosmic.cosmic_narrative && !cosmic.soul_purpose && (!cosmic.karma_patterns || cosmic.karma_patterns.length === 0) && !cosmic.life_path) return null;
 
     return (
       <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
-        <div className="bg-gradient-to-r from-yellow-50 to-amber-50 p-6 rounded-xl border border-yellow-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
-          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{cosmic.cosmic_narrative}</p>
+        <p className="text-gray-600 mb-6 print:mb-2 italic">The Cosmic Core Engine determines your core soul alignment, deeply rooted karmic patterns, and ultimate life direction.</p>
+
+        {cosmic.cosmic_narrative && (
+          <div className="bg-gradient-to-r from-yellow-50 to-amber-50 p-6 rounded-xl border border-yellow-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid mb-6">
+            <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{cosmic.cosmic_narrative}</p>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {cosmic.soul_purpose && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
+              <h4 className="font-bold text-lg text-amber-900 mb-3 border-b border-slate-100 pb-2">Soul Purpose</h4>
+              <div className="mb-4">
+                <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Soul Theme</p>
+                <p className="font-bold text-amber-800 text-lg">{cosmic.soul_purpose.soul_theme}</p>
+              </div>
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-sm text-gray-500 uppercase font-semibold">Soul Index</span>
+                <span className="font-bold text-amber-700">{cosmic.soul_purpose.soul_index ? cosmic.soul_purpose.soul_index.toFixed(2) : 'N/A'}</span>
+              </div>
+            </div>
+          )}
+
+          {cosmic.life_path && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
+              <h4 className="font-bold text-lg text-blue-900 mb-3 border-b border-slate-100 pb-2">Life Path Direction</h4>
+              <div className="flex flex-col h-full justify-center pb-6 text-center mt-2">
+                <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Primary Destiny</p>
+                <p className="font-bold text-blue-800 text-xl">{cosmic.life_path.direction}</p>
+              </div>
+            </div>
+          )}
+
+          {cosmic.karma_patterns && cosmic.karma_patterns.length > 0 && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
+              <h4 className="font-bold text-lg text-rose-900 mb-3 border-b border-slate-100 pb-2">Karmic Patterns</h4>
+              <ul className="list-disc pl-5 space-y-2 mt-2">
+                {cosmic.karma_patterns.map((pattern, idx) => (
+                  <li key={idx} className="text-sm text-slate-700 font-medium">{pattern}</li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -1516,12 +2301,66 @@ const KundaliReportView = ({ data }) => {
 
   const renderMaharishi = () => {
     const maharishi = data.maharishi || (data.master_engine && data.master_engine.maharishi);
-    if (!maharishi || !maharishi.maharishi_text) return null;
+    if (!maharishi) return null;
+
+    if (!maharishi.maharishi_text && !maharishi.fortune_index && (!maharishi.yogas || maharishi.yogas.length === 0) && !maharishi.career) return null;
 
     return (
       <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
-        <div className="bg-gradient-to-r from-red-50 to-rose-50 p-6 rounded-xl border border-red-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
-          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{maharishi.maharishi_text}</p>
+        <p className="text-gray-600 mb-6 print:mb-2 italic">The Maharishi Engine detects classical yogas, calculates your Fortune Index, and predicts career and marriage pathways.</p>
+
+        {maharishi.maharishi_text && (
+          <div className="bg-gradient-to-r from-red-50 to-rose-50 p-6 rounded-xl border border-red-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid mb-6">
+            <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{maharishi.maharishi_text}</p>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {maharishi.fortune_index !== undefined && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid text-center flex flex-col justify-center">
+              <h4 className="font-bold text-lg text-rose-900 mb-2 border-b border-slate-100 pb-2">Fortune Index</h4>
+              <p className="text-4xl font-black text-rose-600 my-2">{maharishi.fortune_index}<span className="text-xl text-rose-300">/100</span></p>
+              <p className="text-xs text-gray-500 uppercase font-semibold">Cosmic Luck Indicator</p>
+            </div>
+          )}
+
+          {maharishi.career && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
+              <h4 className="font-bold text-lg text-blue-900 mb-3 border-b border-slate-100 pb-2">Career Profile</h4>
+              <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Predicted Path</p>
+              <p className="font-bold text-blue-800 text-lg">{maharishi.career}</p>
+            </div>
+          )}
+
+          {maharishi.marriage_analysis && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
+              <h4 className="font-bold text-lg text-fuchsia-900 mb-3 border-b border-slate-100 pb-2">Marriage Analysis</h4>
+              <div className="flex justify-between items-center mb-3">
+                <span className="text-sm text-gray-500 uppercase font-semibold">Delay Indicated</span>
+                <span className={`font-bold px-2 py-1 rounded text-xs ${maharishi.marriage_analysis.delay ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}`}>
+                  {maharishi.marriage_analysis.delay ? 'Yes' : 'No'}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-500 uppercase font-semibold">Risk Level</span>
+                <span className="font-bold text-fuchsia-700">{maharishi.marriage_analysis.risk}</span>
+              </div>
+            </div>
+          )}
+
+          {maharishi.yogas && maharishi.yogas.length > 0 && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid md:col-span-2 lg:col-span-3">
+              <h4 className="font-bold text-lg text-amber-900 mb-3 border-b border-slate-100 pb-2">Classical Yogas Detected</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {maharishi.yogas.map((yoga, idx) => (
+                  <div key={idx} className="bg-amber-50 p-3 rounded-lg border border-amber-100">
+                    <p className="font-bold text-amber-900 mb-1">{yoga.name}</p>
+                    <p className="text-sm text-amber-700">{yoga.result}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -1529,12 +2368,70 @@ const KundaliReportView = ({ data }) => {
 
   const renderBrahma = () => {
     const brahma = data.brahma || (data.master_engine && data.master_engine.brahma);
-    if (!brahma || !brahma.brahma_text) return null;
+    if (!brahma) return null;
+
+    if (!brahma.brahma_text && !brahma.profession_prediction && !brahma.marriage_window && (!brahma.wealth_curve || brahma.wealth_curve.length === 0) && brahma.karma_score === undefined) return null;
 
     return (
       <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
-        <div className="bg-gradient-to-r from-orange-50 to-yellow-50 p-6 rounded-xl border border-orange-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
-          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{brahma.brahma_text}</p>
+        <p className="text-gray-600 mb-6 print:mb-2 italic">The Brahma Destiny Engine synthesizes planetary strength and dashas to map your karma score, wealth curve, and major life milestones.</p>
+
+        {brahma.brahma_text && (
+          <div className="bg-gradient-to-r from-orange-50 to-yellow-50 p-6 rounded-xl border border-orange-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid mb-6">
+            <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{brahma.brahma_text}</p>
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {brahma.karma_score !== undefined && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid text-center flex flex-col justify-center">
+              <h4 className="font-bold text-lg text-orange-900 mb-2 border-b border-slate-100 pb-2">Karmic Evolution Index</h4>
+              <p className="text-4xl font-black text-orange-600 my-2">{brahma.karma_score}<span className="text-xl text-orange-300">/100</span></p>
+              <p className="text-xs text-gray-500 uppercase font-semibold">Overall Destiny Score</p>
+            </div>
+          )}
+
+          {brahma.profession_prediction && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
+              <h4 className="font-bold text-lg text-blue-900 mb-3 border-b border-slate-100 pb-2">Professional Destiny</h4>
+              <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Predicted Path</p>
+              <p className="font-bold text-blue-800 text-lg">{brahma.profession_prediction}</p>
+            </div>
+          )}
+
+          {brahma.marriage_window && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
+              <h4 className="font-bold text-lg text-fuchsia-900 mb-3 border-b border-slate-100 pb-2">Marriage Status</h4>
+              <p className="font-bold text-fuchsia-800 text-lg mb-3">{brahma.marriage_window.status}</p>
+              {brahma.marriage_window.windows && brahma.marriage_window.windows.length > 0 && (
+                <div>
+                  <p className="text-xs text-gray-500 uppercase font-semibold mb-2">Favourable Dashas</p>
+                  <div className="space-y-2">
+                    {brahma.marriage_window.windows.slice(0, 3).map((win, idx) => (
+                      <div key={idx} className="bg-fuchsia-50 p-2 rounded text-xs border border-fuchsia-100">
+                        <span className="font-bold text-fuchsia-700">{win.start} to {win.end}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {brahma.wealth_curve && brahma.wealth_curve.length > 0 && (
+            <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid md:col-span-2 lg:col-span-3">
+              <h4 className="font-bold text-lg text-emerald-900 mb-3 border-b border-slate-100 pb-2">Wealth Curve Forecast</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
+                {brahma.wealth_curve.slice(0, 10).map((pt, idx) => (
+                  <div key={idx} className="bg-emerald-50 p-3 rounded-lg border border-emerald-100 text-center">
+                    <p className="text-xs text-emerald-600 font-semibold mb-1">{pt.start}</p>
+                    <p className="text-xs text-emerald-900 uppercase">{pt.lord}</p>
+                    <p className="font-black text-emerald-700 text-lg mt-1">{pt.score}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     );
@@ -1542,12 +2439,57 @@ const KundaliReportView = ({ data }) => {
 
   const renderParamarshi = () => {
     const paramarshi = data.paramarshi || (data.master_engine && data.master_engine.paramarshi);
-    if (!paramarshi || !paramarshi.answer) return null;
+    if (!paramarshi || !paramarshi.data) return null;
 
     return (
       <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
-        <div className="bg-gradient-to-r from-purple-50 to-indigo-50 p-6 rounded-xl border border-purple-100 shadow-sm print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
-          <p className="text-gray-800 leading-relaxed whitespace-pre-wrap font-serif text-[1.05rem]">{paramarshi.answer}</p>
+        <p className="text-gray-600 mb-6 print:mb-2 italic">The Paramarshi Advisor analyzes your chart against specific questions to provide targeted predictions, warnings, and astrological confidence scores.</p>
+
+        <div className="bg-white rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid overflow-hidden">
+          <div className="bg-slate-50 border-b border-slate-200 p-4">
+            <p className="text-xs text-gray-500 uppercase font-semibold mb-1">Inquiry</p>
+            <p className="font-bold text-slate-800 italic">"{paramarshi.question}"</p>
+          </div>
+
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+              {paramarshi.data.prediction && (
+                <div className="bg-indigo-50 p-5 rounded-xl border border-indigo-100">
+                  <h4 className="font-bold text-indigo-900 mb-2 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-indigo-500 rounded-full inline-block"></span>
+                    Primary Prediction
+                  </h4>
+                  <p className="text-indigo-800 text-sm leading-relaxed">{paramarshi.data.prediction}</p>
+                </div>
+              )}
+
+              {paramarshi.data.summary && (
+                <div className="bg-purple-50 p-5 rounded-xl border border-purple-100">
+                  <h4 className="font-bold text-purple-900 mb-2 flex items-center gap-2">
+                    <span className="w-2 h-2 bg-purple-500 rounded-full inline-block"></span>
+                    Contextual Summary
+                  </h4>
+                  <p className="text-purple-800 text-sm leading-relaxed">{paramarshi.data.summary}</p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col md:flex-row gap-6">
+              {paramarshi.data.warning && (
+                <div className="flex-1 bg-rose-50 p-5 rounded-xl border border-rose-100 border-l-4 border-l-rose-500">
+                  <h4 className="font-bold text-rose-900 mb-1">Karmic Warning</h4>
+                  <p className="text-rose-800 text-sm">{paramarshi.data.warning}</p>
+                </div>
+              )}
+
+              {paramarshi.data.confidence !== undefined && (
+                <div className="md:w-1/3 bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-center items-center text-center">
+                  <p className="text-xs text-slate-500 uppercase font-semibold mb-1">Confidence Score</p>
+                  <p className="text-3xl font-black text-slate-700">{paramarshi.data.confidence}</p>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -1562,7 +2504,7 @@ const KundaliReportView = ({ data }) => {
 
         <div className="space-y-6">
           {data.planetary_wisdom.map((item, idx) => (
-            <div key={idx} className="bg-slate-50 p-6 rounded-xl border border-slate-200 print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
+            <div key={idx} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
               <h4 className="font-bold text-xl text-indigo-900 mb-4 pb-2 border-b border-indigo-100">{item.title}</h4>
               <div className="space-y-3">
                 {item.paragraphs && item.paragraphs.map((para, pIdx) => (
@@ -1585,7 +2527,7 @@ const KundaliReportView = ({ data }) => {
 
         <div className="space-y-6">
           {data.oracle_insights.map((item, idx) => (
-            <div key={idx} className="bg-indigo-50 p-6 rounded-xl border border-indigo-200 print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid shadow-sm">
+            <div key={idx} className="bg-white p-6 rounded-xl border border-indigo-100 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
               <h4 className="font-bold text-lg text-indigo-900 mb-3 leading-relaxed">Q: {item.question}</h4>
               <p className="text-gray-800 leading-relaxed font-serif text-[1.05rem]">{item.answer}</p>
             </div>
@@ -1616,7 +2558,7 @@ const KundaliReportView = ({ data }) => {
             const scoreText = score > 0.7 ? 'significant growth' : score < 0.4 ? 'careful navigation' : 'steady progress';
 
             return (
-              <div key={idx} className="bg-slate-50 p-6 rounded-xl border border-slate-200 print:bg-white print:border-gray-300 print:shadow-none print:break-inside-avoid">
+              <div key={idx} className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm print:border-gray-300 print:shadow-none print:break-inside-avoid">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 border-b border-indigo-100 pb-3">
                   <h4 className="font-bold text-xl text-indigo-900">Year {year}: {phase} Cycle</h4>
                   <div className={`mt-2 md:mt-0 px-3 py-1 rounded-full text-sm font-bold ${scoreColor} ${scoreBg}`}>
@@ -1627,7 +2569,7 @@ const KundaliReportView = ({ data }) => {
                   <p className="text-gray-800 leading-relaxed font-serif text-[1.05rem]">
                     {desc} This indicates a phase of {scoreText}.
                   </p>
-                  <div className="bg-white p-4 rounded-lg border border-slate-100 mt-2">
+                  <div className="bg-slate-50 p-4 rounded-lg border border-slate-100 mt-2">
                     <p className="text-gray-800 text-[1.05rem]"><strong>Guidance:</strong> {guidance}</p>
                   </div>
                 </div>
@@ -1696,8 +2638,9 @@ const KundaliReportView = ({ data }) => {
                 <div className="p-4 space-y-4">
                   {evts.map((evt, pIdx) => (
                     <div key={pIdx} className="border-l-4 border-indigo-200 pl-4 py-1">
-                      <p className="text-gray-800 leading-relaxed font-medium italic mb-1">{evt.event} ({evt.category || 'General'})</p>
-                      <p className="text-sm text-gray-500">Intensity: {evt.intensity || 0}/100.</p>
+                      <p className="text-gray-800 leading-relaxed font-medium italic mb-1">{evt.title || evt.event} ({evt.category || 'General'})</p>
+                      {evt.summary && <p className="text-gray-700 leading-relaxed text-sm mb-1">{evt.summary}</p>}
+                      <p className="text-sm text-gray-500">Intensity: {evt.intensity || 0}/10.</p>
                     </div>
                   ))}
                 </div>
@@ -1948,8 +2891,8 @@ const KundaliReportView = ({ data }) => {
     );
 
     return (
-      <div className="mb-12 print:mb-0 mt-8 print:mt-0 page-break-after" style={{ pageBreakAfter: 'always' }}>
-        <div className="bg-white border-[3px] border-gray-800 rounded-xl p-6 font-serif text-black mx-auto max-w-4xl shadow-md print:shadow-none print:border-black relative">
+      <div className="mb-12 print:mb-0 mt-8 print:mt-0 print:break-inside-avoid">
+        <div className="bg-white border-[3px] border-gray-800 rounded-xl p-6 font-serif text-black mx-auto max-w-4xl shadow-md print:shadow-none print:border-black relative print:break-inside-avoid">
 
           <div className="absolute -top-5 left-1/2 transform -translate-x-1/2">
             <h2 className="border-2 border-gray-800 px-10 py-1 text-lg font-bold text-blue-900 bg-white tracking-widest whitespace-nowrap">
@@ -2079,7 +3022,7 @@ const KundaliReportView = ({ data }) => {
   };
 
   return (
-    <div className="report-global-style min-h-screen bg-white py-8 print:bg-white print:py-0">
+    <div className="report-global-style min-h-screen bg-slate-200 py-8 print:bg-white print:py-0">
       <style>{`
         body {
           background-color: white !important;
@@ -2087,8 +3030,14 @@ const KundaliReportView = ({ data }) => {
         .report-global-style :not(.section-heading):not(.section-heading *):not(button):not(button *):not(svg):not(svg *):not(select):not(option) {
           color: black !important;
         }
+        .pdf-generating .a4-page {
+          padding: 0 !important;
+          margin: 0 !important;
+          box-shadow: none !important;
+          border: none !important;
+        }
       `}</style>
-      <div className="max-w-5xl mx-auto bg-white rounded-xl shadow-lg p-10 print:shadow-none print:break-inside-avoid print:p-0">
+      <div ref={reportRef} className={`mx-auto flex flex-col items-center gap-8 ${isGeneratingPDF ? "pdf-generating" : ""} print:p-0`}>
 
         {/* Floating Print & Settings Buttons (Hidden in Print Mode) */}
         <div className="sticky top-4 flex justify-end gap-3 mb-4 print:hidden z-50">
@@ -2141,19 +3090,9 @@ const KundaliReportView = ({ data }) => {
                     setPrintDropdownOpen(false);
                     window.print();
                   }}
-                  className="px-4 py-3 text-left text-gray-700 hover:bg-indigo-50 font-bold border-b border-gray-100"
-                >
-                  🖨️ Print Document
-                </button>
-                <button
-                  onClick={() => {
-                    setPrintDropdownOpen(false);
-                    alert("To save as a PDF, please select 'Save as PDF' from the Printer/Destination dropdown in the print dialog.");
-                    setTimeout(() => window.print(), 500);
-                  }}
                   className="px-4 py-3 text-left text-gray-700 hover:bg-indigo-50 font-bold"
                 >
-                  📄 Save as PDF
+                  🖨️ Print / Save as PDF
                 </button>
               </div>
             )}
@@ -2167,495 +3106,37 @@ const KundaliReportView = ({ data }) => {
           </div>
         </div>
 
-        {/* Cover Page */}
-        <div className="min-h-[85vh] flex flex-col items-center justify-center text-center mb-16 pb-12 border-b-4 border-indigo-900 relative z-10 print:min-h-[100vh] print:border-b-0 print:mb-0 print:pb-0 page-break-after">
 
-          <div className="w-36 h-36 mx-auto bg-[#ff6347] rounded-full flex items-center justify-center text-white shadow-xl border-4 border-[#ffbeb2] mb-8 print:mb-2 ring-4 ring-[#ff6347]/30">
-            <span className="text-7xl font-serif">ॐ</span>
-          </div>
-
-          <h2 className="text-3xl font-bold text-amber-600 mb-2">AstroConsult</h2>
-          <p className="text-sm font-bold text-slate-800 mb-16">www.astroconsult.com</p>
-
-          <h1 className="text-4xl md:text-5xl font-serif font-black text-amber-500 mb-20 uppercase tracking-widest">Vedic Astrology Report</h1>
-
-          <div className="text-left max-w-lg mx-auto w-full bg-white/80 p-8 rounded-xl border border-slate-200 mb-20 shadow-sm print:bg-transparent print:border-none print:shadow-none print:break-inside-avoid">
-            <div className="mb-4 text-lg">
-              <span className="font-bold text-slate-900 inline-block w-32">Name:</span>
-              <span className="text-slate-800">{data.meta?.name || 'User'}</span>
-            </div>
-            <div className="mb-4 text-lg">
-              <span className="font-bold text-slate-900 inline-block w-32">Date of Birth:</span>
-              <span className="text-slate-800">{data.meta?.birth_datetime || '-'}</span>
-            </div>
-            <div className="text-lg">
-              <span className="font-bold text-slate-900 inline-block w-32">Birth Place:</span>
-              <span className="text-slate-800">{data.meta?.location || '-'}</span>
-            </div>
-          </div>
-
-          <p className="text-sm text-slate-600 mt-auto">Generated using Vedic Astrology Engine</p>
-        </div>
-
-        {/* Classic Cover Page (Page 2) */}
-        {renderClassicCoverPage()}
-
-        <div className="relative z-10">
-
-          {/* Basic Details */}
-          <SectionTitle>Birth Details & Demographics</SectionTitle>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 print:mb-2 bg-slate-50 p-6 rounded-lg border border-slate-200">
-            <div><p className="text-sm text-gray-500 uppercase font-bold">Ascendant</p><p className="font-medium text-lg">{data.meta?.ascendant || '-'}</p></div>
-            <div><p className="text-sm text-gray-500 uppercase font-bold">Moon Sign</p><p className="font-medium text-lg">{data.meta?.moon_sign || '-'}</p></div>
-            <div><p className="text-sm text-gray-500 uppercase font-bold">Nakshatra</p><p className="font-medium text-lg">{data.meta?.nakshatra || '-'}</p></div>
-            <div><p className="text-sm text-gray-500 uppercase font-bold">Gender</p><p className="font-medium text-lg">{data.meta?.gender || '-'}</p></div>
-          </div>
-
-          {/* Planetary Positions */}
-          <SectionTitle>Planetary Positions</SectionTitle>
-          {renderPlanetTable()}
-
-          {/* D1 Chart */}
-          <SectionTitle>Birth Chart</SectionTitle>
-          {renderD1Chart()}
-
-          {/* Detailed Chart Analysis */}
-          <SectionTitle>Detailed D1 Planetary Analysis</SectionTitle>
-          <p className="text-gray-600 mb-6 print:mb-2 italic">In-depth house-by-house interpretations for your Lagna Chart.</p>
-          {renderD1DetailedAnalysis()}
-
-          {/* Chart Analysis & Predictions */}
-          <SectionTitle>Chart Analysis & Life Predictions</SectionTitle>
-          <p className="text-gray-600 mb-6 print:mb-2 italic">The following analysis is derived from your D1 birth chart placements.</p>
-          {renderPredictions()}
-
-          {/* Strengths */}
-          <SectionTitle>Planetary Strengths (Shadbala)</SectionTitle>
-          {renderStrengths()}
-
-
-
-          {/* Vimshottari Dasha Life Timeline */}
-          {data.dasha && data.dasha.list && (
-            <>
-              <SectionTitle>Vimshottari Dasha Life Timeline</SectionTitle>
-              <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2 overflow-hidden rounded-xl border border-slate-200 shadow-sm print:shadow-none print:break-inside-avoid print:border-gray-300">
-                <VimshottariGridTimeline data={data} />
-              </div>
-            </>
-          )}
-
-          {activeSections.auspicious_factors && (<>
-            {/* Favourable & Numerology */}
-            <SectionTitle>Auspicious Factors</SectionTitle>
-            {renderFavourable()}
-          </>)}
-
-          {/* Moved Strengths */}
-
-
-
-          {activeSections.yogas && (<>
-            {/* Yogas */}
-            <SectionTitle>Classical Yogas</SectionTitle>
-            {renderYogas()}
-          </>)}
-
-          {activeSections.dasha && (<>
-            {/* Dasha Periods */}
-            <SectionTitle>Current Dasha (Planetary Periods)</SectionTitle>
-            {renderDasha()}
-          </>)}
-
-          {activeSections.d2 && (<>
-            {/* D2 Chart */}
-            <SectionTitle>Hora Chart (D2 - Wealth & Finances)</SectionTitle>
-            {renderD2Chart()}
-            <VargaAnalysisPanel vargaKey="D2" vargaNum={2} />
-          </>)}
-
-          {activeSections.d3 && (<>
-            {/* D3 Chart */}
-            <SectionTitle>Drekkana Chart (D3 - Siblings & Courage)</SectionTitle>
-            {renderD3Chart()}
-            <VargaAnalysisPanel vargaKey="D3" vargaNum={3} />
-          </>)}
-
-          {activeSections.d4 && (<>
-            {/* D4 Chart */}
-            <SectionTitle>Chaturthamsha Chart (D4 - Fortune & Properties)</SectionTitle>
-            {renderD4Chart()}
-            <VargaAnalysisPanel vargaKey="D4" vargaNum={4} />
-          </>)}
-
-          {activeSections.d5 && (<>
-            {/* D5 Chart */}
-            <SectionTitle>Panchamsha Chart (D5 - Power & Authority)</SectionTitle>
-            {renderD5Chart()}
-            <VargaAnalysisPanel vargaKey="D5" vargaNum={5} />
-          </>)}
-
-          {activeSections.d6 && (<>
-            {/* D6 Chart */}
-            <SectionTitle>Shashthamsha Chart (D6 - Health & Enemies)</SectionTitle>
-            {renderD6Chart()}
-            <VargaAnalysisPanel vargaKey="D6" vargaNum={6} />
-          </>)}
-
-          {activeSections.d7 && (<>
-            {/* D7 Chart */}
-            <SectionTitle>Saptamsha Chart (D7 - Children & Progeny)</SectionTitle>
-            {renderD7Chart()}
-            <VargaAnalysisPanel vargaKey="D7" vargaNum={7} />
-          </>)}
-
-          {activeSections.d8 && (<>
-            {/* D8 Chart */}
-            <SectionTitle>Ashtamsha Chart (D8 - Longevity & Unexpected Events)</SectionTitle>
-            {renderD8Chart()}
-            <VargaAnalysisPanel vargaKey="D8" vargaNum={8} />
-          </>)}
-
-          {activeSections.d9 && (<>
-            {/* D9 Chart */}
-            <SectionTitle>Navamsha Chart (D9 - Marriage & Inner Self)</SectionTitle>
-            {renderD9Chart()}
-            <VargaAnalysisPanel vargaKey="D9" vargaNum={9} />
-          </>)}
-
-          {activeSections.d10 && (<>
-            {/* D10 Chart */}
-            <SectionTitle>Dashamsha Chart (D10 - Career & Profession)</SectionTitle>
-            {renderD10Chart()}
-            <VargaAnalysisPanel vargaKey="D10" vargaNum={10} />
-          </>)}
-
-          {activeSections.d12 && (<>
-            {/* D12 Chart */}
-            <SectionTitle>Dwadashamsha Chart (D12 - Parents & Ancestry)</SectionTitle>
-            {renderD12Chart()}
-            <VargaAnalysisPanel vargaKey="D12" vargaNum={12} />
-          </>)}
-
-          {activeSections.d16 && (<>
-            {/* D16 Chart */}
-            <SectionTitle>Shodashamsha Chart (D16 - Vehicles & Happiness)</SectionTitle>
-            {renderD16Chart()}
-            <VargaAnalysisPanel vargaKey="D16" vargaNum={16} />
-          </>)}
-
-          {activeSections.d20 && (<>
-            {/* D20 Chart */}
-            <SectionTitle>Vimshamsha Chart (D20 - Spiritual Progress)</SectionTitle>
-            {renderD20Chart()}
-            <VargaAnalysisPanel vargaKey="D20" vargaNum={20} />
-          </>)}
-
-          {activeSections.d24 && (<>
-            {/* D24 Chart */}
-            <SectionTitle>Chaturvimshamsha Chart (D24 - Education & Knowledge)</SectionTitle>
-            {renderD24Chart()}
-            <VargaAnalysisPanel vargaKey="D24" vargaNum={24} />
-          </>)}
-
-          {activeSections.d27 && (<>
-            {/* D27 Chart */}
-            <SectionTitle>Saptavimshamsha Chart (D27 - Strengths & Weaknesses)</SectionTitle>
-            {renderD27Chart()}
-            <VargaAnalysisPanel vargaKey="D27" vargaNum={27} />
-          </>)}
-
-          {activeSections.d30 && (<>
-            {/* D30 Chart */}
-            <SectionTitle>Trimshamsha Chart (D30 - Misfortunes & Evils)</SectionTitle>
-            {renderD30Chart()}
-            <VargaAnalysisPanel vargaKey="D30" vargaNum={30} />
-          </>)}
-
-          {activeSections.d40 && (<>
-            {/* D40 Chart */}
-            <SectionTitle>Khavedamsha Chart (D40 - Auspicious & Inauspicious Effects)</SectionTitle>
-            {renderD40Chart()}
-            <VargaAnalysisPanel vargaKey="D40" vargaNum={40} />
-          </>)}
-
-          {activeSections.d45 && (<>
-            {/* D45 Chart */}
-            <SectionTitle>Akshavedamsha Chart (D45 - General Indications)</SectionTitle>
-            {renderD45Chart()}
-            <VargaAnalysisPanel vargaKey="D45" vargaNum={45} />
-          </>)}
-
-          {activeSections.d60 && (<>
-            {/* D60 Chart */}
-            <SectionTitle>Shashtiamsha Chart (D60 - Past Life Karma & Micro-Level Destiny)</SectionTitle>
-            {renderD60Chart()}
-            <VargaAnalysisPanel vargaKey="D60" vargaNum={60} />
-          </>)}
-
-          {activeSections.ashtakavarga && (<>
-            {/* Ashtakavarga */}
-            <SectionTitle>Sarvashtakavarga (Overall Strength Wheel)</SectionTitle>
-            {renderAshtakavarga()}
-          </>)}
-
-          {activeSections.destiny_timeline && (<>
-            {/* Destiny Timeline */}
-            <SectionTitle>Destiny Timeline (10-Year Forecast)</SectionTitle>
-            {renderDestinyTimeline()}
-            {renderDestinyGraph()}
-          </>)}
-
-          {activeSections.cosmic_life_map && (<>
-            {/* Cosmic Life Map */}
-            <SectionTitle>5D Cosmic Life Map</SectionTitle>
-            {renderCosmicLifeMap()}
-          </>)}
-
-          {activeSections.destiny_matrix && (<>
-            {/* Destiny Matrix */}
-            <SectionTitle>Destiny Matrix Visualizer</SectionTitle>
-            {renderDestinyMatrixVisualizer()}
-          </>)}
-
-          {activeSections.wealth_analysis && (<>
-            {/* Wealth Analysis */}
-            <SectionTitle>Wealth & Prosperity Analysis</SectionTitle>
-            {renderWealthPrediction()}
-          </>)}
-
-          {activeSections.life_events && (<>
-            {/* Life Events */}
-            <SectionTitle>Life Event Predictions (2025-2035)</SectionTitle>
-            {renderLifeEvents()}
-          </>)}
-
-          {activeSections.dosha && (<>
-            {/* Dosha Analysis */}
-            <SectionTitle>Dosha Summary</SectionTitle>
-            {renderDoshas()}
-            {renderSadeSatiAnalysis()}
-          </>)}
-
-          {activeSections.remedies && (<>
-            {/* Remedies */}
-            <SectionTitle>Recommended Remedies & Mitigation</SectionTitle>
-            {renderRemedies()}
-          </>)}
-
-          {activeSections.soul_archetype && (<>
-            {/* Soul Archetype */}
-            <SectionTitle>Soul Archetype & Destiny</SectionTitle>
-            {renderSentient()}
-          </>)}
-
-          {activeSections.akashic && (<>
-            {/* Akashic Soul Record */}
-            <SectionTitle>Akashic Soul Record</SectionTitle>
-            {renderAkashic()}
-          </>)}
-
-          {activeSections.omniscient && (<>
-            {/* Omniscient Analysis */}
-            <SectionTitle>Omniscient Analysis</SectionTitle>
-            {renderOmniscient()}
-          </>)}
-
-          {activeSections.quantum && (<>
-            {/* Quantum Forecast Analysis */}
-            <SectionTitle>Quantum Forecast Analysis</SectionTitle>
-            {renderQuantum()}
-          </>)}
-
-          {activeSections.dimensional && (<>
-            {/* Dimensional Destiny Analysis */}
-            <SectionTitle>Dimensional Destiny Analysis</SectionTitle>
-            {renderDimensional()}
-          </>)}
-
-          {activeSections.astral && (<>
-            {/* Astral Matrix */}
-            <SectionTitle>Astral Matrix Destiny Analysis</SectionTitle>
-            {renderAstral()}
-          </>)}
-
-          {activeSections.cosmic_core && (<>
-            {/* Cosmic Core */}
-            <SectionTitle>Cosmic Core Destiny Analysis</SectionTitle>
-            {renderCosmicCore()}
-          </>)}
-
-          {activeSections.maharishi && (<>
-            {/* Maharishi Destiny Analysis */}
-            <SectionTitle>Maharishi Destiny Analysis</SectionTitle>
-            {renderMaharishi()}
-          </>)}
-
-          {activeSections.brahma && (<>
-            {/* Brahma Destiny Analysis */}
-            <SectionTitle>Brahma Destiny Analysis</SectionTitle>
-            {renderBrahma()}
-          </>)}
-
-          {activeSections.paramarshi && (<>
-            {/* Paramarshi Advisor Analysis */}
-            <SectionTitle>Paramarshi Advisor Analysis</SectionTitle>
-            {renderParamarshi()}
-          </>)}
-
-          {activeSections.planetary_wisdom && (<>
-            {/* Planetary Wisdom */}
-            <SectionTitle>Planetary Wisdom: Deep Placement Analysis</SectionTitle>
-            {renderPlanetaryWisdom()}
-          </>)}
-
-          {activeSections.oracle && (<>
-            {/* Oracle Insights */}
-            <SectionTitle>Sage Insights & Divine Oracle</SectionTitle>
-            {renderOracle()}
-          </>)}
-
-          {activeSections.karma_timeline && (<>
-            {/* Karma Timeline */}
-            <SectionTitle>Advanced Karma Projection (2025-2045)</SectionTitle>
-            {renderKarmaTimeline()}
-          </>)}
-
-          {activeSections.life_events_narrative && (<>
-            {/* Life Events Narrative */}
-            <SectionTitle>Life Events Narrative: The Journey Ahead</SectionTitle>
-            {renderLifeEventsNarrative()}
-          </>)}
-
-          {activeSections.probability_matrix && (<>
-            {/* Probability Matrix Engine */}
-            <SectionTitle>Probability Matrix Engine</SectionTitle>
-            {renderProbabilityMatrix()}
-          </>)}
-
-          {activeSections.neural_summary && (<>
-            {/* Cosmic Neural Summary */}
-            <SectionTitle>Cosmic Neural Summary</SectionTitle>
-            {renderNeuralSummary()}
-          </>)}
-
-          {activeSections.destiny_signature && (<>
-            {/* Destiny Signature */}
-            <SectionTitle>Destiny Signature</SectionTitle>
-            {renderDestinySignature()}
-          </>)}
-
-          {activeSections.life_vector && (<>
-            {/* AI Life Vector Analysis */}
-            <SectionTitle>AI Life Vector Analysis</SectionTitle>
-            {renderLifeVectorPredictions()}
-          </>)}
-
-          {/* Moved Vimshottari Dasha Life Timeline */}
-
-          {/* Sarva Chancha Chakra & Detailed Tables */}
-          {activeSections.sarva_chancha && (data.ashtakavarga || (data.master_engine && data.master_engine.ashtakavarga)) && (
-            <>
-              <SectionTitle>Sarva Chancha Chakra</SectionTitle>
-              <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2 overflow-hidden rounded-xl border border-slate-200 shadow-sm print:shadow-none print:break-inside-avoid print:border-gray-300">
-                <SarvaChanchaChakra avData={data.ashtakavarga || (data.master_engine && data.master_engine.ashtakavarga)} stacked={true} />
-              </div>
-
-              <SectionTitle>Bhinnashtakavarga Detailed Tables</SectionTitle>
-              <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2 max-w-4xl mx-auto w-full">
-                {['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Ascendant'].map(planet => {
-                  const ashtakavargaData = data.ashtakavarga || (data.master_engine && data.master_engine.ashtakavarga);
-                  if (!ashtakavargaData?.bhinna_breakdown?.[planet]) return null;
-                  return (
-                    <div key={planet} className="mb-6 print:mb-2">
-                      <BhinnaTable
-                        planet={planet}
-                        breakdown={ashtakavargaData.bhinna_breakdown[planet]}
-                      />
-                    </div>
-                  );
-                })}
-              </div>
-
-              {activeSections.ashtakavarga_reduction && data.av_reductions && Object.keys(data.av_reductions).length > 0 && (
-                <>
-                  <SectionTitle>Ashtakavarga Reduction</SectionTitle>
-                  <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2 overflow-hidden rounded-xl border border-slate-200 shadow-sm print:shadow-none print:break-inside-avoid print:border-gray-300">
-                    <AsthavargaReduction data={data} />
-                  </div>
-                </>
-              )}
-
-              {/* Moved Shadbala Chart */}
-
-              {activeSections.vimsopaka && data.vimsopaka_assessment && (
-                <>
-                  <SectionTitle>Varga Strength Matrix (Vimsopaka Bala)</SectionTitle>
-                  <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2 overflow-hidden rounded-xl border border-slate-200 shadow-sm print:shadow-none print:break-inside-avoid print:border-gray-300 bg-white min-h-[300px] print:break-inside-avoid">
-                    <VimsopakaAssessment data={data} />
-                  </div>
-                </>
-              )}
-
-              {activeSections.gemstones && (<>
-                <SectionTitle>Recommended Gemstones (Ratna)</SectionTitle>
-                <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2 overflow-hidden rounded-xl border border-slate-200 shadow-sm print:shadow-none print:break-inside-avoid print:border-gray-300 bg-white min-h-[300px] print:break-inside-avoid">
-                  <GemstonePanel data={data} />
-                </div>
-              </>)}
-
-              {activeSections.life_analysis && data.ai_life_analysis && Object.keys(data.ai_life_analysis).length > 0 && (
-                <>
-                  <SectionTitle>Detailed Life Analysis</SectionTitle>
-                  <div className="mb-8 print:mb-2 mt-6 print:mt-2 print:my-2">
-                    {LIFE_ANALYSIS_SECTIONS.map((sec, idx) => {
-                      const content = data.ai_life_analysis[sec.key];
-                      if (!content) return null;
-                      return (
-                        <div key={idx} className="mb-6 print:mb-2 p-6 bg-white rounded-xl shadow-sm border border-slate-200">
-                          <h4 className="text-xl font-bold text-indigo-900 mb-3 flex items-center gap-3">
-                            <span className="text-2xl">{sec.icon}</span> {sec.en}
-                          </h4>
-                          <p className="text-gray-700 leading-relaxed font-serif text-lg whitespace-pre-wrap">
-                            {content}
-                          </p>
+        <DragDropContext onDragEnd={onDragEnd}>
+          <Droppable droppableId="report-sections">
+            {(provided) => (
+              <div {...provided.droppableProps} ref={provided.innerRef} className="relative z-10 w-full flex flex-col gap-0 print:block">
+                {layoutOrder.filter(id => isSectionActive(id)).map((sectionId, index) => (
+                  <Draggable key={sectionId} draggableId={sectionId} index={index}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        className={`relative ${snapshot.isDragging ? 'z-[1000] opacity-95 scale-[1.01] shadow-2xl rounded-2xl overflow-hidden' : ''} transition-transform group print:block print:w-full print:border-none print:shadow-none print:m-0 print:p-0`}
+                        style={provided.draggableProps.style}
+                      >
+                        <div
+                          {...provided.dragHandleProps}
+                          className="absolute top-2 left-2 z-50 print:hidden text-gray-400 hover:text-indigo-600 bg-white/90 p-2 rounded-lg backdrop-blur-sm opacity-60 group-hover:opacity-100 shadow-md border border-gray-100 cursor-grab active:cursor-grabbing transition-all"
+                          title="Drag to reorder section"
+                        >
+                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
                         </div>
-                      );
-                    })}
-                  </div>
-                </>
-              )}
-
-              {activeSections.rituals && renderDetailedRemedialRituals()}
-              {activeSections.predictive_logic && renderAdvancedPredictiveLogic()}
-              {activeSections.universal_wisdom && renderUniversalWisdom()}
-            </>
-          )}
-
-          {/* Master Engine / Premium Insights */}
-          {activeSections.master_engine && data.master_engine && (
-            <>
-              <SectionTitle>Premium Cosmic Insights</SectionTitle>
-              <p className="text-gray-600 mb-6 print:mb-2 italic">The following analysis is generated by advanced astrological AI engines, exploring deep karmic, dimensional, and spiritual patterns.</p>
-              {renderMasterEngine()}
-            </>
-          )}
-        </div>
-
-        {/* Back Cover / Thank You */}
-        <div className="min-h-[85vh] flex flex-col items-center justify-center text-center mt-20 pt-12 border-t-4 border-indigo-900 relative z-10 print:min-h-[100vh] print:border-t-0 print:mt-0 print:pt-0 page-break-before">
-
-          <div className="w-36 h-36 mx-auto bg-[#ff6347] rounded-full flex items-center justify-center text-white shadow-xl border-4 border-[#ffbeb2] mb-8 print:mb-2 ring-4 ring-[#ff6347]/30">
-            <span className="text-7xl font-serif">ॐ</span>
-          </div>
-
-          <h2 className="text-3xl font-bold text-amber-600 mb-2">AstroConsult</h2>
-          <p className="text-sm font-bold text-slate-800 mb-24">www.astroconsult.com</p>
-
-          <h1 className="text-5xl md:text-6xl font-serif font-black text-amber-500 mb-20 uppercase tracking-widest">Thank You</h1>
-
-          <p className="text-sm text-slate-600 mt-auto">Generated using Vedic Astrology Engine</p>
-        </div>
+                        {getSectionContent(sectionId)}
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
 
       </div>
     </div>

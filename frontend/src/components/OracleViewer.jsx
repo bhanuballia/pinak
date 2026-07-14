@@ -34,6 +34,7 @@ const ORACLE_ITEMS = [
     { id: "finance", label: "Finance", icon: "💰", color: "linear-gradient(135deg, #10b981 0%, #0f766e 100%)" },
     { id: "marriage", label: "Marriage", icon: "💍", color: "linear-gradient(135deg, #fb7185 0%, #db2777 100%)" },
     { id: "business", label: "Business", icon: "💹", color: "linear-gradient(135deg, #f59e0b 0%, #c2410c 100%)" },
+    { id: "business_naming", label: "Business Naming", icon: "🏢", color: "linear-gradient(135deg, #3b82f6 0%, #1e3a8a 100%)" },
     { id: "health", label: "Health", icon: "🏥", color: "linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)" },
     { id: "parents_health", label: "Parents Health", icon: "👨‍👩‍👧", color: "linear-gradient(135deg, #0ea5e9 0%, #1d4ed8 100%)" },
     { id: "spouse_health", label: "Spouse Health", icon: "💑", color: "linear-gradient(135deg, #d946ef 0%, #7e22ce 100%)" },
@@ -117,6 +118,7 @@ export default function OracleViewer({ categoryProp }) {
     const [category, setCategory] = useState(categoryProp);
     const [data, setData] = useState(null);
     const [financeDbData, setFinanceDbData] = useState(null);
+    const [businessNamingData, setBusinessNamingData] = useState(null);
     const [isLightMode, setIsLightMode] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -135,6 +137,9 @@ export default function OracleViewer({ categoryProp }) {
                 // Fetch specialized Finance data if category is finance
                 if (category === 'finance' && parsed) {
                     fetchFinanceData(parsed);
+                }
+                if (category === 'business_naming' && parsed) {
+                    fetchBusinessNamingData(parsed);
                 }
             } catch (e) {
                 console.error("Failed to parse worksheet data", e);
@@ -172,8 +177,37 @@ export default function OracleViewer({ categoryProp }) {
         }
     };
 
+    const fetchBusinessNamingData = async (horoscopeData) => {
+        try {
+            setLoading(true);
+            const basic = horoscopeData.basic_details || {};
+            const payload = {
+                date: basic.birth_date || "1990-01-01",
+                time: basic.birth_time || "12:00:00",
+                lat: basic.lat || 28.6,
+                lon: basic.lon || 77.2,
+                tz_offset: basic.tz_offset || 5.5
+            };
+
+            const response = await fetch('/api/naming/business-naming', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                setBusinessNamingData(result);
+            }
+        } catch (error) {
+            console.error("Failed to fetch business naming insights:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const item = ORACLE_ITEMS.find(i => i.id === category);
-    const info = data?.life_oracle?.[category];
+    const info = data?.life_oracle?.[category] || (category === 'business_naming' ? {} : null);
 
     if (!category || !item) {
         return (
@@ -424,6 +458,73 @@ export default function OracleViewer({ categoryProp }) {
                                                 </div>
                                             </div>
                                         )}
+                                    </>
+                                )}
+                            </div>
+                        ) : category === 'business_naming' && businessNamingData ? (
+                            /* ── ROYAL DARK BUSINESS NAMING PANEL ── */
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
+                                {loading ? (
+                                    <div className="flex flex-col items-center justify-center py-20 gap-4">
+                                        <div className="w-16 h-16 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
+                                        <p className="text-indigo-400 font-black uppercase tracking-[0.3em] text-[10px]">Analyzing Cosmic Sounds...</p>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <div style={{ borderRadius: '30px', padding: '40px', border: '2px solid rgba(59, 130, 246, 0.1)', textAlign: 'center', background: 'linear-gradient(135deg, #1e3a8a 0%, #020617 100%)', boxShadow: '0 30px 60px rgba(0,0,0,0.5)' }}>
+                                            <p style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '4px', color: '#60a5fa', marginBottom: '15px' }}>Auspicious Starting Syllable</p>
+                                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'baseline', gap: '10px', marginBottom: '10px' }}>
+                                                <span style={{ fontSize: '96px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white' }}>{businessNamingData.syllable}</span>
+                                            </div>
+                                            <p style={{ fontSize: '12px', fontWeight: 700, color: '#94a3b8', fontStyle: 'italic' }}>Based on your Moon Nakshatra (Avakahada Chakra)</p>
+                                        </div>
+
+                                        <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '30px', padding: '35px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                            <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: isLightMode ? '#475569' : '#94a3b8', marginBottom: '25px' }}>Cosmic Business Alignment</p>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                                                <div style={{ borderLeft: '2px solid #3b82f6', paddingLeft: '25px' }}>
+                                                    <p style={{ fontSize: '11px', fontWeight: 900, color: '#3b82f6', textTransform: 'uppercase', marginBottom: '10px' }}>10th House Lord (Karma/Profession)</p>
+                                                    <p style={{ fontSize: '16px', color: isLightMode ? '#a51e0dbd' : '#cbd5e1', fontWeight: 700 }}>{businessNamingData.tenth_lord} (Ruling {businessNamingData.tenth_house})</p>
+                                                </div>
+                                                <div style={{ borderLeft: '2px solid #8b5cf6', paddingLeft: '25px' }}>
+                                                    <p style={{ fontSize: '11px', fontWeight: 900, color: '#8b5cf6', textTransform: 'uppercase', marginBottom: '10px' }}>Recommended Domains</p>
+                                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                                        {businessNamingData.domains?.map((d, i) => (
+                                                            <span key={i} style={{ background: 'rgba(139, 92, 246, 0.1)', color: '#c4b5fd', padding: '8px 16px', borderRadius: '12px', fontSize: '12px', fontWeight: 700, border: '1px solid rgba(139, 92, 246, 0.2)' }}>{d}</span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div style={{ background: 'rgba(59, 130, 246, 0.05)', borderRadius: '30px', padding: '35px', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
+                                                <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#60a5fa', margin: 0 }}>✨ AI Generated Name Suggestions</p>
+                                            </div>
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                {businessNamingData.mock_names?.map((nameObj, i) => {
+                                                    // Handle both old string format and new object format gracefully
+                                                    let englishName = typeof nameObj === 'string' ? nameObj : nameObj.english;
+                                                    let hindiName = typeof nameObj === 'string' ? null : nameObj.hindi;
+                                                    
+                                                    // Defensively split if AI hallucinated both names into one string separated by a comma
+                                                    if (englishName && typeof englishName === 'string' && englishName.includes(',') && !hindiName) {
+                                                        const parts = englishName.split(',');
+                                                        englishName = parts[0].trim();
+                                                        hindiName = parts.slice(1).join(',').trim();
+                                                    }
+
+                                                    return (
+                                                        <div key={i} style={{ padding: '20px', borderRadius: '15px', background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+                                                            <span style={{ fontSize: '20px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', letterSpacing: '1px' }}>{englishName}</span>
+                                                            {hindiName && (
+                                                                <span style={{ fontSize: '18px', fontWeight: 500, color: '#60a5fa', letterSpacing: '1px' }}>{hindiName}</span>
+                                                            )}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
                                     </>
                                 )}
                             </div>

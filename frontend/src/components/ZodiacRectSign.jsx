@@ -88,7 +88,7 @@ const NAKSHATRA_HINDI = {
     "Revati": "रेव"
 };
 
-const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", planetEffects = {}, aspectRatio = 2.5, planetPositions = [], isRect, setIsRect, scaleText = 1, hideLegend = false, hideOuterRect, defaultLang = 'en', showFullscreenButton = false, onPopOut }) => {
+const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", planetEffects = {}, aspectRatio = 2.5, planetPositions = [], isRect, setIsRect, scaleText = 1, hideLegend = false, hideOuterRect, defaultLang = 'en', showFullscreenButton = false, onPopOut, showNakshatra = false, showDegree = false }) => {
     const isMainChart = title && (
         title.toLowerCase().includes('birth') ||
         title.toLowerCase().includes('lagna') ||
@@ -192,7 +192,17 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
                     </div>
 
                     <div style={{ display: 'flex', gap: '4px' }}>
-
+                        <button
+                            onClick={(e) => { e.stopPropagation(); setLang(lang === 'en' ? 'hi' : 'en'); }}
+                            style={{
+                                background: 'rgba(228, 234, 243, 1)', color: '#fff', border: 'none',
+                                padding: '2px 6px', borderRadius: '4px', fontSize: '14px',
+                                fontWeight: 'bold', cursor: 'pointer'
+                            }}
+                            title="Toggle Language"
+                        >
+                            {lang === 'en' ? 'अ' : 'A'}
+                        </button>
                     </div>
                 </div>
             )}
@@ -298,10 +308,10 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
 
                             // Prepare the stack items: House index (gray) + Planets (colored)
                             const displayedPlanets = planets.slice(0, 7);
-                            const lineH = 5.0 * scaleText; // Increased distance between planets
+                            const lineH = (showDegree || showNakshatra) ? 6.0 * scaleText : 5.0 * scaleText;
                             const totalItems = displayedPlanets.length;
 
-                            const isGrid = !isMainChart && totalItems >= 2;
+                            const isGrid = !isMainChart && totalItems >= 2 && !showDegree && !showNakshatra;
                             const numRows = isGrid ? Math.ceil(totalItems / 2) : totalItems;
                             const startY = numRows > 0 ? center.y - ((numRows - 1) * lineH) / 2 : center.y;
 
@@ -336,10 +346,11 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
                                         let positionArray = Array.isArray(planetPositions) ? planetPositions : Object.values(planetPositions || {});
                                         let fullPos = positionArray.find(pos => pos.planet === pName || pos.name === pName) || (typeof p === 'object' ? p : null);
 
-                                        let nakshatra = fullPos?.nakshatra || (typeof p === 'object' ? p.nakshatra : null);
-                                        let nakText = nakshatra ? String(nakshatra).substring(0, 3) : "";
-                                        if (lang === 'hi' && nakshatra) {
-                                            nakText = NAKSHATRA_HINDI[nakshatra] || nakText;
+                                        let nakshatraObj = fullPos?.nakshatra || (typeof p === 'object' ? p.nakshatra : null);
+                                        let nakshatraName = (typeof nakshatraObj === 'object' && nakshatraObj !== null) ? nakshatraObj.name : nakshatraObj;
+                                        let nakText = nakshatraName ? String(nakshatraName).substring(0, 3) : "";
+                                        if (lang === 'hi' && nakshatraName) {
+                                            nakText = NAKSHATRA_HINDI[nakshatraName] || nakText;
                                         }
 
                                         let degreeStr = "";
@@ -382,12 +393,12 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
                                                 <tspan fontSize={3.9 * scaleText} fill={color} fontWeight="semibold" fontFamily="Arial, sans-serif">
                                                     {abbrev}
                                                 </tspan>
-                                                {isMainChart && degreeStr && (
+                                                {(isMainChart || showDegree) && degreeStr && (
                                                     <tspan dx="1.5" fontSize={2.8 * scaleText} fill="rgba(87, 6, 53, 1)" fontWeight="normal" fontFamily="Arial, sans-serif">
                                                         {degreeStr}
                                                     </tspan>
                                                 )}
-                                                {isMainChart && nakshatra && (
+                                                {(isMainChart || showNakshatra) && nakText && (
                                                     <tspan dx="1.5" fontSize={2.9 * scaleText} fill="#000000" fontWeight="normal" fontFamily="Arial, sans-serif">
                                                         {nakText}
                                                     </tspan>

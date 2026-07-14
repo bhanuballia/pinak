@@ -14,8 +14,8 @@ import AIInsightCard from './AIInsightCard';
 const MarriageDashboard = ({ report }) => {
   return (
     <div className="space-y-6 mt-8">
-      <h3 className="text-2xl font-serif italic text-white mb-6 border-b border-slate-700 pb-4">Modular Relationship Components</h3>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <h3 className="text-2xl font-serif italic text-black mb-6 border-b border-slate-700 pb-4">Modular Relationship Components</h3>
+      <div className="grid grid-cols-1 md:grid-cols-2  lg:grid-cols-3 gap-6">
         <CompatibilityMeter report={report} />
         <AIInsightCard report={report} />
         <DivorceRiskPanel report={report} />

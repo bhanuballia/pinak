@@ -12,7 +12,7 @@ export default function TithiDashboard({ data: inputData }) {
     }
 
     const b = inputData.basic_details || {};
-    let tzOffset = inputData.tz_offset || 0;
+    let tzOffset = (inputData.tz_offset !== undefined && inputData.tz_offset !== null && inputData.tz_offset !== "") ? parseFloat(inputData.tz_offset) : 5.5;
     if (inputData.meta?.timezone && !inputData.tz_offset) {
       const match = inputData.meta.timezone.match(/UTC([+-])(\d+):(\d+)/);
       if (match) {

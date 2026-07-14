@@ -21,7 +21,7 @@ const AshtakavargaViewer = ({ data: worksheetData }) => {
         time: bd.birth_time,
         lat: bd.lat,
         lon: bd.lon,
-        tz_offset: bd.tz_offset || 0,
+        tz_offset: (bd.tz_offset !== undefined && bd.tz_offset !== null && bd.tz_offset !== "") ? parseFloat(bd.tz_offset) : 5.5,
       };
     } else {
       // Fallback: read from localStorage
@@ -36,7 +36,7 @@ const AshtakavargaViewer = ({ data: worksheetData }) => {
               time: bd.birth_time,
               lat: bd.lat,
               lon: bd.lon,
-              tz_offset: bd.tz_offset || 0,
+              tz_offset: (bd.tz_offset !== undefined && bd.tz_offset !== null && bd.tz_offset !== "") ? parseFloat(bd.tz_offset) : 5.5,
             };
           }
         }
@@ -81,44 +81,30 @@ const AshtakavargaViewer = ({ data: worksheetData }) => {
 
   return (
     <div className="flex flex-col h-full bg-slate-50/50">
-      {/* HEADER */}
-      <div className="shrink-0 p-5 border-b border-indigo-100 flex justify-between items-end bg-white">
-        <div>
-          <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter">Ashtakavarga</h2>
-          <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest mt-1">
-            Samudaya & House Strength Analysis
-          </p>
-        </div>
-        <div className="text-right">
-          <div className="text-3xl font-black text-indigo-700">{avData.total_bindus}</div>
-          <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Bindus</div>
-        </div>
-      </div>
-
       {/* CONTENT */}
       <div className="flex-1 overflow-y-auto p-5">
-        
+
         {/* Tabs */}
         <div className="flex gap-6 border-b border-slate-200 mb-6">
-          <button 
+          <button
             className={`pb-2 px-1 text-sm font-bold border-b-2 transition-colors ${viewMode === 'summary' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent hover:text-slate-600'}`}
             onClick={() => setViewMode('summary')}
           >
             Summary & Analysis
           </button>
-          <button 
+          <button
             className={`pb-2 px-1 text-sm font-bold border-b-2 transition-colors ${viewMode === 'charts' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent hover:text-slate-600'}`}
             onClick={() => setViewMode('charts')}
           >
             Bhinnashtakavarga Charts
           </button>
-          <button 
+          <button
             className={`pb-2 px-1 text-sm font-bold border-b-2 transition-colors ${viewMode === 'tables' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent hover:text-slate-600'}`}
             onClick={() => setViewMode('tables')}
           >
             Detailed Tables
           </button>
-          <button 
+          <button
             className={`pb-2 px-1 text-sm font-bold border-b-2 transition-colors ${viewMode === 'chakra' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent hover:text-slate-600'}`}
             onClick={() => setViewMode('chakra')}
           >
@@ -196,65 +182,89 @@ const AshtakavargaViewer = ({ data: worksheetData }) => {
         {viewMode === 'charts' && (
           <div className="overflow-x-auto">
             <div className="grid grid-cols-3 gap-3 md:gap-4 lg:gap-6 min-w-[600px] pb-4">
-            {/* 7 Planets */}
-            {['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn'].map(planet => {
-              if (!avData.bhinna[planet]) return null;
-              
-              const housesData = avData.house_analytics.map(ha => ({
-                house: ha.house,
-                signIndex: ha.sign_index,
-                points: avData.bhinna[planet][ha.sign_index] || 0
-              }));
+              {/* 7 Planets */}
+              {['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn'].map(planet => {
+                if (!avData.bhinna[planet]) return null;
 
-              return (
-                <AshtakavargaChart 
-                  key={planet}
-                  title={`Bhinnashtakavarga for ${planet}`} 
-                  housesData={housesData} 
+                const housesData = avData.house_analytics.map(ha => ({
+                  house: ha.house,
+                  signIndex: ha.sign_index,
+                  points: avData.bhinna[planet][ha.sign_index] || 0
+                }));
+
+                return (
+                  <AshtakavargaChart
+                    key={planet}
+                    title={`Bhinnashtakavarga for ${planet}`}
+                    housesData={housesData}
+                  />
+                );
+              })}
+
+              {/* Lagna Ashtakavarga */}
+              {avData.bhinna["Ascendant"] ? (
+                <AshtakavargaChart
+                  title="Lagna Ashtakavarga"
+                  housesData={avData.house_analytics.map(ha => ({
+                    house: ha.house,
+                    signIndex: ha.sign_index,
+                    points: avData.bhinna["Ascendant"][ha.sign_index] || 0
+                  }))}
                 />
-              );
-            })}
+              ) : (
+                <div className="flex flex-col bg-slate-50 border-2 border-dashed border-slate-200 rounded-md items-center justify-center text-slate-400 p-4">
+                  <span className="text-sm font-bold uppercase tracking-widest mb-2">Lagna BAV</span>
+                  <span className="text-xs text-center">(Loading...)</span>
+                </div>
+              )}
 
-            {/* Lagna Ashtakavarga */}
-            {avData.bhinna["Ascendant"] ? (
-              <AshtakavargaChart 
-                title="Lagna Ashtakavarga" 
+              {/* Samudaya Ashtakavarga */}
+              <AshtakavargaChart
+                title="Samudaya Ashtakavarga"
                 housesData={avData.house_analytics.map(ha => ({
                   house: ha.house,
                   signIndex: ha.sign_index,
-                  points: avData.bhinna["Ascendant"][ha.sign_index] || 0
-                }))} 
+                  points: ha.points
+                }))}
               />
-            ) : (
-              <div className="flex flex-col bg-slate-50 border-2 border-dashed border-slate-200 rounded-md items-center justify-center text-slate-400 p-4">
-                <span className="text-sm font-bold uppercase tracking-widest mb-2">Lagna BAV</span>
-                <span className="text-xs text-center">(Loading...)</span>
-              </div>
-            )}
-
-            {/* Samudaya Ashtakavarga */}
-            <AshtakavargaChart 
-              title="Samudaya Ashtakavarga" 
-              housesData={avData.house_analytics.map(ha => ({
-                house: ha.house,
-                signIndex: ha.sign_index,
-                points: ha.points
-              }))} 
-            />
             </div>
           </div>
         )}
 
         {viewMode === 'tables' && (
-          <div className="max-w-4xl mx-auto w-full">
+          <div className="w-50 space-y-10 pb-8">
             {['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn', 'Ascendant'].map(planet => {
               if (!avData.bhinna_breakdown?.[planet]) return null;
+
+              const housesData = avData.house_analytics.map(ha => ({
+                house: ha.house,
+                signIndex: ha.sign_index,
+                points: avData.bhinna?.[planet]?.[ha.sign_index] || 0
+              }));
+
+              let startSign = 1;
+              if (planet === 'Ascendant') {
+                startSign = avData.house_strengths?.[1]?.sign_index !== undefined ? avData.house_strengths[1].sign_index + 1 : 1;
+              } else if (avData.planet_positions?.[planet]?.sidereal?.lon !== undefined) {
+                startSign = Math.floor(avData.planet_positions[planet].sidereal.lon / 30) + 1;
+              }
+
               return (
-                <BhinnaTable 
-                  key={planet}
-                  planet={planet}
-                  breakdown={avData.bhinna_breakdown[planet]}
-                />
+                <div key={planet} className="flex flex-col lg:flex-row gap-8 items-stretch justify-start border-b border-slate-200 pb-10">
+                  <div className="overflow-x-auto max-w-full flex">
+                    <BhinnaTable
+                      planet={planet}
+                      breakdown={avData.bhinna_breakdown[planet]}
+                      startSign={startSign}
+                    />
+                  </div>
+                  <div className="w-full lg:w-[500px] h-[330px] shrink-0 flex flex-col">
+                    <AshtakavargaChart
+                      title={`${planet} Chart`}
+                      housesData={housesData}
+                    />
+                  </div>
+                </div>
               );
             })}
           </div>

@@ -73,8 +73,8 @@ export default function VimshottariGridTimeline({ data }) {
   if (!list.length) return null;
 
   return (
-    <div className="bg-white p-6 font-serif">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-12 gap-y-10">
+    <div className="bg-white p-6 print:p-0 print:bg-transparent font-serif">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 print:grid-cols-3 gap-x-12 print:gap-x-4 gap-y-10 print:gap-y-6">
         {list.map((md, i) => {
           const metaInfo = PLANET_META[md.lord] || { color: '#000', years: '?' };
           const nextD = list[i + 1];
@@ -86,17 +86,17 @@ export default function VimshottariGridTimeline({ data }) {
           return (
             <div key={i} className="flex flex-col">
               <div className="mb-2">
-                <h3 className="font-bold text-base" style={{ color: metaInfo.color }}>
+                <h3 className="font-bold text-base print:text-sm" style={{ color: metaInfo.color }}>
                   <span className="text-black">{md.lord}</span> ({metaInfo.years}y)
                 </h3>
-                <p className="text-[13px] text-red-700 mt-1">
+                <p className="text-[13px] print:text-[11px] text-red-700 mt-1">
                   From {startAge} to {endAge}
                 </p>
               </div>
 
-              <table className="w-full text-[13px] border-collapse">
+              <table className="w-full text-[13px] print:text-[11px] border-collapse">
                 <thead>
-                  <tr className="border-t border-b border-red-600 bg-amber-100/50">
+                  <tr className="border-t border-b border-red-600 bg-amber-100/50 print:bg-transparent">
                     <th className="text-left py-1.5 font-bold px-1 text-black">Antar</th>
                     <th className="text-left py-1.5 font-bold px-1 text-black">Beginning</th>
                     <th className="text-left py-1.5 font-bold px-1 text-black">Ending</th>
@@ -109,7 +109,7 @@ export default function VimshottariGridTimeline({ data }) {
                     const adEnd = ad.end_date ? fmtDate(ad.end_date) : '';
 
                     return (
-                      <tr key={j} className="border-b border-gray-100 last:border-b-2 last:border-red-600">
+                      <tr key={j} className="border-b border-gray-100 last:border-b-2 last:border-red-600 print:border-gray-200">
                         <td className="py-1 px-1" style={{ color: adMetaInfo.color }}>{ad.lord}</td>
                         <td className="py-1 px-1 text-black">{adStart}</td>
                         <td className="py-1 px-1 text-black">{adEnd}</td>
