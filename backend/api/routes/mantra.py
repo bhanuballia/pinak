@@ -31,6 +31,7 @@ async def log_mantra_session(payload: Dict = Body(...)):
         }
         
         await mantra_logs.insert_one(session_doc)
+        session_doc["_id"] = str(session_doc["_id"])
         return {"message": "Session logged successfully", "session": session_doc}
         
     except Exception as e:
