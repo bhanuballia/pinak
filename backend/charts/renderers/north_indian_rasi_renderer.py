@@ -12,6 +12,8 @@ import svgwrite
 import math
 import os
 
+_CAIRO_AVAILABLE = True
+
 # Text styling
 HOUSE_LABEL_STYLE = {
     "font_size": 14,
@@ -402,7 +404,8 @@ def render_north_indian_chart(
     # -----------------------------------
     # Convert to PNG (reliable version)
     # -----------------------------------
-    if to_png:
+    global _CAIRO_AVAILABLE
+    if to_png and _CAIRO_AVAILABLE:
         try:
             import cairosvg
 
@@ -413,9 +416,11 @@ def render_north_indian_chart(
                 output_height=h,
             )
         except ImportError:
+            _CAIRO_AVAILABLE = False
             # cairosvg not installed - PNG conversion skipped (SVG will be used instead)
             print(f"[CHART RENDER] WARNING: cairosvg is not installed. PNG conversion skipped. SVG saved to: {out_svg_path}")
         except Exception as e:
+            _CAIRO_AVAILABLE = False
             # PNG conversion failed (usually missing Cairo system libraries on Windows)
             # This is expected - SVG fallback will be used
             print(f"[CHART RENDER] WARNING: PNG conversion failed: {e}. SVG saved to: {out_svg_path}")

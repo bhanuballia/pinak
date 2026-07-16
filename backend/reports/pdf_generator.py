@@ -1024,9 +1024,12 @@ def _render_charts_from_report_data(report_data: Dict[str, Any], out_dir: str = 
             traceback.print_exc()
             print("[CHART RENDER] D9 render exception:", e)
 
-    # Render additional Vargas (D2, D3, D4, etc.)
+    # Render additional Vargas (D2, D3, D4, etc.) - optimized to render only essential ones
     vargas = report_data.get("vargas", {})
+    allowed_vargas = {"d2", "d3", "d4", "d7", "d9", "d10", "d12", "d30", "d60"}
     for v_key, v_model in vargas.items():
+        if v_key not in allowed_vargas:
+            continue
         if _HAS_CHARTS and v_model:
             try:
                 v_model = _enrich_chart_with_sign_names(v_model)
@@ -2283,7 +2286,7 @@ def render_detailed_pdf(report_data: Dict[str, Any], output_path: str, theme_nam
         story.append(PageBreak())
 
     # 3. Dynamic Vargas Loop (D1, D2, D3, ..., D60)
-    varga_list = [1, 2, 3, 4, 7, 9, 10, 12, 16, 20, 24, 27, 30, 40, 45, 60]
+    varga_list = [1, 2, 3, 4, 7, 9, 10, 12, 30, 60]
     varga_names = {
         1: ("Rasi Chart (D1)", "राशि चार्ट (D1)"),
         2: ("Hora Chart (D2)", "होरा चार्ट (D2)"),

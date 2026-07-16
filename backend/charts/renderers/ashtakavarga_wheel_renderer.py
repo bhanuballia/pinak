@@ -11,6 +11,8 @@ import os
 import svgwrite
 from typing import Dict, Any, Optional
 
+_CAIRO_AVAILABLE = True
+
 HOUSE_LABELS = [
     "1st House\n(Self)",
     "2nd House\n(Wealth)",
@@ -105,12 +107,15 @@ def render_ashtakavarga_wheel(
     dwg.save()
 
     # Convert to PNG reliably
-    try:
-        import cairosvg
-        cairosvg.svg2png(url=out_svg_path, write_to=out_png_path)
-    except Exception:
-        # PNG conversion failed (usually missing Cairo system libraries on Windows)
-        # This is expected - SVG fallback will be used
-        pass
+    global _CAIRO_AVAILABLE
+    if _CAIRO_AVAILABLE:
+        try:
+            import cairosvg
+            cairosvg.svg2png(url=out_svg_path, write_to=out_png_path)
+        except Exception:
+            _CAIRO_AVAILABLE = False
+            # PNG conversion failed (usually missing Cairo system libraries on Windows)
+            # This is expected - SVG fallback will be used
+            pass
 
     return out_png_path
