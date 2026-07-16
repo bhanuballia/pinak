@@ -117,7 +117,7 @@ const CompatibilityDashboard = ({ bride, groom, brideFullData, groomFullData, re
          const startDateStr = startDate.toISOString().split('T')[0];
 
          try {
-            const response = await fetch('http://localhost:8000/api/muhurt/search_advanced', {
+            const response = await fetch('/api/muhurt/search_advanced', {
                method: 'POST',
                headers: { 'Content-Type': 'application/json' },
                body: JSON.stringify({
@@ -156,7 +156,7 @@ const CompatibilityDashboard = ({ bride, groom, brideFullData, groomFullData, re
       setIsCalculatingGarbhadhana(true);
       setGarbhadhanaError("");
       try {
-         const response = await fetch('http://localhost:8000/api/muhurt/garbhadhana', {
+         const response = await fetch('/api/muhurt/garbhadhana', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -182,7 +182,7 @@ const CompatibilityDashboard = ({ bride, groom, brideFullData, groomFullData, re
    const handleGenerateAiDeepReport = async () => {
       setIsGeneratingAiDeepReport(true);
       try {
-         const response = await fetch('http://localhost:8000/api/matchmaking/ai-report', {
+         const response = await fetch('/api/matchmaking/ai-report', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ bride: brideFullData, groom: groomFullData })
@@ -205,7 +205,7 @@ const CompatibilityDashboard = ({ bride, groom, brideFullData, groomFullData, re
    const handleActivationAnalysis = async () => {
       setIsAnalyzingActivation(true);
       try {
-         const response = await fetch('http://localhost:8000/api/matchmaking/marriage-activation', {
+         const response = await fetch('/api/matchmaking/marriage-activation', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ bride: brideFullData })
@@ -223,7 +223,7 @@ const CompatibilityDashboard = ({ bride, groom, brideFullData, groomFullData, re
    const handleGroomActivationAnalysis = async () => {
       setIsAnalyzingGroomActivation(true);
       try {
-         const response = await fetch('http://localhost:8000/api/matchmaking/marriage-activation', {
+         const response = await fetch('/api/matchmaking/marriage-activation', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ groom: groomFullData })

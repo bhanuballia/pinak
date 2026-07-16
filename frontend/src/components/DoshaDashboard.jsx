@@ -45,7 +45,7 @@ export default function DoshaDashboard() {
                     karana = localData.panchang.karana.karana_name;
                 }
 
-                const response = await axios.post("http://localhost:8000/api/panchang-doshas", {
+                const response = await axios.post("/api/panchang-doshas", {
                     moon_sign: moon_sign,
                     karana: karana,
                     nakshatra: nakshatra,

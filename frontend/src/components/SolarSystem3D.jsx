@@ -140,7 +140,7 @@ const SolarSystem3D = ({ date = "1990-10-01", time = "12:00:00" }) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const response = await fetch("http://localhost:8000/api/astronomy/heliocentric", {
+        const response = await fetch("/api/astronomy/heliocentric", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ date, time, tz_offset: 5.5 })

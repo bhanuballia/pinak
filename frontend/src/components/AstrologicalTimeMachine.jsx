@@ -38,7 +38,7 @@ const AstrologicalTimeMachine = ({ data }) => {
                 transit_time: currentTime
             };
 
-            const response = await fetch('http://localhost:8000/api/transit/time_machine', {
+            const response = await fetch('/api/transit/time_machine', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)

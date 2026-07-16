@@ -28,7 +28,7 @@ export default function DeepHoroscopeViewer({ data, type }) {
       setContent("");
 
       try {
-        const response = await fetch('http://localhost:8000/api/horoscope-report/stream', {
+        const response = await fetch('/api/horoscope-report/stream', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

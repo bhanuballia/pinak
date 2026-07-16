@@ -55,7 +55,7 @@ const TripatakiChakraViewer = () => {
           start_age: startAge
         };
 
-        const response = await fetch('http://localhost:8000/api/solar_return/tripataki_chakra', {
+        const response = await fetch('/api/solar_return/tripataki_chakra', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)

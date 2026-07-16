@@ -17,7 +17,7 @@ export default function AdvancedJaiminiDashboard({ data }) {
             try {
                 const lagnaSign = data.chart.houses?.[1]?.sign_name || "Aries";
                 
-                const response = await fetch("http://localhost:8000/api/jaimini_advanced/advanced", {
+                const response = await fetch("/api/jaimini_advanced/advanced", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({

@@ -66,7 +66,7 @@ const KPChartViewer = ({ formData }) => {
         tz_offset: parseFloat(pTz),
       };
 
-      const response = await fetch('http://localhost:8000/api/kp/calculate', {
+      const response = await fetch('/api/kp/calculate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

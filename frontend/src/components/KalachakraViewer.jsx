@@ -59,7 +59,7 @@ const KalachakraViewer = () => {
           tz_offset: locationRef.current.tz,
         };
 
-        const response = await fetch('http://localhost:8000/api/kalachakra/kalachakra', {
+        const response = await fetch('/api/kalachakra/kalachakra', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -100,7 +100,7 @@ const KalachakraViewer = () => {
         tz_offset: locationRef.current.tz,
       };
 
-      const response = await fetch('http://localhost:8000/api/kalachakra/kalachakra', {
+      const response = await fetch('/api/kalachakra/kalachakra', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

@@ -47,7 +47,7 @@ const BTRWizard = () => {
         setStep(4); // Loading crucible
 
         try {
-            const response = await fetch("http://localhost:8000/api/btr/rectify", {
+            const response = await fetch("/api/btr/rectify", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

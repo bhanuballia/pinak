@@ -60,7 +60,7 @@ const BiodataGenerator = () => {
 
       setIsLoadingAstro(true);
       try {
-         const res = await fetch('http://localhost:8000/api/biodata/astro-details', {
+         const res = await fetch('/api/biodata/astro-details', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

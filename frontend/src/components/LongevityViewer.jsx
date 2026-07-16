@@ -40,7 +40,7 @@ const LongevityViewer = () => {
           tz_offset: parseFloat(pTz),
         };
 
-        const response = await fetch('http://localhost:8000/api/longevity/analysis', {
+        const response = await fetch('/api/longevity/analysis', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)

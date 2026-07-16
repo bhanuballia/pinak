@@ -176,7 +176,7 @@ export default function NadiViewer({ data }) {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch("http://localhost:8000/api/nadi/analyze", {
+            const response = await fetch("/api/nadi/analyze", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -212,7 +212,7 @@ export default function NadiViewer({ data }) {
         setAsking(true);
         setQaError(null);
         try {
-            const response = await fetch("http://localhost:8000/api/nadi/ask", {
+            const response = await fetch("/api/nadi/ask", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({

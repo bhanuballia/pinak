@@ -8,7 +8,7 @@ export default function KarakaDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/karakas", { method: 'POST' })
+    fetch("/api/karakas", { method: 'POST' })
       .then(res => res.json())
       .then(data => {
         setKarakas(data);

@@ -63,7 +63,7 @@ const NavamshaAgesViewer = ({ formData }) => {
         name: pName
       };
 
-      const response = await fetch('http://localhost:8000/api/navamsha_ages/calculate', {
+      const response = await fetch('/api/navamsha_ages/calculate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

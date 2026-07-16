@@ -30,7 +30,7 @@ const NamingCalculator = ({ data }) => {
                     payload.time = `${String(data.basic_details.hour).padStart(2, '0')}:${String(data.basic_details.minute).padStart(2, '0')}:00`;
                 }
 
-                const response = await fetch('http://localhost:8000/api/naming/comprehensive', {
+                const response = await fetch('/api/naming/comprehensive', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)

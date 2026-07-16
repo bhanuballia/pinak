@@ -136,7 +136,7 @@ export default function ClassicLayoutViewer2({ data: worksheetData }) {
                 transit_date: `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`,
                 transit_time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}:00`
             };
-            fetch('http://localhost:8000/api/transit/animated', {
+            fetch('/api/transit/animated', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(transitPayload)

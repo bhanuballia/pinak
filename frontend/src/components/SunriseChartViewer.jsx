@@ -68,7 +68,7 @@ const SunriseChartViewer = ({ formData }) => {
         tz_offset: parseFloat(pTz),
       };
 
-      const response = await fetch('http://localhost:8000/api/sunrise/calculate', {
+      const response = await fetch('/api/sunrise/calculate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

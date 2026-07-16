@@ -31,7 +31,7 @@ export default function MedicalAstrologyDashboard() {
                 }
                 natalPositions["Ascendant"] = ascDeg;
 
-                const response = await axios.post("http://localhost:8000/api/medical-analysis", {
+                const response = await axios.post("/api/medical-analysis", {
                     natal_positions: natalPositions,
                     transit_positions: null
                 });

@@ -47,7 +47,7 @@ const VarshaphalaDetailsViewer = () => {
           start_age: startAge
         };
 
-        const response = await fetch('http://localhost:8000/api/solar_return/annual', {
+        const response = await fetch('/api/solar_return/annual', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)

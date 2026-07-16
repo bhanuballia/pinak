@@ -36,7 +36,7 @@ const MatchmakingPage = () => {
   const [activeReportData, setActiveReportData] = useState(null);
 
   useEffect(() => {
-    const ws = new WebSocket('ws://localhost:8000/ws/matchmaking/alerts');
+    const ws = new WebSocket(`${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.hostname === 'localhost' ? 'localhost:8000' : window.location.host}/ws/matchmaking/alerts`);
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);

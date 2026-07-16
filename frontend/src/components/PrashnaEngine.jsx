@@ -187,7 +187,7 @@ export default function PrashnaEngine() {
                     const lon = position.coords.longitude;
 
                     try {
-                        const response = await fetch("http://localhost:8000/api/prashna/ask", {
+                        const response = await fetch("/api/prashna/ask", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
                             body: JSON.stringify({

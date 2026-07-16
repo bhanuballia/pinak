@@ -54,7 +54,7 @@ const HarshaBalaViewer = () => {
           start_age: startAge
         };
 
-        const response = await fetch('http://localhost:8000/api/solar_return/varshaphala_strengths', {
+        const response = await fetch('/api/solar_return/varshaphala_strengths', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)

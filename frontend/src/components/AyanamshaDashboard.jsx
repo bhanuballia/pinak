@@ -12,7 +12,7 @@ export default function AyanamshaDashboard() {
   ]);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/ayanamsha")
+    fetch("/api/ayanamsha")
       .then(res => res.json())
       .then(data => {
         setSystems(prev => prev.map(s => 

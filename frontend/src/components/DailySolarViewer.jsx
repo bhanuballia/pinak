@@ -67,7 +67,7 @@ const DailySolarViewer = () => {
           };
         }
 
-        const response = await fetch('http://localhost:8000/api/solar_return/calculate_daily', {
+        const response = await fetch('/api/solar_return/calculate_daily', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestBody)

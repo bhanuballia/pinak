@@ -87,7 +87,7 @@ const AnimatedTransitsViewer = ({ formData }) => {
         transit_time: t_time
       };
 
-      const response = await fetch('http://localhost:8000/api/transit/animated', {
+      const response = await fetch('/api/transit/animated', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

@@ -253,7 +253,7 @@ const AdvancedNakshatraViewer = () => {
         payload.target_datetime = viewDate.toISOString();
       }
 
-      const response = await fetch('http://localhost:8000/api/nakshatra_advanced/personalized_oracle', {
+      const response = await fetch('/api/nakshatra_advanced/personalized_oracle', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -293,7 +293,7 @@ const AdvancedNakshatraViewer = () => {
         payload.target_datetime = viewDate.toISOString();
       }
 
-      const response = await fetch('http://localhost:8000/api/nakshatra_advanced/personalized_oracle_future', {
+      const response = await fetch('/api/nakshatra_advanced/personalized_oracle_future', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -317,7 +317,7 @@ const AdvancedNakshatraViewer = () => {
     let active = true;
     const fetchLiveNakshatra = async () => {
       try {
-        let url = 'http://localhost:8000/api/nakshatra_advanced/live';
+        let url = '/api/nakshatra_advanced/live';
         if (!isLive && viewDate) {
           // Adjust to ISO format but preserving local timezone offset if desired, or just sending UTC
           url += `?target_datetime=${encodeURIComponent(viewDate.toISOString())}`;

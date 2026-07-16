@@ -5,7 +5,7 @@ export default function SBCGrid() {
 
   useEffect(() => {
     // Fetch initial grid data from our new API
-    fetch("http://localhost:8000/api/sarvatobhadra/sbc")
+    fetch("/api/sarvatobhadra/sbc")
       .then(res => res.json())
       .then(json => setData(json))
       .catch(err => console.error("Error fetching SBC data:", err));

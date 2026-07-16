@@ -46,7 +46,7 @@ export default function NotificationManager() {
             try {
               const worksheetData = JSON.parse(storedData);
               // Send to backend
-              const response = await fetch('http://localhost:8000/api/profiles/subscribe', {
+              const response = await fetch('/api/profiles/subscribe', {
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json',

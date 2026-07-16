@@ -47,7 +47,7 @@ const MuhurtHeatmap = ({ data }) => {
         user_profile: natalMoonLon !== null ? { moon_lon: natalMoonLon } : {}
       };
 
-      const res = await fetch('http://localhost:8000/api/muhurt/heatmap', {
+      const res = await fetch('/api/muhurt/heatmap', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)

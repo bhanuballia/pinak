@@ -30,7 +30,7 @@ export default function TithiDashboard({ data: inputData }) {
       target_year: new Date().getFullYear() // Or a specific selected year
     };
 
-    fetch("http://localhost:8000/api/tithi-pravesha", {
+    fetch("/api/tithi-pravesha", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)

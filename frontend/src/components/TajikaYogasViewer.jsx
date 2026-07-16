@@ -62,7 +62,7 @@ const TajikaYogasViewer = () => {
           start_age: startAge
         };
 
-        const response = await fetch('http://localhost:8000/api/solar_return/tajika_yogas', {
+        const response = await fetch('/api/solar_return/tajika_yogas', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)

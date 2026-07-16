@@ -159,7 +159,7 @@ const AIOraclePanel = ({ data }) => {
       }
 
       // Use full URL to hit FastAPI backend (assuming proxy is setup or running on same port locally)
-      const res = await fetch(`http://localhost:8000${endpoint}`, {
+      const res = await fetch(`${window.location.hostname === 'localhost' ? 'http://localhost:8000' : ''}${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

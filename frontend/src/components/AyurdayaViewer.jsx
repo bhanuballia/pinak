@@ -13,7 +13,7 @@ export default function AyurdayaViewer({ data }) {
                 return;
             }
             try {
-                const response = await fetch("http://localhost:8000/api/ayurdaya/calculate", {
+                const response = await fetch("/api/ayurdaya/calculate", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({

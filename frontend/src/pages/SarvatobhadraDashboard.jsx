@@ -14,7 +14,7 @@ export default function SarvatobhadraDashboard({ data = null, grid: initialGrid 
 
   useEffect(() => {
     if (!initialGrid.length) {
-      fetch("http://localhost:8000/api/sarvatobhadra/sbc")
+      fetch("/api/sarvatobhadra/sbc")
         .then(res => res.json())
         .then(json => {
           if (json.grid) setGrid(json.grid);
@@ -35,7 +35,7 @@ export default function SarvatobhadraDashboard({ data = null, grid: initialGrid 
     const timeStr = now.toTimeString().split(' ')[0];
     const tz_offset = (now.getTimezoneOffset() / -60.0).toFixed(1);
     
-    fetch(`http://localhost:8000/api/horoscope/positions?date=${dateStr}&time=${timeStr}&tz_offset=${tz_offset}&lat=28.6&lon=77.2`)
+    fetch(`/api/horoscope/positions?date=${dateStr}&time=${timeStr}&tz_offset=${tz_offset}&lat=28.6&lon=77.2`)
       .then(res => res.json())
       .then(json => {
         if (json.positions) {

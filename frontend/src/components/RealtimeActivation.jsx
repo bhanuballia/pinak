@@ -7,7 +7,7 @@ export default function RealtimeActivation() {
 
   useEffect(() => {
     // Basic mock or real websocket connection
-    const ws = new WebSocket("ws://localhost:8000/ws");
+    const ws = new WebSocket(`${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.hostname === 'localhost' ? 'localhost:8000' : window.location.host}/ws`);
     
     ws.onmessage = (event) => {
       try {
