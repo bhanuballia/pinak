@@ -489,11 +489,11 @@ const AdvancedNakshatraViewer = () => {
               };
               const ascSignNum = SIGN_MAP[ascSignName] || 1;
 
-              // 2. Initialize the 12 houses with correct zodiac sign numbers
+              // 2. Initialize the 12 houses with correct zodiac sign numbers (0-based index)
               const chartHouses = {};
               for (let h = 1; h <= 12; h++) {
                 chartHouses[h] = {
-                  sign: ((ascSignNum + h - 2) % 12) + 1,
+                  sign_index: (ascSignNum + h - 2) % 12,
                   planets: []
                 };
               }
