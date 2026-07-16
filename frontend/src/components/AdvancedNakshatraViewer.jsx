@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ZodiacChart from './ZodiacChart';
 
 const ORACLE_CATEGORIES = [
   {
@@ -476,6 +477,79 @@ const AdvancedNakshatraViewer = () => {
                 </tbody>
               </table>
             </div>
+
+            {(() => {
+              // 1. Identify the Ascendant sign
+              const ascendantItem = data.data.find(item => item.planet.includes("Ascendant"));
+              const ascSignName = ascendantItem ? ascendantItem.sign : "Aries";
+
+              const SIGN_MAP = {
+                "Aries": 1, "Taurus": 2, "Gemini": 3, "Cancer": 4, "Leo": 5, "Virgo": 6,
+                "Libra": 7, "Scorpio": 8, "Sagittarius": 9, "Capricorn": 10, "Aquarius": 11, "Pisces": 12
+              };
+              const ascSignNum = SIGN_MAP[ascSignName] || 1;
+
+              // 2. Initialize the 12 houses with correct zodiac sign numbers
+              const chartHouses = {};
+              for (let h = 1; h <= 12; h++) {
+                chartHouses[h] = {
+                  sign: ((ascSignNum + h - 2) % 12) + 1,
+                  planets: []
+                };
+              }
+
+              // 3. Map each planet into its matching house based on its zodiac sign
+              const formattedPositions = [];
+              data.data.forEach(item => {
+                let pName = item.planet;
+                if (pName.includes("Rahu")) pName = "Rahu";
+                if (pName.includes("Ketu")) pName = "Ketu";
+                if (pName.includes("Ascendant")) pName = "Ascendant";
+
+                // Format position for ZodiacChart
+                formattedPositions.push({
+                  planet: pName,
+                  degree: item.degree,
+                  nakshatra: item.nakshatra,
+                  is_retrograde: item.speed < 0,
+                  is_combust: false
+                });
+
+                if (item.planet.includes("Ascendant")) return;
+
+                const planetSignNum = SIGN_MAP[item.sign] || 1;
+                const houseNum = ((planetSignNum - ascSignNum + 12) % 12) + 1;
+
+                chartHouses[houseNum].planets.push({
+                  name: pName,
+                  degree: item.degree % 30,
+                  is_retrograde: item.speed < 0,
+                  is_combust: false,
+                  nakshatra: item.nakshatra
+                });
+              });
+
+              return (
+                <div className="mt-8 pt-6 border-t border-[#333]">
+                  <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+                    <span className="text-[#00ffcc]">●</span> Current Planet Position Chart
+                  </h3>
+                  <div className="max-w-2xl mx-auto bg-[#0f0f1a] p-4 rounded-xl border border-[#333]">
+                    <ZodiacChart
+                      houses={chartHouses}
+                      planetPositions={formattedPositions}
+                      title="Current Planet Positions"
+                      variant="legacy"
+                      defaultRect={true}
+                      scaleText={1.3}
+                      showNakshatra={true}
+                      showDegree={true}
+                      hideLegend={true}
+                    />
+                  </div>
+                </div>
+              );
+            })()}
 
           </div>
         </div>
