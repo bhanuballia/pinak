@@ -49,6 +49,10 @@ export default function MantraTracker() {
     const [audioVolume, setAudioVolume] = useState(0); // 0 to 100 for visualizer
     const [isSpeakingUI, setIsSpeakingUI] = useState(false); // For visual feedback
 
+    // Auto-Chant State & Refs
+    const [isAutoChanting, setIsAutoChanting] = useState(false);
+    const isAutoChantingRef = useRef(false);
+
     const timerRef = useRef(null);
     const chimeRef = useRef(new Audio("/sounds/_Temple_Aarti_Sound_Ringtone.mp3"));
     const singleBellRef = useRef(new Audio("/sounds/templebell.mp3")); // A custom temple bell sound for every count
@@ -64,7 +68,10 @@ export default function MantraTracker() {
 
     useEffect(() => {
         fetchStats();
-        return () => stopMicrophone(); // Cleanup on unmount
+        return () => {
+            stopMicrophone();
+            stopAutoChant();
+        };
     }, []);
 
     // Sync sensitivity state to ref for the animation loop
@@ -244,11 +251,85 @@ export default function MantraTracker() {
 
     // --- End Web Audio VAD Logic ---
 
+    const speakNext = () => {
+        if (!isAutoChantingRef.current) return;
+
+        // Get text to speak (Hindi name/mantra preferred for clean Sanskrit pronunciation)
+        const textToSpeak = selectedMantra.hindiMantra || selectedMantra.mantra;
+
+        const utterance = new SpeechSynthesisUtterance(textToSpeak);
+
+        // Find Hindi voice if available
+        const voices = window.speechSynthesis.getVoices();
+        const hindiVoice = voices.find(voice => voice.lang.includes('hi') || voice.lang.includes('IN'));
+        if (hindiVoice) {
+            utterance.voice = hindiVoice;
+        }
+        utterance.lang = 'hi-IN';
+        utterance.rate = 0.85; // slightly slower for clear chants
+
+        utterance.onend = () => {
+            if (!isAutoChantingRef.current) return;
+
+            // Play temple bell ring on each completion
+            new Audio("/sounds/templebell.mp3").play().catch(e => console.log("Audio error:", e));
+
+            setCount(prev => {
+                const next = prev + 1;
+                if (next % 108 === 0) {
+                    // Play completion aarti sound
+                    new Audio("/sounds/_Temple_Aarti_Sound_Ringtone.mp3").play().catch(e => console.log("Audio error:", e));
+                    stopAutoChant(); // Stop auto chanting after a full Mala
+                    return next;
+                }
+
+                // Speak next chant after a small delay (e.g. 500ms)
+                setTimeout(() => {
+                    speakNext();
+                }, 500);
+
+                return next;
+            });
+        };
+
+        utterance.onerror = (e) => {
+            console.error("SpeechSynthesis error:", e);
+            if (isAutoChantingRef.current) {
+                setTimeout(() => speakNext(), 1000);
+            }
+        };
+
+        window.speechSynthesis.speak(utterance);
+    };
+
+    const startAutoChant = () => {
+        if (isAutoChanting) return;
+        setIsAutoChanting(true);
+        isAutoChantingRef.current = true;
+
+        // Start session timer if not active
+        if (!timerRef.current) {
+            setIsSessionActive(true);
+            timerRef.current = setInterval(() => {
+                setElapsedSeconds(prev => prev + 1);
+            }, 1000);
+        }
+
+        speakNext();
+    };
+
+    const stopAutoChant = () => {
+        setIsAutoChanting(false);
+        isAutoChantingRef.current = false;
+        window.speechSynthesis.cancel();
+    };
+
     const handleEndSession = async () => {
         if (timerRef.current) clearInterval(timerRef.current);
         setIsSessionActive(false);
         setIsSaving(true);
 
+        stopAutoChant();
         if (isMicEnabled) stopMicrophone();
 
         try {
@@ -313,6 +394,10 @@ export default function MantraTracker() {
                         <p className="flex items-start gap-2">
                             <span className="text-amber-500">🔔</span>
                             <span><strong>Milestones:</strong> A divine temple bell will automatically chime every 108 chants (1 complete Mala).</span>
+                        </p>
+                        <p className="flex items-start gap-2">
+                            <span className="text-amber-500">🔊</span>
+                            <span><strong>Auto-Chanting:</strong> Enable Auto-Chant Mode to automatically speak the Sanskrit mantra 108 times, with a bell sound on each count and a sacred completion chime when done.</span>
                         </p>
                     </div>
                 </div>
@@ -421,7 +506,7 @@ export default function MantraTracker() {
                         </div>
                     </div>
 
-                    {/* Hands-Free Controls */}
+                    {/* Hands-Free & Auto-Chant Controls */}
                     <div className="absolute top-8 right-8 z-10 flex gap-4 items-center">
                         {isMicEnabled && (
                             <select
@@ -436,9 +521,17 @@ export default function MantraTracker() {
                         )}
                         <button
                             onClick={toggleMicrophone}
-                            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all shadow flex items-center gap-2 ${isMicEnabled ? 'bg-red-600 hover:bg-red-700 text-white animate-pulse' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'}`}
+                            disabled={isAutoChanting}
+                            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all shadow flex items-center gap-2 ${isMicEnabled ? 'bg-red-600 hover:bg-red-700 text-white animate-pulse' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'} ${isAutoChanting ? 'opacity-50 cursor-not-allowed' : ''}`}
                         >
                             {isMicEnabled ? "🛑 Stop Mic" : "🎤 Hands-Free Mode"}
+                        </button>
+                        <button
+                            onClick={isAutoChanting ? stopAutoChant : startAutoChant}
+                            disabled={isMicEnabled}
+                            className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all shadow flex items-center gap-2 ${isAutoChanting ? 'bg-amber-600 hover:bg-amber-700 text-white animate-pulse' : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700'} ${isMicEnabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        >
+                            {isAutoChanting ? "🛑 Stop Auto-Chant" : "🔊 Auto-Chant 108x"}
                         </button>
                     </div>
                     {micError && <div className="absolute top-20 right-8 text-xs text-red-400 bg-red-950 p-2 rounded">{micError}</div>}
