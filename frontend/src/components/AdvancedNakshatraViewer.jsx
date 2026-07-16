@@ -534,7 +534,7 @@ const AdvancedNakshatraViewer = () => {
                   <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
                     <span className="text-[#00ffcc]">●</span> Current Planet Position Chart
                   </h3>
-                  <div className="max-w-2xl mx-auto bg-[#0f0f1a] p-4 rounded-xl border border-[#333]">
+                  <div className="max-w-7xl mx-auto bg-[#0f0f1a] p-4 rounded-xl border border-[#333]">
                     <ZodiacChart
                       houses={chartHouses}
                       planetPositions={formattedPositions}
@@ -559,217 +559,215 @@ const AdvancedNakshatraViewer = () => {
             {data.muhurat && data.muhurat.nature && (
               <div className="bg-[#16213e] rounded-xl shadow-lg border border-[#333] overflow-hidden mt-2">
                 <div className="p-6">
-              <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-                <span className="text-yellow-400">✨</span> Live Muhurat Analysis
-              </h2>
-              <p className="text-gray-300 mb-6">
-                The Moon is currently transiting <strong>{data.muhurat.current_moon_nakshatra}</strong>, which has a <strong>{data.muhurat.nature}</strong> nature.
-              </p>
+                  <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+                    <span className="text-yellow-400">✨</span> Live Muhurat Analysis
+                  </h2>
+                  <p className="text-gray-300 mb-6">
+                    The Moon is currently transiting <strong>{data.muhurat.current_moon_nakshatra}</strong>, which has a <strong>{data.muhurat.nature}</strong> nature.
+                  </p>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-[#0f172a] border border-green-900/50 rounded-lg p-4">
-                  <h3 className="text-green-400 font-bold mb-3 flex items-center gap-2">
-                    <span className="text-xl">✅</span> Favorable For
-                  </h3>
-                  <ul className="space-y-2">
-                    {data.muhurat.favorable_activities.map((act, i) => (
-                      <li key={i} className="text-green-100 flex items-start gap-2">
-                        <span className="text-green-500 mt-1 text-xs">◆</span> {act}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="bg-[#0f172a] border border-red-900/50 rounded-lg p-4">
-                  <h3 className="text-red-400 font-bold mb-3 flex items-center gap-2">
-                    <span className="text-xl">❌</span> Unfavorable For
-                  </h3>
-                  <ul className="space-y-2">
-                    {data.muhurat.unfavorable_activities.map((act, i) => (
-                      <li key={i} className="text-red-100 flex items-start gap-2">
-                        <span className="text-red-500 mt-1 text-xs">◆</span> {act}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Personalized Transit Oracle */}
-        <div className="bg-[#16213e] rounded-xl shadow-lg border border-[#333] overflow-hidden mt-2">
-          <div className="p-6">
-            <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-              <span className="text-purple-400">🔮</span> Ask My Personalized Oracle
-            </h2>
-            <p className="text-gray-300 mb-6 text-sm">
-              Ask any question to the stars! This Oracle calculates the Tara Bala (Star Strength) between your Birth Nakshatra and the Live Moon Nakshatra for highly personalized answers.
-            </p>
-
-            {!userData ? (
-              <div className="bg-orange-900/40 border border-orange-500/50 p-4 rounded-lg text-orange-200 text-sm">
-                ⚠️ No Birth Profile Found. Please generate your Kundali chart on the main Workstation page first, so the Oracle knows your Birth Nakshatra!
-              </div>
-            ) : (
-              <div className="flex flex-col gap-4">
-                <div className="bg-[#0f172a] border border-[#333] p-4 rounded-lg text-sm text-gray-300 flex justify-between items-center">
-                  <div>
-                    <span className="text-[#00ffcc] font-semibold">User Profile Loaded:</span> Born on {userData.date} at {userData.time}
-                  </div>
-                  <div className="text-xs text-gray-500 italic">(From Saved Kundali)</div>
-                </div>
-
-                <form onSubmit={handlePersonalOracleSubmit} className="flex gap-4 flex-col sm:flex-row">
-                  <input
-                    type="text"
-                    placeholder="e.g., Is today favorable for job interviews?"
-                    value={oracleQuestion}
-                    onChange={(e) => setOracleQuestion(e.target.value)}
-                    className="flex-1 bg-[#0f172a] border border-[#333] text-white px-4 py-3 rounded-xl focus:outline-none focus:border-[#00ffcc] transition-colors"
-                  />
-                  <button
-                    type="submit"
-                    disabled={oracleLoading || !oracleQuestion.trim()}
-                    className={`px-6 py-3 rounded-xl font-bold uppercase tracking-wider transition-all ${oracleLoading
-                      ? 'bg-gray-600 text-gray-300 cursor-not-allowed'
-                      : 'bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-500/20'
-                      }`}
-                  >
-                    {oracleLoading ? 'Consulting...' : 'Ask Oracle'}
-                  </button>
-                </form>
-
-                {/* Category Buttons */}
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {ORACLE_CATEGORIES.map(cat => (
-                    <button
-                      key={cat.name}
-                      type="button"
-                      onClick={() => setSelectedCategory(cat.name)}
-                      className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${selectedCategory === cat.name
-                        ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30'
-                        : 'bg-[#1a264a] text-gray-300 hover:bg-[#233566]'
-                        }`}
-                    >
-                      {cat.icon} {cat.name}
-                    </button>
-                  ))}
-                </div>
-
-                {/* Question Chips */}
-                <div className="bg-[#0f172a] border border-[#333] p-4 rounded-xl mt-2">
-                  <h3 className="text-[#00ffcc] text-xs font-bold uppercase tracking-wider mb-3">
-                    Select a question to auto-ask:
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {ORACLE_CATEGORIES.find(c => c.name === selectedCategory)?.questions.map((q, i) => (
-                      <button
-                        key={i}
-                        type="button"
-                        onClick={(e) => handlePersonalOracleSubmit(e, q)}
-                        className="bg-[#16213e] hover:bg-[#1f2f5c] border border-[#333] hover:border-purple-500 text-gray-300 hover:text-white text-sm px-3 py-1.5 rounded-lg text-left transition-colors"
-                      >
-                        {q}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {oracleResponse && !oracleResponse.error && (
-                  <div className={`mt-4 p-5 rounded-xl border-l-4 bg-[#0f172a] ${oracleResponse.quality === 'Extremely Auspicious' ? 'border-green-500' :
-                    oracleResponse.quality === 'Auspicious' ? 'border-green-400' :
-                      oracleResponse.quality === 'Inauspicious' ? 'border-red-500' : 'border-yellow-500'
-                    }`}>
-                    <div className="flex flex-col sm:flex-row gap-6 mb-4 pb-4 border-b border-[#333]">
-                      <div className="flex-1">
-                        <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">Your Birth Star</div>
-                        <div className="text-lg text-[#00ffcc] font-bold">{oracleResponse.natal_nakshatra}</div>
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">Live Transit Star</div>
-                        <div className="text-lg text-white font-bold">{oracleResponse.live_nakshatra}</div>
-                      </div>
-                      <div className="flex-1">
-                        <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">Active Tara</div>
-                        <div className={`text-lg font-bold ${oracleResponse.quality.includes('Auspicious') ? 'text-green-400' :
-                          oracleResponse.quality === 'Inauspicious' ? 'text-red-400' : 'text-yellow-400'
-                          }`}>
-                          {oracleResponse.tara_name} Tara
-                        </div>
-                      </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="bg-[#0f172a] border border-green-900/50 rounded-lg p-4">
+                      <h3 className="text-green-400 font-bold mb-3 flex items-center gap-2">
+                        <span className="text-xl">✅</span> Favorable For
+                      </h3>
+                      <ul className="space-y-2">
+                        {data.muhurat.favorable_activities.map((act, i) => (
+                          <li key={i} className="text-green-100 flex items-start gap-2">
+                            <span className="text-green-500 mt-1 text-xs">◆</span> {act}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                    <div className="text-gray-200 leading-relaxed whitespace-pre-wrap text-base">
-                      {oracleResponse.response}
-                    </div>
-                    <div className="mt-6 pt-4 border-t border-[#333]">
-                      <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                        <div className="flex items-center gap-2">
-                          <label className="text-sm font-bold text-gray-300">Days to check:</label>
-                          <input 
-                            type="number" 
-                            min="1" 
-                            max="30" 
-                            value={futureDaysCount} 
-                            onChange={(e) => setFutureDaysCount(e.target.value)} 
-                            className="w-16 bg-[#0f172a] border border-[#333] text-white px-2 py-1 rounded-md focus:outline-none focus:border-purple-500 text-center"
-                          />
-                        </div>
-                        <button
-                          onClick={() => handleCheckFutureDays()}
-                          disabled={futureOracleLoading}
-                          className={`px-4 py-2 rounded-xl text-sm font-bold tracking-wider transition-all ${futureOracleLoading
-                            ? 'bg-gray-600 text-gray-300 cursor-not-allowed'
-                            : 'bg-[#1a264a] hover:bg-[#233566] text-white border border-purple-500/50 hover:border-purple-500'
-                            }`}
-                        >
-                          {futureOracleLoading ? 'Consulting the Future...' : `Check Coming ${futureDaysCount} Days`}
-                        </button>
-                      </div>
 
-                      {futureOracleResponse && !futureOracleResponse.error && (
-                        <div className="mt-4 overflow-x-auto">
-                          <h4 className="text-[#00ffcc] text-xs font-bold uppercase tracking-wider mb-3">{futureDaysCount}-Day Forecast based on {futureOracleResponse.natal_nakshatra} (Your Birth Star)</h4>
-                          <div className="flex gap-3 min-w-max pb-2">
-                            {futureOracleResponse.future_days?.map((day, idx) => (
-                              <div key={idx} className={`flex flex-col p-3 rounded-lg border-2 min-w-[120px] ${
-                                day.quality.includes('Auspicious') ? 'bg-green-900/20 border-green-500/50' :
-                                day.quality === 'Inauspicious' ? 'bg-red-900/20 border-red-500/50' :
-                                'bg-yellow-900/20 border-yellow-500/50'
-                              }`}>
-                                <div className="text-xs text-gray-400 mb-1">{day.date}</div>
-                                <div className="text-sm font-bold text-white mb-0.5">{day.nakshatra}</div>
-                                <div className="text-[10px] text-gray-300 mb-1 italic">until {day.end_time}</div>
-                                <div className={`text-xs font-semibold ${
-                                  day.quality.includes('Auspicious') ? 'text-green-400' :
-                                  day.quality === 'Inauspicious' ? 'text-red-400' :
-                                  'text-yellow-400'
-                                }`}>
-                                  {day.tara_name}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      {futureOracleResponse && futureOracleResponse.error && (
-                        <div className="mt-4 p-3 rounded-lg border-l-4 border-red-500 bg-red-900/20 text-red-200 text-sm">
-                          {futureOracleResponse.response}
-                        </div>
-                      )}
+                    <div className="bg-[#0f172a] border border-red-900/50 rounded-lg p-4">
+                      <h3 className="text-red-400 font-bold mb-3 flex items-center gap-2">
+                        <span className="text-xl">❌</span> Unfavorable For
+                      </h3>
+                      <ul className="space-y-2">
+                        {data.muhurat.unfavorable_activities.map((act, i) => (
+                          <li key={i} className="text-red-100 flex items-start gap-2">
+                            <span className="text-red-500 mt-1 text-xs">◆</span> {act}
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
-                )}
-
-                {oracleResponse && oracleResponse.error && (
-                  <div className="mt-4 p-5 rounded-xl border-l-4 border-red-500 bg-red-900/20 text-red-200">
-                    {oracleResponse.response}
-                  </div>
-                )}
+                </div>
               </div>
             )}
-          </div>
-        </div>
+
+            {/* Personalized Transit Oracle */}
+            <div className="bg-[#16213e] rounded-xl shadow-lg border border-[#333] overflow-hidden mt-2">
+              <div className="p-6">
+                <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+                  <span className="text-purple-400">🔮</span> Ask My Personalized Oracle
+                </h2>
+                <p className="text-gray-300 mb-6 text-sm">
+                  Ask any question to the stars! This Oracle calculates the Tara Bala (Star Strength) between your Birth Nakshatra and the Live Moon Nakshatra for highly personalized answers.
+                </p>
+
+                {!userData ? (
+                  <div className="bg-orange-900/40 border border-orange-500/50 p-4 rounded-lg text-orange-200 text-sm">
+                    ⚠️ No Birth Profile Found. Please generate your Kundali chart on the main Workstation page first, so the Oracle knows your Birth Nakshatra!
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    <div className="bg-[#0f172a] border border-[#333] p-4 rounded-lg text-sm text-gray-300 flex justify-between items-center">
+                      <div>
+                        <span className="text-[#00ffcc] font-semibold">User Profile Loaded:</span> Born on {userData.date} at {userData.time}
+                      </div>
+                      <div className="text-xs text-gray-500 italic">(From Saved Kundali)</div>
+                    </div>
+
+                    <form onSubmit={handlePersonalOracleSubmit} className="flex gap-4 flex-col sm:flex-row">
+                      <input
+                        type="text"
+                        placeholder="e.g., Is today favorable for job interviews?"
+                        value={oracleQuestion}
+                        onChange={(e) => setOracleQuestion(e.target.value)}
+                        className="flex-1 bg-[#0f172a] border border-[#333] text-white px-4 py-3 rounded-xl focus:outline-none focus:border-[#00ffcc] transition-colors"
+                      />
+                      <button
+                        type="submit"
+                        disabled={oracleLoading || !oracleQuestion.trim()}
+                        className={`px-6 py-3 rounded-xl font-bold uppercase tracking-wider transition-all ${oracleLoading
+                          ? 'bg-gray-600 text-gray-300 cursor-not-allowed'
+                          : 'bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-500/20'
+                          }`}
+                      >
+                        {oracleLoading ? 'Consulting...' : 'Ask Oracle'}
+                      </button>
+                    </form>
+
+                    {/* Category Buttons */}
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {ORACLE_CATEGORIES.map(cat => (
+                        <button
+                          key={cat.name}
+                          type="button"
+                          onClick={() => setSelectedCategory(cat.name)}
+                          className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${selectedCategory === cat.name
+                            ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30'
+                            : 'bg-[#1a264a] text-gray-300 hover:bg-[#233566]'
+                            }`}
+                        >
+                          {cat.icon} {cat.name}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Question Chips */}
+                    <div className="bg-[#0f172a] border border-[#333] p-4 rounded-xl mt-2">
+                      <h3 className="text-[#00ffcc] text-xs font-bold uppercase tracking-wider mb-3">
+                        Select a question to auto-ask:
+                      </h3>
+                      <div className="flex flex-wrap gap-2">
+                        {ORACLE_CATEGORIES.find(c => c.name === selectedCategory)?.questions.map((q, i) => (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={(e) => handlePersonalOracleSubmit(e, q)}
+                            className="bg-[#16213e] hover:bg-[#1f2f5c] border border-[#333] hover:border-purple-500 text-gray-300 hover:text-white text-sm px-3 py-1.5 rounded-lg text-left transition-colors"
+                          >
+                            {q}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {oracleResponse && !oracleResponse.error && (
+                      <div className={`mt-4 p-5 rounded-xl border-l-4 bg-[#0f172a] ${oracleResponse.quality === 'Extremely Auspicious' ? 'border-green-500' :
+                        oracleResponse.quality === 'Auspicious' ? 'border-green-400' :
+                          oracleResponse.quality === 'Inauspicious' ? 'border-red-500' : 'border-yellow-500'
+                        }`}>
+                        <div className="flex flex-col sm:flex-row gap-6 mb-4 pb-4 border-b border-[#333]">
+                          <div className="flex-1">
+                            <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">Your Birth Star</div>
+                            <div className="text-lg text-[#00ffcc] font-bold">{oracleResponse.natal_nakshatra}</div>
+                          </div>
+                          <div className="flex-1">
+                            <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">Live Transit Star</div>
+                            <div className="text-lg text-white font-bold">{oracleResponse.live_nakshatra}</div>
+                          </div>
+                          <div className="flex-1">
+                            <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">Active Tara</div>
+                            <div className={`text-lg font-bold ${oracleResponse.quality.includes('Auspicious') ? 'text-green-400' :
+                              oracleResponse.quality === 'Inauspicious' ? 'text-red-400' : 'text-yellow-400'
+                              }`}>
+                              {oracleResponse.tara_name} Tara
+                            </div>
+                          </div>
+                        </div>
+                        <div className="text-gray-200 leading-relaxed whitespace-pre-wrap text-base">
+                          {oracleResponse.response}
+                        </div>
+                        <div className="mt-6 pt-4 border-t border-[#333]">
+                          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
+                            <div className="flex items-center gap-2">
+                              <label className="text-sm font-bold text-gray-300">Days to check:</label>
+                              <input
+                                type="number"
+                                min="1"
+                                max="30"
+                                value={futureDaysCount}
+                                onChange={(e) => setFutureDaysCount(e.target.value)}
+                                className="w-16 bg-[#0f172a] border border-[#333] text-white px-2 py-1 rounded-md focus:outline-none focus:border-purple-500 text-center"
+                              />
+                            </div>
+                            <button
+                              onClick={() => handleCheckFutureDays()}
+                              disabled={futureOracleLoading}
+                              className={`px-4 py-2 rounded-xl text-sm font-bold tracking-wider transition-all ${futureOracleLoading
+                                ? 'bg-gray-600 text-gray-300 cursor-not-allowed'
+                                : 'bg-[#1a264a] hover:bg-[#233566] text-white border border-purple-500/50 hover:border-purple-500'
+                                }`}
+                            >
+                              {futureOracleLoading ? 'Consulting the Future...' : `Check Coming ${futureDaysCount} Days`}
+                            </button>
+                          </div>
+
+                          {futureOracleResponse && !futureOracleResponse.error && (
+                            <div className="mt-4 overflow-x-auto">
+                              <h4 className="text-[#00ffcc] text-xs font-bold uppercase tracking-wider mb-3">{futureDaysCount}-Day Forecast based on {futureOracleResponse.natal_nakshatra} (Your Birth Star)</h4>
+                              <div className="flex gap-3 min-w-max pb-2">
+                                {futureOracleResponse.future_days?.map((day, idx) => (
+                                  <div key={idx} className={`flex flex-col p-3 rounded-lg border-2 min-w-[120px] ${day.quality.includes('Auspicious') ? 'bg-green-900/20 border-green-500/50' :
+                                    day.quality === 'Inauspicious' ? 'bg-red-900/20 border-red-500/50' :
+                                      'bg-yellow-900/20 border-yellow-500/50'
+                                    }`}>
+                                    <div className="text-xs text-gray-400 mb-1">{day.date}</div>
+                                    <div className="text-sm font-bold text-white mb-0.5">{day.nakshatra}</div>
+                                    <div className="text-[10px] text-gray-300 mb-1 italic">until {day.end_time}</div>
+                                    <div className={`text-xs font-semibold ${day.quality.includes('Auspicious') ? 'text-green-400' :
+                                      day.quality === 'Inauspicious' ? 'text-red-400' :
+                                        'text-yellow-400'
+                                      }`}>
+                                      {day.tara_name}
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {futureOracleResponse && futureOracleResponse.error && (
+                            <div className="mt-4 p-3 rounded-lg border-l-4 border-red-500 bg-red-900/20 text-red-200 text-sm">
+                              {futureOracleResponse.response}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
+                    {oracleResponse && oracleResponse.error && (
+                      <div className="mt-4 p-5 rounded-xl border-l-4 border-red-500 bg-red-900/20 text-red-200">
+                        {oracleResponse.response}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
           </>
         )}
       </div>
