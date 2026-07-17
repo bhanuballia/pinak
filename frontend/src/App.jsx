@@ -227,7 +227,7 @@ function App() {
                     gender: urlGender,
                     location_name: urlLocName,
                 };
-                
+
                 (async () => {
                     try {
                         const detailedData = await fetchReportData(payload);
@@ -424,7 +424,7 @@ function App() {
         } else if (params.get('deep_horoscope')) {
             setDeepHoroscopeMode(true);
             setDeepHoroscopeType(params.get('deep_horoscope'));
-            
+
             const urlDate = params.get("date");
             const urlTime = params.get("time");
             const urlLat = params.get("lat");
@@ -448,7 +448,7 @@ function App() {
                     gender: urlGender,
                     location_name: urlLocName,
                 };
-                
+
                 (async () => {
                     try {
                         const detailedData = await fetchReportData(payload);
