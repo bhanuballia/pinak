@@ -424,11 +424,47 @@ function App() {
         } else if (params.get('deep_horoscope')) {
             setDeepHoroscopeMode(true);
             setDeepHoroscopeType(params.get('deep_horoscope'));
-            const savedData = localStorage.getItem('deepHoroscopeData');
-            if (savedData) {
-                try {
-                    setWorksheetData(JSON.parse(savedData));
-                } catch (e) { }
+            
+            const urlDate = params.get("date");
+            const urlTime = params.get("time");
+            const urlLat = params.get("lat");
+            const urlLon = params.get("lon");
+            const urlName = params.get("name") || "";
+            const urlTz = params.get("tz_offset");
+            const urlLocName = params.get("location_name") || "Birth Place";
+            const urlGender = params.get("gender") || "Male";
+
+            if (urlDate && urlTime && urlLat && urlLon) {
+                const tzVal = urlTz ? parseFloat(urlTz) : 5.5;
+                const payload = {
+                    name: urlName,
+                    date: urlDate,
+                    time: urlTime,
+                    tz_offset: tzVal,
+                    lat: parseFloat(urlLat),
+                    lon: parseFloat(urlLon),
+                    style: "minimal",
+                    language: "english",
+                    gender: urlGender,
+                    location_name: urlLocName,
+                };
+                
+                (async () => {
+                    try {
+                        const detailedData = await fetchReportData(payload);
+                        localStorage.setItem('deepHoroscopeData', JSON.stringify(detailedData));
+                        setWorksheetData(detailedData);
+                    } catch (e) {
+                        console.error("Failed to dynamically fetch/save deep horoscope data:", e);
+                    }
+                })();
+            } else {
+                const savedData = localStorage.getItem('deepHoroscopeData');
+                if (savedData) {
+                    try {
+                        setWorksheetData(JSON.parse(savedData));
+                    } catch (e) { }
+                }
             }
         } else if (params.get('oracle')) {
             setOracleMode(true);
