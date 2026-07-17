@@ -38,6 +38,7 @@ export default function GenerateReport() {
   const [showPreview, setShowPreview] = useState(false);
   const [reportSuccess, setReportSuccess] = useState(false);
   const [showWelcomePoster, setShowWelcomePoster] = useState(true);
+  const [onlyNameAndDate, setOnlyNameAndDate] = useState(false);
 
   // MongoDB state
   const [savedProfiles, setSavedProfiles] = useState([]);
@@ -138,28 +139,37 @@ export default function GenerateReport() {
       setError("Please enter a valid Date of Birth.");
       return;
     }
-    if (!time) {
-      setError("Please enter a valid Time of Birth.");
-      return;
-    }
-    if (!latLon) {
-      setError("Please search for a Birth Place and select a location from the dropdown suggestions.");
-      return;
+    if (!onlyNameAndDate) {
+      if (!time) {
+        setError("Please enter a valid Time of Birth.");
+        return;
+      }
+      if (!latLon) {
+        setError("Please search for a Birth Place and select a location from the dropdown suggestions.");
+        return;
+      }
     }
 
     setIsSubmitting(true);
     try {
+      const finalTime = onlyNameAndDate ? "12:00" : time;
+      const finalLatLon = onlyNameAndDate
+        ? { lat: 28.6139, lon: 77.2090, display_name: "New Delhi, Delhi, India" }
+        : latLon;
+      const finalTzOffset = onlyNameAndDate ? 5.5 : tzOffset;
+
       const payload = {
         name,
         date,
-        time,
-        tz_offset: tzOffset,
-        lat: latLon.lat,
-        lon: latLon.lon,
+        time: finalTime,
+        tz_offset: finalTzOffset,
+        lat: finalLatLon.lat,
+        lon: finalLatLon.lon,
         style,
         language: languageMode,
         gender,
-        location_name: latLon.display_name,
+        location_name: finalLatLon.display_name,
+        is_approximate: onlyNameAndDate
       };
 
       const detailedData = await fetchReportData(payload);
@@ -640,6 +650,19 @@ export default function GenerateReport() {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-6 bg-slate-50 p-6 rounded-2xl border border-slate-100">
+          <div className="flex items-center gap-2 mb-4 bg-indigo-50/50 p-3 rounded-xl border border-indigo-100/50">
+            <input
+              type="checkbox"
+              id="approximateMode"
+              checked={onlyNameAndDate}
+              onChange={(e) => setOnlyNameAndDate(e.target.checked)}
+              className="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+            />
+            <label htmlFor="approximateMode" className="text-sm font-semibold text-indigo-900 cursor-pointer">
+              I don't know my exact birth time or location (Use default time & location)
+            </label>
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <label className="col-span-1">
               <div className="text-sm text-gray-600">{t('full_name')}</div>
@@ -674,76 +697,84 @@ export default function GenerateReport() {
               />
             </label>
 
-            <label>
-              <div className="text-sm text-gray-600">{t('time_of_birth')}</div>
-              <input
-                type="time"
-                className="mt-1 w-full border rounded p-2"
-                value={time}
-                onChange={(e) => setTime(e.target.value)}
-              />
-            </label>
-          </div>
-
-          <div>
-            <div className="text-sm text-gray-600">{t('birth_place')}</div>
-            <PlaceAutocomplete value={latLon?.display_name || ""} onSelect={onPlaceSelected} />
-            {latLon && (
-              <div className="mt-2 text-xs text-gray-500 space-y-1">
-                <div>
-                  {t('selected')}: {latLon.display_name} ({latLon.lat.toFixed(4)}, {latLon.lon.toFixed(4)})
-                </div>
-                {(latLon.timezone || typeof latLon.tz_offset_hours === "number") && (
-                  <div>
-                    {t('timezone')}: {latLon.timezone || "Unknown"}{" "}
-                    {typeof latLon.tz_offset_hours === "number"
-                      ? `(UTC${latLon.tz_offset_hours >= 0 ? "+" : ""}${latLon.tz_offset_hours})`
-                      : ""}
-                  </div>
-                )}
-              </div>
+            {!onlyNameAndDate && (
+              <label>
+                <div className="text-sm text-gray-600">{t('time_of_birth')}</div>
+                <input
+                  type="time"
+                  className="mt-1 w-full border rounded p-2"
+                  value={time}
+                  onChange={(e) => setTime(e.target.value)}
+                />
+              </label>
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-            <label>
-              <div className="text-sm text-gray-600">{t('timezone_offset')}</div>
-              <input
-                type="number"
-                step="0.25"
-                className="mt-1 w-full border rounded p-2"
-                value={tzOffset}
-                onChange={(e) => setTzOffset(parseFloat(e.target.value))}
-              />
-            </label>
+          {!onlyNameAndDate && (
+            <>
+              <div>
+                <div className="text-sm text-gray-600">{t('birth_place')}</div>
+                <PlaceAutocomplete value={latLon?.display_name || ""} onSelect={onPlaceSelected} />
+                {latLon && (
+                  <div className="mt-2 text-xs text-gray-500 space-y-1">
+                    <div>
+                      {t('selected')}: {latLon.display_name} ({latLon.lat.toFixed(4)}, {latLon.lon.toFixed(4)})
+                    </div>
+                    {(latLon.timezone || typeof latLon.tz_offset_hours === "number") && (
+                      <div>
+                        {t('timezone')}: {latLon.timezone || "Unknown"}{" "}
+                        {typeof latLon.tz_offset_hours === "number"
+                          ? `(UTC${latLon.tz_offset_hours >= 0 ? "+" : ""}${latLon.tz_offset_hours})`
+                          : ""}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
 
-            <label className="md:col-span-2">
-              <div className="text-sm text-gray-600">{t('timezone_override')}</div>
-              <select
-                className="mt-1 w-full border rounded p-2"
-                value={customTimezone}
-                onChange={handleTimezoneSelect}
-                disabled={timezonesLoading || !timezones.length}
-              >
-                <option value="">
-                  {timezonesLoading
-                    ? t('loading_timezones')
-                    : timezones.length
-                      ? t('select_timezone')
-                      : t('timezone_unavailable')}
-                </option>
-                {timezones.map((tz) => (
-                  <option key={tz.name} value={tz.name}>
-                    {tz.name}
-                    {typeof tz.tz_offset_hours === "number"
-                      ? ` (${formatOffset(tz.tz_offset_hours)})`
-                      : ""}
-                  </option>
-                ))}
-              </select>
-              {timezonesError && <div className="text-xs text-red-500 mt-1">{timezonesError}</div>}
-            </label>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <label>
+                  <div className="text-sm text-gray-600">{t('timezone_offset')}</div>
+                  <input
+                    type="number"
+                    step="0.25"
+                    className="mt-1 w-full border rounded p-2"
+                    value={tzOffset}
+                    onChange={(e) => setTzOffset(parseFloat(e.target.value))}
+                  />
+                </label>
 
+                <label className="md:col-span-2">
+                  <div className="text-sm text-gray-600">{t('timezone_override')}</div>
+                  <select
+                    className="mt-1 w-full border rounded p-2"
+                    value={customTimezone}
+                    onChange={handleTimezoneSelect}
+                    disabled={timezonesLoading || !timezones.length}
+                  >
+                    <option value="">
+                      {timezonesLoading
+                        ? t('loading_timezones')
+                        : timezones.length
+                          ? t('select_timezone')
+                          : t('timezone_unavailable')}
+                    </option>
+                    {timezones.map((tz) => (
+                      <option key={tz.name} value={tz.name}>
+                        {tz.name}
+                        {typeof tz.tz_offset_hours === "number"
+                          ? ` (${formatOffset(tz.tz_offset_hours)})`
+                          : ""}
+                      </option>
+                    ))}
+                  </select>
+                  {timezonesError && <div className="text-xs text-red-500 mt-1">{timezonesError}</div>}
+                </label>
+              </div>
+            </>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <label>
               <div className="text-sm text-gray-600">{t('report_style')}</div>
               <select
