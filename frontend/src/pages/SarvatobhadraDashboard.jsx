@@ -68,7 +68,7 @@ export default function SarvatobhadraDashboard({ data = null, grid: initialGrid 
   };
 
   return (
-    <div className="flex h-[600px] bg-gray-100 p-4 gap-4 overflow-hidden">
+    <div className="flex bg-gray-100 p-4 gap-4 min-h-screen overflow-y-auto">
       {/* Left Column: Sarvatobhadra Chakra 9x9 Grid */}
       <div className="flex-1 bg-white p-4 rounded-xl shadow-lg border border-gray-200 flex flex-col min-w-[800px] max-w-[800px] mx-auto">
         <h1 className="text-xl font-bold text-center mb-4 text-indigo-900">
