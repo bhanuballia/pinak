@@ -14,7 +14,11 @@ export default function SarvatobhadraDashboard({ data = null, grid: initialGrid 
 
   useEffect(() => {
     if (!initialGrid.length) {
-      fetch("/api/sarvatobhadra/sbc")
+      fetch("/api/sarvatobhadra/sbc", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data || {})
+      })
         .then(res => res.json())
         .then(json => {
           if (json.grid) setGrid(json.grid);

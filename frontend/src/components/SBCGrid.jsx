@@ -5,7 +5,18 @@ export default function SBCGrid() {
 
   useEffect(() => {
     // Fetch initial grid data from our new API
-    fetch("/api/sarvatobhadra/sbc")
+    let birthData = {};
+    try {
+      birthData = JSON.parse(localStorage.getItem('worksheetData')) || {};
+    } catch (e) {
+      console.error(e);
+    }
+
+    fetch("/api/sarvatobhadra/sbc", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(birthData)
+    })
       .then(res => res.json())
       .then(json => setData(json))
       .catch(err => console.error("Error fetching SBC data:", err));

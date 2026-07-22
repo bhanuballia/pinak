@@ -8,8 +8,11 @@ router = APIRouter()
 
 from api.routes.nakshatra_advanced_live import get_live_nakshatra
 
-@router.get("/sbc")
-def get_sbc():
+from fastapi import Body
+from typing import Optional
+
+@router.post("/sbc")
+def get_sbc(payload: Optional[dict] = Body(default=None)):
     # Fetch real live planetary positions from the Advanced Nakshatra engine
     live_data = get_live_nakshatra()
     transit_data = {}
@@ -34,7 +37,7 @@ def get_sbc():
             "Jupiter": "Punarvasu", "Venus": "Magha", "Saturn": "Pushya", "Rahu": "Shatabhisha", "Ketu": "Purva Phalguni"
         }
 
-    result = SarvatobhadraEngine().generate(transit_data)
+    result = SarvatobhadraEngine().generate(transit_data, birth_data=payload)
     return result
 
 
