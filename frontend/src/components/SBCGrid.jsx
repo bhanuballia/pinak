@@ -35,20 +35,32 @@ export default function SBCGrid() {
       <div className="w-full max-w-2xl mt-8">
         <svg viewBox="0 0 800 800" className="w-full h-auto drop-shadow-lg">
           <rect
-              x="100"
-              y="100"
-              width="600"
-              height="600"
-              fill="#f5f0d0"
-              stroke="blue"
-              strokeWidth="4"
-              rx="15"
+            x="100"
+            y="100"
+            width="600"
+            height="600"
+            fill="#f5f0d0"
+            stroke="blue"
+            strokeWidth="4"
+            rx="15"
           />
           <text x="400" y="400" textAnchor="middle" alignmentBaseline="middle" fontSize="24" fill="#333">
             Advanced SVG Visualizer Placeholder
           </text>
         </svg>
       </div>
+
+      {/* AI Report Section */}
+      {data.report && (
+        <div className="w-full max-w-2xl mt-6 bg-slate-800 text-slate-100 p-6 rounded-2xl shadow-lg border border-slate-700">
+          <h3 className="text-lg font-bold text-yellow-400 mb-3 uppercase tracking-wider flex items-center gap-2 font-serif">
+            <span>✨</span> Vedha Analysis & Predictions
+          </h3>
+          <div className="text-sm whitespace-pre-wrap leading-relaxed opacity-90 font-sans">
+            {data.report}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
