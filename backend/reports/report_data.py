@@ -20,6 +20,7 @@ from charts.remedies.registry import generate_all_remedies
 from reports.ai_text.registry import generate_ai_text
 from reports.interpretation.core import generate_ai_life_analysis
 from strength.shadbala import compute_shadbala as compute_shadbala_old
+from strength.sphuta_drishti import calculate_sphuta_drishti_matrix
 from dasha.shodashottari import compute_shodashottari
 from dasha.chaturshitisama import compute_chaturshitisama
 from dasha.ashtottari import compute_ashtottari
@@ -370,6 +371,7 @@ def compute_planet_table(chart: Dict[str, Any], jd_ut: float) -> List[Dict[str, 
                 "sign_lord": sign_lord,
                 "degree": round(lon, 2),
                 "nakshatra": nak["nakshatra_name"],
+                "nakshatra_pada": nak["pada"],
                 "nakshatra_lord": _sign_lord(nak["nakshatra_name"]),
                 "house": next((h for h, info in chart["houses"].items() if planet in _planet_names(info.get("planets", []))), None),
             }
@@ -841,6 +843,7 @@ def assemble_report_data(
         "jd_ut": jd_ut,
         "bhrigu_bindu": bhrigu_bindu,
         "ashtakavarga": av_result,
+        "sphuta_drishti": calculate_sphuta_drishti_matrix(chart),
     }
     # --- Calculate Maraka (Death-Inflicting) Periods ---
     lagna_sign = chart.get("houses", {}).get("1", {}).get("sign_name", "Aries")

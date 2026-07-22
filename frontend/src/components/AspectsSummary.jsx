@@ -1,4 +1,4 @@
-import React from 'react';
+import SphutaDrishtiViewer from './SphutaDrishtiViewer';
 
 const PLANETS = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
 
@@ -32,10 +32,16 @@ const formatTotalDegree = (lon) => {
 
 export default function AspectsSummary({ data }) {
   const aspects = data?.aspects_data;
-  if (!aspects || !aspects.planets || !aspects.bhavas) return null;
+  if (!data) return null;
 
   return (
-    <div className="w-full max-w-5xl mx-auto bg-white p-8 rounded-3xl border shadow-xl font-serif">
+    <div className="w-full max-w-5xl mx-auto bg-white p-8 rounded-3xl border shadow-xl font-serif space-y-8">
+      {/* Sphuta Drishti Heatmap Matrix */}
+      <SphutaDrishtiViewer
+        sphutaDrishtiData={data?.sphuta_drishti}
+        planetPositions={data?.planet_positions || data?.chart?.planet_positions}
+      />
+
       <h2 className="text-3xl text-red-800 text-center mb-8">Aspects on Planets & Bhavas</h2>
       
       {/* Table 1: Aspects on Planets */}

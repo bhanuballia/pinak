@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 
@@ -7,6 +7,18 @@ export default function SanghattaDashboard() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [language, setLanguage] = useState('en'); // 'en' or 'hi'
+    const [isPlaying, setIsPlaying] = useState(true);
+    const videoRef = useRef(null);
+
+    useEffect(() => {
+        if (videoRef.current) {
+            if (isPlaying) {
+                videoRef.current.play().catch(err => console.error("Video play error:", err));
+            } else {
+                videoRef.current.pause();
+            }
+        }
+    }, [isPlaying]);
 
     useEffect(() => {
         const fetchSanghatta = async () => {
@@ -62,19 +74,19 @@ export default function SanghattaDashboard() {
     ];
 
     const nakshatra_hi = {
-        "Ashwini": "अश्विनी", "Bharani": "भरणी", "Krittika": "कृत्तिका", "Rohini": "रोहिणी", 
-        "Mrigashira": "मृगशिरा", "Ardra": "आर्द्रा", "Punarvasu": "पुनर्वसु", "Pushya": "पुष्य", 
-        "Ashlesha": "अश्लेषा", "Magha": "मघा", "Purva Phalguni": "पूर्वा फाल्गुनी", 
-        "Uttara Phalguni": "उत्तरा फाल्गुनी", "Hasta": "हस्त", "Chitra": "चित्रा", 
-        "Swati": "स्वाती", "Vishakha": "विशाखा", "Anuradha": "अनुराधा", "Jyeshtha": "ज्येष्ठा", 
-        "Mula": "मूल", "Purva Ashadha": "पूर्वाषाढ़ा", "Uttara Ashadha": "उत्तराषाढ़ा", 
-        "Abhijit": "अभिजित", "Shravana": "श्रवण", "Dhanishta": "धनिष्ठा", 
-        "Shatabhisha": "शतभिषा", "Purva Bhadrapada": "पूर्व भाद्रपद", 
+        "Ashwini": "अश्विनी", "Bharani": "भरणी", "Krittika": "कृत्तिका", "Rohini": "रोहिणी",
+        "Mrigashira": "मृगशिरा", "Ardra": "आर्द्रा", "Punarvasu": "पुनर्वसु", "Pushya": "पुष्य",
+        "Ashlesha": "अश्लेषा", "Magha": "मघा", "Purva Phalguni": "पूर्वा फाल्गुनी",
+        "Uttara Phalguni": "उत्तरा फाल्गुनी", "Hasta": "हस्त", "Chitra": "चित्रा",
+        "Swati": "स्वाती", "Vishakha": "विशाखा", "Anuradha": "अनुराधा", "Jyeshtha": "ज्येष्ठा",
+        "Mula": "मूल", "Purva Ashadha": "पूर्वाषाढ़ा", "Uttara Ashadha": "उत्तराषाढ़ा",
+        "Abhijit": "अभिजित", "Shravana": "श्रवण", "Dhanishta": "धनिष्ठा",
+        "Shatabhisha": "शतभिषा", "Purva Bhadrapada": "पूर्व भाद्रपद",
         "Uttara Bhadrapada": "उत्तर भाद्रपद", "Revati": "रेवती"
     };
 
     const planet_hi = {
-        "Sun": "सूर्य", "Moon": "चन्द्र", "Mars": "मंगल", "Mercury": "बुध", 
+        "Sun": "सूर्य", "Moon": "चन्द्र", "Mars": "मंगल", "Mercury": "बुध",
         "Jupiter": "गुरु", "Venus": "शुक्र", "Saturn": "शनि", "Rahu": "राहु", "Ketu": "केतु"
     };
 
@@ -103,7 +115,7 @@ export default function SanghattaDashboard() {
                         Advanced Mundane distress index tracking stock markets, commodities, and political shifts via planetary Vedha (Affliction).
                     </p>
                 </div>
-                <button 
+                <button
                     onClick={() => setLanguage(l => l === 'en' ? 'hi' : 'en')}
                     className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-lg font-bold transition-all shadow-md flex items-center gap-2"
                 >
@@ -113,8 +125,23 @@ export default function SanghattaDashboard() {
 
             <div className="flex flex-col lg:flex-row p-6 gap-6">
                 {/* SVG Visualizer */}
-                <div className="flex-1 bg-slate-900 rounded-2xl border border-slate-700 p-6 shadow-2xl relative flex items-center justify-center min-h-[600px]">
-                    <svg viewBox="0 0 800 800" className="w-full h-full max-h-[700px] max-w-[700px]">
+                <div className="flex-1 bg-slate-900 rounded-2xl border border-slate-700 p-6 shadow-2xl relative flex items-center justify-center min-h-[600px] overflow-hidden">
+                    <video
+                        ref={videoRef}
+                        src="/deities/starts.mp4"
+                        autoPlay
+                        loop
+                        muted
+                        playsInline
+                        className="absolute inset-0 w-full h-full object-cover opacity-30 z-0 pointer-events-none"
+                    />
+                    <button
+                        onClick={() => setIsPlaying(!isPlaying)}
+                        className="absolute top-4 right-4 z-20 px-3 py-1.5 bg-slate-800/80 hover:bg-slate-700 text-white rounded-lg text-xs font-bold transition-all shadow-md flex items-center gap-1 border border-slate-700"
+                    >
+                        <span>{isPlaying ? '⏸️ Pause Background' : '▶️ Play Background'}</span>
+                    </button>
+                    <svg viewBox="0 0 800 800" className="w-full h-full max-h-[700px] max-w-[700px] z-10 relative">
                         {/* Draw the Outer Circle */}
                         <circle cx={SVGCenter.x} cy={SVGCenter.y} r={Radius} fill="none" stroke="#334155" strokeWidth="2" strokeDasharray="5,5" />
 
@@ -159,11 +186,11 @@ export default function SanghattaDashboard() {
                                 <g key={nakName} transform={`translate(${coords.x}, ${coords.y})`}>
                                     <circle r="12" fill={dotColor} stroke="#1e293b" strokeWidth="2" />
 
-                                    <text 
-                                        x="0" y="-22" 
-                                        textAnchor="middle" 
-                                        fill={isAfflictedTarget ? "#fca5a5" : "#94a3b8"} 
-                                        fontSize="18" 
+                                    <text
+                                        x="0" y="-22"
+                                        textAnchor="middle"
+                                        fill={isAfflictedTarget ? "#fca5a5" : "#94a3b8"}
+                                        fontSize="18"
                                         fontWeight="bold"
                                     >
                                         {tNakshatra(nakName)}

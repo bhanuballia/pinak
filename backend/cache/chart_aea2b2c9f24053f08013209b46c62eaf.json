@@ -887,6 +887,7 @@
             "sign_lord": "Saturn",
             "degree": 294.09,
             "nakshatra": "Dhanishta",
+            "nakshatra_pada": 1,
             "nakshatra_lord": "Mars",
             "house": 8
         },
@@ -897,6 +898,7 @@
             "sign_lord": "Mercury",
             "degree": 162.83,
             "nakshatra": "Hasta",
+            "nakshatra_pada": 1,
             "nakshatra_lord": "Moon",
             "house": 4
         },
@@ -907,6 +909,7 @@
             "sign_lord": "Saturn",
             "degree": 302.03,
             "nakshatra": "Dhanishta",
+            "nakshatra_pada": 3,
             "nakshatra_lord": "Mars",
             "house": 9
         },
@@ -917,6 +920,7 @@
             "sign_lord": "Jupiter",
             "degree": 333.71,
             "nakshatra": "Uttara Bhadrapada",
+            "nakshatra_pada": 1,
             "nakshatra_lord": "Saturn",
             "house": 10
         },
@@ -927,6 +931,7 @@
             "sign_lord": "Mars",
             "degree": 236.17,
             "nakshatra": "Jyeshtha",
+            "nakshatra_pada": 3,
             "nakshatra_lord": "Mercury",
             "house": 6
         },
@@ -937,6 +942,7 @@
             "sign_lord": "Mars",
             "degree": 0.69,
             "nakshatra": "Ashwini",
+            "nakshatra_pada": 1,
             "nakshatra_lord": "Ketu",
             "house": 11
         },
@@ -947,6 +953,7 @@
             "sign_lord": "Jupiter",
             "degree": 245.73,
             "nakshatra": "Mula",
+            "nakshatra_pada": 2,
             "nakshatra_lord": "Ketu",
             "house": 7
         },
@@ -957,6 +964,7 @@
             "sign_lord": "Saturn",
             "degree": 329.75,
             "nakshatra": "Purva Bhadrapada",
+            "nakshatra_pada": 3,
             "nakshatra_lord": "Jupiter",
             "house": 9
         },
@@ -967,6 +975,7 @@
             "sign_lord": "Sun",
             "degree": 149.75,
             "nakshatra": "Uttara Phalguni",
+            "nakshatra_pada": 1,
             "nakshatra_lord": "Sun",
             "house": 3
         }
@@ -14823,6 +14832,107 @@
             }
         }
     },
+    "sphuta_drishti": {
+        "Sun": {
+            "Sun": 0.0,
+            "Moon": 0.0,
+            "Mars": 13.96,
+            "Mercury": 0.0,
+            "Jupiter": 18.3,
+            "Venus": 4.81,
+            "Saturn": 9.18,
+            "Rahu": 2.83,
+            "Ketu": 0.0
+        },
+        "Moon": {
+            "Sun": 39.37,
+            "Moon": 0.0,
+            "Mars": 21.67,
+            "Mercury": 35.4,
+            "Jupiter": 24.29,
+            "Venus": 50.88,
+            "Saturn": 26.45,
+            "Rahu": 46.91,
+            "Ketu": 0.0
+        },
+        "Mars": {
+            "Sun": 13.96,
+            "Moon": 8.33,
+            "Mars": 0.0,
+            "Mercury": 17.93,
+            "Jupiter": 42.74,
+            "Venus": 33.77,
+            "Saturn": 0.0,
+            "Rahu": 45.71,
+            "Ketu": 1.79
+        },
+        "Mercury": {
+            "Sun": 0.0,
+            "Moon": 0.0,
+            "Mars": 12.07,
+            "Mercury": 0.0,
+            "Jupiter": 14.33,
+            "Venus": 0.84,
+            "Saturn": 13.15,
+            "Rahu": 0.0,
+            "Ketu": 4.57
+        },
+        "Jupiter": {
+            "Sun": 11.7,
+            "Moon": 42.15,
+            "Mars": 41.94,
+            "Mercury": 14.33,
+            "Jupiter": 0.0,
+            "Venus": 0.0,
+            "Saturn": 39.84,
+            "Rahu": 0.47,
+            "Ketu": 30.47
+        },
+        "Venus": {
+            "Sun": 4.81,
+            "Moon": 41.75,
+            "Mars": 0.0,
+            "Mercury": 0.84,
+            "Jupiter": 0.0,
+            "Venus": 0.0,
+            "Saturn": 1.01,
+            "Rahu": 0.0,
+            "Ketu": 56.03
+        },
+        "Saturn": {
+            "Sun": 13.47,
+            "Moon": 31.57,
+            "Mars": 0.0,
+            "Mercury": 45.22,
+            "Jupiter": 42.48,
+            "Venus": 28.99,
+            "Saturn": 0.0,
+            "Rahu": 27.01,
+            "Ketu": 36.08
+        },
+        "Rahu": {
+            "Sun": 2.83,
+            "Moon": 33.82,
+            "Mars": 0.0,
+            "Mercury": 0.0,
+            "Jupiter": 0.47,
+            "Venus": 0.0,
+            "Saturn": 2.99,
+            "Rahu": 0.0,
+            "Ketu": 60.0
+        },
+        "Ketu": {
+            "Sun": 32.83,
+            "Moon": 0.0,
+            "Mars": 28.21,
+            "Mercury": 32.28,
+            "Jupiter": 0.0,
+            "Venus": 52.07,
+            "Saturn": 32.99,
+            "Rahu": 60.0,
+            "Ketu": 0.0
+        }
+    },
     "maraka": {
         "signs": [
             "Taurus",
@@ -19261,48 +19371,48 @@
     },
     "transits": {
         "Sun": {
-            "house": 1,
-            "lon": 89.98,
-            "speed": 0.9543752295360095
+            "house": 2,
+            "lon": 94.54,
+            "speed": 0.9546295261576646
         },
         "Moon": {
-            "house": 3,
-            "lon": 121.9,
-            "speed": 14.241309725295938
+            "house": 5,
+            "lon": 185.14,
+            "speed": 12.353114298142655
         },
         "Mercury": {
             "house": 1,
-            "lon": 84.25,
-            "speed": -0.5419487159394137
+            "lon": 82.36,
+            "speed": -0.21947156735089898
         },
         "Venus": {
             "house": 3,
-            "lon": 133.51,
-            "speed": 1.0951503351808622
+            "lon": 138.71,
+            "speed": 1.0797954724213468
         },
         "Mars": {
             "house": 12,
-            "lon": 48.38,
-            "speed": 0.6938216187529395
+            "lon": 51.69,
+            "speed": 0.6881056405703896
         },
         "Jupiter": {
             "house": 2,
-            "lon": 99.35,
-            "speed": 0.22019507416606784
+            "lon": 100.41,
+            "speed": 0.22101005911797283
         },
         "Saturn": {
             "house": 10,
-            "lon": 350.43,
-            "speed": 0.01714235670777708
+            "lon": 350.5,
+            "speed": 0.008995372035350812
         },
         "Rahu": {
             "house": 9,
-            "lon": 305.97,
-            "speed": -0.0063101071521435665
+            "lon": 306.06,
+            "speed": -0.00573410798598068
         },
         "Ketu": {
             "house": 3,
-            "lon": 125.97,
+            "lon": 126.06,
             "speed": 0
         }
     },
@@ -19310,48 +19420,48 @@
     "transit_analysis": {
         "current_positions": {
             "Sun": {
-                "house": 1,
-                "lon": 89.98,
-                "speed": 0.9543752295360095
+                "house": 2,
+                "lon": 94.54,
+                "speed": 0.9546295261576646
             },
             "Moon": {
-                "house": 3,
-                "lon": 121.9,
-                "speed": 14.241309725295938
+                "house": 5,
+                "lon": 185.14,
+                "speed": 12.353114298142655
             },
             "Mercury": {
                 "house": 1,
-                "lon": 84.25,
-                "speed": -0.5419487159394137
+                "lon": 82.36,
+                "speed": -0.21947156735089898
             },
             "Venus": {
                 "house": 3,
-                "lon": 133.51,
-                "speed": 1.0951503351808622
+                "lon": 138.71,
+                "speed": 1.0797954724213468
             },
             "Mars": {
                 "house": 12,
-                "lon": 48.38,
-                "speed": 0.6938216187529395
+                "lon": 51.69,
+                "speed": 0.6881056405703896
             },
             "Jupiter": {
                 "house": 2,
-                "lon": 99.35,
-                "speed": 0.22019507416606784
+                "lon": 100.41,
+                "speed": 0.22101005911797283
             },
             "Saturn": {
                 "house": 10,
-                "lon": 350.43,
-                "speed": 0.01714235670777708
+                "lon": 350.5,
+                "speed": 0.008995372035350812
             },
             "Rahu": {
                 "house": 9,
-                "lon": 305.97,
-                "speed": -0.0063101071521435665
+                "lon": 306.06,
+                "speed": -0.00573410798598068
             },
             "Ketu": {
                 "house": 3,
-                "lon": 125.97,
+                "lon": 126.06,
                 "speed": 0
             }
         },

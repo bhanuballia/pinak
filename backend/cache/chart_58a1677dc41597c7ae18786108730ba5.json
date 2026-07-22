@@ -898,6 +898,7 @@
             "sign_lord": "Mercury",
             "degree": 60.75,
             "nakshatra": "Mrigashira",
+            "nakshatra_pada": 3,
             "nakshatra_lord": "Mars",
             "house": 10
         },
@@ -908,6 +909,7 @@
             "sign_lord": "Jupiter",
             "degree": 242.73,
             "nakshatra": "Mula",
+            "nakshatra_pada": 1,
             "nakshatra_lord": "Ketu",
             "house": 4
         },
@@ -918,6 +920,7 @@
             "sign_lord": "Mercury",
             "degree": 77.18,
             "nakshatra": "Ardra",
+            "nakshatra_pada": 4,
             "nakshatra_lord": "Rahu",
             "house": 10
         },
@@ -928,6 +931,7 @@
             "sign_lord": "Mercury",
             "degree": 61.21,
             "nakshatra": "Mrigashira",
+            "nakshatra_pada": 3,
             "nakshatra_lord": "Mars",
             "house": 10
         },
@@ -938,6 +942,7 @@
             "sign_lord": "Mars",
             "degree": 6.77,
             "nakshatra": "Ashwini",
+            "nakshatra_pada": 3,
             "nakshatra_lord": "Ketu",
             "house": 8
         },
@@ -948,6 +953,7 @@
             "sign_lord": "Sun",
             "degree": 133.83,
             "nakshatra": "Purva Phalguni",
+            "nakshatra_pada": 1,
             "nakshatra_lord": "Venus",
             "house": 12
         },
@@ -958,6 +964,7 @@
             "sign_lord": "Saturn",
             "degree": 294.48,
             "nakshatra": "Dhanishta",
+            "nakshatra_pada": 1,
             "nakshatra_lord": "Mars",
             "house": 5
         },
@@ -968,6 +975,7 @@
             "sign_lord": "Jupiter",
             "degree": 246.9,
             "nakshatra": "Mula",
+            "nakshatra_pada": 3,
             "nakshatra_lord": "Ketu",
             "house": 4
         },
@@ -978,6 +986,7 @@
             "sign_lord": "Mercury",
             "degree": 66.9,
             "nakshatra": "Ardra",
+            "nakshatra_pada": 1,
             "nakshatra_lord": "Rahu",
             "house": 10
         }
@@ -14783,6 +14792,107 @@
             }
         }
     },
+    "sphuta_drishti": {
+        "Sun": {
+            "Sun": 0.0,
+            "Moon": 56.03,
+            "Mars": 11.99,
+            "Mercury": 0.0,
+            "Jupiter": 21.54,
+            "Venus": 0.0,
+            "Saturn": 0.0,
+            "Rahu": 47.7,
+            "Ketu": 0.0
+        },
+        "Moon": {
+            "Sun": 58.01,
+            "Moon": 0.0,
+            "Mars": 42.98,
+            "Mercury": 31.1,
+            "Jupiter": 0.0,
+            "Venus": 58.48,
+            "Saturn": 10.87,
+            "Rahu": 0.0,
+            "Ketu": 51.67
+        },
+        "Mars": {
+            "Sun": 11.99,
+            "Moon": 0.0,
+            "Mars": 0.0,
+            "Mercury": 20.21,
+            "Jupiter": 41.47,
+            "Venus": 12.22,
+            "Saturn": 8.85,
+            "Rahu": 0.0,
+            "Ketu": 15.06
+        },
+        "Mercury": {
+            "Sun": 0.0,
+            "Moon": 45.55,
+            "Mars": 9.79,
+            "Mercury": 0.0,
+            "Jupiter": 13.32,
+            "Venus": 0.0,
+            "Saturn": 0.0,
+            "Rahu": 49.72,
+            "Ketu": 0.0
+        },
+        "Jupiter": {
+            "Sun": 8.46,
+            "Moon": 39.45,
+            "Mars": 31.76,
+            "Mercury": 13.32,
+            "Jupiter": 0.0,
+            "Venus": 8.69,
+            "Saturn": 40.65,
+            "Rahu": 41.53,
+            "Ketu": 11.53
+        },
+        "Venus": {
+            "Sun": 0.0,
+            "Moon": 56.95,
+            "Mars": 12.22,
+            "Mercury": 0.0,
+            "Jupiter": 21.31,
+            "Venus": 0.0,
+            "Saturn": 0.0,
+            "Rahu": 48.62,
+            "Ketu": 0.0
+        },
+        "Saturn": {
+            "Sun": 41.86,
+            "Moon": 10.87,
+            "Mars": 21.15,
+            "Mercury": 33.65,
+            "Jupiter": 21.3,
+            "Venus": 41.63,
+            "Saturn": 0.0,
+            "Rahu": 8.79,
+            "Ketu": 38.79
+        },
+        "Rahu": {
+            "Sun": 53.85,
+            "Moon": 0.0,
+            "Mars": 59.48,
+            "Mercury": 39.43,
+            "Jupiter": 32.27,
+            "Venus": 54.31,
+            "Saturn": 8.79,
+            "Rahu": 0.0,
+            "Ketu": 60.0
+        },
+        "Ketu": {
+            "Sun": 0.0,
+            "Moon": 55.84,
+            "Mars": 14.94,
+            "Mercury": 0.0,
+            "Jupiter": 18.47,
+            "Venus": 0.0,
+            "Saturn": 10.32,
+            "Rahu": 60.0,
+            "Ketu": 0.0
+        }
+    },
     "maraka": {
         "signs": [
             "Taurus",
@@ -15142,9 +15252,23 @@
             "top_gemstone": {
                 "planet": "Mercury",
                 "stone": "Emerald",
-                "reason": "Most powerful benefic for Virgo Lagna needing activation.",
+                "reason": "Benefic planet for Virgo Lagna needing activation/strengthening.",
                 "score": 13.4
-            }
+            },
+            "top_gemstones": [
+                {
+                    "planet": "Mercury",
+                    "stone": "Emerald",
+                    "reason": "Benefic planet for Virgo Lagna needing activation/strengthening.",
+                    "score": 13.4
+                },
+                {
+                    "planet": "Venus",
+                    "stone": "Diamond",
+                    "reason": "Benefic planet for Virgo Lagna needing activation/strengthening.",
+                    "score": 10.6
+                }
+            ]
         }
     },
     "gemstones": [
@@ -19186,48 +19310,48 @@
     },
     "transits": {
         "Sun": {
-            "house": 10,
-            "lon": 84.89,
-            "speed": 0.9539224708584789
+            "house": 11,
+            "lon": 94.71,
+            "speed": 0.9546424372476014
         },
         "Moon": {
-            "house": 9,
-            "lon": 42.48,
-            "speed": 14.867918635887245
+            "house": 2,
+            "lon": 187.25,
+            "speed": 12.308882269252166
         },
         "Mercury": {
             "house": 10,
-            "lon": 87.54,
-            "speed": -0.6404126132089611
+            "lon": 82.32,
+            "speed": -0.20493304988883107
         },
         "Venus": {
             "house": 12,
-            "lon": 127.63,
-            "speed": 1.109781086058479
+            "lon": 138.9,
+            "speed": 1.0792030209592463
         },
         "Mars": {
             "house": 9,
-            "lon": 44.67,
-            "speed": 0.6999925480316773
+            "lon": 51.81,
+            "speed": 0.6879008709079032
         },
         "Jupiter": {
             "house": 11,
-            "lon": 98.18,
-            "speed": 0.21869114616365534
+            "lon": 100.45,
+            "speed": 0.22103122138517028
         },
         "Saturn": {
             "house": 7,
-            "lon": 350.32,
-            "speed": 0.026142524525985082
+            "lon": 350.5,
+            "speed": 0.008702202393073935
         },
         "Rahu": {
             "house": 6,
-            "lon": 306.34,
-            "speed": -0.09095004478861116
+            "lon": 306.05,
+            "speed": -0.004724270128004014
         },
         "Ketu": {
             "house": 12,
-            "lon": 126.34,
+            "lon": 126.05,
             "speed": 0
         }
     },
@@ -19242,48 +19366,48 @@
     "transit_analysis": {
         "current_positions": {
             "Sun": {
-                "house": 10,
-                "lon": 84.89,
-                "speed": 0.9539224708584789
+                "house": 11,
+                "lon": 94.71,
+                "speed": 0.9546424372476014
             },
             "Moon": {
-                "house": 9,
-                "lon": 42.48,
-                "speed": 14.867918635887245
+                "house": 2,
+                "lon": 187.25,
+                "speed": 12.308882269252166
             },
             "Mercury": {
                 "house": 10,
-                "lon": 87.54,
-                "speed": -0.6404126132089611
+                "lon": 82.32,
+                "speed": -0.20493304988883107
             },
             "Venus": {
                 "house": 12,
-                "lon": 127.63,
-                "speed": 1.109781086058479
+                "lon": 138.9,
+                "speed": 1.0792030209592463
             },
             "Mars": {
                 "house": 9,
-                "lon": 44.67,
-                "speed": 0.6999925480316773
+                "lon": 51.81,
+                "speed": 0.6879008709079032
             },
             "Jupiter": {
                 "house": 11,
-                "lon": 98.18,
-                "speed": 0.21869114616365534
+                "lon": 100.45,
+                "speed": 0.22103122138517028
             },
             "Saturn": {
                 "house": 7,
-                "lon": 350.32,
-                "speed": 0.026142524525985082
+                "lon": 350.5,
+                "speed": 0.008702202393073935
             },
             "Rahu": {
                 "house": 6,
-                "lon": 306.34,
-                "speed": -0.09095004478861116
+                "lon": 306.05,
+                "speed": -0.004724270128004014
             },
             "Ketu": {
                 "house": 12,
-                "lon": 126.34,
+                "lon": 126.05,
                 "speed": 0
             }
         },

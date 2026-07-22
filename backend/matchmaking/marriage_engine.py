@@ -143,6 +143,14 @@ def run_marriage_matching(bride_data: Dict[str, Any], groom_data: Dict[str, Any]
         bride_kundali_analysis = analyze_bride_chart(bride_data)
         groom_kundali_analysis = analyze_groom_chart(groom_data)
         
+        # Calculate custom matchmaking topics (In-laws, family, living, etc.)
+        from matchmaking.family.custom_topics import CustomTopicsEngine
+        custom_topics_eng = CustomTopicsEngine()
+        custom_topics_data = custom_topics_eng.analyze(bride_data, groom_data, precomputed_reports={
+            "guna_milan": guna_report,
+            "manglik": {"bride": b_manglik, "groom": g_manglik, "analysis": manglik_report}
+        })
+        
         return {
             "guna_milan": guna_report,
             "manglik": {
@@ -152,6 +160,7 @@ def run_marriage_matching(bride_data: Dict[str, Any], groom_data: Dict[str, Any]
             },
             "navamsa": d9_report,
             "comprehensive_matrix": comprehensive_matrix,
+            "custom_matchmaking_topics": custom_topics_data,
             "risk_analysis": {
                 "divorce": divorce_data,
                 "afflictions": afflictions_data,

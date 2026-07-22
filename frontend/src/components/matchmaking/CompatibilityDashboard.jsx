@@ -179,6 +179,58 @@ const CompatibilityDashboard = ({ bride, groom, brideFullData, groomFullData, re
       }
    };
 
+   // Vivah Muhurta Planner State
+   const [vivahStartDate, setVivahStartDate] = useState(new Date().toISOString().split('T')[0]);
+   const [vivahDays, setVivahDays] = useState(90);
+   const [vivahResults, setVivahResults] = useState([]);
+   const [isCalculatingVivah, setIsCalculatingVivah] = useState(false);
+   const [vivahError, setVivahError] = useState("");
+   const [selectedVivahDate, setSelectedVivahDate] = useState(null);
+
+   const handleCalculateVivah = async (customStart = null, customDays = null) => {
+      const start = customStart || vivahStartDate;
+      const daysVal = customDays || vivahDays;
+      setIsCalculatingVivah(true);
+      setVivahError("");
+      try {
+         const response = await fetch('/api/muhurt/vivah', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+               bride_moon_lon: report?.bride_chart?.planet_positions?.Moon?.sidereal?.lon,
+               groom_moon_lon: report?.groom_chart?.planet_positions?.Moon?.sidereal?.lon,
+               start_date: start,
+               days: parseInt(daysVal),
+               tz: brideFullData?.tz_offset || 5.5,
+               lat: brideFullData?.lat || 28.6,
+               lon: brideFullData?.lon || 77.2
+            })
+         });
+         const data = await response.json();
+         if (response.ok) {
+            setVivahResults(data.dates || []);
+            if (data.dates && data.dates.length > 0) {
+               const firstAusp = data.dates.find(d => d.is_auspicious) || data.dates[0];
+               setSelectedVivahDate(firstAusp);
+            }
+         } else {
+            setVivahError(data.detail || "Vivah Muhurta calculation failed.");
+         }
+      } catch (e) {
+         console.error(e);
+         setVivahError("Error connecting to server for Vivah Muhurta calculation.");
+      } finally {
+         setIsCalculatingVivah(false);
+      }
+   };
+
+   React.useEffect(() => {
+      if (report?.bride_chart?.planet_positions?.Moon?.sidereal?.lon && report?.groom_chart?.planet_positions?.Moon?.sidereal?.lon) {
+         handleCalculateVivah();
+      }
+   }, [report]);
+
+
    const handleGenerateAiDeepReport = async () => {
       setIsGeneratingAiDeepReport(true);
       try {
@@ -577,7 +629,277 @@ const CompatibilityDashboard = ({ bride, groom, brideFullData, groomFullData, re
                </section>
             )}
 
+            {/* Step 2.5: Vivah Muhurta Planner Section */}
+            {report && (
+               <section className="bg-white rounded-[2.5rem] p-12 shadow-xl border border-slate-100 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-amber-500 via-orange-500 to-red-500"></div>
+
+                  <div className="text-center mb-10">
+                     <h3 className="text-[14px] font-black uppercase tracking-[0.5em] text-orange-600 mb-2">Vivah Muhurta</h3>
+                     <h2 className="text-3xl font-serif italic text-slate-800">Auspicious Marriage Planner (विवाह मुहूर्त)</h2>
+                     <p className="text-sm text-slate-500 mt-2 max-w-2xl mx-auto">
+                        A precise step-by-step mathematical check based on both bride's and groom's birth stars (Janma Nakshatras) and transit planetary strengths.
+                     </p>
+                  </div>
+
+                  <div className="bg-slate-50/50 rounded-3xl p-6 border border-slate-100 shadow-inner mb-8">
+                     <div className="flex flex-col md:flex-row items-end gap-6">
+                        <div className="flex-1 w-full">
+                           <label className="block text-slate-900 text-xs font-bold uppercase tracking-wider mb-2">Muhurta Search Start Date</label>
+                           <input
+                              type="date"
+                              value={vivahStartDate}
+                              onChange={(e) => setVivahStartDate(e.target.value)}
+                              className="w-full bg-white border border-slate-200 text-slate-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all font-semibold"
+                           />
+                        </div>
+                        <div className="w-full md:w-48">
+                           <label className="block text-slate-900 text-xs font-bold uppercase tracking-wider mb-2">Scan Range</label>
+                           <select
+                              value={vivahDays}
+                              onChange={(e) => setVivahDays(parseInt(e.target.value))}
+                              className="w-full bg-white border border-slate-200 text-slate-800 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all font-semibold"
+                           >
+                              <option value={30}>30 Days</option>
+                              <option value={60}>60 Days</option>
+                              <option value={90}>90 Days</option>
+                              <option value={120}>120 Days</option>
+                           </select>
+                        </div>
+                        <button
+                           onClick={() => handleCalculateVivah()}
+                           disabled={isCalculatingVivah}
+                           className="w-full md:w-auto bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-all uppercase tracking-widest text-xs disabled:opacity-50 flex items-center justify-center gap-2"
+                        >
+                           {isCalculatingVivah ? (
+                              <>
+                                 <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                 Calculating...
+                              </>
+                           ) : "Find Muhurtas"}
+                        </button>
+                     </div>
+                  </div>
+
+                  {vivahError && (
+                     <div className="p-4 rounded-xl bg-red-50 border border-red-200 text-red-600 mb-6 font-semibold text-sm">
+                        ⚠️ {vivahError}
+                     </div>
+                  )}
+
+                  {vivahResults && vivahResults.length > 0 && (
+                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                        {/* Left column: List of dates */}
+                        <div className="lg:col-span-5 space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                           <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-4">Dates Heatmap</h3>
+                           {vivahResults.map((item, idx) => (
+                              <div
+                                 key={idx}
+                                 onClick={() => setSelectedVivahDate(item)}
+                                 className={`p-4 rounded-2xl border transition-all cursor-pointer flex justify-between items-center ${selectedVivahDate?.date === item.date
+                                    ? 'bg-orange-50 border-orange-300 shadow-md scale-[1.01]'
+                                    : 'bg-white border-slate-100 hover:border-slate-300'
+                                    }`}
+                              >
+                                 <div>
+                                    <div className="flex items-center gap-2">
+                                       <span className="font-bold text-slate-900 text-sm">
+                                          {new Date(item.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                       </span>
+                                       <span className="text-[12px] text-slate-800 font-medium">({item.weekday})</span>
+                                    </div>
+                                    <div className="text-[12px] text-slate-800 font-medium mt-1">
+                                       {item.tithi} • {item.nakshatra}
+                                    </div>
+                                 </div>
+                                 <div>
+                                    {item.is_auspicious ? (
+                                       <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-sm">
+                                          🌟 Auspicious
+                                       </span>
+                                    ) : (
+                                       <span className="bg-rose-50 text-rose-500 border border-rose-100 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest">
+                                          Inauspicious
+                                       </span>
+                                    )}
+                                 </div>
+                              </div>
+                           ))}
+                        </div>
+
+                        {/* Right column: Step-by-Step Mathematical Checker */}
+                        <div className="lg:col-span-7 bg-slate-50 border border-slate-100 p-8 rounded-[2rem] shadow-sm">
+                           {selectedVivahDate ? (
+                              <div className="space-y-6">
+                                 <div className="flex justify-between items-center pb-4 border-b border-slate-200">
+                                    <div>
+                                       <span className="text-[9px] font-black text-orange-600 uppercase tracking-widest">Selected Date Analysis</span>
+                                       <h4 className="text-xl font-bold text-slate-800 mt-1">
+                                          {new Date(selectedVivahDate.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                       </h4>
+                                       <p className="text-xs text-slate-400 mt-0.5">{selectedVivahDate.weekday}</p>
+                                    </div>
+                                    <div>
+                                       {selectedVivahDate.is_auspicious ? (
+                                          <div className="bg-emerald-500 text-white font-bold py-2 px-4 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-emerald-500/20">
+                                             Passed All Steps
+                                          </div>
+                                       ) : (
+                                          <div className="bg-rose-500 text-white font-bold py-2 px-4 rounded-xl text-xs uppercase tracking-widest shadow-lg shadow-rose-500/20">
+                                             Failed Checks
+                                          </div>
+                                       )}
+                                    </div>
+                                 </div>
+
+                                 {/* 6-step display */}
+                                 <div className="space-y-4">
+                                    {/* Step 1 */}
+                                    <div className="flex items-start gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                                       <div className="text-2xl mt-0.5">ℹ️</div>
+                                       <div className="flex-1">
+                                          <h5 className="font-bold text-slate-800 text-sm">Step 1: Janma Nakshatra & Moon Sign</h5>
+                                          <p className="text-xs text-slate-900 mt-1">Birth profiles retrieved from charts:</p>
+                                          <div className="grid grid-cols-2 gap-4 mt-2">
+                                             <div className="bg-pink-50/50 p-2.5 rounded-xl border border-pink-100 text-center">
+                                                <div className="text-[9px] font-black uppercase text-pink-600">Bride's Birth Star</div>
+                                                <div className="text-xs font-bold text-slate-800 mt-0.5">{selectedVivahDate.steps.step1.bride_nak}</div>
+                                             </div>
+                                             <div className="bg-blue-50/50 p-2.5 rounded-xl border border-blue-100 text-center">
+                                                <div className="text-[9px] font-black uppercase text-blue-600">Groom's Birth Star</div>
+                                                <div className="text-xs font-bold text-slate-800 mt-0.5">{selectedVivahDate.steps.step1.groom_nak}</div>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+
+                                    {/* Step 2 */}
+                                    <div className="flex items-start gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                                       <div className="text-2xl mt-0.5">{selectedVivahDate.steps.step2.pass ? "✅" : "❌"}</div>
+                                       <div className="flex-1">
+                                          <h5 className="font-bold text-slate-800 text-sm">Step 2: Auspicious Marriage Nakshatras</h5>
+                                          <p className="text-xs text-slate-800 mt-1">
+                                             Transit Nakshatra is <strong className="text-slate-700">{selectedVivahDate.steps.step2.nakshatra}</strong>.
+                                          </p>
+                                          <div className="text-[10px] text-slate-800 mt-1">
+                                             {selectedVivahDate.steps.step2.pass
+                                                ? "Passed: This Nakshatra is traditionally auspicious for marriages."
+                                                : "Failed: This Nakshatra is not in the list of 11 traditional wedding stars."}
+                                          </div>
+                                       </div>
+                                    </div>
+
+                                    {/* Step 3 */}
+                                    <div className="flex items-start gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                                       <div className="text-2xl mt-0.5">{selectedVivahDate.steps.step3.pass ? "✅" : "❌"}</div>
+                                       <div className="flex-1">
+                                          <h5 className="font-bold text-slate-800 text-sm">Step 3: Dual Tara Bala (Strength of Stars)</h5>
+                                          <div className="grid grid-cols-2 gap-4 mt-2">
+                                             <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                                <div className="text-[9px] font-black uppercase text-slate-500">Bride Tara</div>
+                                                <div className="text-xs font-bold text-slate-800 mt-0.5">{selectedVivahDate.steps.step3.bride_tara}</div>
+                                                <div className="text-[9px] font-medium text-slate-400">Remainder {selectedVivahDate.steps.step3.bride_remainder}</div>
+                                             </div>
+                                             <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                                <div className="text-[9px] font-black uppercase text-slate-800">Groom Tara</div>
+                                                <div className="text-xs font-bold text-slate-800 mt-0.5">{selectedVivahDate.steps.step3.groom_tara}</div>
+                                                <div className="text-[9px] font-medium text-slate-800">Remainder {selectedVivahDate.steps.step3.groom_remainder}</div>
+                                             </div>
+                                          </div>
+                                          <div className="text-[10px] text-slate-800 mt-2">
+                                             {selectedVivahDate.steps.step3.pass
+                                                ? "Passed: Both partners have auspicious Tara Bala remainders (2, 4, 6, 8, or 9)."
+                                                : "Failed: One or both partners have inauspicious Tara Bala (remainder 3, 5, or 7)."}
+                                          </div>
+                                       </div>
+                                    </div>
+
+                                    {/* Step 4 */}
+                                    <div className="flex items-start gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                                       <div className="text-2xl mt-0.5">{selectedVivahDate.steps.step4.pass ? "✅" : "❌"}</div>
+                                       <div className="flex-1">
+                                          <h5 className="font-bold text-slate-800 text-sm">Step 4: Chandra Bala (Moon Strength)</h5>
+                                          <div className="grid grid-cols-2 gap-4 mt-2">
+                                             <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                                <div className="text-[9px] font-black uppercase text-slate-800">Bride Transit House</div>
+                                                <div className="text-xs font-bold text-slate-800 mt-0.5">{selectedVivahDate.steps.step4.bride_house}th House</div>
+                                                <div className={`text-[9px] font-bold mt-0.5 ${[4, 8, 12].includes(selectedVivahDate.steps.step4.bride_house) ? 'text-red-500' : 'text-emerald-500'}`}>
+                                                   {[4, 8, 12].includes(selectedVivahDate.steps.step4.bride_house) ? 'Unfavorable' : 'Favorable'}
+                                                </div>
+                                             </div>
+                                             <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                                <div className="text-[9px] font-black uppercase text-slate-800">Groom Transit House</div>
+                                                <div className="text-xs font-bold text-slate-800 mt-0.5">{selectedVivahDate.steps.step4.groom_house}th House</div>
+                                                <div className={`text-[9px] font-bold mt-0.5 ${[4, 8, 12].includes(selectedVivahDate.steps.step4.groom_house) ? 'text-red-500' : 'text-emerald-500'}`}>
+                                                   {[4, 8, 12].includes(selectedVivahDate.steps.step4.groom_house) ? 'Unfavorable' : 'Favorable'}
+                                                </div>
+                                             </div>
+                                          </div>
+                                          <div className="text-[10px] text-slate-400 mt-2">
+                                             Avoids transit Moon positioned in 4th, 8th, and 12th houses from natal Moon signs.
+                                          </div>
+                                       </div>
+                                    </div>
+
+                                    {/* Step 5 */}
+                                    <div className="flex items-start gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                                       <div className="text-2xl mt-0.5">{selectedVivahDate.steps.step5.pass ? "✅" : "❌"}</div>
+                                       <div className="flex-1">
+                                          <h5 className="font-bold text-slate-800 text-sm">Step 5: Planetary Combustions</h5>
+                                          <div className="flex flex-col gap-2 mt-2">
+                                             <div className="flex justify-between items-center text-xs bg-slate-50 p-2 rounded-xl border border-slate-100">
+                                                <span className="font-semibold text-slate-800">Bride's Guru Shuddhi (Jupiter):</span>
+                                                <span className={`font-bold px-2 py-0.5 rounded text-[10px] uppercase ${selectedVivahDate.steps.step5.jupiter_combust ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'}`}>
+                                                   {selectedVivahDate.steps.step5.jupiter_combust ? 'Combust (Asta)' : 'Pure (Udaya)'}
+                                                </span>
+                                             </div>
+                                             <div className="flex justify-between items-center text-xs bg-slate-50 p-2 rounded-xl border border-slate-100">
+                                                <span className="font-semibold text-slate-800">Groom's Shukra Shuddhi (Venus):</span>
+                                                <span className={`font-bold px-2 py-0.5 rounded text-[10px] uppercase ${selectedVivahDate.steps.step5.venus_combust ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'}`}>
+                                                   {selectedVivahDate.steps.step5.venus_combust ? 'Combust (Asta)' : 'Pure (Udaya)'}
+                                                </span>
+                                             </div>
+                                          </div>
+                                       </div>
+                                    </div>
+
+                                    {/* Step 6 */}
+                                    <div className="flex items-start gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+                                       <div className="text-2xl mt-0.5">{selectedVivahDate.steps.step6.pass ? "✅" : "❌"}</div>
+                                       <div className="flex-1">
+                                          <h5 className="font-bold text-slate-800 text-sm">Step 6: Auspicious Tithi & Weekday</h5>
+                                          <div className="grid grid-cols-2 gap-4 mt-2">
+                                             <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                                <div className="text-[9px] font-black uppercase text-slate-800">Tithi</div>
+                                                <div className="text-xs font-bold text-slate-800 mt-0.5">{selectedVivahDate.tithi}</div>
+                                             </div>
+                                             <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                                                <div className="text-[9px] font-black uppercase text-slate-800">Weekday</div>
+                                                <div className="text-xs font-bold text-slate-800 mt-0.5">{selectedVivahDate.weekday}</div>
+                                             </div>
+                                          </div>
+                                          <div className="text-[10px] text-slate-800 mt-2">
+                                             Requires Dwitiya, Tritiya, Panchami, Saptami, Dashami, Ekadashi, or Trayodashi. Rejects Rikta Tithis (4, 9, 14), Amavasya, and Eclipses.
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           ) : (
+                              <div className="h-full flex flex-col items-center justify-center text-center py-20 opacity-50">
+                                 <span className="text-4xl">📅</span>
+                                 <h4 className="font-bold text-slate-700 mt-3">Select a date from list</h4>
+                                 <p className="text-xs text-slate-500 mt-1">Select any date on the left to inspect its astrological parameters.</p>
+                              </div>
+                           )}
+                        </div>
+                     </div>
+                  )}
+               </section>
+            )}
+
             {/* Girl Kundali Analysis */}
+
             {bride_kundali && (
                <section className="bg-white rounded-[2.5rem] p-12 shadow-xl border border-slate-100">
                   <div className="text-center mb-10">
@@ -745,6 +1067,74 @@ const CompatibilityDashboard = ({ bride, groom, brideFullData, groomFullData, re
                   </div>
                </div>
             </div>
+
+            {/* Core Relationship & Family Dynamics Table */}
+            {report.custom_matchmaking_topics && (
+               <section className="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-xl border border-slate-100 relative overflow-hidden mt-12 mb-12">
+                  <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-teal-500 via-emerald-500 to-indigo-500"></div>
+                  <div className="absolute -top-32 -right-32 w-96 h-96 bg-emerald-500/5 blur-[100px] rounded-full pointer-events-none"></div>
+
+                  <div className="text-center mb-10">
+                     <h3 className="text-[12px] font-black uppercase tracking-[0.5em] text-teal-600 mb-2">Bhava &amp; Grah Milan</h3>
+                     <h2 className="text-4xl font-serif italic text-slate-900">  Married life &amp; family compatibility (दाम्पत्य जीवन और पारिवारिक मैत्री) </h2>
+                     <p className="text-slate-500 mt-3 max-w-2xl mx-auto text-base">
+                        A detailed breakdown of key domestic, emotional, and social parameters governing the marital bond, based on Vedic astrological principles.
+                     </p>
+                  </div>
+
+                  <div className="overflow-x-auto border border-slate-100 rounded-2xl shadow-sm bg-slate-50/50 backdrop-blur-md">
+                     <table className="w-full text-left border-collapse">
+                        <thead>
+                           <tr className="bg-slate-100 text-slate-800 text-sm uppercase tracking-widest border-b border-slate-200">
+                              <th className="px-6 py-4 font-semibold w-1/3">Topic / Dimension</th>
+                              <th className="px-6 py-4 font-semibold w-1/4">Category</th>
+                              <th className="px-6 py-4 font-semibold text-center w-1/6">Verdict</th>
+                              <th className="px-6 py-4 font-semibold w-2/5">Astrological Explanation</th>
+                           </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-100 text-slate-700">
+                           {report.custom_matchmaking_topics.map((item, idx) => {
+                              let verdictColor = "text-amber-700 bg-amber-50 border-amber-200";
+                              if (item.verdict === "Good") verdictColor = "text-emerald-700 bg-emerald-50 border-emerald-200";
+                              if (item.verdict === "Bad") verdictColor = "text-rose-700 bg-rose-50 border-rose-200";
+
+                              // Simple icon mapper based on keyword
+                              let icon = "🔮";
+                              const lowerTopic = item.topic.toLowerCase();
+                              if (lowerTopic.includes("girl") || lowerTopic.includes("family")) icon = "👨‍👩‍👧‍👦";
+                              if (lowerTopic.includes("live independently")) icon = "🏡";
+                              if (lowerTopic.includes("emotional") || lowerTopic.includes("resonance")) icon = "❤️";
+                              if (lowerTopic.includes("ego") || lowerTopic.includes("clashes")) icon = "⚖️";
+                              if (lowerTopic.includes("fortune") || lowerTopic.includes("financial")) icon = "💰";
+                              if (lowerTopic.includes("career")) icon = "💼";
+                              if (lowerTopic.includes("progeny") || lowerTopic.includes("legacy")) icon = "👶";
+                              if (lowerTopic.includes("health") || lowerTopic.includes("longevity")) icon = "❇️";
+                              if (lowerTopic.includes("arguments") || lowerTopic.includes("disputes")) icon = "💬";
+                              if (lowerTopic.includes("manglik")) icon = "🔥";
+
+                              return (
+                                 <tr key={idx} className="hover:bg-slate-50/80 transition-colors">
+                                    <td className="px-6 py-5 font-bold text-slate-800 text-[15px] flex items-center gap-3">
+                                       <span className="text-xl shrink-0">{icon}</span>
+                                       <span>{item.topic}</span>
+                                    </td>
+                                    <td className="px-6 py-5 text-sm text-slate-500 font-medium">{item.category}</td>
+                                    <td className="px-6 py-5 text-center">
+                                       <span className={`inline-block px-3 py-1.5 rounded-full text-xs font-black uppercase tracking-wider border ${verdictColor}`}>
+                                          {item.verdict}
+                                       </span>
+                                    </td>
+                                    <td className="px-6 py-5 text-[16px] leading-relaxed text-slate-900 font-medium">
+                                       {item.explanation}
+                                    </td>
+                                 </tr>
+                              );
+                           })}
+                        </tbody>
+                     </table>
+                  </div>
+               </section>
+            )}
 
             {/* Elite Astrological Synthesis Section */}
             {risk.bhava_milan && (

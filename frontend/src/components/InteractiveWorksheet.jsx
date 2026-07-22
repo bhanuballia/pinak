@@ -51,6 +51,7 @@ import ShodashvargaSummary from "./ShodashvargaSummary";
 import BhriguBinduAnalysis from "./BhriguBinduAnalysis";
 import AIOraclePanel from "./AIOraclePanel";
 import DynamicVargaAnalysis from "./DynamicVargaAnalysis";
+import SphutaDrishtiViewer from "./SphutaDrishtiViewer";
 
 const BulletInterpretation = ({ text, colorClass = "text-slate-600" }) => {
   if (!text) return null;
@@ -71,22 +72,102 @@ const ConjunctionAnalysis = ({ houses }) => {
   const [conjunctions, setConjunctions] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const getTextFromDetail = (detail) => {
-    if (detail.description) return detail.description;
-    if (detail.interpretation) return detail.interpretation;
-    if (detail.results) return detail.results;
+  const parseConjunctionDetail = (detail) => {
+    let good = [];
+    let bad = [];
 
-    if (detail.effects && typeof detail.effects === "object") {
-      return Object.entries(detail.effects)
-        .map(([key, points]) => {
-          const title = key.replace(/([A-Z])/g, " $1").toUpperCase();
-          const content = Array.isArray(points) ? points.join(". ") : points;
-          return `${title}: ${content}`;
-        })
-        .join("\n\n");
+    let posText = detail.positiveConjunction || detail.positive_conjunction || (detail.effects && detail.effects.positiveConjunction);
+    let negText = detail.negativeConjunction || detail.negative_conjunction || (detail.effects && detail.effects.negativeConjunction);
+
+    if (!posText && !negText) {
+      const textToParse = detail.description || detail.interpretation || detail.results || "";
+      const sentences = textToParse.match(/[^.!?]+[.!?]+(\s+|$)/g) || [textToParse];
+
+      let posSentences = [];
+      let negSentences = [];
+
+      sentences.forEach(s => {
+        const trimmed = s.trim();
+        if (!trimmed) return;
+        const lower = trimmed.toLowerCase();
+        if (
+          lower.includes("negative") || lower.includes("bad") || lower.includes("afflict") ||
+          lower.includes("overthinking") || lower.includes("anger") || lower.includes("accident") ||
+          lower.includes("struggle") || lower.includes("loss") || lower.includes("anxiety") ||
+          lower.includes("deception") || lower.includes("conflict") || lower.includes("hinder") ||
+          lower.includes("clash") || lower.includes("ego") || lower.includes("ritual") ||
+          lower.includes("blindly") || lower.includes("noise") || lower.includes("problems") ||
+          lower.includes("exaggeration") || lower.includes("false")
+        ) {
+          negSentences.push(trimmed);
+        } else if (
+          lower.includes("positive") || lower.includes("good") || lower.includes("success") ||
+          lower.includes("benefit") || lower.includes("gain") || lower.includes("bless") ||
+          lower.includes("creative") || lower.includes("wealth") || lower.includes("intelligence") ||
+          lower.includes("mind") || lower.includes("spiritual") || lower.includes("authority") ||
+          lower.includes("logic") || lower.includes("wisdom")
+        ) {
+          posSentences.push(trimmed);
+        } else {
+          posSentences.push(trimmed);
+        }
+      });
+
+      posText = posSentences.join(" ");
+      negText = negSentences.join(" ");
     }
 
-    return "Detailed diagnostic insights are available for this planetary alignment.";
+    if (posText) {
+      const sentences = posText.match(/[^.!?]+[.!?]+(\s+|$)/g) || [posText];
+      sentences.forEach(s => {
+        const trimmed = s.trim();
+        if (!trimmed) return;
+
+        let label = "Strength";
+        const lower = trimmed.toLowerCase();
+        if (lower.includes("mind") || lower.includes("think") || lower.includes("intellect") || lower.includes("logic")) {
+          label = "Sharp Mind";
+        } else if (lower.includes("success") || lower.includes("fortune") || lower.includes("wealth") || lower.includes("gain") || lower.includes("rich")) {
+          label = "Big Successes";
+        } else if (lower.includes("foreign") || lower.includes("travel") || lower.includes("abroad") || lower.includes("culture") || lower.includes("birthplace") || lower.includes("connection")) {
+          label = "Foreign Connections";
+        } else if (lower.includes("speech") || lower.includes("speak") || lower.includes("express") || lower.includes("eloquent")) {
+          label = "Eloquent Expression";
+        } else if (lower.includes("lead") || lower.includes("authority") || lower.includes("power") || lower.includes("ruler")) {
+          label = "Leadership Authority";
+        } else if (lower.includes("spiritual") || lower.includes("god") || lower.includes("faith") || lower.includes("wise") || lower.includes("wisdom")) {
+          label = "Spiritual Wisdom";
+        }
+        good.push({ label, text: trimmed });
+      });
+    }
+
+    if (negText) {
+      const sentences = negText.match(/[^.!?]+[.!?]+(\s+|$)/g) || [negText];
+      sentences.forEach(s => {
+        const trimmed = s.trim();
+        if (!trimmed) return;
+
+        let label = "Challenge";
+        const lower = trimmed.toLowerCase();
+        if (lower.includes("faith") || lower.includes("religion") || lower.includes("ritual") || lower.includes("teachings") || lower.includes("blindly")) {
+          label = "Questioning Faith";
+        } else if (lower.includes("overthinking") || lower.includes("worry") || lower.includes("mental noise") || lower.includes("noise") || lower.includes("confused")) {
+          label = "Overthinking";
+        } else if (lower.includes("anger") || lower.includes("temper") || lower.includes("aggression") || lower.includes("fight")) {
+          label = "Anger & Aggression";
+        } else if (lower.includes("health") || lower.includes("disease") || lower.includes("accident") || lower.includes("pain")) {
+          label = "Health Risks";
+        } else if (lower.includes("cheat") || lower.includes("deception") || lower.includes("lie") || lower.includes("dishonest")) {
+          label = "Risk of Deception";
+        } else if (lower.includes("clash") || lower.includes("egotism") || lower.includes("ego") || lower.includes("proud")) {
+          label = "Ego Clashes";
+        }
+        bad.push({ label, text: trimmed });
+      });
+    }
+
+    return { good, bad };
   };
 
   useEffect(() => {
@@ -96,8 +177,13 @@ const ConjunctionAnalysis = ({ houses }) => {
     Object.keys(houses).forEach(houseNum => {
       const houseData = houses[houseNum];
       const planets = houseData.planets || [];
-      const cleanPlanets = planets.map(p => typeof p === "object" ? p.name : p)
-        .filter(p => p !== "Ascendant" && p !== "L");
+      const cleanPlanets = planets.map(p => {
+        if (!p) return null;
+        if (typeof p === "object") {
+          return p.planet || p.name;
+        }
+        return p;
+      }).filter(p => p && p !== "Ascendant" && p !== "L");
 
       if (cleanPlanets.length >= 2 && cleanPlanets.length <= 4) {
         detected.push({
@@ -152,24 +238,61 @@ const ConjunctionAnalysis = ({ houses }) => {
         </div>
       </div>
 
-      {conjunctions.map((conj, idx) => (
-        <section key={idx} className="space-y-6">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-xl shadow-md border border-white/10">✨</div>
-            <div>
-              <h4 className="text-lg font-black text-slate-700 uppercase tracking-tight leading-none">{conj.planets.join(" + ")}</h4>
-              <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">House {conj.house} Resonance</div>
+      {conjunctions.map((conj, idx) => {
+        const parsed = parseConjunctionDetail(conj.detail);
+        return (
+          <section key={idx} className="space-y-6">
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-slate-800 rounded-lg flex items-center justify-center text-xl shadow-md border border-white/10">✨</div>
+              <div>
+                <h4 className="text-lg font-black text-slate-700 uppercase tracking-tight leading-none">{conj.planets.join(" + ")}</h4>
+                <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">House {conj.house} Resonance</div>
+              </div>
             </div>
-          </div>
-          <div className="bg-white p-6 rounded-xl border border-indigo-100 shadow-sm relative overflow-hidden group/item">
-            <div className="absolute top-0 right-0 p-4 opacity-5 text-8xl font-black text-indigo-900">{conj.house}</div>
-            <BulletInterpretation
-              text={getTextFromDetail(conj.detail)}
-              colorClass="text-slate-700"
-            />
-          </div>
-        </section>
-      ))}
+            <div className="bg-white p-6 rounded-xl border border-indigo-100 shadow-sm relative overflow-hidden group/item space-y-6">
+              <div className="absolute top-0 right-0 p-4 opacity-5 text-8xl font-black text-indigo-900 pointer-events-none">{conj.house}</div>
+
+              {/* The Good Section */}
+              {parsed.good.length > 0 && (
+                <div className="space-y-3">
+                  <h5 className="text-sm font-black text-emerald-600 uppercase tracking-widest flex items-center gap-2">
+                    <span>🟢</span> The Good Analysis of Conjunction
+                  </h5>
+                  <ul className="space-y-2 pl-4">
+                    {parsed.good.map((item, idx) => (
+                      <li key={idx} className="text-base text-slate-700 leading-relaxed font-serif flex gap-2 items-start">
+                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
+                        <span>
+                          <span className="font-bold text-slate-900">{item.label}:</span> {item.text}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {/* The Bad Section */}
+              {parsed.bad.length > 0 && (
+                <div className="space-y-3 pt-4 border-t border-slate-100">
+                  <h5 className="text-sm font-black text-rose-600 uppercase tracking-widest flex items-center gap-2">
+                    <span>🔴</span> The Bad Analysis of Conjunction
+                  </h5>
+                  <ul className="space-y-2 pl-4">
+                    {parsed.bad.map((item, idx) => (
+                      <li key={idx} className="text-base text-slate-700 leading-relaxed font-serif flex gap-2 items-start">
+                        <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-rose-500 shrink-0"></span>
+                        <span>
+                          <span className="font-bold text-slate-900">{item.label}:</span> {item.text}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </section>
+        );
+      })}
     </div>
   );
 };
@@ -198,6 +321,75 @@ const getPlanetPositionsFromHouses = (houses) => {
   return positions;
 };
 
+const parseInterpretationString = (text) => {
+  if (!text) return { general: "", positive: "", negative: "", neutral: "" };
+  if (typeof text === "object") return text;
+
+  // Split into sentences
+  const sentences = text.match(/[^.!?]+[.!?]+(\s+|$)/g) || [text];
+
+  let general = [];
+  let positive = [];
+  let negative = [];
+  let neutral = [];
+
+  sentences.forEach(sentence => {
+    const s = sentence.trim();
+    if (!s) return;
+
+    const lower = s.toLowerCase();
+
+    if (
+      lower.includes("positive") ||
+      lower.includes("well-placed") ||
+      lower.includes("favorable") ||
+      lower.includes("gains") ||
+      lower.includes("blesses you") ||
+      lower.includes("benefit")
+    ) {
+      positive.push(s);
+    } else if (
+      lower.includes("afflicted") ||
+      lower.includes("negative") ||
+      lower.includes("unfavorable") ||
+      lower.includes("combust") ||
+      lower.includes("retrograde") ||
+      lower.includes("isolation") ||
+      lower.includes("depression") ||
+      lower.includes("discord") ||
+      lower.includes("harms") ||
+      lower.includes("losses") ||
+      lower.includes("challenges") ||
+      lower.includes("hurdles") ||
+      lower.includes("problems") ||
+      lower.includes("illness") ||
+      lower.includes("accidents") ||
+      lower.includes("disappointment") ||
+      lower.includes("anxiety") ||
+      lower.includes("fear") ||
+      lower.includes("struggle")
+    ) {
+      negative.push(s);
+    } else if (
+      lower.includes("neutral") ||
+      lower.includes("average") ||
+      lower.includes("moderate") ||
+      lower.includes("typical")
+    ) {
+      neutral.push(s);
+    } else {
+      general.push(s);
+    }
+  });
+
+  return {
+    general: general.join(" ") || text,
+    positive: positive.join(" ") || "Constructive and favorable alignment qualities manifest standard positive energy.",
+    negative: negative.join(" ") || "Afflictions or imbalances can trigger standard blockages and challenges.",
+    neutral: neutral.join(" ") || "Balanced placement qualities manifest steady, moderate influence."
+  };
+};
+
 const HouseEffectTable = ({ data, planetEffects, customPositions = null }) => {
   const positions = customPositions || data?.planet_positions || [];
   const interpMap = {
@@ -223,12 +415,17 @@ const HouseEffectTable = ({ data, planetEffects, customPositions = null }) => {
       </div>
       <div className="space-y-12">
         {positions.filter(p => interpMap[p.planet]).map((p) => {
-          const houseText = interpMap[p.planet]?.[p.house];
-          if (!houseText) return null;
-          const status = planetEffects[p.planet];
+          const houseData = interpMap[p.planet]?.[p.house];
+          if (!houseData) return null;
+          const status = planetEffects[p.planet] || "neutral";
 
+          const parsedData = typeof houseData === "object" ? houseData : parseInterpretationString(houseData);
+          const generalText = parsedData.general;
+          const statusText = parsedData[status];
 
           const statusColor = status === "positive" ? "bg-green-100 text-green-700" : status === "negative" ? "bg-red-100 text-red-700" : "bg-amber-100 text-amber-700";
+          const statusBoxBg = status === "positive" ? "bg-green-50/50 border-green-200 text-green-900" : status === "negative" ? "bg-red-50/50 border-red-200 text-red-900" : "bg-amber-50/50 border-amber-200 text-amber-900";
+
           return (
             <section key={p.planet} className="space-y-6">
               <div className="flex items-center gap-4">
@@ -241,16 +438,33 @@ const HouseEffectTable = ({ data, planetEffects, customPositions = null }) => {
                     <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">House {p.house} Analysis</div>
                   </div>
                   <span className={`text-[7px] px-2 py-1 rounded font-black uppercase tracking-widest ${statusColor} shadow-sm`}>
-                    {status || "Neutral"}
+                    {status}
                   </span>
                 </div>
               </div>
-              <div className="bg-white p-6 rounded-xl border border-indigo-100 shadow-sm relative overflow-hidden group/item">
+              <div className="bg-white p-6 rounded-xl border border-indigo-100 shadow-sm relative overflow-hidden group/item space-y-4">
                 <div className="absolute top-0 right-0 p-4 opacity-[0.03] text-8xl font-black text-indigo-900 pointer-events-none">{p.house}</div>
-                <BulletInterpretation
-                  text={houseText}
-                  colorClass="text-slate-700"
-                />
+
+                {generalText && (
+                  <div>
+                    <BulletInterpretation
+                      text={generalText}
+                      colorClass="text-slate-700"
+                    />
+                  </div>
+                )}
+
+                {statusText && (
+                  <div className={`p-4 rounded-lg border ${statusBoxBg} mt-3`}>
+                    <div className="text-[9px] font-black uppercase tracking-widest mb-1.5 opacity-75">
+                      {status} Manifestation Analysis
+                    </div>
+                    <BulletInterpretation
+                      text={statusText}
+                      colorClass={status === "positive" ? "text-green-800" : status === "negative" ? "text-red-800" : "text-amber-800"}
+                    />
+                  </div>
+                )}
               </div>
             </section>
           );
@@ -273,14 +487,29 @@ const GEMSTONES = {
 };
 
 export const SUN_HOUSE_INTERPRETATIONS = {
-  1: "Sun in 1st house gives you a bright personality and a brilliant mind. Considering the Sun is the actual soul significator, you feel it is your right to be on the throne and deserve the power and the top-spot. When Sun is in 1st house, you feel like it is must for you to be on the top spot and that you deserve to own it without making any efforts. In the professional space, you shall feel as if you are victorious and should be respected for it. You will feel that you can be successful as a self-employed individual and would rule your kingdom. You will know how to impress others and control their actions. You like to lead others and show them the best path for their journey. You may become a politician or hold a high position in the government.",
-  2: "Your Sun is placed in the 2nd house, you tend to flaunt your family history with pride. You have a lean physique, and your speech becomes authoritative and royal. You will be blessed with financial success and become fond of collecting gold and jewelry. A well-placed Sun will make you support your family. It helps you achieve your desired goals, so that you and your family flourish with prosperity and abundance. It will also give you a magnetic voice that influences the crowds, and make you fond of food and politics. However, if the Sun is afflicted, it could create disharmony in your marital life, and sour the relationship with children as well as the in-laws due to your ego.",
+  1: {
+    general: "Sun in 1st house gives you a bright personality and a brilliant mind. Considering the Sun is the actual soul significator, you feel it is your right to be on the throne and deserve the power and the top-spot. When Sun is in 1st house, you feel like it is must for you to be on the top spot and that you deserve to own it without making any efforts. In the professional space, you shall feel as if you are victorious and should be respected for it. You will feel that you can be successful as a self-employed individual and would rule your kingdom. You will know how to impress others and control their actions. You like to lead others and show them the best path for their journey. You may become a politician or hold a high position in the government.",
+    positive: "Positive Manifestation: High self-esteem, natural leadership capabilities, glowing charisma, strong vitality, and high moral values. You naturally command respect in public.",
+    negative: "Negative Manifestation: Promotes extreme ego, pride, arrogance, difficulty accepting criticism, and conflicts with superiors or partners due to a domineering nature.",
+    neutral: "Neutral Manifestation: Gives a stable sense of self, strong willpower, and steady efforts to gain authority and status."
+  },
+  2: {
+    general: "Your Sun is placed in the 2nd house, you tend to flaunt your family history with pride. You have a lean physique, and your speech becomes authoritative and royal. You will be blessed with financial success and become fond of collecting gold and jewelry. A well-placed Sun will make you support your family. It helps you achieve your desired goals, so that you and your family flourish with prosperity and abundance. It will also give you a magnetic voice that influences the crowds, and make you fond of food and politics.",
+    positive: "Positive Manifestation: Accumulation of ancestral wealth, high financial success, commanding and persuasive speech, and strong support for family welfare.",
+    negative: "Negative Manifestation: Arrogant speech, ego clashes within the family, potential losses in speculations, and strained relations with children or in-laws.",
+    neutral: "Neutral Manifestation: Steady income growth, typical family ties, and average involvement in financial/political spheres."
+  },
   3: "The Sun in the 3rd house makes you extremely courageous and empowered. Your ego lies in your communication, and you have a lot of physical and mental strength. This placement of the Sun makes you inquisitive, and gives you an inclination toward creative fields, such as becoming a writer, singer, a fitness coach, or a politician. A well-placed Sun makes you fond of travelling and the performing arts. It grants you wisdom and courage and will keep you kind and supportive toward your siblings. However, if the Sun is afflicted, it will make you distant from your siblings and could give you a loose character.",
   4: "The placement of the Sun in the 4th house gives you a lavish house with all kinds of comforts. Your mother is the one leading the family, and both your parents will be strict and disciplinary. Your early life could be tough, but you will achieve success after your mid-30s. A well-placed Sun makes you sensitive, gentle, and shy. It will bless you with a guiding light in the form of good mentors. You will be able to secure a high status in society and have a prosperous profession. However, if the Sun is afflicted, you may lose your motivation and strength. You could become oversensitive and face troubles with your boss, seniors, and authorities.",
   5: "When in the 5th house, the Sun tends to give favorable results, as the 5th house is its natural zodiac, that is, Leo. It will make you the center of attention in your school and college. Your main goal will be making your children leaders of the community. This placement makes you accomplished and successful at a very early age. A well-placed Sun makes you devoted to your family and children, and your family becomes your pride. It gives you courage and a keen interest in adventure activities. However, if the Sun is afflicted, you could become arrogant and annoying. You may become manipulative and overconfident and that could get you into trouble. Your children may also take shortcuts and cheat others.",
   6: "The Sun in the 6th house gives you the ability to win against your enemies and resolve conflicts. This position of the Sun can make you a successful lawyer, politician, doctor, or a businessman. A well-placed Sun gives you immense strength and a strong bond with your mother and siblings. It will make you a perfectionist and give you a desire to serve others. However, if the Sun is afflicted, it makes you vulnerable and spoils your relationships, especially your married life. It could also cause a drain on finances, and excessive debts.",
   7: "The 7th house placement of the Sun gives you the attitude of a king. It is hard for you to enter business partnerships, since you like to be the sole decision maker. You are likely to run into people who do not respect you, as the Sun becomes debilitated in the 7th zodiac. A well-placed Sun gives you a supportive life partner and a successful business. Your life partner will be wealthy and from a reputable family. You may secure a government job, and you are likely to become rich post marriage. However, if the Sun is afflicted, it could make you pessimistic about life and also make you rude and egoistic. You may face stiff competition in government jobs, and face differences in your married life.",
-  8: "The Sun in the 8th house gives you a natural power of making things popular. You will do very well in government jobs, as a surgeon, and in the financial sector. Your professional life will be more fruitful post the age of 30. The Sun also grants you fame and a magnetic personality. You will have a belief in astrology and other occult sciences. A well-placed Sun will give you wealth from property or marriage through inheritance. You will have a spiritual bent and will never face financial crises. However, if the Sun is afflicted, your love life will be hampered and it may cause sadness and pain. It can also push you toward underworld and illegal activities.",
+  8: {
+    general: "The Sun in the 8th house gives you a natural power of making things popular. You will do very well in government jobs, as a surgeon, and in the financial sector. Your professional life will be more fruitful post the age of 30. The Sun also grants you fame and a magnetic personality. You will have a belief in astrology and other occult sciences.",
+    positive: "Positive Manifestation: A well-placed Sun will give you wealth from property or marriage through inheritance. You will have a spiritual bent, strong interest in occult sciences, and will never face financial crises.",
+    negative: "Negative Manifestation: If afflicted, your love life will be hampered and it may cause sadness and pain. It can also push you toward underworld or illegal activities, and sudden ups and downs in life.",
+    neutral: "Neutral Manifestation: Average career gains after age 30, moderate interest in mystery or spiritual sciences, and stable joint assets."
+  },
   9: "The Sun in the 9th house elevates your ego level and also makes you highly religious. You will travel overseas and might settle there. You will be significantly influenced by your father and teachers. A well-placed Sun will make you fulfill your responsibilities with unconditional love. Your intellectual qualities will aid your success. You will have mass followers, and people will respect you for your wisdom. It will also grant you a greater share of ancestral properties. However, if the Sun is afflicted, it will affect your father's health and you may face serious financial losses.",
   10: "The Sun in the 10th house gives you immense willpower and determination. Presidents, politicians and CEO's often have the Sun in the 10th house. You will also have a supportive father who could help you professionally. This placement of the Sun gives you a bright career and you could also become a powerful politician. A well-placed Sun gives you leadership qualities and grants you fame through your work. You will generate a good income and could secure a government job. However, if the Sun is afflicted, it will hinder your professional growth and give you enormous anger, aggression, and ego.",
   11: "The Sun in the 11th house could affect your social life negatively. Your main focus in life will be to earn money and you may not have many friends; also, you may not be a good listener. However, a well-placed Sun in this house shows immense gains and highly influential contacts. You will win everyone's heart and will enjoy a long and healthy life. However, if the Sun is afflicted, it could affect your children's education and make them feel worthless. You may also be humiliated because of your children. You will make more enemies than friends, and will not be able to capitalize on the gains that are meant for you.",
@@ -288,18 +517,78 @@ export const SUN_HOUSE_INTERPRETATIONS = {
 };
 
 export const MARS_HOUSE_INTERPRETATIONS = {
-  1: "Mars in 1st house makes you highly energetic as well as aggressive. It puts you in leadership positions and gives you a lot of responsibilities. It gives you a strong physique with a reddish skin tone. This placement of Mars will make you action-oriented and give you excellent endurance and high stamina. It will help you think out of the box when it comes to strategizing. However, if Mars is afflicted, it will ignite jealousy, promote anger without any purpose, and trigger blood- and skin-related issues. A combust Mars will channelize your aggression inwards, creating frustration and stealing limelight from you.",
-  2: "Mars in 2nd house gives you a passion to accumulate wealth and possessions by hook or crook. This placement is not ideal for family harmony and could give you a harsh speech, which may disturb your relationships. A well-placed Mars will enhance your professional network and widen your business. It will also give you multiple sources of income. However, if Mars is afflicted, it will trigger anger on family members and create health issues related to indigestion or acidity. You could also face difficulty in conceiving. If Mars is combust, it can make you dishonest and could bring you humiliation.",
-  3: "Mars in 3rd house brings you immense energy to multitask and makes your communication filterless. It makes you courageous, but also gives you an aggressive nature and an impatient attitude. It could also disturb your relationship with your siblings. This Mars gives you the capacity to think out of the box, which will benefit you professionally. It will also give you a love for traveling and adventure. However, if Mars is afflicted, you might get caught in controversies and become too adventurous, which may increase the chances of risks and accidents. If Mars is combust, it aggravates your inner anger and resentment. It will also give you inappropriate communication that may create problems from time to time.",
-  4: "Mars in 4th house makes you creative enthusiastic and charming. It will give you a short temper and strain your relationship with your family, especially your mother. A well-placed Mars makes you hardworking and strong and will help you acquire real estate through inheritance or hard work. If Mars is afflicted, it will not let you be content and satisfied even after being successful. It may also bring breaks and delays in your education and career. If Mars is combust, you will be confused about what is good for you and you'll have to struggle a lot for a comfortable life.",
-  5: "Mars in 5th house will make you manipulative and wealthy. It will enhance your creativity and hidden talents, and may give you multiple love affairs. It will give you conflicts and disagreements in relationships, which could be why your relationships could be short lived. A well-placed Mars will gear you toward success and will help you discover your hidden talents. It will also give you a keen interest in sports and a healthy body with good digestion. However, if Mars is afflicted, it may cause miscarriages and create problems with children. If Mars is combust, your short temper and authoritative nature could hamper your success.",
-  6: "Mars in 6th house makes you highly competitive at your workplace. You will always compete with your colleagues and want to win against them. It may also give you envy, jealousy, and arrogance. A well-placed Mars will help you become a successful lawyer or a remarkable politician and will make you invincible against your opponents. If Mars is afflicted, it will cause blood-related health issues, and make you prone to accidents. It will destroy your immune system and may cause a financial crisis because of too many debts.",
-  7: "Mars in 7th house directly impacts the longevity of your spouse and the quality of your married life. You will be able to run a successful business if you are the sole owner, but may not do well in partnership because of your dominating nature. A well-placed Mars can make you a successful lawyer or a government leader. You will respect your partner and stand like a rock to support each other. It will also bring immense passion and romance in your relationship. If Mars is afflicted, you will dominate your partner and always have high expectations. It will hamper your fertility and if associated with eunuch planets, it could lead to a queer orientation. A combust Mars may make you physically unable to fulfill your partner's sexual desires.",
-  8: "Mars in 8th house will make you highly intuitive and you will easily sense other people's motives. It will make you passionate and ambitious to attain huge success. A well-placed Mars will spark your interest in research and deep study of any subject. You can become a good healer, an excellent spy, or a responsible medical representative. If Mars is afflicted, it can cause inflammation in your body and related diseases. It will also make you prone to sudden accidents. It adversely affects the longevity of your marriage and gives you a sour relationship with your in-laws. If your Mars is combust, you will not have the energy to fulfill your passionate desires and you will end up projecting jealousy and envy over others’ growth.",
-  9: "Mars in 9th house will motivate you to break social and religious rules. It expands your imagination power and gives you an opportunity to travel abroad and earn in foreign currency. If Mars is well placed, it can make you a renowned writer or an energetic salesperson, since you have a magnetism to attract people through your work. You could also do well in real estate and could acquire a lot of land and property for yourself. However, if Mars is afflicted, you will become rigid about your religious beliefs and carry grudges if others don't agree with you. It will also adversely affect your father's health. If Mars is combust, it will make you look lethargic and you will earn money through fraud and deception.",
-  10: "Mars in 10th house will give you a dynamic personality and make you a leader in your profession. You will act like a courageous warrior who can overcome all obstacles. A very pleased Mars will make you highly ambitious and driven toward a luxurious life. You will be good at heart, but look tough outside. You will be able to finish your job very fast and effectively. If Mars is afflicted, it will create struggles in your work life and give rise to professional rivalries. You will also face anxiety, and your arrogant nature will not allow others to be sympathetic toward you. If Mars is combust, it will make you selfish and cunning and prone to taking shortcuts.",
-  11: "Mars in 11th house gives you the brilliance to make gains out of your desires. It will facilitate a big network and you will spend a lot of time in goal setting and give your best to achieve these. If Mars is well placed, it can make you a successful political leader with a huge following. It will make you ambitious, but also content with your life. Your friend circle will be reliable and supportive. However, if Mars is afflicted, it will make you seek gains from anything and everything in order to support your desires. You will become a spendthrift, and your imagination and ideas will become overwhelming.",
-  12: "Mars in 12th house will give you a secretive nature, and you will try to suppress your emotions. You may constantly travel abroad for work where your energy will be more productive. A well-placed Mars will make you productive and you will be able to achieve success in your career as well as in your spiritual goals. If Mars is afflicted, you will waste your energy in job hopping and most of the events in your life, including your marriage, will be delayed—because of which you may feel frustrated from time to time. It may also cause accidents. If Mars is combust, it will give additional struggles and obstacles, and you will not be committed toward your partner.",
+  1: {
+    general: "Mars in 1st house makes you highly energetic as well as aggressive. It puts you in leadership positions and gives you a lot of responsibilities. It gives you a strong physique with a reddish skin tone.",
+    positive: "Positive Manifestation: Makes you action-oriented, providing excellent endurance, high stamina, and strategic out-of-the-box thinking.",
+    negative: "Negative Manifestation: If afflicted, it ignites jealousy, promotes anger without any purpose, triggers blood- and skin-related issues, and can channelize aggression inwards creating frustration if combust.",
+    neutral: "Neutral Manifestation: Gives average vitality, moderate assertiveness, and standard leadership drive."
+  },
+  2: {
+    general: "Mars in 2nd house gives you a passion to accumulate wealth and possessions by hook or crook. This placement is not ideal for family harmony and could give you a harsh speech, which may disturb your relationships.",
+    positive: "Positive Manifestation: Enhances your professional network, widens your business, and provides multiple sources of income.",
+    negative: "Negative Manifestation: Strains family harmony, gives harsh speech, triggers anger towards family, and can cause indigestion, acidity, or difficulty conceiving. If combust, it may lead to dishonesty and public humiliation.",
+    neutral: "Neutral Manifestation: Average wealth accumulation, moderate speech delivery, and typical family dynamics."
+  },
+  3: {
+    general: "Mars in 3rd house brings you immense energy to multitask and makes your communication filterless. It makes you courageous, but also gives you an aggressive nature and an impatient attitude. It could also disturb your relationship with your siblings.",
+    positive: "Positive Manifestation: Grants courage, capacity to think out of the box (benefiting you professionally), and a love for traveling and adventure.",
+    negative: "Negative Manifestation: Promotes an aggressive nature and impatient attitude, distorts relationship with siblings, increases risk of accidents/controversies, and creates inner anger/resentment if combust.",
+    neutral: "Neutral Manifestation: Balanced sibling relations, moderate communication style, and standard multitasking habits."
+  },
+  4: {
+    general: "Mars in 4th house makes you creative, enthusiastic, and charming. It will give you a short temper and strain your relationship with your family, especially your mother.",
+    positive: "Positive Manifestation: Makes you hardworking and strong, helping you acquire real estate through inheritance or hard work.",
+    negative: "Negative Manifestation: Gives a short temper, strains relationships with family (especially mother), deprives of satisfaction, delays education/career, and creates struggles for a comfortable life if combust.",
+    neutral: "Neutral Manifestation: Standard domestic environment, average interest in real estate, and typical emotional expression."
+  },
+  5: {
+    general: "Mars in 5th house will make you manipulative and wealthy. It will enhance your creativity and hidden talents, and may give you multiple love affairs. It will give you conflicts and disagreements in relationships, which could be why your relationships could be short lived.",
+    positive: "Positive Manifestation: Gears you toward success, helps discover hidden talents, sparks interest in sports, and gives a healthy body with good digestion.",
+    negative: "Negative Manifestation: Causes conflicts/disagreements in relationships, makes love life short-lived, causes miscarriages, creates issues with children, and hampers success due to short temper or authoritative nature.",
+    neutral: "Neutral Manifestation: Average creative output, typical relationship stability, and normal digestion."
+  },
+  6: {
+    general: "Mars in 6th house makes you highly competitive at your workplace. You will always compete with your colleagues and want to win against them. It may also give you envy, jealousy, and arrogance.",
+    positive: "Positive Manifestation: Helps you become a successful lawyer, remarkable politician, and invincible against opponents.",
+    negative: "Negative Manifestation: Triggers envy, jealousy, arrogance, blood-related health issues, vulnerability to accidents, weakened immune system, and high debts leading to financial crises.",
+    neutral: "Neutral Manifestation: Standard workplace competition, average immunity, and manageable financial status."
+  },
+  7: {
+    general: "Mars in 7th house directly impacts the longevity of your spouse and the quality of your married life. You will be able to run a successful business if you are the sole owner, but may not do well in partnership because of your dominating nature.",
+    positive: "Positive Manifestation: Can make you a successful lawyer or government leader, bringing immense passion, romance, mutual support, and respect in marriage.",
+    negative: "Negative Manifestation: Leads to dominating behavior, high expectations, reduced fertility (or queer orientation if associated with eunuch planets), marital differences, and physical inability to fulfill desires if combust.",
+    neutral: "Neutral Manifestation: Standard marriage longevity, moderate business partnerships, and average expectations from spouse."
+  },
+  8: {
+    general: "Mars in 8th house will make you highly intuitive and you will easily sense other people's motives. It will make you passionate and ambitious to attain huge success.",
+    positive: "Positive Manifestation: Sparks deep interest in research and occult sciences. You can excel as a healer, spy, or medical representative.",
+    negative: "Negative Manifestation: Causes body inflammation/diseases, sudden accidents, poor marital longevity, sour relations with in-laws, and projects jealousy due to low energy if combust.",
+    neutral: "Neutral Manifestation: Average joint resources, moderate intuition levels, and standard health conditions."
+  },
+  9: {
+    general: "Mars in 9th house will motivate you to break social and religious rules. It expands your imagination power and gives you an opportunity to travel abroad and earn in foreign currency.",
+    positive: "Positive Manifestation: Can make you a renowned writer or energetic salesperson. Helps you acquire substantial land and real estate.",
+    negative: "Negative Manifestation: Makes you rigid about religious beliefs, prompts grudges, adversely affects father's health, and promotes earning through fraud/deception if combust.",
+    neutral: "Neutral Manifestation: Normal religious beliefs, average travel opportunities, and typical career stability."
+  },
+  10: {
+    general: "Mars in 10th house will give you a dynamic personality and make you a leader in your profession. You will act like a courageous warrior who can overcome all obstacles.",
+    positive: "Positive Manifestation: Highly ambitious, driven toward luxury, quick and effective job completion, and powerful leadership qualities.",
+    negative: "Negative Manifestation: Creates workplace struggles, professional rivalries, high anxiety, arrogance, and prompts taking shortcuts if combust.",
+    neutral: "Neutral Manifestation: Average career growth, moderate professional authority, and standard work pace."
+  },
+  11: {
+    general: "Mars in 11th house gives you the brilliance to make gains out of your desires. It will facilitate a big network and you will spend a lot of time in goal setting and give your best to achieve these.",
+    positive: "Positive Manifestation: Can make you a successful political leader with a huge following. Promotes a reliable, supportive friend circle and contentment.",
+    negative: "Negative Manifestation: Makes you seek gains from anything, turning you into a spendthrift with overwhelming imagination and ideas.",
+    neutral: "Neutral Manifestation: Average gains, typical social circle size, and standard goal-setting activities."
+  },
+  12: {
+    general: "Mars in 12th house will give you a secretive nature, and you will try to suppress your emotions. You may constantly travel abroad for work where your energy will be more productive.",
+    positive: "Positive Manifestation: Enables you to achieve success in foreign careers as well as in spiritual goals.",
+    negative: "Negative Manifestation: Wastes energy in job hopping, causes delays in marriage, triggers accidents, and prompts a lack of commitment to your partner if combust.",
+    neutral: "Neutral Manifestation: Moderate spiritual inclination, average travel frequency, and typical emotional balance."
+  }
 };
 
 export const MERCURY_HOUSE_INTERPRETATIONS = {
@@ -329,82 +618,81 @@ export const VENUS_HOUSE_INTERPRETATIONS = {
   9: "Venus in the ninth house inclines you toward spiritual learning and makes you philosophical. Your life is filled with joy and pleasures, and you can consider yourself very lucky. A well-placed Venus makes you excel in studies and grants you knowledge about spirituality, religion, and history. You can become a successful teacher and inspire others through your achievements. However, if Venus is afflicted, your relationships will become long distance and there will be misunderstandings between you and your spouse. You will become overwhelmed while trying to balance your career as well as your domestic life.",
   10: "Venus in tenth house represents authority, passion, compassion, and public image. You can become a successful social worker or a philanthropist. You will opt for a career that enhances your creativity, and you may discover your spouse in the workplace or professional area. A well-placed Venus will give you influential connections and open doors to elevate you and help others with love and compassion. However, if Venus is afflicted, it will make you self-centered and greedy. You will become overloaded with debts, and you will crave for limelight and attention but will not get it.",
   11: "Venus in the eleventh house will give you opportunities to explore the world and you will use these opportunities to make money. Socially, you have a very soothing and jovial personality, which is why you attract many friends. People find comfort while having conversations with you and you give them great advice. You will become financially stronger after you get married and will be more inclined toward business rather than being employed in a 9 to 5. If Venus is well placed, then your personality will become more attractive, and you will be able to connect and communicate easily with anyone. However, if Venus is afflicted, it will make you highly materialistic and possessive. Your friends will also be self-centered and not loyal to you.",
-  12: "Venus in twelfth house will grant you imaginative powers and can help you become a renowned artist. You will have high expectations from your spouse and never be satisfied in one relationship. This placement of Venus gives you utmost bed pleasures and happiness through intimacy from a very early age. A well-placed Venus will give you an attractive personality and make your life pleasurable. You will also live a long life with your spouse. However, if Venus is afflicted, you will be dissatisfied with your spouse and may not be loyal to them. You will also be a spendthrift and take loans to fulfill your desires.",
+  12: "Venus in twelfth house will grant you imaginative powers and can help you become a renowned artist. You will have high expectations from your spouse and never be satisfied in one relationship. This placement of Venus gives you utmost bed pleasures and happiness through intimacy from a very early age. A well-placed Venus will give you an attractive personality and make your life pleasurable. You will also live a long life with your spouse. However, if Venus is afflicted, you will be dissatisfied with your spouse and may not be loyal to them. You will also be a spendthrift and take loans to fulfill yourexport",
 };
 
 export const MOON_HOUSE_INTERPRETATIONS = {
-  1: "प्रथम भाव में स्थित चंद्रमा आपको एक राजसी व्यक्तित्व और आकर्षक आभा प्रदान करता है जो लोगों को आकर्षित करती है। आपका सामाजिक दायरा व्यापक होगा और आपमें स्वाभाविक कलात्मक प्रतिभा के साथ-साथ भावनात्मक स्वास्थ्य भी होगा। आपका जीवन आपकी माता के इर्द-गिर्द घूमता है और आप स्वभाव से ही स्नेहशील और पालन-पोषण करने वाले व्यक्ति हैं। आप भावनात्मक रूप से बुद्धिमान हैं और धन एवं सुख-सुविधाओं का आनंद लेते हैं। हालांकि, नकारात्मक स्थिति में स्थित चंद्रमा आपको अलगाव, अवसाद और कुछ मानसिक स्वास्थ्य समस्याओं का कारण बन सकता है। यदि चंद्रमा अस्त हो, तो यह भ्रम, बार-बार मनोदशा में परिवर्तन और भावनात्मक रूप से थका हुआ महसूस करने का कारण बन सकता है। इसका प्रभाव आपकी माता के खराब स्वास्थ्य के रूप में भी दिख सकता है। प्रसिद्ध गायिका मैडोना और अभिनेता राज कपूर प्रथम भाव में स्थित चंद्रमा के प्रभाव में जन्मे हैं।",
-  2: "दूसरे भाव में चंद्रमा होने से आपको आर्थिक स्वतंत्रता, भावनात्मक जुड़ाव और पारिवारिक मूल्यों एवं परंपराओं के प्रति झुकाव प्राप्त होता है, जो अक्सर आपको पारिवारिक विरासत को आगे बढ़ाने के लिए प्रेरित करता है। यह आपको कलात्मक व्यक्तित्व और रहस्यवाद में रुचि के साथ-साथ प्रबल मानसिक क्षमता भी प्रदान करता है। आपके पास पर्याप्त बचत है और आप एक चतुर निवेशक हैं। आपको ठंडे पेय पसंद हैं और आप स्वभाव से खाने-पीने के शौकीन हैं। आपका अपने परिवार के साथ गहरा भावनात्मक बंधन है। आपका जीवनसाथी कुछ बातों को गुप्त रख सकता है। हालांकि, यदि आपकी जन्म कुंडली में चंद्रमा पीड़ित है, तो आपकी संपत्ति में उतार-चढ़ाव आ सकता है और आप भौतिकवाद की ओर आकर्षित हो सकते हैं, साथ ही भावनात्मक अशांति और वैवाहिक जीवन में परेशानी का सामना कर सकते हैं। यदि चंद्रमा अस्त है, तो इससे आर्थिक असुरक्षा, धन संकट और वैवाहिक समस्याएं उत्पन्न हो सकती हैं। प्रसिद्ध व्यवसायी मुकेश अंबानी और रैपर जे-जेड द्वितीय भाव में स्थित चंद्रमा के प्रभाव में पैदा हुए हैं।",
-  3: "जब चंद्रमा तीसरे भाव में स्थित होता है, तो यह आमतौर पर आपको सक्रिय और जिज्ञासु मन, यात्रा की प्रबल इच्छा और पड़ोसियों और भाई-बैनों के साथ सौहार्दपूर्ण संबंध प्रदान करता है। आप अक्सर आय के कई स्रोतों का आनंद लेते हैं और लेखन, संचार और विपणन कौशल में निपुण होते हैं। कुंडली में अनुकूल स्थिति वाला या सकारात्मक चंद्रमा आपको भाग्यशाली और प्रभावशाली बनाता है, और आपको आध्यात्मिक गुरु या योगी बनने की क्षमता प्रदान करता है। हालांकि, नकारात्मक चंद्रमा आपको बेचैनी, ध्यान भटकने, बार-बार नौकरी बदलने, आर्थिक अस्थिरता और वैवाहिक समस्याओं का सामना करने के लिए प्रेरित करता है। यदि चंद्रमा अस्त हो, तो यह आपको आलसी बना सकता है, आपके मन में नकारात्मक सोच पैदा कर सकता है और आपको विश्वास संबंधी समस्याएं हो सकती हैं। प्रसिद्ध व्यवसायी एलोन मस्क और अभिनेता अक्षय कुमार तीसरे भाव में स्थित चंद्रमा के प्रभाव में पैदा हुए हैं।",
-  4: "चौथे भाव में स्थित चंद्रमा आपको हर तरह की विलासिता, अचल संपत्ति और एक घनिष्ठ पारिवारिक बंधन प्रदान करेगा। आप एक सकारात्मक व्यक्तित्व वाले व्यक्ति होंगे, जिनमें मातृत्व की प्रबल भावना और स्नेहपूर्ण स्वभाव होगा। आपका रूप-रंग और आदतें आपकी माता से मिलती-जुलती होंगी। सकारात्मक स्थिति में स्थित चंद्रमा आपको दूसरों की सेवा से संबंधित करियर दिलाएगा। आपका परिवार आपकी पहली प्राथमिकता होगा और आप दान-पुण्य करने के साथ-साथ अपनी संपत्ति का आनंद भी उठाएंगे। हालांकि, पीड़ित चंद्रमा आपको भावनात्मक रूप से अशांत, असंतुष्ट और माता के प्रेम से वंचित कर देगा। यदि चंद्रमा अस्त हो, तो यह आपके जीवन को संघर्षों से भर सकता है और आपको ननिहाल पक्ष से विरासत प्राप्त नहीं होगी। प्रसिद्ध राजनेता डोनाल्ड ट्रम्प और फिल्म निर्माता सिद्धार्थ रॉय कपूर चौथे भाव में स्थित चंद्रमा के प्रभाव में पैदा हुए हैं।",
-  5: "जब चंद्रमा पंचम भाव में स्थित होता है, तो यह आपको अत्यधिक रचनात्मक और कुशल वक्ता बनाता है। आप लोगों को अपनी ओर आकर्षित करने में सक्षम होंगे और राजनीति में आपकी गहरी रुचि होगी। आप अपने बच्चों के साथ गहरा भावनात्मक बंधन साझा करेंगे और रिश्तों में वफादार रहेंगे। अनुकूल स्थिति में स्थित चंद्रमा आपको साहसी, नेक और वफादार बनाएगा। आपकी आध्यात्मिक रुचियां गहरी होंगी और आप धन-संपत्ति का आनंद लेंगे। हालांकि, प्रतिकूल स्थिति में स्थित चंद्रमा आपको पढ़ाई से विचलित करेगा और आपको कार्यस्थल पर कलह, चिंता, स्वास्थ्य संबंधी समस्याएं और अनावश्यक खर्चों का सामना करना पड़ेगा। यदि चंद्रमा अस्त हो, तो आपको अपने बच्चों और प्रेम जीवन में असामंजस्य का सामना करना पड़ेगा। प्रसिद्ध उद्योगपति जेआरडी टाटा और फिल्म निर्देशक स्टीवन स्पीलबर्ग पांचवें भाव में स्थित चंद्रमा के प्रभाव में जन्मे हैं।",
-  6: "छठे भाव में चंद्रमा की स्थिति वकीलों और पुलिस अधिकारियों के लिए बहुत अच्छी होती है, क्योंकि इससे आपको अनेक शत्रु और उनसे निपटने की क्षमता मिलती है। आप चिकित्सा और स्वास्थ्य सेवाओं में भी अच्छा कर सकते हैं, और जानवरों के प्रति आपका स्नेह अत्यंत प्रबल होगा। यह आपको अपने खान-पान के प्रति सजग बनाएगा और एक सफल व्यवसायी के गुण प्रदान करेगा। अनुकूल स्थिति में स्थित चंद्रमा आपको मददगार स्वभाव और स्वस्थ जीवनशैली प्रदान करता है। यह आपको सहज ज्ञान वाला और कर्मठ भी बनाता है। हालांकि, प्रतिकूल स्थिति में स्थित चंद्रमा आपको छोटी-मोटी स्वास्थ्य समस्याओं के प्रति सजग बना देगा, और आप भ्रमित और असुरक्षित महसूस करेंगे। यदि आपका चंद्रमा अस्त है, तो आप अवसादग्रस्त और एकाकी महसूस करेंगे, और आपको अपने जीवनसाथी पर भरोसा करने में कठिनाई होगी। मशहूर अभिनेता शाहरुख खान और ऐश्वर्या राय बच्चन छठे भाव में स्थित चंद्रमा के प्रभाव में पैदा हुए हैं।",
-  7: "जब चंद्रमा सातवें भाव में स्थित होता है, तो आपका जीवनसाथी बिना शर्त आपका साथ देता है। इससे आपके भाव संतुलित रहते हैं और रिश्ते सामंजस्यपूर्ण होते हैं। आप अपने व्यवसाय से धन और प्रसिद्धि अर्जित करेंगे। आपके भाव संतुलित रहते हैं और आपको एक सुंदर जीवनसाथी मिलता है। अनुकूल स्थिति में स्थित चंद्रमा आपको हर प्रकार का सुख, सफल व्यवसाय और सुखमय वैवाहिक जीवन प्रदान करता है। हालांकि, यदि चंद्रमा प्रतिकूल स्थिति में हो, तो यह वैवाहिक और व्यावसायिक दोनों ही क्षेत्रों में घुटन और असामंजस्य पैदा करता है। साथ ही, विदेश में बसना भी मुश्किल हो जाता है। यदि चंद्रमा अस्त हो, तो आप अपने वैवाहिक जीवन से असंतुष्ट और परेशान रहेंगे। यह आपकी आर्थिक वृद्धि में भी बाधा उत्पन्न करेगा। प्रसिद्ध पॉप स्टार माइकल जैक्सन और प्रसिद्ध एथलीट पीटी उषा का जन्म सातवें भाव में चंद्रमा के प्रभाव में हुआ है।",
-  8: "आठवें भाव में चंद्रमा होने से आपको गुप्त विद्याओं में गहरी रुचि होगी। आप एक सफल ज्योतिषी या चिकित्सक बन सकते हैं। यह आपको पालन-पोषण का गुण और अनिश्चित भाग्य प्रदान करता है। आप समय-समय पर भावनात्मक उथल-पुथल से गुजरेंगे, जो आपको परिपक्व और संतुलित बनाएगा। अनुकूल स्थिति में स्थित चंद्रमा आपको शांति और उपलब्धियां प्रदान करता है। यह आपको प्रभावशाली संचार कौशल और यात्रा की इच्छा प्रदान करेगा। हालांकि, यदि चंद्रमा प्रतिकूल स्थिति में है, तो आपको ससुराल वालों के साथ कलह और शारीरिक क्षति का निरंतर भय हो सकता है। आप बार-बार मनोदशा में बदलाव, यौन इच्छा की कमी और मोटापे से ग्रस्त हो सकते हैं। यदि आपका चंद्रमा अस्त है, तो यह दीर्घकालिक बीमारियों और रिश्तों में कई समस्याओं का कारण बन सकता है। यह आपको जल भय भी प्रदान करता है। प्रसिद्ध भारतीय आध्यात्मिक गुरु सद्गुरु और ओशो आठवें भाव में स्थित चंद्रमा के प्रभाव में जन्मे हैं।",
-  9: "नौवें भाव में स्थित चंद्रमा आपको नाम, यश, धन और पहचान दिलाता है। यह आपको मानसिक शक्तियां प्रदान करता है और सफलता एवं सौभाग्य लाता है। यह दर्शन और धर्म में आपकी रुचि जगाता है। चंद्रमा की यह स्थिति विदेश यात्राओं और बसने की संभावनाओं को बढ़ाती है। अनुकूल स्थिति में स्थित चंद्रमा आपको संतुष्ट और प्रसन्न रखता है तथा प्रबुद्ध गुरुओं के मार्गदर्शन से आपको ईश्वर से जुड़ने में सहायता करता है। यह आपको रचनात्मक बनने और लीक से हटकर सोचने में भी मदद करता है। यदि आपका चंद्रमा पीड़ित है, तो आप अपने परिवार की धार्मिक मान्यताओं के विरुद्ध जा सकते हैं और आपका वैवाहिक जीवन भी अस्त-व्यस्त हो सकता है। आप बिना सोचे-समझे अत्यधिक खर्च करने की प्रवृत्ति रखते हैं, जो आपको आर्थिक संकट की ओर धकेल सकता है। अस्त चंद्रमा आपको अंधविश्वासों से ग्रसित बना सकता है और नकली गुरु आपका अनुचित लाभ उठा सकते हैं। प्रसिद्ध भारतीय अभिनेता अमिताभ बच्चन और राजनीतिज्ञ अमित शाह का जन्म नौवें भाव में स्थित चंद्रमा के प्रभाव में हुआ है।",
-  10: "जब चंद्रमा दसवें भाव में स्थित होता है, तो यह आपको अधिकारपूर्ण लेकिन दयालु और उदार बनाता है। आप अपनी समस्याओं को हल करने के लिए हिंसा के बजाय कूटनीति का चुनाव करते हैं। यह सफल सरकारी नेताओं के लिए अनुकूल स्थिति है। आपकी माता अनुशासनप्रिय होंगी, इसलिए आप अपने पिता की ओर आकर्षित होंगे। आप करियर उन्मुख होने के साथ-साथ पारिवारिक व्यक्ति भी होंगे। अच्छी स्थिति में स्थित चंद्रमा आपको आकर्षक व्यक्तित्व प्रदान करेगा। आपमें नेतृत्व के गुण होंगे और आपकी सहज बुद्धि प्रबल होगी। हालांकि, यदि चंद्रमा पीड़ित है, तो यह आपको सफलता और प्रसिद्धि के प्रति जुनूनी बना देता है, और आपके व्यक्तिगत संबंध पीछे छूट जाते हैं। आपका आत्मविश्वास कम होगा और आप हमेशा चिंतित और प्रतिस्पर्धी बने रहेंगे। यदि चंद्रमा अस्त है, तो आप कम आत्मविश्वास के साथ बार-बार नौकरी बदलते रहेंगे और सामाजिक मानदंडों को चुनौती देने का प्रयास करेंगे। प्रसिद्ध अमेरिकी राजनीतिज्ञ हिलेरी क्लिंटन और व्यवसायी बिल गेट्स का जन्म दसवें भाव में स्थित चंद्�रमा के प्रभाव में हुआ है।",
+  1: "Moon in the 1st house gives you a royal personality and an attractive aura that draws people. Your social circle will be wide and you have natural artistic talent along with emotional stability. Your life revolves around your mother, and you are affectionate and nurturing by nature. You are emotionally intelligent and enjoy wealth and comforts. However, a negative Moon can cause isolation, depression, and mental health issues. A combust Moon leads to confusion, mood swings, and emotional exhaustion, and may indicate poor health for your mother. Madonna and Raj Kapoor were born with Moon in the 1st house.",
+  2: "Moon in the 2nd house brings financial independence, emotional attachment, and a strong inclination toward family values and traditions, often driving you to carry forward your family lineage. It gives you an artistic personality, interest in mysticism, and strong intuitive ability. You have good savings and are a clever investor. You like cold drinks and are a foodie. You share a deep emotional bond with your family. Your spouse may keep some things secret. However, an afflicted Moon can cause financial instability, materialism, emotional turmoil, and marital problems. A combust Moon leads to financial insecurity and wealth crisis. Mukesh Ambani and Jay-Z were born with Moon in the 2nd house.",
+  3: "Moon in the 3rd house generally gives you an active and curious mind, a strong desire to travel, and harmonious relations with neighbors and siblings. You often enjoy multiple sources of income and excel in writing, communication, and marketing skills. A well-placed Moon makes you fortunate and influential, giving you the potential to become a spiritual guru or yogi. However, a negative Moon can lead to restlessness, distraction, frequent job changes, financial instability, and marital issues. A combust Moon can make you lazy, create negative thinking, and lead to trust issues. Elon Musk and Akshay Kumar were born with Moon in the 3rd house.",
+  4: "Moon in the 4th house gives you all kinds of luxury, real estate, and close family bonds. You will have a positive personality with a strong sense of motherly care and affection. Your appearance and habits will resemble your mother's. A positive Moon guides you toward careers related to serving others. Your family is your first priority, and you enjoy charity and wealth. However, an afflicted Moon makes you emotionally turbulent, dissatisfied, and deprived of mother's love. A combust Moon fills your life with struggles and deprives you of maternal inheritance. Donald Trump and Siddharth Roy Kapur were born with Moon in the 4th house.",
+  5: "Moon in the 5th house makes you highly creative and an eloquent speaker. You attract people easily and have a deep interest in politics. You share a strong emotional bond with your children and remain loyal in relationships. A favorable Moon makes you courageous, noble, and loyal. You have deep spiritual interests and enjoy wealth. However, an unfavorable Moon distracts you from studies, causing workplace conflicts, anxiety, health issues, and unnecessary expenses. A combust Moon brings disharmony in child-related matters and love life. JRD Tata and Steven Spielberg were born with Moon in the 5th house.",
+  6: "Moon in the 6th house is highly beneficial for lawyers and police officers as it gives you many enemies and the capacity to deal with them. You do well in medical and health services, and have a strong affection for animals. It makes you conscious of your diet and grants business acumen. A well-placed Moon gives a helpful nature, healthy lifestyle, and intuitive, hardworking character. However, an unfavorable Moon makes you over-sensitive about minor health issues, causing confusion and insecurity. A combust Moon makes you feel depressed and lonely, leading to trust issues with your spouse. Shah Rukh Khan and Aishwarya Rai Bachchan were born with Moon in the 6th house.",
+  7: "Moon in the 7th house ensures unconditional support from your spouse, balancing your emotions and creating harmonious relationships. You earn wealth and fame from business, and get a beautiful spouse. A positive Moon grants all kinds of pleasures, a successful business, and a happy married life. However, an unfavorable Moon causes suffocating relationships and disharmony in business and marriage, making it hard to settle abroad. A combust Moon leads to dissatisfaction in marriage and hinders financial growth. Michael Jackson and PT Usha were born with Moon in the 7th house.",
+  8: "Moon in the 8th house gives a deep interest in occult sciences, making you a successful astrologer or healer. It provides a nurturing nature but an uncertain fortune. Emotional ups and downs make you mature and balanced. A positive Moon brings peace, achievements, good communication, and travel opportunities. However, an unfavorable Moon causes discord with in-laws and a fear of physical harm, mood swings, low libido, and obesity. A combust Moon causes chronic diseases, relationship issues, and fear of water. Sadhguru and Osho were born with Moon in the 8th house.",
+  9: "Moon in the 9th house brings name, fame, wealth, and recognition, granting mental strength and good fortune. It sparks interest in philosophy and religion, raising chances of foreign travel and settlement. A positive Moon keeps you content and connects you to spiritual mentors. It helps you think creatively. An afflicted Moon causes conflict with family traditions and marital instability. Unplanned expenses can push you into financial crisis. A combust Moon can make you superstitious, exposing you to exploitation by fake gurus. Amitabh Bachchan and Amit Shah were born with Moon in the 9th house.",
+  10: "Moon in the 10th house makes you authoritative yet compassionate and generous. You choose diplomacy over violence. It is favorable for government leaders. A strict mother makes you closer to your father. You are both career-oriented and family-oriented. A well-placed Moon gives an attractive personality, leadership qualities, and strong intuition. An afflicted Moon makes you obsessed with success, neglecting personal relationships, causing low self-esteem and anxiety. A combust Moon leads to job changes and challenges to social norms. Hillary Clinton and Bill Gates were born with Moon in the 10th house.",
 };
 
-
 export const JUPITER_HOUSE_INTERPRETATIONS = {
-  1: "स्वभाव आपको समाज में सम्मान और लोकप्रियता दिलाता है और लोग आपके अच्छे कर्मों, ईमानदारी और निस्वार्थ व्यवहार की प्रशंसा करते हैं। कुंडली में अच्छी स्थिति में स्थित बृहस्पति आपको भीड़ से अलग बनाता है और आपको गहन मानसिक शक्ति, आत्मविश्वास, करुणा और आध्यात्मिक झुकाव प्रदान करता है। हालांकि, यदि आपकी कुंडली में बृहस्पति पीड़ित है, तो आप अनजाने में दूसरों को दुख पहुंचा सकते हैं या अत्यधिक मददगार बन सकते हैं। अस्त बृहस्पति भाग्य की कमी ला सकता है और ज्ञान प्राप्त करना चुनौतीपूर्ण हो सकता है। प्रसिद्ध भारतीय क्रिकेटर एमएस धोनी और अमेरिकी राष्ट्रपति बराक ओबामा प्रथम भाव में स्थित बृहस्पति के प्रभाव में पैदा हुए थे।",
-  2: "द्वितीय भाव में बृहस्पति आपको प्रभावशाली व्यक्तित्व और आकर्षक वाणी प्रदान करता है। यह स्थिति आपको समृद्ध बनाती है और नेतृत्व की भूमिकाओं के लिए उपयुक्त बनाती है। आपके शत्रु कमजोर हो जाते हैं और आपको सरकार से लाभ प्राप्त होता है। अच्छी स्थिति में स्थित बृहस्पति आपको एक अच्छा लेखक या मधुर वाणी वाला ज्योत",
-  4: "चौथे भाव में बृहस्पति का होना बहुत शुभ होता है और इससे आपको विरासत में मिली संपत्ति और सुख-सुविधओं की भरपूर प्राप्ति होती है। आपका अपने परिवार, विशेषकर अपनी माता के साथ घनिष्ठ संबंध है। आपके परिवार के सदस्य भावनात्मक और आर्थिक दोनों तरह से आपका सहयोग करते हैं। अनुकूल स्थिति में स्थित बृहस्पति आपको लाभदायक अचल संपत्ति सौदे करने में मदद करता है और आपको प्रबल अंतर्ज्ञान शक्ति प्रदान करता है। हालांकि, यदि बृहस्पति पीड़ित हो, तो यह आपको कठोर और चालाक बना देगा और आपको अत्यधिक मिलनसार स्वभाव देगा। अस्त बृहस्पति आपकी प्रगति को धीमा कर देगा और आपके भाग्य में कमी लाएगा। भारत के प्रसिद्ध प्रधानमंत्री नरेंद्र मोदी और अभिनेता सलमान खान का जन्म चौथे भाव में स्थित बृहस्पति के प्रभाव में हुआ था।",
-  5: "पंचम भाव में बृहस्पति आपके और आपके बच्चों के बीच गहरा बंधन बनाता है और आपको अनेक प्रतिभाएँ प्रदान करता है। यह आपके प्रेम जीवन में भी सुख लाता है और आपके साथी के साथ दिव्य जुड़ाव की गहरी अनुभूति करा सकता है। यह बृहस्पति आपके शौक और प्रतिभाओं को करियर के रूप में आगे बढ़ाने के भरपूर अवसर प्रदान करता है। यह आपको ज्ञान प्राप्त करने की तीव्र इच्छा भी देता है। अच्छी स्थिति में स्थित बृहस्पति आपको दयालु और अपने बच्चों के प्रति अत्यधिक स्नेहशील बनाता है। हालांकि, यदि आपका बृहस्पति पीड़ित है, तो यह संतान संबंधी समस्याओं का कारण बन सकता है और आपको दबंग स्वभाव दे सकता है। अस्त बृहस्पति तनाव और रोमांस में कमी लाएगा और आपकी रचनात्मक क्षमता में ढिलाई आ सकती है। प्रसिद्ध वैज्ञानिक आइजैक न्यूटन और गायक जस्टिन बीबर का जन्म पांचवें भाव में स्थित बृहस्पति के प्रभाव में हुआ था।",
-  6: "छठे भाव में बृहस्पति के होने से मिश्रित परिणाम मिलते हैं। यह आपको करियर के अच्छे अवसर प्रदान करता है और ऋण चुकाने में सहायता करता है, लेकिन साथ ही साथ स्वास्थ्य संबंधी चुनौतियाँ भी उत्पन्न करता है। अच्छी स्थिति में स्थित बृहस्पति कानूनी मामलों में सकारात्मक परिणाम लाता है और आपको शत्रुओं से सुरक्षित रखता है। आपके रोग भी आसानी से ठीक हो जाएँगे। हालांकि, यदि बृहस्पति पीड़ित हो, तो यह यकृत संबंधी रोग और कार्यस्थल पर चुनौतियाँ दे सकता है। यदि बृहस्पति अस्त हो, तो आपके शत्रु आपको नुकसान पहुँचाएँगे और आपको ऋण चुकाने में कठिनाइयों का सामना करना पड़ेगा। अभिनेता अमिताभ बच्चन और क्रिकेट के दिग्गज सचिन तेंदुलकर छठे भाव में स्थित बृहस्पति के प्रभाव में पैदा हुए थे।",
-  7: "सातवें भाव में बृहस्पति आपको सुखमय वैवाहिक जीवन का आशीर्वाद देता है और आपको एक आध्यात्मिक, वफादार और उच्च कोटि का विद्वान जीवनसाथी प्रदान करता है। यह आपको ईमानदारी, आध्यात्मिकता और पर्याप्त धन भी प्रदान करता है। अच्छी स्थिति में स्थित बृहस्पति आपके व्यावसायिक उपक्रमों, विशेषकर परामर्श, अध्यापन या ज्योतिष से संबंधित उपक्रमों में आपका सहयोग करता है। हालांकि, यदि बृहस्पति पीड़ित हो, तो यह वैवाहिक जीवन के साथ-साथ व्यापार में भी चुनौतियां ला सकता है। यदि बृहस्पति अस्त हो, तो यह आत्मसम्मान में कमी का भाव ला सकता है और आप किसी पर भी विश्वास किए बिना अलग-थलग महसूस कर सकते हैं। प्रसिद्ध भारतीय अभिनेत्री प्रियंका चोपड़ा और नीतिशास्त्री एम.के. (महात्मा) गांधी का जन्म सातवें भाव में स्थित बृहस्पति के प्रभाव में हुआ था।",
-  8: "आठवें भाव में बृहस्पति आपको गहन अन्वेषण, शोध और गुप्त विद्याओं की ओर प्रेरित करता है। यह आपको यौन सुख की तीव्र इच्छा देता है और आपके साथी के साथ आपका घनिष्ठ संबंध स्थापित करता है। अनुकूल स्थिति में स्थित बृहस्पति आपको विरासत या ससुराल से अपार धन-संपत्ति दिलाएगा। यह आपकी आध्यात्मिकता में रुचि जगाएगा और समय-समय पर आपको अप्रत्याशित लाभ दिलाएगा। हालांकि, यदि बृहस्पति पीड़ित हो, तो आपको अचानक हानि का सामना करना पड़ सकता है और आपके प्रेम संबंध लंबे समय तक नहीं टिकेंगे। यदि बृहस्पति अस्त हो, तो आपको अपने गुप्त कार्यों के कारण समस्याओं का सामना करना पड़ सकता है। अमेरिका के प्रसिद्ध राष्ट्रपति जो बाइडेन और पाकिस्तानी राजनेता इमरान खान का जन्म आठवें भाव में स्थित बृहस्पति के प्रभाव में हुआ था।",
-  9: "नौवें भाव में बृहस्पति होने से आपके पिता के साथ आपका मजबूत रिश्ता बनेगा और आपके धर्म में आपकी गहरी आस्था रहेगी। यह आपको मानसिक शांति और स्थिरता प्रदान करेगा और विदेश यात्रा के बार-बार अवसर देगा। आपके कुछ विदेशी संपर्क भी बनेंगे और आपको विदेश में बसने का मौका मिल सकता है। अच्छी स्थिति में स्थित बृहस्पति आपको उच्च शिक्षा प्राप्त करने की प्रबल इच्छा देगा और आपके जीवन में सकारात्मक परिणाम लाएगा। हालांकि, यदि बृहस्पति पीड़ित है, तो आध्यात्मिक गतिविधियों में अत्यधिक लिप्तता के कारण आप परिवार से विमुख हो सकते हैं। अस्त बृहस्पति निराशा ला सकता है और उच्च शिक्षा के आपके लक्ष्य पूरे नहीं हो सकते हैं। प्रसिद्ध भौतिक विज्ञानी अल्बर्ट आइंस्टीन और भारतीय अभिनेता अक्षय कुमार का जन्म नौवें भाव में स्थित बृहस्पति के प्रभाव में हुआ था।",
-  10: "दसवें भाव में बृहस्पति होने से आपको कार्यस्थल पर विशेष पहचान मिलती है। यह आपको दूरदर्शिता, नैतिक मूल्यों का वरदान देता है और आपको बुद्धिमान और धर्मी बनाता है। यह आपको समाज में सकारात्मक प्रतिष्ठा दिलाता है और आपको दयालु और उदार बनाता है। अच्छी स्थिति में स्थित बृहस्पति आपको सफल करियर और अपार प्रसिद्धि दिलाएगा। आप आर्थिक रूप से मजबूत होंगे और फिर भी विनम्र और दयालु बने रहेंगे। हालांकि, यदि बृहस्पति पीड़ित हो, तो यह आपको कार्यस्थल पर अति आत्मविश्वास और अहंकार की समस्या दे सकता है। यदि बृहस्पति अस्त हो, तो यह आत्मविश्वास की कमी ला सकता है और आपके कार्य अपेक्षा के अनुरूप शक्तिशाली और प्रभावी नहीं हो सकते हैं। प्रसिद्ध अभिनेत्री एंजेलिना जोली और कारोबारी मुकेश अंबानी का जन्म दसवें भाव में बृहस्पति के प्रभाव में हुआ था।",
-  11: "ग्यारहवें भाव में बृहस्पति आपको लाभ और समृद्धि प्रदान करता है। यह आपके भाई-बहनों के साथ आपके संबंधों को बेहतर बनाता है और आपके सामाजिक दायरे को बढ़ाता है। इस भाव में अच्छी स्थिति में स्थित बृहस्पति विभिन्न माध्यमों से आपकी आय बढ़ाता है और आपकी आर्थिक स्थिति में सुधार करता है। आपके मित्रों के साथ आपका गहरा संबंध होता है और वे आपकी मित्रता को महत्व देते हैं। हालांकि, यदि बृहस्पति पीड़ित हो, तो यह आय में अनियमितता ला सकता है और आपके और आपके भाई-बहनों के बीच मतभेद पैदा कर सकता है। अस्त बृहस्पति आपके व्यवहार में चिड़चिड़ापन और आत्मविश्वास की कमी ला सकता है। प्रसिद्ध भारतीय हास्य अभिनेता कपिल शर्मा और पूर्व भारतीय प्रधानमंत्री इंदिरा गांधी का जन्म ग्यारहवें भाव में स्थित बृहस्पति के प्रभाव में हुआ था।",
-  12: "बारहवें भाव में बृहस्पति आपको विदेश से अवसर दिलाएगा और आपको अत्यधिक आध्यात्मिक और धार्मिक बनाएगा। यह आपके मोक्ष का कारण बन सकता है और आपको जीवन के उस सत्य के करीब लाएगा जिसकी आप तलाश कर रहे हैं। कभी-कभी आपको अस्पतालों पर खर्च करना पड़ सकता है और आपके कुल खर्चे बढ़ सकते हैं। अच्छी स्थिति में स्थित बृहस्पति आपके आध्यात्मिक ज्ञान का विस्तार करेगा और आपको मोक्ष के मार्ग पर ले जाएगा। हालांकि, यदि बृहस्पति पीड़ित है, तो यह हानि, अस्पताल में भर्ती होने की आवश्यकता वाली स्वास्थ्य समस्याएं और आपके शत्रुओं से नुकसान ला सकता है। अस्त बृहस्पति ईश्वर से आपके संबंध को बाधित कर सकता है, जिससे आप निराश महसूस कर सकते हैं।",
+  1: "Jupiter in the 1st house brings respect and popularity in society, making people appreciate your good deeds, honesty, and selfless nature. A well-placed Jupiter makes you stand out, providing deep mental strength, confidence, compassion, and spiritual inclinations. However, if Jupiter is afflicted, you may unintentionally hurt others or become overly helpful. A combust Jupiter brings a lack of luck and makes acquiring knowledge challenging. MS Dhoni and Barack Obama were born with Jupiter in the 1st house.",
+  2: "Jupiter in the 2nd house gives an influential personality and charming speech, bringing prosperity and suitability for leadership roles. Your enemies weaken, and you gain from the government. A well-placed Jupiter makes you a good writer or a sweet-tongued astrologer, ensuring steady wealth. An afflicted Jupiter makes you speak harshly, creating family discord. A combust Jupiter leads to financial stagnation. Rajesh Khanna and Abraham Lincoln were born with Jupiter in the 2nd house.",
+  4: "Jupiter in the 4th house is highly auspicious, bringing inherited property and abundant comforts. You share a close bond with your family, especially your mother, who supports you emotionally and financially. A favorable Jupiter helps in profitable real estate deals and grants strong intuition. An afflicted Jupiter makes you harsh, cunning, or overly talkative. A combust Jupiter slows down progress and reduces luck. Narendra Modi and Salman Khan were born with Jupiter in the 4th house.",
+  5: "Jupiter in the 5th house creates a deep bond with your children, granting multiple talents and happiness in love life with a divine connection. It provides ample career opportunities using your hobbies and talents. A well-placed Jupiter makes you kind and affectionate. An afflicted Jupiter causes child-related issues and a dominating nature. A combust Jupiter reduces romance and dims creative potential. Isaac Newton and Justin Bieber were born with Jupiter in the 5th house.",
+  6: "Jupiter in the 6th house brings mixed results. It offers good career opportunities and help in clearing debts, but can pose health challenges. A well-placed Jupiter brings positive outcomes in legal matters and protection from enemies. An afflicted Jupiter can cause liver issues and workplace challenges. A combust Jupiter allows enemies to harm you and makes clearing debts difficult. Amitabh Bachchan and Sachin Tendulkar were born with Jupiter in the 6th house.",
+  7: "Jupiter in the 7th house blesses you with a happy married life, providing a spiritual, loyal, and highly learned spouse. It grants honesty, spirituality, and wealth. A well-placed Jupiter supports business ventures, especially in counseling, teaching, or astrology. An afflicted Jupiter brings marriage and business challenges. A combust Jupiter leads to low self-esteem and isolation. Priyanka Chopra and Mahatma Gandhi were born with Jupiter in the 7th house.",
+  8: "Jupiter in the 8th house drives you toward deep research, investigation, and occult sciences, granting intimacy with your partner. A positive Jupiter brings sudden wealth from inheritance or in-laws, along with spiritual interest. An afflicted Jupiter causes sudden losses and short-lived relationships. A combust Jupiter brings issues due to secretive actions. Joe Biden and Imran Khan were born with Jupiter in the 8th house.",
+  9: "Jupiter in the 9th house builds a strong bond with your father and deep faith in religion, bringing mental peace, stability, and foreign travel opportunities. A well-placed Jupiter grants higher education and positive life outcomes. An afflicted Jupiter can alienate you from family due to excessive religious indulgence. A combust Jupiter brings disappointment in educational goals. Albert Einstein and Akshay Kumar were born with Jupiter in the 9th house.",
+  10: "Jupiter in the 10th house brings special recognition at work, granting foresight, moral values, and righteousness. It gives a positive social reputation and makes you generous. A well-placed Jupiter brings a successful career, fame, and wealth while keeping you humble. An afflicted Jupiter causes overconfidence and ego at work. A combust Jupiter leads to lack of confidence and less effective initiatives. Angelina Jolie and Mukesh Ambani were born with Jupiter in the 10th house.",
+  11: "Jupiter in the 11th house brings gains and prosperity, improving relationships with siblings and expanding your social circle. A well-placed Jupiter increases income through multiple sources. An afflicted Jupiter causes irregular income and sibling discord. A combust Jupiter leads to irritability and low confidence. Kapil Sharma and Indira Gandhi were born with Jupiter in the 11th house.",
+  12: "Jupiter in the 12th house brings opportunities from abroad and makes you deeply spiritual, sometimes leading to moksha. It increases overall expenses, including medical ones. A well-placed Jupiter expands spiritual knowledge. An afflicted Jupiter brings losses, health issues, and harm from enemies. A combust Jupiter disrupts your connection with the divine, leaving you disappointed.",
 };
 
 export const RAHU_HOUSE_INTERPRETATIONS = {
-  1: "प्रथम भाव में राहु आपकी बुद्धि को बढ़ाता है और आपको हाजिरजवाब बनाता है। यह आपको शीघ्र धन प्राप्ति और धन में अचानक वृद्धि का आशीर्वाद देगा। हालांकि, यह आपको कुछ अवांछित आदतें और अव्यवस्था की भावना भी दे सकता है। अच्छी स्थिति में राहु होने से आपकी अंतर्ज्ञान शक्ति तेज होती है और आप तुरंत नए विचार उत्पन्न कर पाते हैं। यह आपको एक आकर्षक व्यक्तित्व प्रदान करता है जो दूसरों को आकर्षित करता है। हालांकि, यदि राहु पीड़ित हो, तो आप सफलता प्राप्त करने के लिए अनैतिक तरीकों का सहारा ले सकते हैं; आप चिड़चिड़े भी हो जाएंगे और दूसरों को नीचा समझेंगे। प्रसिद्ध आविष्कारक निकोला टेस्ला और लेखक चार्ल्स डिकेंस का जन्म प्रथम भाव में राहु के प्रभाव में हुआ था।",
-
-  2: "द्वितीय भाव में राहु होने से आपको अपने करियर और विरासत दोनों के माध्यम से धनवान बनना निश्चित है। आपका अपने परिवार से गहरा संबंध रहेगा, लेकिन आधिकारिक प्रतिबद्धताओं के कारण आपको उनसे दूरी बनानी पड़ सकती है। अच्छी स्थिति में स्थित राहु आपको समाज में अच्छे संपर्क और संबंध दिलाएगा और आपको अपने पूर्वजों के प्रति गहरी श्रद्धा प्रदान करेगा। हालांकि, यदि राहु पीड़ित हो, तो यह आपको खर्चीला बना देगा और आप कानूनी परेशानियों में भी पड़ सकते हैं। प्रसिद्ध अभिनेता सलमान खान और संगीतकार रवि शंकर का जन्म द्वितीय भाव में राहु के प्रभाव में हुआ था।",
-  3: "तीसरे भाव में राहु होने से आपका भविष्य मीडिया से जुड़े किसी पेशे में होगा, क्योंकि आपके पास उत्कृष्ट संचार कौशल होगा। आप छोटी-छोटी यात्राओं पर भी जाएंगे, जिनसे आपको विकास के अवसर मिलेंगे। अच्छी स्थिति में राहु होने से आप एकाग्र और समर्पित रहेंगे, जिससे आपको अत्यधिक सफलता मिलेगी। जरूरत पड़ने पर आप साहस और वीरता का प्रदर्शन करेंगे और इसके लिए आपकी सराहना भी होगी। हालांकि, यदि राहु पीड़ित हो, तो यह आपको स्वार्थी बना सकता है और चोट या दुर्घटना का कारण बन सकता है। आपको आर्थिक नुकसान भी हो सकता है। प्रसिद्ध क्रिकेटर विराट कोहली और गायक माइकल जैक्सन का जन्म तीसरे भाव में स्थित राहु के प्रभाव में हुआ था।",
-  4: "चौथे भाव में राहु होने से आपको अपने परिवार और मातृभूमि से गहरा लगाव होगा। यह आपको अचल संपत्ति बढ़ाने और धन-संपत्ति में वृद्धि करने वाले परिसंपत्तियां सृजित करने के लिए प्रेरित करेगा। यह वैवाहिक जीवन में सुख भी प्रदान करता है। अच्छी स्थिति में स्थित राहु धन और शक्ति में अचानक वृद्धि ला सकता है और आपको अपने जीवनसाथी के प्रति वफादार बनाएगा। इट विल आल्सो गिव यू अपनी माता के प्रति गहरा भावनात्मक लगाव भी देगा। हालांकि, यदि राहु पीड़ित है, तो आर्थिक और संपत्ति के मामले में अचानक गिरावट की संभावना रहेगी। यह आपके रिश्तों और करियर को भी प्रतिकूल रूप से प्रभावित करेगा। प्रसिद्ध अभिनेता आमिर खान और टेनिस खिलाड़ी सेरेना विलियम्स का जन्म चौथे भाव में राहु के प्रभाव में हुआ था।",
-  5: "पांचवें भाव में राहु होने से आपके कई प्रेम संबंध होंगे और यौन संबंध आपके जीवन का एक महत्वपूर्ण हिस्सा बन जाएंगे। सट्टेबाजी से आपको लाभ होगा और आप बहुमुखी प्रतिभा के धनी होंगे। अच्छी स्थिति में स्थित राहु आपके बच्चों के साथ आपके संबंधों को मजबूत करेगा और आपको सामाजिक दायरे में उच्च स्थान दिलाएगा। हालांकि, यदि राहु पीड़ित हो, तो आपका वैवाहिक जीवन प्रभावित होगा और आपको सट्टेबाजी से संबंधित नुकसान का सामना करना पड़ सकता है। प्रसिद्ध राजनेता नरेंद्र मोदी और उद्यमी स्टीव जॉब्स का जन्म पांचवें भाव में राहु के प्रभाव में हुआ था।",
-  6: "छठे भाव में राहु आपको जुझारू भावना प्रदान करता है और प्रतियोगिताओं में जीत दिलाने में सहायक होता है। यह आपको बीमार पड़ने पर रोगों से लड़ने की क्षमता भी देता है। आप नौकरी को प्राथमिकता देंगे और व्यापार से दूर रह सकते हैं। अच्छी स्थिति में स्थित राहु आपको अच्छे स्वास्थ्य और भौतिक सुख-सुविधाएं प्रदान कर सकता है। वरिष्ठों के साथ आपके संबंध अच्छे रहेंगे और इससे आपको उच्च पदों तक पहुंचने में मदद मिलेगी। हालांकि, यदि राहु पीड़ित है, तो आपको निवेश करते समय सतर्क रहने और जोखिम रहित विकल्पों को चुनने की आवश्यकता हो सकती है। आपको अपनी लगातार बनी रहने वाली स्वास्थ्य समस्याओं के ठीक न होने से कुछ पीड़ा का सामना करना पड़ सकता है। प्रसिद्ध क्रिकेटर हार्दिक पांड्या और अभिनेत्री एंजेलिना जोली का जन्म छठे भाव में स्थित राहु के प्रभाव में हुआ था।",
-  7: "सातवें भाव में राहु होने से वैवाहिक जीवन सुखमय होता है and जीवनसाथी के साथ आपका गहरा and मजबूत रिश्ता बनता है। व्यापार में अच्छे अवसर मिलेंगे and व्यापारिक साझेदारों के साथ अच्छे संबंध विकसित होंगे। अच्छी स्थिति में राहु होने से व्यापार में धन and लाभ प्राप्त होगा; साथ ही वैवाहिक जीवन में प्रेम and स्नेह भी बना रहेगा। हालांकि, यदि राहु पीड़ित हो तो पेशेवर जीवन में बाधाएं आ सकती हैं। इससे जीवनसाथी के साथ गलतफहमियां भी पैदा हो सकती हैं। प्रसिद्ध अभिनेता अमिताभ बच्चन and फुटबॉलर डेविड बेकहम का जन्म सातवें भाव में स्थित राहु के प्रभाव में हुआ था।",
-  8: "आठवें भाव में राहु होने से आप रहस्यप्रिय हो जाते हैं and गुप्त विद्याओं तथा काले जादू में आपकी गहरी रुचि होती है। आप नवोन्मेषी होने के साथ-साथ धनी भी होंगे। आपकी रचनात्मक क्षमता आपको नाम and प्रसिद्धि दिलाएगी। अच्छी स्थिति में स्थित राहु आपको शोध में निपुण बनाता है and मजबूत संबंध प्रदान करता है। आप सुशिक्षित and सम्मानित भी होंगे। हालांकि, यदि राहु पीड़ित हो, तो आप धन कमाने के लिए कुछ अवैध गतिविधियों में शामिल हो सकते हैं, जिसके परिणाम भुगतने पड़ सकते हैं। इससे आपके वैवाहिक जीवन में तनाव भी आ सकता है। प्रसिद्ध अभिनेता रणबीर कपूर and राजनीतिज्ञ विंस्टन चर्चिल का जन्म आठवें भाव में राहु के प्रभाव में हुआ था।",
-  9: "नौवें भाव में राहु धार्मिक प्रवृत्ति को बढ़ावा देता है and आपको धार्मिक उपदेशक बना सकता है। यह आपके रूप-रंग को भी निखार सकता है and आर्थिक लाभ दिला सकता है। आपको विदेश यात्रा करने and विभिन्न संस्कृतियों को जानने के कई अवसर मिलेंगे। अच्छी स्थिति में स्थित राहु धन-संपत्ति and संपत्ति संचय में सहायक होगा। आपके पिता के साथ आपका गहरा संबंध रहेगा, जो जीवन में आपका मार्गदर्शन करेंगे। हालांकि, यदि राहु पीड़ित हो, तो यह पिता and बच्चों के साथ गलतफहमियों का कारण बन सकता है। यह आपको निराशा and कभी-कभी हानि भी पहुंचा सकता है। प्रसिद्ध हास्य अभिनेता चार्ली चैपलिन and अभिनेत्री मेगन फॉक्स का जन्म नौवें  भाव में राहु के प्रभाव में हुआ था।",
-  10: "दसवें भाव में राहु आपको नाम and धन कमाने की ओर प्रेरित करेगा। यह आपको महत्वाकांक्षी बनाएगा and आप अपनी इच्छाओं को पूरा करने में सक्षम होंगे। यह आपको ज्ञान बढ़ाने के लिए भी प्रेरित करेगा, जिससे आपको अपने करियर में उन्नति मिलेगी। अच्छी स्थिति में स्थित राहु आपको विदेश से लाभ दिलाएगा and आपकी आर्थिक स्थिति को मजबूत बनाएगा। आपको सरकारी and कॉर्पोरेट दोनों क्षेत्रों से लाभ प्राप्त होगा। हालांकि, यदि राहु पीड़ित है, तो यह आपके रिश्तों में तनाव लाएगा। विभिन्न क्षेत्रों में लाभ and सफलता के लिए आपको अवैध साधनों का सहारा लेना पड़ सकता है। प्रसिद्ध क्रिकेटर क्रिस गेल and गायिका नेहा कक्कड़ का जन्म दसवें भाव में स्थित राहु   के प्रभाव में हुआ था।",
-  11: "ग्यारहवें भाव में राहु होने से अपार साहस and दृढ़ संकल्प प्राप्त होता है। आपके मित्रों का दायरा भी अच्छा रहेगा and आप अपने मित्रों के जीवन में महत्वपूर्ण स्थान रखेंगे। आप कुछ प्रभावशाली लोगों से भी मित्रता कर सकते हैं, जिससे आपको लाभ होगा। अच्छी स्थिति में राहु होने से आपको सरकारी संपर्कों, विदेश यात्राओं and धन की प्रचुरता का लाभ मिलेगा। आपकी बोलने की क्षमता and बातचीत करने की कुशलता असाधारण होगी। हालांकि, यदि राहु पीड़ित हो, तो आप स्वार्थवश अपने मित्रों का दुरुपयोग कर सकते हैं and अपने पिता के साथ अपने संबंधों में तनाव पैदा कर सकते हैं। प्रसिद्ध राजनेता अरविंद केजरीवाल and अमेरिकी राष्ट्रपति अब्राहम लिंकन का जन्म ग्यारहवें भाव में राहु के प्रभाव में हुआ था।",
-  12: "बारहवें भाव में राहु आपके करियर को गति देगा and विदेशी संपर्कों के कारण आपकी समृद्धि में वृद्धि करेगा। आपका प्रेम जीवन अच्छा रहेगा, लेकिन छोटी-छोटी बातों पर गलतफहमियों के कारण वैवाहिक जीवन में परेशानी आ सकती है। आप अपनी कमाई से अधिक खर्च करने की प्रवृत्ति भी रख सकते हैं। अच्छी स्थिति में स्थित राहु आपको दान-पुण्य करने and निस्वार्थ बनने के लिए प्रेरित करेगा। हालांकि, यदि राहु पीड़ित है, तो यह अनावश्यक खर्चों को जन्म दे सकता है जिससे आर्थिक समस्याएं उत्पन्न हो सकती हैं। कुछ स्वास्थ्य संबंधी समस्याएं भी आपको परेशान कर सकती हैं।",
+  1: "Rahu in the 1st house enhances your intellect and makes you quick-witted, bringing quick wealth. However, it can give unwanted habits and a sense of disorder. A well-placed Rahu sharpens intuition and brings instant new ideas, giving an attractive personality. An afflicted Rahu leads to unethical success methods, irritability, and condescension. Nikola Tesla and Charles Dickens were born with Rahu in the 1st house.",
+  2: "Rahu in the 2nd house ensures wealth through career and inheritance. You share a deep bond with family but may stay distant due to work commitments. A well-placed Rahu brings excellent social connections and ancestral reverence. An afflicted Rahu makes you a spendthrift, leading to legal troubles. Salman Khan and Ravi Shankar were born with Rahu in the 2nd house.",
+  3: "Rahu in the 3rd house points to a career in media due to excellent communication skills, bringing growth through short travels. A well-placed Rahu makes you focused, dedicated, and courageous. An afflicted Rahu makes you selfish, prone to accidents or injuries, and causes financial losses. Virat Kohli and Michael Jackson were born with Rahu in the 3rd house.",
+  4: "Rahu in the 4th house creates deep attachment to home and motherland, prompting real estate growth and domestic happiness. A well-placed Rahu brings sudden wealth and power, keeping you loyal and emotionally attached to your mother. An afflicted Rahu brings sudden downfalls in wealth and property, harming relationships. Aamir Khan and Serena Williams were born with Rahu in the 4th house.",
+  5: "Rahu in the 5th house brings multiple love affairs and highlights romance. You gain from speculation and possess versatile talents. A well-placed Rahu strengthens bonds with children and raises social status. An afflicted Rahu harms married life and causes speculative losses. Narendra Modi and Steve Jobs were born with Rahu in the 5th house.",
+  6: "Rahu in the 6th house provides a fighting spirit and victory in competitions, giving resilience against illness. You prefer jobs over business. A well-placed Rahu brings good health, material comforts, and career growth. An afflicted Rahu demands caution in investments and can cause chronic health issues. Hardik Pandya and Angelina Jolie were born with Rahu in the 6th house.",
+  7: "Rahu in the 7th house makes married life happy, building a strong relationship with your spouse. It brings good business opportunities and partner relations. A well-placed Rahu brings wealth and marital affection. An afflicted Rahu causes career hurdles and spouse misunderstandings. Amitabh Bachchan and David Beckham were born with Rahu in the 7th house.",
+  8: "Rahu in the 8th house makes you secretive, drawing you to occult sciences and research. You will be innovative and wealthy, gaining fame through creativity. A well-placed Rahu makes you a skilled researcher. An afflicted Rahu can pull you into illegal wealth creation, causing marital discord. Ranbir Kapoor and Winston Churchill were born with Rahu in the 8th house.",
+  9: "Rahu in the 9th house promotes religious tendencies, making you a religious preacher, and brings financial gains. It offers foreign travel and cultural exposure. A well-placed Rahu helps in asset accumulation and fatherly guidance. An afflicted Rahu causes misunderstandings with father and children, bringing disappointment. Charlie Chaplin and Megan Fox were born with Rahu in the 9th house.",
+  10: "Rahu in the 10th house drives you to earn name and wealth, making you ambitious. It encourages learning, bringing career advancement. A well-placed Rahu brings foreign gains and corporate or government success. An afflicted Rahu brings relationship strain and temptation for illegal means. Chris Gayle and Neha Kakkar were born with Rahu in the 10th house.",
+  11: "Rahu in the 11th house grants immense courage, determination, and a strong friend circle with influential contacts. A well-placed Rahu brings government gains, foreign travels, and exceptional communication skills. An afflicted Rahu leads to manipulating friends for selfish goals and strained relation with father. Arvind Kejriwal and Abraham Lincoln were born with Rahu in the 11th house.",
+  12: "Rahu in the 12th house accelerates career growth through foreign contacts. Your love life remains good, but small issues can disturb marriage. You tend to spend more than you earn. A well-placed Rahu inspires charity and selflessness. An afflicted Rahu leads to financial problems due to unnecessary spending and health concerns.",
 };
 
 export const KETU_HOUSE_INTERPRETATIONS = {
-  1: "प्रथम भाव में केतु होने से आपको एक आकर्षक व्यक्तित्व के साथ-साथ एक रहस्यमय आभा भी मिलती है। यह आपको सामाजिक रूप से बहुत लोकप्रिय बनाता है, लेकिन साथ ही आपको अंतर्मुखी भी बनाए रखता है। आपको रोमांच की ओर झुकाव रहेगा और आप नई-नई गतिविधियों को आजमाना चाहेंगे जो आपको रोमांचित करती हैं। आपका आध्यात्मिक पक्ष प्रबल है जो आपको नैतिकता की भावना प्रदान करता है और आपके चरित्र को मजबूत बनाता है। अच्छी स्थिति में स्थित केतु आपको सत्यवादी और शक्तिशाली बनाता है। आप समाज में प्रसिद्ध हैं और आपकी छवि अच्छी है। हालांकि, यदि केतु पीड़ित है, तो यह आपके जीवनसाथी के लिए स्वास्थ्य संबंधी समस्याएं ला सकता है और आपको लालची और स्वार्थी बना सकता है। आपका साहसिक स्वभाव कभी-कभी आपको खतरे में डाल सकता है। प्रसिद्ध भारतीय समाजसेवी नीता अंबानी और परम पावन दलाई लामा का जन्म प्रथम भाव में केतु के प्रभाव में हुआ था।",
-  2: "द्वितीय भाव में केतु आपको गुप्त विद्याओं की ओर आकर्षित करता है और उत्कृष्ट संचार कौशल प्रदान करता है। जब चीजें आपके अनुरूप नहीं होतीं, तो आप कभी-कभी थोड़े कठोर हो सकते हैं। आप अच्छी खासी संपत्ति अर्जित कर सकते हैं और अपने कार्यस्थल पर उच्च पद प्राप्त कर सकते हैं, जिससे आपको बहुत सम्मान मिलेगा। अच्छी स्थिति में स्थित केतु आपको अपने करियर से संबंधित विकास के भरपूर अवसर प्रदान करता है। यह आपके ज्ञान और बुद्धि को भी बढ़ाता है। हालांकि, यदि केतु पीड़ित है, तो यह आपको असभ्य बना सकता है, जिससे समाज में आपकी छवि को नुकसान पहुंच सकता है। आपको परिवार के सदस्यों के साथ भी कुछ समस्याओं का सामना करना पड़ सकता है। प्रसिद्ध ब्रिटिश राजपरिवार की सदस्य लेडी डायना और अभिनेता रजनीकांत का जन्म द्वितीय भाव में केतु के प्रभाव में हुआ था।",
-  3: "तीसरे भाव में केतु होने से आप असाधारण रूप से मेहनती, साहसी और साहसिक स्वभाव के बन जाते हैं। आप आध्यात्मिक गतिविधियों में लीन हो सकते हैं जिससे आपको मानसिक शांति मिलेगी और आपको किसी दूसरे धर्म का जीवनसाथी मिल सकता है। अच्छी स्थिति में स्थित केतु आपको अच्छे करियर के अवसर प्रदान करता है जहाँ आप उच्च पद प्राप्त कर सकते हैं। आप मीडिया से संबंधित व्यवसायों की ओर भी आकर्षित होंगे, जो आपके लिए अत्यंत उपयुक्त होंगे। हालांकि, यदि केतु पीड़ित हो तो संतान संबंधी समस्याएं उत्पन्न हो सकती हैं और वैवाहिक जीवन में चुनौतियां आ सकती हैं। प्रसिद्ध नेता किम जोंग उन और अभिनेता रिचर्ड विल्सन का जन्म तीसरे भाव में स्थित केतु के प्रभाव में हुआ था।",
-  4: "चौथे भाव में केतु आपको आध्यात्मिकता और पवित्र जीवन शैली की ओर प्रेरित करता है। यह आपको धन, विलासिता और आराम की प्रचुरता भी प्रदान करता है, भले ही आप इसकी लालसा न करें और सादा जीवन जीना पसंद करें। अनुकूल स्थिति में स्थित केतु अप्रत्यायित स्रोतों से अपार लाभ दिला सकता है। यह आपको एक सम्मानजनक सामाजिक छवि भी प्रदान करेगा और आपको अपनी मातृभूमि से जोड़े रखेगा। हालांकि, यदि केतु पीड़ित हो, तो यह आपको कार्य और परिवार से संबंधित अत्यधिक दबाव और तनाव में रख सकता है। यह आपको अपने परिवार से दूर भी कर सकता है। प्रसिद्ध क्रिकेटर राहुल द्रविड़ और राजनेता अमित शाह का जन्म चौथे भाव में केतु के प्रभाव में हुआ था।",
-  5: "पंचम भाव में केतु होने से आपका झुकाव दर्शनशास्त्र और गुप्त विद्याओं की ओर होता है। आप धार्मिक गतिविधियों की ओर आकर्षित होंगे, जिससे आपको शांति मिल सकती है। जैसे-जैसे आपकी उम्र बढ़ेगी, आप धीरे-धीरे अपने परिवार से दूर होते जाएंगे। अच्छी स्थिति में स्थित केतु आपको बेहद भाग्यशाली बनाता है और निवेश से लाभ दिलाता है। यह आपको शत्रुओं से बचाता है और आध्यात्मिकता की ओर प्रेरित करता है। हालांकि, यदि केतु पीड़ित हो, तो यह आपको अपने परिवार और मित्रों से दूर कर सकता है। यह आपको बहुत साहसी बना सकता है, जो जोखिम भरा हो सकता है। आपको संतान प्राप्ति से संबंधित समस्याओं का भी सामना करना पड़ सकता है। प्रसिद्ध अभिनेत्री कैटरीना कैफ और गुरु बाबा रामदेव का जन्म पांचवें भाव में केतु के प्रभाव में हुआ था।",
-  6: "छठे भाव में केतु आपको अत्यधिक प्रेरक और प्रेरक बनाएगा। यह आपको मानसिक और शारीरिक रूप से मजबूत बनाएगा और आपके शत्रुओं का आसानी से सामना करने में मदद करेगा। हालांकि, यह आपको ऐसी बीमारियों से ग्रसित कर सकता है जो कष्टदायी हो सकती हैं। अनुकूल स्थिति में स्थित केतु आपको आध्यात्मिक ज्ञान प्रदान कर सकता है जो आपके संवाद में स्पष्ट रूप से दिखाई देगा। हालांकि, यदि केतु पीड़ित है, तो आप कार्यस्थल पर चोटों और दुर्घटनाओं के शिकार हो सकते हैं। आपकी आक्रामकता और क्रोध चिंता का विषय हो सकते हैं और आपको कठिन परिस्थितियों में डाल सकते हैं। प्रसिद्ध भौतिक विज्ञानी सर आइजैक न्यूटन और अभिनेत्री मर्लिन मोनरो का जन्म छठे भाव में केतु के प्रभाव में हुआ था।",
-  7: "सातवें भाव में केतु होने से आपको आध्यात्मिक झुकाव मिलता है और आपका जीवन बदल जाता है। आपको धन-दौलत की अच्छी-खासी समृद्धि प्राप्त हो सकती है और आप आनंदमय और सुखमय जीवन जी सकते हैं। अच्छी स्थिति में स्थित केतु आपको सुखमय जीवन प्रदान करता है।",
-  8: "आठवें भाव में केतु आपको गुप्त विद्याओं और शोध की ओर ले जाता है। यह आपको रहस्यमय विषयों में गहरी रुचि प्रदान करता है।",
-  9: "नौवें भाव में केतु धार्मिक और आध्यात्मिक यात्राओं में रुचि जगाता है। यह आपको उच्च ज्ञान की प्राप्ति के लिए प्रेरित करता है।",
-  10: "दसवें भाव में केतु करियर में उतार-चढ़ाव ला सकता है लेकिन अंततः आध्यात्मिक सफलता और मानसिक शांति देता है।",
-  11: "ग्यारहवें भाव में केतु अचानक लाभ और आध्यात्मिक मित्रों से सहयोग दिलाता है। यह आपकी इच्छाओं की पूर्ति में सहायक होता है।",
-  12: "बारहवें भाव में केतु मोक्ष और आध्यात्मिक जागृति के लिए उत्तम माना जाता है। यह आपको सांसारिक बंधनों से मुक्त करने में सहायक है।"
+  1: "Ketu in the 1st house brings an attractive personality and mysterious aura, making you popular yet introverted. You love adventure and new activities. A strong spiritual side gives you moral strength. A well-placed Ketu makes you truthful and powerful, maintaining a good social image. An afflicted Ketu brings spouse health issues and self-centeredness. Nita Ambani and the Dalai Lama were born with Ketu in the 1st house.",
+  2: "Ketu in the 2nd house draws you to occult sciences, giving excellent communication. You can be harsh when things don't go your way. You earn good wealth and high workplace respect. A well-placed Ketu brings career growth and wisdom. An afflicted Ketu makes you rude, harming your social image, and causes family issues. Princess Diana and Rajinikanth were born with Ketu in the 2nd house.",
+  3: "Ketu in the 3rd house makes you hardworking, brave, and adventurous. Spiritual activities bring peace, and you may marry someone from another religion. A well-placed Ketu brings high career status and media-related opportunities. An afflicted Ketu causes child-related and marital challenges. Kim Jong-un and Richard Wilson were born with Ketu in the 3rd house.",
+  4: "Ketu in the 4th house drives you to a spiritual lifestyle. It provides wealth and comforts even if you prefer simplicity. A favorable Ketu brings unexpected gains and a respected social image. An afflicted Ketu causes career and family pressure, distancing you from family. Rahul Dravid and Amit Shah were born with Ketu in the 4th house.",
+  5: "Ketu in the 5th house inclines you toward philosophy and occult sciences. You get drawn to religious activities. As you age, you may detach from family. A well-placed Ketu brings luck, speculative gains, and protection from enemies. An afflicted Ketu distances you from friends and causes child-related issues. Katrina Kaif and Baba Ramdev were born with Ketu in the 5th house.",
+  6: "Ketu in the 6th house makes you highly motivational and physically strong, helping you defeat enemies. However, it can bring painful illnesses. A positive Ketu brings spiritual wisdom visible in your speech. An afflicted Ketu causes workplace accidents or injuries, and aggression. Isaac Newton and Marilyn Monroe were born with Ketu in the 6th house.",
+  7: "Ketu in the 7th house brings spiritual inclination and transforms your life. You enjoy good prosperity and a happy life. A well-placed Ketu ensures a peaceful life.",
+  8: "Ketu in the 8th house leads you to occult sciences and research, giving deep interest in mysterious subjects.",
+  9: "Ketu in the 9th house sparks interest in religious and spiritual journeys, motivating you toward higher wisdom.",
+  10: "Ketu in the 10th house can bring career fluctuations but ultimately gives spiritual success and mental peace.",
+  11: "Ketu in the 11th house brings sudden gains and support from spiritual friends, fulfilling your desires.",
+  12: "Ketu in the 12th house is excellent for moksha and spiritual awakening, freeing you from worldly bonds.",
 };
 
 export const SATURN_HOUSE_INTERPRETATIONS = {
-  1: "प्रथम भाव में शनि होने से आप कम उम्र में ही अनुशासित और परिपक्व हो जाते हैं। आप जिम्मेदार और भरोसेमंद होंगे। निष्पक्ष निर्णय लेने के कारण आप एक सफल वकील या न्यायाधीश बन सकते हैं। आपका विवाह विलंबित होगा, लेकिन आपका जीवनसाथी बुद्धिमान और वफादार होगा। अनुकूल स्थिति में स्थित शनि आपको व्यावहारिक और तार्किक दृष्टिकोण प्रदान करेगा और आपको अपने माता-पिता के प्रति कर्तव्यनिष्ठ बनाएगा। आप दृढ़ निश्चयी और विश्वसनीय होंगे, साथ ही आपका मन और शरीर भी मजबूत होगा। हालांकि, यदि शनि पीड़ित हो, तो यह आपको आलसी और निराश बना सकता है। आपके वैवाहिक जीवन में भी कलह उत्पन्न हो सकती है। प्रसिद्ध गायिका ब्रिटनी स्पीयर्स और सम्राट अकबर का जन्म प्रथम भाव में शनि के प्रभाव में हुआ था।",
-  2: "द्वितीय भाव में शनि 35 वर्ष की आयु के बाद ही आपकी आर्थिक स्थिति में सहायक होता है। यह बचपन में संघर्षों के कारण आपके पोषण को भी सीमित कर सकता है। आप जीवन में उतार-चढ़ाव दोनों देखेंगे, जो आपको बुद्धिमान और व्यावहारिक बनाएगा। अनुकूल स्थिति में स्थित शनि आपको महत्वाकांक्षी और मेहनती बनाता है और आर्थिक मामलों में जल्दबाजी में निर्णय लेने से रोकता है। हालांकि, यदि शनि पीड़ित है, तो यह आपको माता-पिता के प्यार से वंचित कर सकता है क्योंकि वे बहुत सख्त होंगे। यह आपको पेशेवर मोर्चे पर भी बहुत संघर्षों के कारण क्रोधित और निराश कर सकता है। प्रसिद्ध अभिनेता रजनीकांत और व्यवसायी मुकेश अंबानी का जन्म द्वितीय भाव में शनि के प्रभाव में हुआ था।",
-  3: "तीसरे भाव में शनि होने से भाई-बहनों के साथ आपके संबंध सुखद और दुखद दोनों हो सकते हैं और एक चीज़ पर ध्यान केंद्रित करना मुश्किल हो सकता है। शनि की यह स्थिति आपको शर्मीला और अंतर्मुखी बनाती है। यह आपके प्रेम संबंधों को भी सीमित कर सकती है, इसीलिए आप अरेंज मैरिज को चुनेंगे। अच्छी स्थिति में स्थित शनि आपको पेशेवर रवैया देगा और आपको शांत और संयमित बनाएगा। आप जल्दबाजी में निर्णय नहीं लेंगे और अच्छे श्रोता भी बनेंगे। हालांकि, यदि शनि पीड़ित है, तो आप नकारात्मक विचारों से घिरे रहेंगे और अनावश्यक भय का शिकार होंगे। यह आपको निराशावादी रवैया भी दे सकता है। प्रसिद्ध व्यवसायी स्टीव जॉब्स और अभिनेता ब्रैड पिट का जन्म तीसरे भाव में शनि के प्रभाव में हुआ था।",
-  4: "चौथे भाव में शनि होने से आपकी माताजी सख्त और अनुशासनप्रिय होंगी; हालांकि, इससे आपको अच्छी शिक्षा मिलेगी और आप रियल एस्टेट बिल्डर, वकील, जज या उद्योगपति बन सकते हैं। अच्छी स्थिति में स्थित शनि से अप्रत्याशित लाभ होगा और आप परिपक्व और जिम्मेदार बनेंगे। आप परिस्थितियों का धैर्यपूर्वक और चतुराई से सामना करेंगे और परिवार के साथ आपके अच्छे संबंध होंगे। हालांकि, यदि शनि पीड़ित है, तो यह आपको स्वार्थी और अवसादग्रस्त बना देगा। आपको अपने कर्ज चुकाने के लिए अपना घर बेचना पड़ सकता है। यह आपको अपने जीवनसाथी से अलग भी कर सकता है। प्रसिद्ध अभिनेता टॉम क्रूज़ और राजनीतिज्ञ बराक ओबामा चौथे भाव में स्थित शनि के प्रभाव में पैदा हुए हैं।",
-  5: "पांचवें भाव में शनि होने से आपको बचपन से ही अनुशासन और परिपक्वता मिलती है। आप सतही बातों में रुचि नहीं लेंगे और बड़ों के साथ सार्थक चर्चा करना पसंद करेंगे। अच्छी स्थिति में स्थित शनि आपको पेशेवर और निजी जीवन के बीच संतुलन का महत्व सिखाएगा और आपको दानशील बनाएगा। हालांकि, यदि शनि पीड़ित हो, तो यह आपको उदास और असामाजिक बना सकता है। आप कठोर स्वभाव के हो जाएंगे, जिससे जीवन में आपकी प्रगति बाधित हो सकती है। आपको अवसाद या चिंता जैसी मनोवैज्ञानिक समस्याओं का भी सामना करना पड़ सकता है। प्रसिद्ध व्यवसायी बिल गेट्स और राजनीतिज्ञ विंस्टन चर्चिल का जन्म पांचवें भाव में शनि के प्रभाव में हुआ था।",
-  6: "छठे भाव में शनि आपको मेहनती और संघर्ष सुलझाने के लिए दृढ़ निश्चयी बनाता है। आप एक सफल समाजसेवी, परामर्शदाता, मनोवैज्ञानिक, चिकित्सक, वकील या न्यायाधीश बनेंगे। यह आपकी सफलता को धीमा कर सकता है और आपको विदेश में बसने में मदद कर सकता है। आप अपने शत्रुओं को आसानी से परास्त कर सकेंगे। अनुकूल स्थिति में शनि आपको उत्कृष्ट प्रबंधन कौशल और कुशल कर्मचारी प्रदान करेगा। आप दूसरों को काम सौंपना जानते होंगे और लोग आपके आदेशों का पालन करेंगे। हालांकि, यदि शनि पीड़ित है, तो यह पीठ में लगातार दर्द और यौन जीवन में गड़बड़ी का कारण बन सकता है। आपकी वाणी कठोर और असभ्य हो जाएगी। प्रसिद्ध भौतिक विज्ञानी आइजैक न्यूटन और अभिनेत्री दीपिका पादुकोण का जन्म छठे भाव में स्थित शनि के प्रभाव में हुआ था।",
-  7: "शनि सातवें भाव में विवाह में देरी का कारण बनता है और यदि आप जल्दी विवाह कर लेते हैं, तो वैवाहिक जीवन में कुछ बाधाओं का सामना करना पड़ सकता है। आपका विवाह एक परिपक्व और अधिक उम्र के व्यक्ति से होगा जो धैर्यवान, जिम्मेदार और मेहनती होगा। आपका अपने जीवनसाथी के साथ एक प्रतिबद्ध और संतुलित संबंध होगा, जो स्वभाव में बिल्कुल विपरीत हो सकता है। यदि शनि अच्छी स्थिति में है, तो आप अपने जीवनसाथी के प्रति समर्पित रहेंगे और एक नियमित दिनचर्या के साथ अनुशासित जीवन शैली अपनाएंगे। इससे आप काम के प्रति समर्पित भी हो जाएंगे। हालांकि, यदि शनि पीड़ित है, तो वैवाहिक जीवन में गलतफहमियां होंगी और आप लगातार अपने जीवनसाथी की आलोचना करते रहेंगे। यह स्थिति आपको आलसी भी बना सकती है और आपको पेट और जोड़ों से संबंधित बीमारियां हो सकती हैं। प्रसिद्ध अभिनेता जॉनी डेप और शाहरुख खान का जन्म सातवें भाव में स्थित शनि के प्रभाव में हुआ था।",
-  8: "आठवें भाव में शनि होने से आपके जीवन के विभिन्न चरणों में पूर्ण परिवर्तन आएगा, जो आवश्यक है। अतीत के आघातों से उबरने के दौरान आपके विश्वास की परीक्षा होगी। आप एक सफल चिकित्सक, फार्मासिस्ट बन सकते हैं या राजनीति में प्रवेश कर सकते हैं। आपके ससुराल वालों के साथ आपके संबंध सीमित हो सकते हैं। यदि शनि अच्छी स्थिति में है, तो आपको पारिवारिक विरासत प्राप्त होने का सौभाग्य प्राप्त होगा। आप एक उत्कृष्ट शोधकर्ता भी बनेंगे और अप्रत्याशित लाभ प्राप्त करेंगे। आपके ससुराल वालों के साथ आपके संबंध अच्छे रहेंगे। हालांकि, यदि शनि पीड़ित है, तो आप अपने करियर से निराश होंगे और अस्थिरता का सामना करेंगे। आपका जीवनसाथी आपको धोखा दे सकता है और आपका पारिवारिक जीवन अस्त-व्यस्त हो सकता है। आपके ससुराल वालों के साथ आपके संबंधों पर भी इसका बुरा प्रभाव पड़ेगा। प्रसिद्ध अभिनेता क्रिस्टन स्टीवर्ट और रॉबर्ट डाउनी जूनियर का जन्म आठवें भाव में शनि के प्रभाव में हुआ था।",
-  9: "नौवें भाव में शनि आपको दार्शनिक और धार्मिक बनाएगा। आप पेशेवर और व्यक्तिगत रूप से विकास करने के लिए दृढ़ संकल्पित हैं। आप अपनी उच्च शिक्षा और धार्मिक मान्यताओं पर ध्यान केंद्रित करते हैं। यह स्थिति आपको पीएचडी प्राप्त करने और एक सफल वकील या डॉक्टर बनने में मदद कर सकती है, क्योंकि आपमें लंबे समय तक अध्ययन करने की क्षमता और धैर्य है। अच्छी स्थिति में स्थित शनि आपको अपने जीवनसाथी के प्रति वफादार और स्नेही बनाएगा और आपको प्रचुर धन-संपत्ति दिलाएगा। हालांकि, यदि शनि पीड़ित है, तो आप अनुकूलनीय नहीं होंगे और आपके भाई-बहनों के साथ संबंध खराब हो सकते हैं। प्रसिद्ध अभिनेत्री जूलिया रॉबर्ट्स और गायिका रिहाना का जन्म शनि के नौवें भाव में प्रभाव के तहत हुआ था।",
-  10: "दसवें भाव में शनि आपको कड़ी मेहनत के बल पर लक्ष्य प्राप्त करने में मदद करेगा और कार्यस्थल पर आपको अधिकार और मान्यता दिलाएगा। यह आपको प्रभावशाली बनाएगा और आप ऐसे नियम बनाएंगे जिनका पालन दूसरे करेंगे। अनुकूल स्थिति में शनि आपको सकारात्मकता, धैर्य और निरंतर विकास प्रदान करेगा। 35 वर्ष की आयु के बाद आप बहुत अनुशासित हो जाएंगे और आपका पारिवारिक जीवन सुखमय होगा। हालांकि, यदि शनि पीड़ित है, तो आप सरकार को धोखा देने का प्रयास कर सकते हैं और आपराधिक गतिविधियों में शामिल हो सकते हैं। आप अपने जीवनसाथी में रुचि खो देंगे और आपका यौन जीवन नीरस हो जाएगा। प्रसिद्ध अभिनेता लियोनार्डो डिकैप्रियो और मुक्केबाज मुहम्मद अली का जन्म दसवें भाव में स्थित शनि के प्रभाव में हुआ था।",
-  11: "ग्यारहवें भाव में शनि होने से आपका सामाजिक दायरा परिपक्व लोगों से भरा होगा। कड़ी मेहनत करने पर आपकी सभी इच्छाएँ पूरी होंगी। आपमें कुशल व्यक्तियों को प्रभावित करने की क्षमता भी हो सकती है और आप एक सफल राजनेता या व्यवसायी बन सकते हैं। अच्छी स्थिति में स्थित शनि आपको सशक्त व्यक्तित्व और अपार धन-संपत्ति एवं सम्मान प्रदान करता है। यह आपके परिवार के सदस्यों के साथ सौहार्दपूर्ण संबंध भी सुनिश्चित करता है। हालांकि, यदि शनि पीड़ित हो, तो आप गलत प्रकार के मित्रों के साथ फंस सकते हैं और अवैध तरीकों से धन कमा सकते हैं। आपको हड्डियों या जोड़ों से संबंधित समस्याओं का भी सामना करना पड़ सकता है। मशहूर सोशलाइट किम कार्दशियन और अभिनेता अनिल कपूर का जन्म ग्यारहवें भाव में स्थित शनि के प्रभाव में हुआ है।",
-  12: "बारहवें भाव में शनि होने से मन की शांति भंग होती है और आध्यात्मिक खोज की प्रेरणा मिलती है। यह आपको विदेश यात्रा करने और जरूरतमंदों की सहायता करने के लिए प्रेरित करेगा। इससे आपको विदेश से आर्थिक लाभ भी प्राप्त हो सकता है। आपके परिवार के सदस्यों के साथ आपके घनिष्ठ संबंध रहेंगे। अनुकूल स्थिति में स्थित शनि आपको जीवनसाथी का सहयोग और सामंजस्यपूर्ण जीवन प्रदान करेगा। आपकी सफलता में विलंब हो सकता है, लेकिन आप अपने इच्छित लक्ष्य प्राप्त कर लेंगे। हालांकि, यदि शनि पीड़ित है, तो आप स्थायी संबंध स्थापित नहीं कर पाएंगे। आपको चिंता और अवसाद जैसी मनोवैज्ञानिक समस्याएं भी हो सकती हैं।",
+  1: "Saturn in the 1st house makes you disciplined and mature at a young age. You are responsible and reliable, and can excel as a lawyer or judge. Marriage is delayed, but your spouse is wise and loyal. A favorable Saturn brings a practical approach and duty toward parents. An afflicted Saturn makes you lazy or depressed, causing marital discord. Britney Spears and Akbar were born with Saturn in the 1st house.",
+  2: "Saturn in the 2nd house supports finances after the age of 35, though it may limit early childhood comforts. Life's ups and downs make you wise and practical. A well-placed Saturn makes you ambitious and hardworking, preventing hasty financial decisions. An afflicted Saturn deprives you of parental warmth due to strictness, causing career frustration. Rajinikanth and Mukesh Ambani were born with Saturn in the 2nd house.",
+  3: "Saturn in the 3rd house brings mixed relations with siblings and makes focusing difficult. It makes you shy and introverted, favoring arranged marriage. A well-placed Saturn gives a professional attitude, keeping you calm and a good listener. An afflicted Saturn brings negative thinking and unnecessary fears. Steve Jobs and Brad Pitt were born with Saturn in the 3rd house.",
+  4: "Saturn in the 4th house indicates a strict mother, but grants good education, leading to careers in real estate, law, or industry. A well-placed Saturn brings unexpected gains and mature responsibility, maintaining family harmony. An afflicted Saturn makes you self-centered or depressed, causing property losses or spouse separation. Tom Cruise and Barack Obama were born with Saturn in the 4th house.",
+  5: "Saturn in the 5th house brings discipline and maturity from childhood, making you prefer meaningful discussions with elders. A positive Saturn teaches work-life balance and charity. An afflicted Saturn makes you unsocial or depressed, hindering progress and causing psychological issues. Bill Gates and Winston Churchill were born with Saturn in the 5th house.",
+  6: "Saturn in the 6th house makes you hardworking and determined to resolve conflicts, leading to success as a counselor, doctor, lawyer, or judge. It can delay success and favor settling abroad. A well-placed Saturn brings excellent management skills. An afflicted Saturn causes chronic back pain and harsh speech. Isaac Newton and Deepika Padukone were born with Saturn in the 6th house.",
+  7: "Saturn in the 7th house delays marriage; early marriage leads to hurdles. You marry a mature, responsible, and older spouse. A well-placed Saturn keeps you dedicated, disciplined, and work-oriented. An afflicted Saturn causes marital misunderstandings, laziness, and joint pains. Johnny Depp and Shah Rukh Khan were born with Saturn in the 7th house.",
+  8: "Saturn in the 8th house brings major life transformations, testing your faith. You can succeed as a healer or in politics. A well-placed Saturn brings inheritance, research excellence, and good relations with in-laws. An afflicted Saturn brings career frustration, spouse betrayal, and discord with in-laws. Kristen Stewart and Robert Downey Jr. were born with Saturn in the 8th house.",
+  9: "Saturn in the 9th house makes you philosophical and religious, keeping you focused on higher education or law. A well-placed Saturn keeps you loyal, affectionate, and wealthy. An afflicted Saturn makes you rigid, causing poor sibling relations. Julia Roberts and Rihanna were born with Saturn in the 9th house.",
+  10: "Saturn in the 10th house helps achieve goals through hard work, bringing authority and recognition. A favorable Saturn brings patience and steady growth, making you highly disciplined after 35. An afflicted Saturn can tempt you toward illegal activities, harming marital interest. Leonardo DiCaprio and Muhammad Ali were born with Saturn in the 10th house.",
+  11: "Saturn in the 11th house fills your social circle with mature people. Hard work fulfills your desires, making you a successful politician or businessman. A well-placed Saturn brings wealth, power, and respect. An afflicted Saturn associates you with bad company and causes joint issues. Kim Kardashian and Anil Kapoor were born with Saturn in the 11th house.",
+  12: "Saturn in the 12th house disturbs peace of mind, driving you toward spiritual search and charity. It brings financial gains from abroad. A favorable Saturn brings spouse support and delayed but sure success. An afflicted Saturn hinders stable relationships, causing anxiety and depression.",
 };
+
 
 const CELL_CONTENTS = [
 
@@ -1261,9 +1549,9 @@ const PlanetTable = ({ data, onPlanetClick }) => (
         <thead className="bg-[#f1f5f9] sticky top-0">
           <tr className="border-b border-[#cbd5e1]">
             <th className="p-1 text-left">Planet</th>
-            <th className="p-1 text-left">Deg</th>
+            <th className="p-1 text-left">Degree</th>
             <th className="p-1 text-left">Nakshatra</th>
-            <th className="p-1 text-left">P.</th>
+            <th className="p-1 text-left">Pada</th>
             <th className="p-1 text-left">Lord</th>
           </tr>
         </thead>
@@ -1271,12 +1559,14 @@ const PlanetTable = ({ data, onPlanetClick }) => (
           {(data.planet_positions || []).map(p => {
             const color = PLANET_COLORS[p.planet] || "#000";
             const nameWithStatus = `${p.planet}${p.is_retrograde ? '*' : ''}${p.is_combust ? '#' : ''}`;
+            const displayDegree = p.degree % 30;
+            const displayPada = p.nakshatra_pada || p.pada || (typeof p.nakshatra === 'object' ? p.nakshatra?.pada : null) || 1;
             return (
               <tr key={p.planet} className="border-b border-[#f1f5f9] hover:bg-white transition-colors cursor-pointer" onClick={() => onPlanetClick?.(p.planet, p.house)}>
                 <td className="p-1 font-bold" style={{ color: color }}>{nameWithStatus}</td>
-                <td className="p-1">{p.degree.toFixed(2)}°</td>
-                <td className="p-1">{p.nakshatra}</td>
-                <td className="p-1">1</td>
+                <td className="p-1">{displayDegree.toFixed(2)}°</td>
+                <td className="p-1">{typeof p.nakshatra === 'object' ? p.nakshatra?.name : p.nakshatra}</td>
+                <td className="p-1">{displayPada}</td>
                 <td className="p-1">{p.sign_lord}</td>
               </tr>
             );
@@ -1289,6 +1579,536 @@ const PlanetTable = ({ data, onPlanetClick }) => (
     </div>
   </div>
 );
+
+const DrishtiTable = ({ houses, reportData }) => {
+  if (!houses) return null;
+
+  const positions = [];
+  Object.entries(houses).forEach(([hNum, hData]) => {
+    (hData.planets || []).forEach(p => {
+      const name = typeof p === 'string' ? p : (p.planet || p.name);
+      if (name === "Ascendant" || name === "Lagna" || name === "L") return;
+      positions.push({
+        planet: name,
+        house: parseInt(hNum),
+        is_retrograde: p.is_retrograde,
+        is_combust: p.is_combust
+      });
+    });
+  });
+
+  const planetOrder = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
+  positions.sort((a, b) => planetOrder.indexOf(a.planet) - planetOrder.indexOf(b.planet));
+
+  const getPlanetRelationshipBadge = (aspecting, target) => {
+    const friendships = {
+      "Sun": { friends: ["Moon", "Mars", "Jupiter"], enemies: ["Venus", "Saturn"], neutral: ["Mercury"] },
+      "Moon": { friends: ["Sun", "Mercury"], enemies: [], neutral: ["Mars", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"] },
+      "Mars": { friends: ["Sun", "Moon", "Jupiter"], enemies: ["Mercury"], neutral: ["Venus", "Saturn", "Rahu", "Ketu"] },
+      "Mercury": { friends: ["Sun", "Venus"], enemies: ["Moon"], neutral: ["Mars", "Jupiter", "Saturn", "Rahu", "Ketu"] },
+      "Jupiter": { friends: ["Sun", "Moon", "Mars"], enemies: ["Mercury", "Venus"], neutral: ["Saturn", "Rahu", "Ketu"] },
+      "Venus": { friends: ["Mercury", "Saturn"], enemies: ["Sun", "Moon"], neutral: ["Mars", "Jupiter", "Rahu", "Ketu"] },
+      "Saturn": { friends: ["Mercury", "Venus"], enemies: ["Sun", "Moon", "Mars"], neutral: ["Jupiter", "Rahu", "Ketu"] },
+      "Rahu": { friends: ["Venus", "Saturn", "Mercury"], enemies: ["Sun", "Moon", "Mars", "Jupiter"], neutral: ["Ketu"] },
+      "Ketu": { friends: ["Venus", "Saturn", "Mercury"], enemies: ["Sun", "Moon", "Mars", "Jupiter"], neutral: ["Rahu"] }
+    };
+
+    const list = friendships[aspecting];
+    if (!list) return { label: "Neutral", bg: "bg-slate-100 text-slate-800 border-slate-300" };
+    if (list.friends.includes(target)) {
+      return { label: "Good (Friendly)", bg: "bg-emerald-100 text-emerald-800 border-emerald-300" };
+    }
+    if (list.enemies.includes(target)) {
+      return { label: "Bad (Inimical)", bg: "bg-rose-100 text-rose-800 border-rose-300" };
+    }
+    return { label: "Neutral", bg: "bg-slate-100 text-slate-800 border-slate-300" };
+  };
+
+  const getAspectDetails = (planet, occupiedHouse, relativeAspect) => {
+    const targetHouse = ((occupiedHouse + relativeAspect - 2) % 12) + 1;
+    let nature = "Benefic";
+    let description = "";
+
+    if (planet === "Jupiter") {
+      nature = "Benefic";
+      if (relativeAspect === 5) {
+        description = `5th Aspect (Dharma Drishti) on House ${targetHouse}: Blesses with past-life merit, intelligence, creative success, and spiritual progress.`;
+      } else if (relativeAspect === 7) {
+        description = `7th Aspect on House ${targetHouse}: Directly projects expansive grace, wisdom, protection, and balanced growth to this house.`;
+      } else if (relativeAspect === 9) {
+        description = `9th Aspect (Bhagya Drishti) on House ${targetHouse}: Bestows divine protection, luck, fortune, and higher guidance.`;
+      }
+    } else if (planet === "Mars") {
+      nature = "Malefic";
+      if (relativeAspect === 4) {
+        description = `4th Aspect on House ${targetHouse}: Directs a protective, high-energy focus. Can bring conflicts or dynamic drive in domestic/foundation matters.`;
+      } else if (relativeAspect === 7) {
+        description = `7th Aspect on House ${targetHouse}: Directs active drive, passion, competitive energy, or potential friction directly to the opposite house.`;
+      } else if (relativeAspect === 8) {
+        description = `8th Aspect on House ${targetHouse}: Casts an intense, sudden, transformational force. Can cause sudden changes or intense focus.`;
+      }
+    } else if (planet === "Saturn") {
+      nature = "Malefic";
+      if (relativeAspect === 3) {
+        description = `3rd Aspect on House ${targetHouse}: Enforces effort, hard work, struggles, and calls for self-reliance and patience.`;
+      } else if (relativeAspect === 7) {
+        description = `7th Aspect on House ${targetHouse}: Imposes discipline, duty, restrictions, and tests of commitment directly opposite.`;
+      } else if (relativeAspect === 10) {
+        description = `10th Aspect on House ${targetHouse}: Demands duty, karma, professional responsibility, and long-term ambition.`;
+      }
+    } else if (planet === "Rahu") {
+      nature = "Malefic";
+      if (relativeAspect === 5) {
+        description = `5th Aspect on House ${targetHouse}: Triggers strong ambition, desires, and intense analytical/intellectual drive.`;
+      } else if (relativeAspect === 7) {
+        description = `7th Aspect on House ${targetHouse}: Directs projection, material desire, or unusual connections/illusions opposite.`;
+      } else if (relativeAspect === 9) {
+        description = `9th Aspect on House ${targetHouse}: Promotes unconventional wisdom, wanderlust, and unorthodox beliefs.`;
+      }
+    } else if (planet === "Ketu") {
+      nature = "Malefic";
+      if (relativeAspect === 5) {
+        description = `5th Aspect on House ${targetHouse}: Connects to intuitive wisdom, detachment from worldly intellect, and spiritual insights.`;
+      } else if (relativeAspect === 7) {
+        description = `7th Aspect on House ${targetHouse}: Brings distance, detachment, or foreign connections/separation in partnerships.`;
+      } else if (relativeAspect === 9) {
+        description = `9th Aspect on House ${targetHouse}: Promotes detachment from dogmas, inclination toward occult sciences and liberation.`;
+      }
+    } else if (planet === "Sun") {
+      nature = "Malefic";
+      description = `7th Aspect on House ${targetHouse}: Projects warmth, focus, and authority, but can also cause separation or ego tension directly opposite.`;
+    } else if (planet === "Moon") {
+      nature = "Benefic";
+      description = `7th Aspect on House ${targetHouse}: Projects emotional sensitivity, nurturing thoughts, empathy, and social connection directly opposite.`;
+    } else if (planet === "Mercury") {
+      nature = "Benefic";
+      description = `7th Aspect on House ${targetHouse}: Casts an intellectual, logical, communicative, and trade-focused gaze directly opposite.`;
+    } else if (planet === "Venus") {
+      nature = "Benefic";
+      description = `7th Aspect on House ${targetHouse}: Casts romantic grace, aesthetic appreciation, comfort, and harmonious relationships directly opposite.`;
+    }
+
+    return {
+      targetHouse,
+      nature,
+      description
+    };
+  };
+
+  // Build rows for each individual aspect
+  const tableRows = [];
+  positions.forEach(pos => {
+    let relativeAspects = [7];
+    if (pos.planet === "Jupiter" || pos.planet === "Rahu" || pos.planet === "Ketu") {
+      relativeAspects = [5, 7, 9];
+    } else if (pos.planet === "Mars") {
+      relativeAspects = [4, 7, 8];
+    } else if (pos.planet === "Saturn") {
+      relativeAspects = [3, 7, 10];
+    }
+
+    relativeAspects.forEach(offset => {
+      const details = getAspectDetails(pos.planet, pos.house, offset);
+      tableRows.push({
+        planet: pos.planet,
+        occupiedHouse: pos.house,
+        is_retrograde: pos.is_retrograde,
+        is_combust: pos.is_combust,
+        relativeAspect: offset,
+        targetHouse: details.targetHouse,
+        nature: details.nature,
+        description: details.description
+      });
+    });
+  });
+
+  // --- Jaimini Rasi Drishti Calculation ---
+  const SIGNS_LIST = [
+    { name: "Aries", type: "Movable" },
+    { name: "Taurus", type: "Fixed" },
+    { name: "Gemini", type: "Dual" },
+    { name: "Cancer", type: "Movable" },
+    { name: "Leo", type: "Fixed" },
+    { name: "Virgo", type: "Dual" },
+    { name: "Libra", type: "Movable" },
+    { name: "Scorpio", type: "Fixed" },
+    { name: "Sagittarius", type: "Dual" },
+    { name: "Capricorn", type: "Movable" },
+    { name: "Aquarius", type: "Fixed" },
+    { name: "Pisces", type: "Dual" }
+  ];
+
+  const getRasiDrishtiRows = () => {
+    const lagnaHouse = houses[1] || houses["1"] || {};
+    let lagnaSignIdx = lagnaHouse.sign_index;
+    if (lagnaSignIdx === undefined && lagnaHouse.cusp_deg !== undefined) {
+      lagnaSignIdx = Math.floor(lagnaHouse.cusp_deg / 30);
+    }
+    if (lagnaSignIdx === undefined) {
+      lagnaSignIdx = 0;
+    }
+
+    const rows = [];
+    for (let h = 1; h <= 12; h++) {
+      const signIdx = (lagnaSignIdx + h - 1) % 12;
+      const currentSign = SIGNS_LIST[signIdx];
+
+      const aspectedIndices = [];
+      if (currentSign.type === "Movable") {
+        const fixedIndices = [1, 4, 7, 10];
+        fixedIndices.forEach(idx => {
+          const diff = Math.abs(signIdx - idx);
+          if (diff !== 1 && diff !== 11) {
+            aspectedIndices.push(idx);
+          }
+        });
+      } else if (currentSign.type === "Fixed") {
+        const movableIndices = [0, 3, 6, 9];
+        movableIndices.forEach(idx => {
+          const diff = Math.abs(signIdx - idx);
+          if (diff !== 1 && diff !== 11) {
+            aspectedIndices.push(idx);
+          }
+        });
+      } else if (currentSign.type === "Dual") {
+        const dualIndices = [2, 5, 8, 11];
+        dualIndices.forEach(idx => {
+          if (idx !== signIdx) {
+            aspectedIndices.push(idx);
+          }
+        });
+      }
+
+      const aspectedDetails = aspectedIndices.map(targetIdx => {
+        const targetHouse = ((targetIdx - lagnaSignIdx + 12) % 12) + 1;
+        const targetHouseData = houses[targetHouse] || {};
+        const planets = (targetHouseData.planets || [])
+          .map(p => typeof p === 'string' ? p : (p.planet || p.name))
+          .filter(p => p !== "Ascendant" && p !== "Lagna" && p !== "L");
+
+        return {
+          signName: SIGNS_LIST[targetIdx].name,
+          houseNum: targetHouse,
+          planets: planets
+        };
+      });
+
+      const sourceHouseData = houses[h] || {};
+      const sourcePlanets = (sourceHouseData.planets || [])
+        .map(p => typeof p === 'string' ? p : (p.planet || p.name))
+        .filter(p => p !== "Ascendant" && p !== "Lagna" && p !== "L");
+
+      rows.push({
+        houseNum: h,
+        signName: currentSign.name,
+        signType: currentSign.type,
+        sourcePlanets: sourcePlanets,
+        aspects: aspectedDetails
+      });
+    }
+
+    return rows;
+  };
+
+  const rasiRows = getRasiDrishtiRows();
+
+  return (
+    <div className="flex flex-col gap-12">
+      {/* Planetary Graha Drishti Table */}
+      <div className="space-y-6 mt-12 border-t border-indigo-200 pt-12">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-indigo-900 rounded-lg flex items-center justify-center text-2xl shadow-lg border-2 border-white/20">👁️</div>
+          <div>
+            <h4 className="text-xl font-black text-slate-800 uppercase tracking-tighter leading-none">Planetary Drishti (Aspects)</h4>
+            <div className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mt-1">Sight of Influence & Karma</div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-indigo-100 shadow-xl overflow-hidden font-sans">
+          <div className="overflow-x-auto overflow-y-auto max-h-[450px]">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-indigo-900 text-white text-xs uppercase tracking-wider font-bold sticky top-0 z-10 shadow-[0_1px_0_0_rgba(0,0,0,0.1)]">
+                  <th className="p-4 bg-indigo-900">
+                    <div className="text-[14px] text-white font-medium lowercase italic">ग्रह</div>
+                    <div>Planet</div>
+                  </th>
+                  <th className="p-4 bg-indigo-900">
+                    <div className="text-[14px] text-white font-medium lowercase italic">स्थित भाव</div>
+                    <div>Occupied House</div>
+                  </th>
+                  <th className="p-4 bg-indigo-900">
+                    <div className="text-[14px] text-white font-medium lowercase italic">दृष्टि</div>
+                    <div>Aspect</div>
+                  </th>
+                  <th className="p-4 bg-indigo-900">
+                    <div className="text-[14px] text-white font-medium lowercase italic">दृष्ट भाव</div>
+                    <div>Aspect House</div>
+                  </th>
+                  <th className="p-4 bg-indigo-900">
+                    <div className="text-[14px] text-white font-medium lowercase italic">स्थित ग्रह</div>
+                    <div>Occupying Planets</div>
+                  </th>
+                  <th className="p-4 bg-indigo-900">
+                    <div className="text-[14px] text-white font-medium lowercase italic">दृष्टि गुणवत्ता</div>
+                    <div>Drishti Quality</div>
+                  </th>
+                  <th className="p-4 bg-indigo-900">
+                    <div className="text-[14px] text-white font-medium lowercase italic">ज्योतिषीय व्याख्या</div>
+                    <div>Astrological Interpretation</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="text-[14px] divide-y divide-indigo-50">
+                {tableRows.map((row, idx) => {
+                  const color = PLANET_COLORS[row.planet] || "#000";
+                  const targetHouseData = houses[row.targetHouse] || {};
+                  const residingPlanets = (targetHouseData.planets || [])
+                    .map(p => typeof p === 'string' ? p : (p.planet || p.name))
+                    .filter(p => p !== "Ascendant" && p !== "Lagna" && p !== "L");
+
+                  // --- Dynamic Quality and Interpretation Computation ---
+                  const getDynamicDetails = () => {
+                    let baseNature = row.nature;
+                    let desc = row.description;
+
+                    if (residingPlanets.length === 0) {
+                      return {
+                        label: baseNature === "Benefic" ? "🟢 Positive (Benefic)" : "🔴 Challenging (Malefic)",
+                        badgeClass: baseNature === "Benefic" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-rose-50 text-rose-700 border-rose-200",
+                        text: desc
+                      };
+                    }
+
+                    const relations = residingPlanets.map(planet => {
+                      const rel = getPlanetRelationshipBadge(row.planet, planet);
+                      return { planet, rel };
+                    });
+
+                    const hasFriends = relations.some(r => r.rel.label.includes("Friendly"));
+                    const hasEnemies = relations.some(r => r.rel.label.includes("Inimical"));
+
+                    let label = "";
+                    let badgeClass = "";
+
+                    if (baseNature === "Benefic") {
+                      if (hasEnemies && hasFriends) {
+                        label = "🟡 Mixed Benefic";
+                        badgeClass = "bg-amber-50 text-amber-700 border-amber-200";
+                      } else if (hasFriends) {
+                        label = "🟢 Highly Positive (Benefic & Friendly)";
+                        badgeClass = "bg-emerald-100 text-emerald-900 border-emerald-300 font-extrabold";
+                      } else if (hasEnemies) {
+                        label = "🟡 Weakened Benefic (Inimical Target)";
+                        badgeClass = "bg-amber-100 text-amber-800 border-amber-300";
+                      } else {
+                        label = "🟢 Positive (Benefic & Neutral)";
+                        badgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                      }
+                    } else {
+                      // Malefic
+                      if (hasFriends) {
+                        label = "🟡 Softened Malefic (Friendly Target)";
+                        badgeClass = "bg-amber-50 text-amber-700 border-amber-200";
+                      } else if (hasEnemies) {
+                        label = "🔴 Highly Challenging (Malefic & Inimical)";
+                        badgeClass = "bg-rose-100 text-rose-900 border-rose-300 font-extrabold";
+                      } else {
+                        label = "🔴 Challenging (Malefic & Neutral)";
+                        badgeClass = "bg-rose-50 text-rose-700 border-rose-200";
+                      }
+                    }
+
+                    let relDescriptions = [];
+                    relations.forEach(r => {
+                      const isFriend = r.rel.label.includes("Friendly");
+                      const isEnemy = r.rel.label.includes("Inimical");
+                      const relStatus = isFriend ? "Mitra (Friendly)" : isEnemy ? "Shatru (Inimical)" : "Sama (Neutral)";
+
+                      relDescriptions.push(`aspecting the residing planet ${r.planet} (${relStatus})`);
+                    });
+
+                    const relationshipSummary = `${row.planet}'s energy is modified because it is ${relDescriptions.join(" and ")}.`;
+                    const fullDesc = `${desc} ${relationshipSummary}`;
+
+                    return { label, badgeClass, text: fullDesc };
+                  };
+
+                  const dynamicInfo = getDynamicDetails();
+
+                  return (
+                    <tr key={`${row.planet}-${row.relativeAspect}-${idx}`} className="hover:bg-indigo-50/30 transition-colors">
+                      <td className="p-4 font-bold flex items-center gap-2" style={{ color: color }}>
+                        <span>✨</span> {row.planet} {row.is_retrograde ? '*' : ''}
+                      </td>
+                      <td className="p-4 font-semibold text-slate-900">
+                        House {row.occupiedHouse}
+                      </td>
+                      <td className="p-4 text-[16px] font-mono font-bold text-slate-900">
+                        {row.relativeAspect}th Aspect
+                      </td>
+                      <td className="p-4 font-bold text-indigo-900">
+                        House {row.targetHouse}
+                      </td>
+                      <td className="p-4">
+                        {residingPlanets.length > 0 ? (
+                          <div className="flex flex-col gap-1.5">
+                            {residingPlanets.map(planet => {
+                              const rel = getPlanetRelationshipBadge(row.planet, planet);
+                              const planetColor = PLANET_COLORS[planet] || "#000";
+                              return (
+                                <div key={planet} className="flex items-center justify-between gap-2 text-xs border border-indigo-50 bg-indigo-50/10 p-1 rounded">
+                                  <span className="font-bold text-[14px]" style={{ color: planetColor }}>{planet}</span>
+                                  <span className={`px-1 py-0.5 border text-[7px] font-black uppercase rounded ${rel.bg}`}>
+                                    {rel.label}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <span className="text-xs italic text-slate-900">Empty House</span>
+                        )}
+                      </td>
+                      <td className="p-4">
+                        <span className={`px-3 py-1 border text-[11px] font-black uppercase tracking-wider rounded-full whitespace-nowrap inline-block ${dynamicInfo.badgeClass}`}>
+                          {dynamicInfo.label}
+                        </span>
+                      </td>
+                      <td className="p-4 text-[14px] text-slate-900 leading-relaxed max-w-sm font-medium">
+                        {dynamicInfo.text}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <div className="p-4 bg-indigo-50/20 text-xs text-slate-500 border-t border-indigo-50">
+            * = Vakri (Retrograde). Aspects are counted in clockwise order starting from the occupied house as 1st.
+          </div>
+        </div>
+      </div>
+
+      {/* Jaimini Rasi Drishti Table */}
+      <div className="space-y-6 mt-12 border-t border-indigo-200 pt-12">
+        <div className="flex items-center gap-4">
+          <div className="w-12 h-12 bg-indigo-900 rounded-lg flex items-center justify-center text-2xl shadow-lg border-2 border-white/20">📐</div>
+          <div>
+            <h4 className="text-xl font-black text-slate-800 uppercase tracking-tighter leading-none">Jaimini Rasi Drishti (Sign Aspects)</h4>
+            <div className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mt-1">Constant Sign-to-Sign Gaze of Jaimini</div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-2xl border border-indigo-100 shadow-xl overflow-hidden font-sans">
+          <div className="overflow-x-auto overflow-y-auto max-h-[450px]">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className="bg-indigo-900 text-white text-xs uppercase tracking-wider font-bold sticky top-0 z-10 shadow-[0_1px_0_0_rgba(0,0,0,0.1)]">
+                  <th className="p-4 bg-indigo-900">
+                    <div className="text-[14px] text-white font-medium lowercase italic">स्रोत भाव</div>
+                    <div>Source House</div>
+                  </th>
+                  <th className="p-4 bg-indigo-900">
+                    <div className="text-[14px] text-white font-medium lowercase italic">राशि</div>
+                    <div>Zodiac Sign</div>
+                  </th>
+                  <th className="p-4 bg-indigo-900">
+                    <div className="text-[14px] text-white font-medium lowercase italic">राशि प्रकार</div>
+                    <div>Sign Type</div>
+                  </th>
+                  <th className="p-4 bg-indigo-900">
+                    <div className="text-[14px] text-white font-medium lowercase italic">स्थित ग्रह</div>
+                    <div>Occupying Planets</div>
+                  </th>
+                  <th className="p-4 bg-indigo-900">
+                    <div className="text-[14px] text-white font-medium lowercase italic">दृष्ट राशियां और भाव</div>
+                    <div>Aspected Signs & Houses</div>
+                  </th>
+                  <th className="p-4 bg-indigo-900">
+                    <div className="text-[14px] text-white font-medium lowercase italic">दृष्टि से प्रभावित ग्रह</div>
+                    <div>Planets Influenced by Aspect</div>
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="text-[16px] divide-y divide-indigo-50">
+                {rasiRows.map((row) => {
+                  let badgeColor = "bg-slate-100 text-slate-800 border-slate-200";
+                  if (row.signType === "Movable") badgeColor = "bg-sky-50 text-sky-700 border-sky-200";
+                  else if (row.signType === "Fixed") badgeColor = "bg-amber-50 text-amber-700 border-amber-200";
+                  else if (row.signType === "Dual") badgeColor = "bg-purple-50 text-purple-700 border-purple-200";
+
+                  const aspectedText = row.aspects.map(a => `${a.signName} (House ${a.houseNum})`).join(", ");
+
+                  const allAspectedPlanets = [];
+                  row.aspects.forEach(a => {
+                    a.planets.forEach(p => {
+                      allAspectedPlanets.push({ planet: p, house: a.houseNum, sign: a.signName });
+                    });
+                  });
+
+                  return (
+                    <tr key={row.houseNum} className="hover:bg-indigo-50/30 transition-colors">
+                      <td className="p-4 font-bold text-slate-800 text-[16px]">
+                        House {row.houseNum}
+                      </td>
+                      <td className="p-4 font-bold text-indigo-950 text-[18px]">
+                        {row.signName}
+                      </td>
+                      <td className="p-4">
+                        <span className={`px-2.5 py-1 border text-[13px] font-black uppercase tracking-wider rounded-full ${badgeColor}`}>
+                          {row.signType}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        {row.sourcePlanets.length > 0 ? (
+                          <div className="flex flex-wrap gap-1.5">
+                            {row.sourcePlanets.map(p => (
+                              <span key={p} className="px-2.5 py-1 bg-indigo-50 border border-indigo-100 rounded text-[14px] font-bold" style={{ color: PLANET_COLORS[p] || "#000" }}>
+                                {p}
+                              </span>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-[14px] italic text-slate-900">Empty</span>
+                        )}
+                      </td>
+                      <td className="p-4 font-medium text-indigo-900 leading-normal max-w-xs text-[16px]">
+                        {aspectedText}
+                      </td>
+                      <td className="p-4">
+                        {allAspectedPlanets.length > 0 ? (
+                          <div className="flex flex-col gap-1.5">
+                            {allAspectedPlanets.map((ap, idx) => (
+                              <div key={`${ap.planet}-${idx}`} className="flex items-center gap-2 text-[14px] border border-indigo-50 bg-indigo-50/10 p-1.5 rounded">
+                                <span className="font-bold text-[14px]" style={{ color: PLANET_COLORS[ap.planet] || "#000" }}>{ap.planet}</span>
+                                <span className="text-[12px] text-slate-900 font-semibold">in House {ap.house} ({ap.sign})</span>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <span className="text-[14px] italic text-slate-900">No planets aspected</span>
+                        )}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      {/* Sphuta Drishti (Mathematical Aspect Strength Heatmap) */}
+      <div className="space-y-6 mt-12 border-t border-indigo-200 pt-12">
+        <SphutaDrishtiViewer
+          sphutaDrishtiData={reportData?.sphuta_drishti}
+          planetPositions={reportData?.planet_positions || reportData?.chart?.planet_positions}
+        />
+      </div>
+    </div>
+  );
+};
 
 const DignityTable = ({ data, planetEffects }) => {
   const [lang, setLang] = useState('en');
@@ -3324,16 +4144,19 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
 
                   let nakStr = "Unknown";
                   const rawNak = v.sidereal?.nakshatra || v.nakshatra;
+                  let padaNum = v.nakshatra_pada || v.pada || 1;
                   if (typeof rawNak === 'string') {
                     nakStr = rawNak;
                   } else if (rawNak && typeof rawNak === 'object') {
                     nakStr = rawNak.name || "Unknown";
+                    padaNum = rawNak.pada || padaNum;
                   }
 
                   return {
                     planet: k,
                     degree: Number(v.sidereal?.lon || v.lon || 0),
                     nakshatra: nakStr,
+                    nakshatra_pada: padaNum,
                     house: houseNum,
                     sign: v.sidereal?.sign || v.sign || "Unknown",
                     sign_lord: v.sidereal?.sign_lord || v.sign_lord || "Unknown",
@@ -3366,6 +4189,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                   </div>
 
                   <div className="w-full">
+                    <DrishtiTable houses={((timeControlledPositions || transitPositions) && showStandaloneTransit) ? computedTransitHouses : data.charts?.houses} reportData={data} />
                     <HouseEffectTable data={data} planetEffects={effects} customPositions={formattedTransitPositions} />
                     <ConjunctionAnalysis houses={((timeControlledPositions || transitPositions) && showStandaloneTransit) ? computedTransitHouses : data.charts?.houses} />
                   </div>
@@ -4128,6 +4952,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
               if (cid === 'drig') return <div className="p-10"><SecondaryDashaPanel data={data} type="drig" /></div>;
               if (cid === 'sudasha') return <div className="p-10"><SecondaryDashaPanel data={data} type="sudasha" /></div>;
               if (cid === 'dignity') return <div className="p-10"><DignityTable data={data} planetEffects={effects} /></div>;
+              if (cid === 'drishti') return <div className="p-10"><DrishtiTable houses={data.charts?.houses} reportData={data} /></div>;
               if (cid === 'ai_oracle') return <div className="w-full h-full overflow-y-auto"><AIOraclePanel data={data} /></div>;
               if (cid === 'vimshottari') return (
                 <div style={{ width: '100%', maxWidth: '100%', display: 'flex', gap: 0, height: 'calc(100vh - 56px)', alignItems: 'stretch' }}>
@@ -4790,6 +5615,8 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                 <div className="h-full flex flex-col overflow-auto custom-scrollbar">
                   <ZodiacChart planetPositions={data?.planet_positions} houses={data.charts?.houses} onPlanetClick={handlePlanetClick} variant="legacy" title="Main Birth Chart (D1)" defaultRect={true} planetEffects={planetEffects} scaleText={1.5} hideLegend={true} showFullscreenButton={true} onPopOut={() => handleMaximizeInNewWindow('d1')} />
                   <div className="px-4 pb-4">
+                    <DynamicVargaAnalysis data={data} cid="d1" />
+                    <DrishtiTable houses={data.charts?.houses} reportData={data} />
                     <HouseEffectTable data={data} planetEffects={planetEffects} />
                     <ConjunctionAnalysis houses={data.charts?.houses} />
                   </div>

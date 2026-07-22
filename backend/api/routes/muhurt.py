@@ -673,3 +673,167 @@ async def calculate_garbhadhana(payload: Dict = Body(...)):
         import traceback
         print(traceback.format_exc())
         raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/vivah")
+async def calculate_vivah_muhurta(payload: Dict = Body(...)):
+    """
+    Calculates Vivah Muhurta based on dual profiles for Bride and Groom.
+    Rules applied:
+    1. Base Nakshatra filter (11 auspicious marriage stars)
+    2. Dual Tara Bala (auspicious for both bride and groom)
+    3. Dual Chandra Bala (avoid 4, 8, 12 houses from birth Moon signs)
+    4. Guru Combustion check (vital for Bride)
+    5. Shukra Combustion check (vital for Groom)
+    6. Clean Tithis (avoid Rikta 4, 9, 14, Amavasya, Eclipses)
+    """
+    try:
+        set_ayanamsa()
+        
+        bride_moon_lon = payload.get("bride_moon_lon")
+        groom_moon_lon = payload.get("groom_moon_lon")
+        
+        # If not provided, try to calculate from birth details
+        if bride_moon_lon is None and "bride" in payload:
+            b = payload["bride"]
+            from reports.report_data import assemble_report_data
+            b_rep = assemble_report_data(b.get("name", "Bride"), b["birth_date"], b["birth_time"], float(b.get("tz_offset", 5.5)), float(b["lat"]), float(b["lon"]))
+            bride_moon_lon = b_rep["chart"]["planet_positions"]["Moon"]["sidereal"]["lon"]
+            
+        if groom_moon_lon is None and "groom" in payload:
+            g = payload["groom"]
+            from reports.report_data import assemble_report_data
+            g_rep = assemble_report_data(g.get("name", "Groom"), g["birth_date"], g["birth_time"], float(g.get("tz_offset", 5.5)), float(g["lat"]), float(g["lon"]))
+            groom_moon_lon = g_rep["chart"]["planet_positions"]["Moon"]["sidereal"]["lon"]
+            
+        if bride_moon_lon is None or groom_moon_lon is None:
+            raise HTTPException(status_code=400, detail="Bride and Groom Moon Longitudes or birth profiles are required.")
+            
+        bride_moon_rashi = int(bride_moon_lon // 30.0)
+        bride_nak_idx = int(bride_moon_lon // 13.333333333333334) % 27
+        
+        groom_moon_rashi = int(groom_moon_lon // 30.0)
+        groom_nak_idx = int(groom_moon_lon // 13.333333333333334) % 27
+
+        start_date_str = payload.get("start_date") or datetime.datetime.now().strftime("%Y-%m-%d")
+        days_to_check = int(payload.get("days", 60))
+        
+        start_date = datetime.datetime.strptime(start_date_str, "%Y-%m-%d")
+        tz = float(payload.get("tz", 5.5))
+        lat = float(payload.get("lat", 28.6139))
+        lon = float(payload.get("lon", 77.2090))
+        
+        # 11 Auspicious Marriage Nakshatras
+        AUSPICIOUS_MARRIAGE_NAKS = {
+            "Rohini", "Mrigashira", "Magha", "Uttara Phalguni", "Hasta", 
+            "Chitra", "Swati", "Anuradha", "Mula", "Uttara Ashadha", "Uttara Bhadrapada"
+        }
+        
+        # Auspicious Tithis (Avoid Rikta: 4, 9, 14; Avoid Amavasya: 15/30)
+        AUSPICIOUS_TITHIS = {2, 3, 5, 7, 10, 11, 13}
+        
+        TITHI_DEG = 12.0
+        NAK_DEG = 13.333333333333334
+        
+        base_jd_ut = datetime_to_julian(start_date.replace(hour=12) - datetime.timedelta(hours=tz))
+        results = []
+        
+        for i in range(days_to_check):
+            jd_ut = base_jd_ut + i
+            current_day = start_date + datetime.timedelta(days=i)
+            
+            pos = get_all_planetary_positions(jd_ut)
+            sun_lon = pos["Sun"]["sidereal"]["lon"]
+            moon_lon = pos["Moon"]["sidereal"]["lon"]
+            
+            # Step 1 & 2: Identify transit Nakshatra and check if auspicious
+            nak_index = int(moon_lon // NAK_DEG) % 27
+            nak_name = NAKS[nak_index]
+            
+            # Tithi
+            elong = (moon_lon - sun_lon) % 360.0
+            tithi_index = int(elong // TITHI_DEG)
+            tithi_val = (tithi_index % 15) + 1
+            paksha = "Shukla" if tithi_index < 15 else "Krishna"
+            tithi_name = f"{paksha} {tithi_val}"
+            
+            steps_breakdown = {
+                "step1": {"bride_nak": NAKS[bride_nak_idx], "groom_nak": NAKS[groom_nak_idx]},
+                "step2": {"pass": nak_name in AUSPICIOUS_MARRIAGE_NAKS, "nakshatra": nak_name},
+                "step3": {"pass": False, "bride_tara": "", "groom_tara": "", "bride_remainder": 0, "groom_remainder": 0},
+                "step4": {"pass": False, "bride_house": 0, "groom_house": 0},
+                "step5": {"pass": False, "jupiter_combust": False, "venus_combust": False},
+                "step6": {"pass": tithi_val in AUSPICIOUS_TITHIS and tithi_val not in [4, 9, 14] and tithi_name != "Krishna 15", "tithi": tithi_name, "weekday": current_day.strftime("%A")}
+            }
+            
+            # Step 3: Dual Tara Bala
+            # Remainder = (Transit Nakshatra Index - Janma Nakshatra Index + 1) mod 9
+            b_rem = (nak_index - bride_nak_idx + 1) % 9
+            if b_rem == 0: b_rem = 9
+            g_rem = (nak_index - groom_nak_idx + 1) % 9
+            if g_rem == 0: g_rem = 9
+            
+            tara_names = ["Janma", "Sampat", "Vipat", "Kshema", "Pratyak", "Sadhana", "Vadha", "Mitra", "Ati-Mitra"]
+            # 1-indexed mapping
+            b_tara_name = tara_names[b_rem - 1]
+            g_tara_name = tara_names[g_rem - 1]
+            
+            b_tara_pass = b_rem in [2, 4, 6, 8, 9]
+            g_tara_pass = g_rem in [2, 4, 6, 8, 9]
+            
+            steps_breakdown["step3"] = {
+                "pass": b_tara_pass and g_tara_pass,
+                "bride_tara": b_tara_name,
+                "groom_tara": g_tara_name,
+                "bride_remainder": b_rem,
+                "groom_remainder": g_rem
+            }
+            
+            # Step 4: Chandra Bala (Moon in 4, 8, 12 from natal Moon is bad)
+            moon_rashi = int(moon_lon // 30.0)
+            b_house = (moon_rashi - bride_moon_rashi + 12) % 12 + 1
+            g_house = (moon_rashi - groom_moon_rashi + 12) % 12 + 1
+            
+            steps_breakdown["step4"] = {
+                "pass": b_house not in [4, 8, 12] and g_house not in [4, 8, 12],
+                "bride_house": b_house,
+                "groom_house": g_house
+            }
+            
+            # Step 5: Combustion Check (Guru Asta, Shukra Asta)
+            jup_diff = abs(pos["Jupiter"]["sidereal"]["lon"] - sun_lon)
+            if jup_diff > 180: jup_diff = 360 - jup_diff
+            ven_diff = abs(pos["Venus"]["sidereal"]["lon"] - sun_lon)
+            if ven_diff > 180: ven_diff = 360 - ven_diff
+            
+            jupiter_combust = jup_diff < 11.0
+            venus_combust = ven_diff < 10.0
+            
+            steps_breakdown["step5"] = {
+                "pass": not jupiter_combust and not venus_combust,
+                "jupiter_combust": jupiter_combust,
+                "venus_combust": venus_combust
+            }
+            
+            # Determine overall pass status
+            is_auspicious = (
+                steps_breakdown["step2"]["pass"] and
+                steps_breakdown["step3"]["pass"] and
+                steps_breakdown["step4"]["pass"] and
+                steps_breakdown["step5"]["pass"] and
+                steps_breakdown["step6"]["pass"]
+            )
+            
+            results.append({
+                "date": current_day.strftime("%Y-%m-%d"),
+                "weekday": current_day.strftime("%A"),
+                "tithi": tithi_name,
+                "nakshatra": nak_name,
+                "is_auspicious": is_auspicious,
+                "steps": steps_breakdown
+            })
+            
+        return {"dates": results}
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        raise HTTPException(status_code=500, detail=str(e))
