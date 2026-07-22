@@ -23,7 +23,8 @@ export default function ChaitraChartViewer() {
                     if (localData.birth_details.lon) lon = parseFloat(localData.birth_details.lon);
                 }
 
-                const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/chaitra-chart`, {
+                const baseUrl = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:8000' : '');
+                const response = await axios.post(`${baseUrl}/api/chaitra-chart`, {
                     year: year,
                     lat: lat,
                     lon: lon

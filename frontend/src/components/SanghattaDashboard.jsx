@@ -41,7 +41,8 @@ export default function SanghattaDashboard() {
                 }
 
                 // Call the API (if transitPlanets is null, backend uses current live transits)
-                const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/sanghatta-chakra`, {
+                const baseUrl = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:8000' : '');
+                const response = await axios.post(`${baseUrl}/api/sanghatta-chakra`, {
                     transit_planets: transitPlanets
                 });
 

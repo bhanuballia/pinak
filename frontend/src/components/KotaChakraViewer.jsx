@@ -43,7 +43,8 @@ export default function KotaChakraViewer({ birthData: propBirthData, transitData
                     });
                 }
 
-                const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/kota-chakra`, {
+                const baseUrl = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:8000' : '');
+                const response = await axios.post(`${baseUrl}/api/kota-chakra`, {
                     moon_longitude: moon.fullDegree || moon.longitude || 0,
                     transit_planets: transitPlanets
                 });

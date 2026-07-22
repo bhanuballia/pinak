@@ -25,7 +25,8 @@ export default function KurmaChakraViewer() {
 
                 // If transitPlanets is empty, the backend will calculate current live transits using swisseph.
 
-                const response = await axios.post(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/kurma-chakra`, {
+                const baseUrl = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:8000' : '');
+                const response = await axios.post(`${baseUrl}/api/kurma-chakra`, {
                     transit_planets: transitPlanets
                 });
 
