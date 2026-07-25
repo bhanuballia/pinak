@@ -5250,7 +5250,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                     Graha Dasha <span className="text-[10px]">▶</span>
                   </button>
                   <div className="absolute top-0 left-full ml-1 w-56 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/grahadasha:opacity-100 group-hover/grahadasha:visible transition-all duration-200 py-2 z-50">
-                    {CELL_CONTENTS.filter(c => ["vimshottari", "shodashottari", "chaturshitisama", "ashtottari", "dwisaptatisama", "dwadashottari", "panchottari", "shatabdika", "shashtihayani", "panch_pakshi"].includes(c.id)).map(c => (
+                    {CELL_CONTENTS.filter(c => ["vimshottari", "panch_pakshi", "shodashottari", "chaturshitisama", "ashtottari", "dwisaptatisama", "dwadashottari", "panchottari", "shatabdika", "shashtihayani"].includes(c.id)).map(c => (
                       <button
                         key={c.id}
                         onClick={() => handleMaximizeInNewWindow(c.id)}

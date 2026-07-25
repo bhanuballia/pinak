@@ -590,8 +590,11 @@ export default function GenerateReport() {
                 alt="Welcome Poster"
                 className="w-full h-auto object-contain"
               />
-              <div className="w-full bg-amber-500 py-3 text-center text-black text-[25px] font-black uppercase tracking-widest border-t border-amber-600 shadow-inner">
-                "हमारे ज्योतिषाचार्य श्री चंद्रशेखर जी"
+              <div className="w-full bg-amber-500 py-1 text-center text-black text-[20px] font-black uppercase tracking-widest border-t border-amber-600 shadow-inner">
+                " चंद्रशेखर "
+              </div>
+              <div className="w-full bg-amber-500 py-1 text-center text-black text-[20px] font-black uppercase tracking-widest border-t border-amber-600 shadow-inner">
+                "ज्योतिषाचार्य"
               </div>
             </div>
 

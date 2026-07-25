@@ -268,7 +268,9 @@ const FESTIVALS = [
         hindiName: "रक्षाबंधन",
         description: "Sibling Bond Festival, Full moon of Shravana",
         match: (day, month, year, dayData, hinduMonth) => {
-            return (month === 7 || month === 8) && dayData?.tithi?.tithi_index === 14 && (hinduMonth === "Shravana" || hinduMonth.includes("Shravana"));
+            const naks = dayData?.nakshatra?.nakshatra_name.toLowerCase() || "";
+            const isRakshaNaks = naks.includes("shravana") || naks.includes("sravana") || naks.includes("dhanishta") || naks.includes("shatabhisha") || naks.includes("uttara ashadha") || naks.includes("ashadha");
+            return (month === 7 || month === 8) && dayData?.tithi?.tithi_index === 14 && isRakshaNaks && (hinduMonth.includes("Shravana") || hinduMonth.includes("Bhadrapada") || hinduMonth.includes("Ashadha"));
         },
         month: 7 // August
     },
@@ -372,11 +374,29 @@ const FESTIVALS = [
         month: 9 // October
     },
     {
-        name: "Dhanteras / Govatsa Dwadashi",
-        hindiName: "धनतेरस / गोवत्स द्वादशी",
-        description: "First day of Diwali, dark fortnight of Ashvin/Kartik",
+        name: "Govatsa Dwadashi",
+        hindiName: "गोवत्स द्वादशी",
+        description: "Worship of cows and calves, Krishna Dwadashi of Ashvin/Kartik",
         match: (day, month, year, dayData, hinduMonth) => {
             return (month === 9 || month === 10) && dayData?.tithi?.tithi_index === 26 && (hinduMonth === "Ashvina" || hinduMonth.includes("Ashvina") || hinduMonth === "Kartika" || hinduMonth.includes("Kartika"));
+        },
+        month: 9 // October
+    },
+    {
+        name: "Dhanteras",
+        hindiName: "धनतेरस",
+        description: "Worship of Lord Dhanvantari, starting of Diwali, Krishna Trayodashi of Ashvin/Kartik",
+        match: (day, month, year, dayData, hinduMonth) => {
+            return (month === 9 || month === 10) && dayData?.tithi?.tithi_index === 27 && (hinduMonth === "Ashvina" || hinduMonth.includes("Ashvina") || hinduMonth === "Kartika" || hinduMonth.includes("Kartika"));
+        },
+        month: 9 // October
+    },
+    {
+        name: "Naraka Chaturdashi (Choti Diwali)",
+        hindiName: "नरक चतुर्दशी (छोटी दिवाली)",
+        description: "Second day of Diwali, Krishna Chaturdashi of Ashvin/Kartik",
+        match: (day, month, year, dayData, hinduMonth) => {
+            return (month === 9 || month === 10) && dayData?.tithi?.tithi_index === 28 && (hinduMonth === "Ashvina" || hinduMonth.includes("Ashvina") || hinduMonth === "Kartika" || hinduMonth.includes("Kartika"));
         },
         month: 9 // October
     },

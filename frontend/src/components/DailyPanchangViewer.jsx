@@ -5,7 +5,7 @@ const ProfessionalRoyaleClock = ({ time }) => {
     const ghatiRotation = (time.total_ghati % 60) * 6;
     const muhurtaRotation = (time.total_ghati / 2 % 30) * 12;
 
-    const symptoms = ["♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"];
+    const symptoms = ["♈\uFE0E", "♉\uFE0E", "♊\uFE0E", "♋\uFE0E", "♌\uFE0E", "♍\uFE0E", "♎\uFE0E", "♏\uFE0E", "♐\uFE0E", "♑\uFE0E", "♒\uFE0E", "♓\uFE0E"];
     const rashis = ["Mesh", "Vrishabh", "Mithun", "Kark", "Simha", "Kanya", "Tula", "Vrishchik", "Dhanu", "Makar", "Kumbh", "Meen"];
 
     const swordPath = "polygon(50% 0%, 100% 20%, 80% 100%, 20% 100%, 0% 20%)";
@@ -13,8 +13,8 @@ const ProfessionalRoyaleClock = ({ time }) => {
     return (
         <div style={{
             position: 'relative',
-            width: '340px',
-            height: '340px',
+            width: '480px',
+            height: '480px',
             margin: '0 auto 50px',
             userSelect: 'none'
         }}>
@@ -50,8 +50,8 @@ const ProfessionalRoyaleClock = ({ time }) => {
                         <stop offset="100%" stopColor="#92400e" />
                     </linearGradient>
                     <filter id="goldGlow">
-                        <feGaussianBlur stdDeviation="3" result="blur" />
-                        <feComposite in="blur" in2="SourceGraphic" operator="over" />
+                        <feGaussianBlur stdDeviation="1" result="blur" />
+                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
                     </filter>
                 </defs>
 
@@ -85,8 +85,8 @@ const ProfessionalRoyaleClock = ({ time }) => {
                                 y={200 - rText * Math.cos(angle)}
                                 textAnchor="middle"
                                 dominantBaseline="middle"
-                                fill="rgba(255,255,255,0.2)"
-                                fontSize="9"
+                                fill="rgba(243, 202, 21, 1)"
+                                fontSize="12"
                                 fontWeight="900"
                                 transform={`rotate(${i * 30}, ${200 + rText * Math.sin(angle)}, ${200 - rText * Math.cos(angle)})`}
                                 style={{ fontFamily: 'serif', letterSpacing: '1px' }}
@@ -99,7 +99,7 @@ const ProfessionalRoyaleClock = ({ time }) => {
                                 textAnchor="middle"
                                 dominantBaseline="middle"
                                 fill="#d4af37"
-                                fontSize="22"
+                                fontSize="28"
                                 filter="url(#goldGlow)"
                             >
                                 {symptoms[i]}
@@ -300,8 +300,68 @@ export default function DailyPanchangViewer() {
 
     return (
         <div style={{ minHeight: '100vh', backgroundColor: '#020617', color: '#cbd5e1', fontFamily: 'serif', padding: '40px 20px' }}>
-            <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '60px', alignItems: 'flex-start' }}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
+                <button
+                    onClick={() => {
+                        const element = document.getElementById('shubh-chaughadiya-muhurt-section');
+                        if (element) {
+                            element.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }}
+                    style={{
+                        position: 'absolute',
+                        top: '0',
+                        left: '0',
+                        background: 'linear-gradient(135deg, rgba(230, 210, 33, 0.2) 0%, rgba(245, 200, 51, 0.2) 100%)',
+                        color: 'rgba(230, 210, 33, 1)',
+                        border: '1px solid rgba(230, 210, 33, 0.4)',
+                        padding: '12px 24px',
+                        borderRadius: '30px',
+                        fontSize: '18px',
+                        fontWeight: '900',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        zIndex: 10,
+                        transition: 'transform 0.2s',
+                    }}
+                    onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
+                    onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                >
+                    Click To Know Shubh Chaughadiya Muhurt (शुभ चौघड़िया मुहूर्त)
+                </button>
+                <button
+                    onClick={() => {
+                        const element = document.getElementById('auspicious-time-advisor-section');
+                        if (element) {
+                            element.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }}
+                    style={{
+                        position: 'absolute',
+                        top: '0',
+                        right: '0',
+                        background: 'linear-gradient(135deg, rgba(230, 210, 33, 0.2) 0%, rgba(245, 200, 51, 0.2) 100%)',
+                        color: 'rgba(230, 210, 33, 1)',
+                        border: '1px solid rgba(230, 210, 33, 0.4)',
+                        padding: '12px 24px',
+                        borderRadius: '30px',
+                        fontSize: '18px',
+                        fontWeight: '900',
+                        cursor: 'pointer',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '8px',
+                        zIndex: 10,
+                        transition: 'transform 0.2s',
+                    }}
+                    onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
+                    onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                >
+                    Click To Know Auspicious Time Advisor (शुभ समय परामर्श)
+                </button>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '60px', alignItems: 'flex-start', paddingTop: '60px' }}>
 
                     <div style={{ flex: '1 1 400px', textAlign: 'center' }}>
                         <div style={{ padding: '60px 20px', background: 'rgba(15,23,42,0.6)', borderRadius: '60px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 40px 100px rgba(0,0,0,0.5)' }}>
@@ -311,11 +371,11 @@ export default function DailyPanchangViewer() {
                             <ProfessionalRoyaleClock time={data.vedic_time} />
 
                             <div style={{ marginTop: '60px', padding: '30px', background: 'rgba(212,175,55,0.05)', borderRadius: '30px', border: '1px solid rgba(212,175,55,0.1)', textAlign: 'left' }}>
-                                <div style={{ color: '#d4af37', fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px', marginBottom: '10px' }}>Cosmic Proclamation</div>
+                                <div style={{ color: '#d4af37', fontSize: '20px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px', marginBottom: '10px' }}>Cosmic Proclamation</div>
                                 <div style={{ color: 'white', fontSize: '20px', fontWeight: 900, marginBottom: '10px' }}>Current: {interpretation.name} Muhurta</div>
-                                <div style={{ fontSize: '14px', lineHeight: '1.6', color: '#94a3b8' }}>
+                                <div style={{ fontSize: '20px', lineHeight: '1.6', color: 'rgba(241, 211, 36, 1)' }}>
                                     <p style={{ marginBottom: '8px' }}>We are presently in the <strong>{interpretation.stage}</strong> cycle. {interpretation.ghatiDesc}.</p>
-                                    <p style={{ color: '#d4af37', fontWeight: 700 }}>Divine Advice: {interpretation.advice}</p>
+                                    <p style={{ color: 'rgba(241, 211, 36, 1)', fontWeight: 700 }}>Divine Advice: {interpretation.advice}</p>
                                 </div>
                             </div>
                         </div>
@@ -323,24 +383,24 @@ export default function DailyPanchangViewer() {
 
                         {/* New Educational Section */}
                         <div style={{ marginTop: '30px', padding: '30px', background: 'rgba(30,41,59,0.3)', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'left' }}>
-                            <div style={{ color: '#64748b', fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '15px' }}>Divine Glossary</div>
+                            <div style={{ color: 'rgba(233, 216, 216, 1)', fontSize: '22px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '15px' }}>Divine Glossary</div>
                             <div style={{ marginBottom: '15px' }}>
-                                <div style={{ color: 'white', fontSize: '14px', fontWeight: 700, marginBottom: '4px' }}>What is a Muhurta?</div>
-                                <div style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5' }}>A Muhurta is a unit of 48 minutes. There are exactly 30 Muhurtas in a Vedic day (sunrise to sunrise). Each Muhurta is ruled by a specific Deity and carries a unique energetic vibration.</div>
+                                <div style={{ color: 'rgb(230, 221, 221)', fontSize: '20px', fontWeight: 700, marginBottom: '4px' }}>What is a Muhurta?</div>
+                                <div style={{ fontSize: '16px', color: 'rgba(212, 203, 73, 1)', lineHeight: '1.5' }}>A Muhurta is a unit of 48 minutes. There are exactly 30 Muhurtas in a Vedic day (sunrise to sunrise). Each Muhurta is ruled by a specific Deity and carries a unique energetic vibration.</div>
                             </div>
                             <div>
-                                <div style={{ color: 'white', fontSize: '14px', fontWeight: 700, marginBottom: '4px' }}>What does Ghati Progress mean?</div>
-                                <div style={{ fontSize: '12px', color: '#64748b', lineHeight: '1.5' }}>A 'Ghati' is 24 minutes. The clock tracks 60 Ghatis per day. 'Progress' shows how far we have traveled since the last Sunrise—the ultimate anchor of Vedic time.</div>
+                                <div style={{ color: 'rgb(230, 221, 221)', fontSize: '20px', fontWeight: 700, marginBottom: '4px' }}>What does Ghati Progress mean?</div>
+                                <div style={{ fontSize: '16px', color: 'rgba(212, 203, 73, 1)', lineHeight: '1.5' }}>A 'Ghati' is 24 minutes. The clock tracks 60 Ghatis per day. 'Progress' shows how far we have traveled since the last Sunrise—the ultimate anchor of Vedic time.</div>
                             </div>
                         </div>
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '40px', paddingTop: '40px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                             <div>
-                                <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 900, textTransform: 'uppercase' }}>Current Muhurta</div>
+                                <div style={{ fontSize: '22px', color: 'rgba(233, 209, 209, 1)', fontWeight: 900, textTransform: 'uppercase' }}>Current Muhurta</div>
                                 <div style={{ fontSize: '32px', color: 'white', fontWeight: 900 }}>#{data.vedic_time.muhurta_index}</div>
                             </div>
                             <div style={{ borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
-                                <div style={{ fontSize: '10px', color: '#64748b', fontWeight: 900, textTransform: 'uppercase' }}>Ghati Progress</div>
+                                <div style={{ fontSize: '22px', color: 'rgba(233, 209, 209, 1)', fontWeight: 900, textTransform: 'uppercase' }}>Ghati Progress</div>
                                 <div style={{ fontSize: '32px', color: '#d4af37', fontWeight: 900 }}>{data.vedic_time.total_ghati}</div>
                             </div>
                         </div>
@@ -353,11 +413,11 @@ export default function DailyPanchangViewer() {
                             <button onClick={() => handleDateChange(-1)} style={{ background: 'transparent', border: 'none', color: '#d4af37', fontSize: '28px', cursor: 'pointer', transition: 'transform 0.2s', padding: '10px' }} onMouseOver={(e) => e.target.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.target.style.transform = 'scale(1)'}>◀</button>
                             <div style={{ textAlign: 'center' }}>
                                 <h1 style={{ fontSize: '64px', color: '#d4af37', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>{data.date}</h1>
-                                <p style={{ fontSize: '24px', color: '#64748b', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '4px', margin: '5px 0 0 0' }}>
+                                <p style={{ fontSize: '24px', color: '#eec2c0ff', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '4px', margin: '5px 0 0 0' }}>
                                     {data.day}
                                 </p>
                                 {data.monthly_sankranti && (
-                                    <div style={{ marginTop: '15px', color: '#d4af37', fontSize: '14px', fontWeight: 700, letterSpacing: '2px', background: 'rgba(212,175,55,0.1)', padding: '6px 15px', borderRadius: '20px', display: 'inline-block' }}>
+                                    <div style={{ marginTop: '15px', color: '#29e018ff', fontSize: '22px', fontWeight: 700, letterSpacing: '2px', background: 'rgba(212,175,55,0.1)', padding: '6px 15px', borderRadius: '20px', display: 'inline-block' }}>
                                         {data.monthly_sankranti.name} • {data.monthly_sankranti.date}, {data.monthly_sankranti.exact_time}
                                     </div>
                                 )}
@@ -369,17 +429,17 @@ export default function DailyPanchangViewer() {
                         )}
                         {data.sankranti && (
                             <div style={{ background: 'rgba(239,68,68,0.2)', color: '#ef4444', padding: '12px 25px', borderRadius: '20px', border: '1px solid rgba(239,68,68,0.4)', textAlign: 'center' }}>
-                                <div style={{ fontSize: '16px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '4px' }}>{data.sankranti.name}</div>
-                                <div style={{ fontSize: '12px', color: '#fca5a5' }}>Transit at {data.sankranti.exact_time}</div>
+                                <div style={{ fontSize: '20px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '4px' }}>{data.sankranti.name}</div>
+                                <div style={{ fontSize: '18px', color: '#fca5a5' }}>Transit at {data.sankranti.exact_time}</div>
                             </div>
                         )}
                         <div style={{ background: 'rgba(0,0,0,0.5)', padding: '20px 40px', borderRadius: '30px', border: '1px solid rgba(255,191,0,0.1)', display: 'flex', gap: '40px' }}>
                             <div style={{ textAlign: 'center' }}>
-                                <span style={{ fontSize: '9px', color: '#f97316', fontWeight: 900, textTransform: 'uppercase', display: 'block' }}>Sunrise</span>
+                                <span style={{ fontSize: '14px', color: '#f97316', fontWeight: 900, textTransform: 'uppercase', display: 'block' }}>Sunrise</span>
                                 <span style={{ fontSize: '20px', color: 'white', fontWeight: 900 }}>{data.sun_rise}</span>
                             </div>
                             <div style={{ textAlign: 'center' }}>
-                                <span style={{ fontSize: '9px', color: '#64748b', fontWeight: 900, textTransform: 'uppercase', display: 'block' }}>Sunset</span>
+                                <span style={{ fontSize: '14px', color: 'rgba(243, 54, 29, 1)', fontWeight: 900, textTransform: 'uppercase', display: 'block' }}>Sunset</span>
                                 <span style={{ fontSize: '20px', color: 'white', fontWeight: 900 }}>{data.sun_set}</span>
                             </div>
                         </div>
@@ -395,7 +455,7 @@ export default function DailyPanchangViewer() {
                             <div key={i} style={{ background: 'rgba(30,41,59,0.4)', padding: '40px', borderRadius: '50px', border: `1px solid ${item.color}22` }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
                                     <span style={{ fontSize: '32px' }}>{item.icon}</span>
-                                    <span style={{ fontSize: '10px', color: 'rgba(255,255,255,0.2)', fontWeight: 900, textTransform: 'uppercase' }}>{item.label}</span>
+                                    <span style={{ fontSize: '22px', color: 'hsla(0, 42%, 90%, 0.99)', fontWeight: 900, textTransform: 'uppercase' }}>{item.label}</span>
                                 </div>
                                 <h3 style={{ fontSize: '32px', color: item.color, fontWeight: 900, margin: 0, fontStyle: 'italic' }}>{item.value}</h3>
                             </div>
@@ -445,7 +505,7 @@ export default function DailyPanchangViewer() {
                     {data.choghadiya && (
                         <>
                             {/* Shubh Chaughadiya Muhurt Card */}
-                            <div style={{
+                            <div id="shubh-chaughadiya-muhurt-section" style={{
                                 backgroundColor: '#ffffff',
                                 color: '#0f172a',
                                 borderRadius: '24px',
@@ -471,12 +531,12 @@ export default function DailyPanchangViewer() {
                                         ☆
                                     </div>
                                     <h2 style={{ fontSize: '24px', fontWeight: '800', margin: 0, color: '#0f172a', fontFamily: 'sans-serif' }}>
-                                        Shubh Chaughadiya Muhurt for {data.day}
+                                        Shubh Chaughadiya Muhurt for <span style={{ color: '#d97706' }}>{data.day}</span>
                                     </h2>
                                 </div>
 
-                                <p style={{ fontSize: '15px', color: '#475569', marginBottom: '20px', fontFamily: 'sans-serif' }}>
-                                    Most auspicious periods for today ({data.day}):
+                                <p style={{ fontSize: '18px', color: 'rgba(0, 0, 0, 1)', marginBottom: '20px', fontFamily: 'sans-serif' }}>
+                                    Most auspicious periods for today (<span style={{ color: '#d97706' }}>{data.day}</span>):
                                 </p>
 
                                 {/* Table Container */}
@@ -489,9 +549,9 @@ export default function DailyPanchangViewer() {
                                     <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'sans-serif' }}>
                                         <thead>
                                             <tr style={{ borderBottom: '1px solid #e2e8f0', backgroundColor: '#f8fafc' }}>
-                                                <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '11px', fontWeight: '800', color: '#475569', letterSpacing: '1px', textTransform: 'uppercase' }}>Time</th>
-                                                <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '11px', fontWeight: '800', color: '#475569', letterSpacing: '1px', textTransform: 'uppercase' }}>Type</th>
-                                                <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '11px', fontWeight: '800', color: '#475569', letterSpacing: '1px', textTransform: 'uppercase' }}>Ruler</th>
+                                                <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '14px', fontWeight: '800', color: '#040207ff', letterSpacing: '1px', textTransform: 'uppercase' }}>Time</th>
+                                                <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '14px', fontWeight: '800', color: '#000000ff', letterSpacing: '1px', textTransform: 'uppercase' }}>Type</th>
+                                                <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '14px', fontWeight: '800', color: '#040207ff', letterSpacing: '1px', textTransform: 'uppercase' }}>Ruler</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -502,13 +562,13 @@ export default function DailyPanchangViewer() {
                                                     const textColor = getChoghadiyaColor(c.name);
                                                     return (
                                                         <tr key={idx} style={{ borderBottom: idx < arr.length - 1 ? '1px solid #e2e8f0' : 'none' }}>
-                                                            <td style={{ padding: '16px 20px', fontSize: '14px', fontWeight: '600', color: '#1e293b' }}>
+                                                            <td style={{ padding: '16px 20px', fontSize: '16px', fontWeight: '600', color: '#1e293b' }}>
                                                                 {c.start} - {c.end}
                                                             </td>
-                                                            <td style={{ padding: '16px 20px', fontSize: '14px', fontWeight: '700', color: textColor }}>
+                                                            <td style={{ padding: '16px 20px', fontSize: '16px', fontWeight: '700', color: textColor }}>
                                                                 {c.name}
                                                             </td>
-                                                            <td style={{ padding: '16px 20px', fontSize: '14px', fontWeight: '600', color: '#475569' }}>
+                                                            <td style={{ padding: '16px 20px', fontSize: '16px', fontWeight: '600', color: 'hsla(241, 85%, 44%, 1.00)' }}>
                                                                 {ruler}
                                                             </td>
                                                         </tr>
@@ -526,10 +586,10 @@ export default function DailyPanchangViewer() {
                                     border: '1px solid #dbeafe',
                                     fontFamily: 'sans-serif'
                                 }}>
-                                    <h4 style={{ fontSize: '14px', fontWeight: '700', color: '#1e40af', margin: '0 0 10px 0' }}>
+                                    <h4 style={{ fontSize: '16px', fontWeight: '700', color: '#1e40af', margin: '0 0 10px 0' }}>
                                         About These Auspicious Periods:
                                     </h4>
-                                    <ul style={{ listStyleType: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '13px', color: '#1e293b' }}>
+                                    <ul style={{ listStyleType: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '16px', color: '#1e293b' }}>
                                         <li style={{ display: 'flex', gap: '8px' }}>
                                             <span style={{ color: '#10b981', fontWeight: 'bold' }}>•</span>
                                             <span><strong>Amrit</strong> - Most auspicious time ruled by Moon, excellent for all activities</span>
@@ -547,7 +607,7 @@ export default function DailyPanchangViewer() {
                             </div>
 
                             <div style={{ marginTop: '40px' }}>
-                                <h3 style={{ color: '#d4af37', textTransform: 'uppercase', letterSpacing: '3px', fontSize: '14px', marginBottom: '20px', textAlign: 'center' }}>Choghadiya (Day & Night)</h3>
+                                <h3 style={{ color: '#d4af37', textTransform: 'uppercase', letterSpacing: '3px', fontSize: '20px', fontWeight: '900', marginBottom: '20px', textAlign: 'center' }}>Choghadiya (Day & Night)</h3>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
                                     <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '30px', padding: '30px', border: '1px solid rgba(255,255,255,0.05)' }}>
                                         <h4 style={{ color: 'white', textAlign: 'center', marginBottom: '20px', fontSize: '18px', textTransform: 'uppercase', letterSpacing: '2px' }}>Day Choghadiya</h4>
@@ -555,7 +615,7 @@ export default function DailyPanchangViewer() {
                                             {data.choghadiya.day.map((c, i) => (
                                                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 15px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', borderLeft: `4px solid ${c.quality === 'Good' ? '#34d399' : c.quality === 'Bad' ? '#f87171' : '#fbbf24'}`, color: c.quality === 'Good' ? '#34d399' : c.quality === 'Bad' ? '#f87171' : '#fbbf24' }}>
                                                     <span style={{ fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px' }}>{c.name}</span>
-                                                    <span style={{ fontSize: '13px', opacity: 0.9 }}>{c.start} - {c.end}</span>
+                                                    <span style={{ fontSize: '18px', opacity: 0.9 }}>{c.start} - {c.end}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -566,7 +626,7 @@ export default function DailyPanchangViewer() {
                                             {data.choghadiya.night.map((c, i) => (
                                                 <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 15px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', borderLeft: `4px solid ${c.quality === 'Good' ? '#34d399' : c.quality === 'Bad' ? '#f87171' : '#fbbf24'}`, color: c.quality === 'Good' ? '#34d399' : c.quality === 'Bad' ? '#f87171' : '#fbbf24' }}>
                                                     <span style={{ fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px' }}>{c.name}</span>
-                                                    <span style={{ fontSize: '13px', opacity: 0.9 }}>{c.start} - {c.end}</span>
+                                                    <span style={{ fontSize: '18px', opacity: 0.9 }}>{c.start} - {c.end}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -574,9 +634,9 @@ export default function DailyPanchangViewer() {
                                 </div>
 
                                 {/* Choghadiya Oracle Section */}
-                                <div style={{ marginTop: '30px', background: 'linear-gradient(135deg, rgba(30,41,59,0.8) 0%, rgba(15,23,42,0.9) 100%)', borderRadius: '30px', padding: '30px', border: '1px solid rgba(167,139,250,0.3)', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
-                                    <h4 style={{ color: '#a78bfa', textAlign: 'center', marginBottom: '15px', fontSize: '18px', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: 900 }}>Ask The Choghadiya Oracle</h4>
-                                    <p style={{ color: '#94a3b8', textAlign: 'center', fontSize: '16px', marginBottom: '20px' }}>Ask a question about travel, business, health, or ceremonies. The Oracle will look at the *currently active* Choghadiya and guide you.</p>
+                                <div id="auspicious-time-advisor-section" style={{ marginTop: '30px', background: 'linear-gradient(135deg, rgba(30,41,59,0.8) 0%, rgba(15,23,42,0.9) 100%)', borderRadius: '30px', padding: '30px', border: '1px solid rgba(167,139,250,0.3)', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
+                                    <h4 style={{ color: 'rgba(230, 210, 33, 1)', textAlign: 'center', marginBottom: '15px', fontSize: '20px', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: 900 }}>Auspicious Time Advisor (शुभ समय परामर्श)</h4>
+                                    <p style={{ color: 'rgba(245, 200, 51, 1)', textAlign: 'center', fontSize: '18px', marginBottom: '20px' }}>Ask a question about travel, business, health, or ceremonies. The Oracle will look at the *currently active* Choghadiya and guide you.</p>
 
                                     <form onSubmit={handleOracleSubmit} style={{ display: 'flex', gap: '15px', maxWidth: '600px', margin: '0 auto' }}>
                                         <input
@@ -584,7 +644,7 @@ export default function DailyPanchangViewer() {
                                             value={oracleQuestion}
                                             onChange={(e) => setOracleQuestion(e.target.value)}
                                             placeholder="e.g. Is this a good time to travel?"
-                                            style={{ flex: 1, padding: '15px 25px', borderRadius: '30px', background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(167,139,250,0.3)', color: 'white', fontSize: '18px', outline: 'none' }}
+                                            style={{ flex: 1, padding: '15px 25px', borderRadius: '30px', background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(167,139,250,0.3)', color: 'hsla(0, 45%, 86%, 1.00)', fontSize: '18px', outline: 'none' }}
                                             disabled={oracleLoading}
                                         />
                                         <button
@@ -631,7 +691,7 @@ export default function DailyPanchangViewer() {
                                                         borderRadius: '20px',
                                                         border: `1px solid ${activeOracleCategory === cat.id ? '#a78bfa' : 'rgba(167,139,250,0.3)'}`,
                                                         background: activeOracleCategory === cat.id ? 'rgba(167,139,250,0.2)' : 'transparent',
-                                                        color: activeOracleCategory === cat.id ? '#fff' : '#94a3b8',
+                                                        color: activeOracleCategory === cat.id ? 'rgba(243, 189, 189, 1)' : 'rgba(238, 199, 23, 1)',
                                                         fontSize: '18px',
                                                         cursor: 'pointer',
                                                         transition: 'all 0.2s',
@@ -681,7 +741,7 @@ export default function DailyPanchangViewer() {
                                                         key={idx}
                                                         onClick={(e) => { e.preventDefault(); handleOracleSubmit(q); }}
                                                         disabled={oracleLoading}
-                                                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '15px', padding: '10px 15px', color: '#cbd5e1', fontSize: '17px', cursor: oracleLoading ? 'not-allowed' : 'pointer', transition: 'all 0.2s', textAlign: 'left' }}
+                                                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '15px', padding: '10px 15px', color: 'rgba(241, 201, 22, 1)', fontSize: '18px', cursor: oracleLoading ? 'not-allowed' : 'pointer', transition: 'all 0.2s', textAlign: 'left' }}
                                                         onMouseOver={(e) => { if (!oracleLoading) e.target.style.background = 'rgba(167,139,250,0.2)' }}
                                                         onMouseOut={(e) => { if (!oracleLoading) e.target.style.background = 'rgba(255,255,255,0.05)' }}
                                                     >
@@ -696,16 +756,9 @@ export default function DailyPanchangViewer() {
                             {/*  */}
 
                             <div style={{ textAlign: 'center', padding: '40px 0 20px 0' }}>
-                                <label style={{ color: '#d4af37', marginRight: '15px', fontSize: '14px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px' }}>Check Panchang For:</label>
-                                <input
-                                    type="date"
-                                    value={selectedDate}
-                                    onChange={(e) => setSelectedDate(e.target.value)}
-                                    style={{ padding: '12px 20px', borderRadius: '30px', background: 'rgba(0,0,0,0.5)', color: 'white', border: '1px solid rgba(212,175,55,0.3)', fontFamily: 'inherit', fontSize: '16px', minWidth: '200px', colorScheme: 'dark' }}
-                                />
-                                {selectedDate && (
-                                    <button onClick={() => setSelectedDate("")} style={{ marginLeft: '15px', padding: '12px 20px', borderRadius: '30px', background: 'rgba(239,68,68,0.2)', color: '#ef4444', border: '1px solid rgba(239,68,68,0.5)', fontSize: '12px', fontWeight: 900, textTransform: 'uppercase' }}>Reset to Today</button>
-                                )}
+
+
+
                             </div>
 
                             <div style={{ textAlign: 'center', padding: '20px 0 60px 0' }}>

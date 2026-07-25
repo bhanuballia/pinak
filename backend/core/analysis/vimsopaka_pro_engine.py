@@ -22,9 +22,9 @@ def classify_strength(score: float) -> str:
     """Professional Vimsopaka strength classification (5/10/15 model)."""
     if score < 5:
         return "Inauspicious"
-    elif score < 10:
+    elif score < 9:
         return "Average"
-    elif score < 15:
+    elif score < 14:
         return "Good"
     return "Excellent"
 

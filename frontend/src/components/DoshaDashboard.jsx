@@ -23,7 +23,7 @@ export default function DoshaDashboard() {
 
                 const moon_degree = moonPos.degree;
                 const moon_sign = Math.floor(moon_degree / 30) + 1;
-                
+
                 // Calculate Nakshatra and Pada directly from Moon degree for accuracy
                 const NAKSHATRAS = [
                     "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra",
@@ -32,7 +32,7 @@ export default function DoshaDashboard() {
                     "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta",
                     "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"
                 ];
-                
+
                 const total_minutes = moon_degree * 60;
                 const nak_index = Math.floor(total_minutes / 800); // 800 minutes = 13deg 20min
                 const nakshatra = NAKSHATRAS[nak_index];
@@ -88,7 +88,7 @@ export default function DoshaDashboard() {
         let bgColor = "bg-slate-800 border-slate-700";
         let titleColor = "text-slate-300";
         let statusBadge = "";
-        
+
         if (data.status === "Clear") {
             bgColor = "bg-emerald-950/30 border-emerald-900";
             titleColor = "text-emerald-400";
@@ -111,13 +111,13 @@ export default function DoshaDashboard() {
                     </h2>
                     {statusBadge}
                 </div>
-                
+
                 <div className="flex-1">
                     <p className="text-slate-300 leading-relaxed mb-4">{data.description}</p>
-                    
+
                     {data.bhanga_reason && (
                         <div className={`p-4 rounded-xl border mt-auto ${data.status === 'Cancelled' ? 'bg-blue-900/20 border-blue-800 text-blue-200' : 'bg-red-900/20 border-red-800 text-red-200'}`}>
-                            <p className="font-bold mb-1 uppercase tracking-wider text-xs opacity-75">
+                            <p className="font-bold mb-1 uppercase tracking-wider text-[18px] opacity-75">
                                 {data.status === 'Cancelled' ? 'Exception (Bhanga) Triggered' : 'Severity Note'}
                             </p>
                             <p>{data.bhanga_reason}</p>
@@ -129,7 +129,7 @@ export default function DoshaDashboard() {
                             <p className="font-bold mb-2 uppercase tracking-wider text-xs text-slate-400">Recommendations</p>
                             <ul className="space-y-2">
                                 {data.remedies.map((rem, idx) => (
-                                    <li key={idx} className="text-sm text-slate-300">{rem}</li>
+                                    <li key={idx} className="text-[18px] text-slate-300">{rem}</li>
                                 ))}
                             </ul>
                         </div>
@@ -145,7 +145,7 @@ export default function DoshaDashboard() {
                 <h1 className="text-4xl font-black text-purple-400 flex items-center gap-3">
                     🧿 Advanced Doshas & Exceptions
                 </h1>
-                <p className="text-slate-400 mt-2 text-lg">
+                <p className="text-#d4af37 mt-2 text-[18px]">
                     Deep Panchang analysis tracking Panchaka, Bhadra, Gandamoola, and their specific astrological cancellations (Bhanga).
                 </p>
             </header>
