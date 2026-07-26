@@ -183,6 +183,7 @@ export default function NumerologyDashboard() {
   const [nameSystem, setNameSystem] = useState("Chaldean"); // "Chaldean" | "Pythagorean"
   const [activeTab, setActiveTab] = useState("report");
   const [hoveredPlane, setHoveredPlane] = useState(null); // 'mental' | 'emotional' | 'practical' | 'thought' | 'will' | 'action' | 'golden' | 'silver' | null
+  const [selectedForecastMonth, setSelectedForecastMonth] = useState(new Date().getMonth() + 1); // 1 to 12
 
   const isCellHighlighted = (num) => {
     if (!hoveredPlane) return false;
@@ -196,6 +197,99 @@ export default function NumerologyDashboard() {
     if (planeName.includes('golden') || planeName.includes('success')) return [4, 5, 6].includes(num);
     if (planeName.includes('silver') || planeName.includes('willpower') || planeName.includes('determination')) return [2, 5, 8].includes(num);
     return false;
+  };
+
+  const getMonthForecast = (num) => {
+    const data = {
+      1: {
+        title: "New Beginnings & Fresh Start",
+        focus: "Personal independence, fresh ventures, and leadership.",
+        advice: "A month to start new projects, change direction, and trust your gut. Stand out and be proactive!"
+      },
+      2: {
+        title: "Partnership, Harmony & Patience",
+        focus: "Cooperation, diplomatic talks, and emotional connections.",
+        advice: "Focus on relationships and teamwork. It is a time for patience and listening rather than forcing decisions."
+      },
+      3: {
+        title: "Creative Expression & Expansion",
+        focus: "Social life, artistic expression, and communication.",
+        advice: "Excellent period for writing, presenting, and socializing. Express yourself freely and stay optimistic."
+      },
+      4: {
+        title: "Structure, Discipline & Security",
+        focus: "Hard work, system setups, and financial grounding.",
+        advice: "Focus on details, health, and grounding your plans. A month to put down roots and work diligently."
+      },
+      5: {
+        title: "Change, Freedom & Adaptability",
+        focus: "Travel, exploration, shifting gears, and adventure.",
+        advice: "Be open to unexpected options. Network, travel, and let go of stagnant structures. Embrace change!"
+      },
+      6: {
+        title: "Family, Domestic Harmony & Healing",
+        focus: "Home life, community service, and relationship repair.",
+        advice: "Nurture your loved ones, beautify your home, and take responsibility. Excellent month for healing family bonds."
+      },
+      7: {
+        title: "Introspection, Analysis & Spirituality",
+        focus: "Self-reflection, studies, meditation, and quiet time.",
+        advice: "Spend time alone in nature. Analyze your path, read spiritual or academic works, and rest your mind."
+      },
+      8: {
+        title: "Material Success & Abundance",
+        focus: "Financial control, business deals, and power.",
+        advice: "A power month. Claim your authority, make smart business/career decisions, and focus on abundance."
+      },
+      9: {
+        title: "Completion, Humanitarianism & Release",
+        focus: "Ending outdated cycles, forgiving others, and charity.",
+        advice: "Clean out clutter (physical and emotional). Forgive past issues, donate to charity, and prepare for the next cycle."
+      }
+    };
+    return data[num] || data[1];
+  };
+
+  const getDayForecast = (num) => {
+    const data = {
+      1: {
+        tagline: "Action & Leadership",
+        advice: "Start a new habit, pitch a new concept, or take independent control of your tasks. Avoid self-doubt."
+      },
+      2: {
+        tagline: "Collaboration & Harmony",
+        advice: "Perfect day for romantic dates, quiet dinners, mediation, or signing joint agreements. Stay calm."
+      },
+      3: {
+        tagline: "Creativity & Socializing",
+        advice: "Speak up, share ideas, write creative content, or call friends. Enjoy life and stay lighthearted today."
+      },
+      4: {
+        tagline: "Hard Work & Details",
+        advice: "Organize files, clean your room, review budgets, or set clear guidelines. Focus on solid tasks."
+      },
+      5: {
+        tagline: "Adventure & Adaptability",
+        advice: "Try a new route, meet new contacts, embrace spontaneous plan changes, or travel. Be flexible today."
+      },
+      6: {
+        tagline: "Nurturing & Relationships",
+        advice: "Help a family member, cook a healthy meal, resolve domestic disputes, or focus on home decor. Show love."
+      },
+      7: {
+        tagline: "Research & Meditation",
+        advice: "Read a book, meditate, study difficult concepts, or spend quiet hours in introspection. Avoid noise."
+      },
+      8: {
+        tagline: "Power & Wealth",
+        advice: "Make investments, demand what you deserve, negotiate contracts, or work on high-value business deals."
+      },
+      9: {
+        tagline: "Release & Compassion",
+        advice: "Donate unwanted goods, finish pending chores, forgive someone, and avoid starting brand-new projects."
+      }
+    };
+    return data[num] || data[1];
   };
 
   // Marriage Compatibility states
@@ -1432,6 +1526,128 @@ export default function NumerologyDashboard() {
                           )}
                         </div>
                       ))}
+                    </div>
+                  </div>
+
+                  {/* Progressive predictions & Temporal Cycles Forecast */}
+                  <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-6">
+                    <h3 className="text-lg font-black text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
+                      <Calendar className="w-5 h-5 text-rose-600" /> Progressive Predictions & Cycle Forecasts
+                    </h3>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      
+                      {/* Personal Year Card */}
+                      <div className="bg-gradient-to-br from-rose-50 to-amber-50/30 p-5 rounded-2xl border border-rose-100 flex flex-col justify-between">
+                        <div>
+                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-rose-800 bg-rose-100/50 px-2.5 py-1 rounded-full">
+                            Current Year Vibration
+                          </span>
+                          <h4 className="text-base font-black text-rose-955 mt-2">
+                            Personal Year {result.personalYear}
+                          </h4>
+                          <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                            Overall vibration theme of the entire year:
+                          </p>
+                          <p className="text-xs font-semibold text-slate-700 mt-2 bg-white/70 p-2.5 rounded-xl border border-rose-100/30">
+                            {result.personalYearDetails?.traits || "Year of development and progress."}
+                          </p>
+                        </div>
+                        <div className="text-[10px] text-slate-400 mt-4 border-t border-rose-100/50 pt-2 font-medium">
+                          Ruling Planet: {result.personalYearDetails?.planet || "Sun"}
+                        </div>
+                      </div>
+
+                      {/* Daily Forecast Gauge */}
+                      {(() => {
+                        const today = new Date();
+                        const currentMonthNum = today.getMonth() + 1;
+                        const currentDayNum = today.getDate();
+                        const pMonth = reduceToSingleDigit(result.personalYear + currentMonthNum);
+                        const pDay = reduceToSingleDigit(pMonth + currentDayNum);
+                        const dayData = getDayForecast(pDay);
+                        return (
+                          <div className="bg-white border border-rose-100 p-5 rounded-2xl shadow-sm text-center flex flex-col justify-between md:col-span-2 relative overflow-hidden">
+                            <div className="absolute top-2 right-2 bg-emerald-100 text-emerald-800 rounded-full px-2 py-0.5 text-[9px] font-extrabold uppercase">
+                              Today's Energy
+                            </div>
+                            <div className="flex flex-col sm:flex-row items-center gap-4 my-2">
+                              {/* Circular progress ring representing the daily number */}
+                              <div className="relative w-20 h-20 shrink-0 flex items-center justify-center bg-rose-50 rounded-full border-4 border-rose-400 shadow-inner">
+                                <span className="text-4xl font-black text-rose-600">{pDay}</span>
+                              </div>
+                              <div className="text-left">
+                                <h5 className="font-extrabold text-slate-800 text-sm">{dayData.tagline}</h5>
+                                <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                                  {dayData.advice}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-[10px] text-slate-400 text-left border-t border-slate-100 pt-2 font-semibold">
+                              Current Date: {today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                            </div>
+                          </div>
+                        );
+                      })()}
+
+                    </div>
+
+                    {/* Personal Month Timeline */}
+                    <div className="border-t border-rose-100 pt-4">
+                      <h4 className="text-sm font-extrabold text-rose-955 mb-3">
+                        Monthly Forecast Timeline ({result.currentYear})
+                      </h4>
+                      
+                      {/* Months slider */}
+                      <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-thin scrollbar-thumb-rose-200">
+                        {Array.from({ length: 12 }, (_, i) => {
+                          const mIndex = i + 1;
+                          const pMonth = reduceToSingleDigit(result.personalYear + mIndex);
+                          const mName = new Date(2026, i).toLocaleString('en-US', { month: 'short' });
+                          const isActive = selectedForecastMonth === mIndex;
+                          return (
+                            <button
+                              key={mIndex}
+                              onClick={() => setSelectedForecastMonth(mIndex)}
+                              className={`px-4 py-2.5 rounded-xl border text-center transition-all shrink-0 min-w-[70px] ${
+                                isActive
+                                  ? 'bg-rose-600 text-white border-rose-600 shadow-md'
+                                  : 'bg-rose-50/30 text-rose-950 border-rose-100/50 hover:bg-rose-50'
+                              }`}
+                            >
+                              <span className="text-xs font-bold block leading-none">{mName}</span>
+                              <span className={`text-[10px] font-black block mt-1 ${isActive ? 'text-amber-200' : 'text-rose-600'}`}>
+                                Vib: {pMonth}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Active Month Details Display */}
+                      {(() => {
+                        const mData = getMonthForecast(reduceToSingleDigit(result.personalYear + selectedForecastMonth));
+                        const monthFull = new Date(2026, selectedForecastMonth - 1).toLocaleString('en-US', { month: 'long' });
+                        return (
+                          <div className="bg-rose-50/20 border border-rose-100/70 rounded-2xl p-4 mt-3">
+                            <div className="flex justify-between items-center mb-2">
+                              <span className="text-xs font-bold text-rose-800 uppercase tracking-wider">
+                                {monthFull} Vibration
+                              </span>
+                              <span className="text-xs font-extrabold bg-rose-100 text-rose-900 px-2 py-0.5 rounded-full">
+                                Personal Month {reduceToSingleDigit(result.personalYear + selectedForecastMonth)}
+                              </span>
+                            </div>
+                            <h5 className="font-extrabold text-rose-955 text-sm mb-1">{mData.title}</h5>
+                            <p className="text-xs text-slate-500 mb-2 leading-relaxed">
+                              <strong>Primary Focus:</strong> {mData.focus}
+                            </p>
+                            <p className="text-xs text-slate-650 leading-relaxed bg-white/50 p-3 rounded-xl border border-rose-100/20 font-medium">
+                              <strong>Actionable Advice:</strong> {mData.advice}
+                            </p>
+                          </div>
+                        );
+                      })()}
                     </div>
                   </div>
 
