@@ -22,7 +22,7 @@ const formatOffset = (offset) => {
   return `UTC${sign}${hh}:${mm}`;
 };
 
-export default function PlaceAutocomplete({ onSelect, value }) {
+export default function PlaceAutocomplete({ onSelect, value, inputClassName, dropdownClassName }) {
   const [query, setQuery] = useState(value || "");
 
   useEffect(() => {
@@ -33,6 +33,7 @@ export default function PlaceAutocomplete({ onSelect, value }) {
   const [results, setResults] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [selectedIdx, setSelectedIdx] = useState(-1);
   const debounceRef = useRef(null);
   const cacheRef = useRef({});
   const abortControllerRef = useRef(null);
@@ -99,18 +100,18 @@ export default function PlaceAutocomplete({ onSelect, value }) {
   return (
     <div className="relative">
       <input
-        className="mt-1 w-full border rounded p-2"
+        className={inputClassName || "mt-1 w-full border rounded p-2 text-black bg-white"}
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         placeholder="Type city / town / village"
       />
-      {loading && <div className="absolute right-3 top-3 text-xs text-gray-400">Searching…</div>}
+      {loading && <div className="absolute right-3 top-3.5 text-xs text-slate-400">Searching…</div>}
       {open && results.length > 0 && (
-        <div className="absolute z-50 bg-white border rounded w-full mt-1 max-h-60 overflow-auto shadow">
+        <div className={dropdownClassName || "absolute z-50 bg-white border rounded w-full mt-1 max-h-60 overflow-auto shadow text-black"}>
           {results.map((r, idx) => (
             <div
               key={idx}
-              className="p-2 hover:bg-gray-100 cursor-pointer text-sm"
+              className="p-2.5 hover:bg-slate-700/30 dark:hover:bg-slate-700/80 cursor-pointer text-sm border-b border-slate-700/10"
               onClick={() => choose(r)}
             >
               <div className="font-medium">{r.display_name}</div>

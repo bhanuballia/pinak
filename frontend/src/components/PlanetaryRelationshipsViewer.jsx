@@ -2,13 +2,13 @@ import React from 'react';
 
 const PLANETS = ["Sun", "Mon", "Mar", "Mer", "Jup", "Ven", "Sat", "Rah", "Ket"];
 const PLANET_KEY_MAP = {
-  "Sun": "Sun", "Mon": "Moon", "Mar": "Mars", "Mer": "Mercury", 
+  "Sun": "Sun", "Mon": "Moon", "Mar": "Mars", "Mer": "Mercury",
   "Jup": "Jupiter", "Ven": "Venus", "Sat": "Saturn", "Rah": "Rahu", "Ket": "Ketu"
 };
 
 const PLANET_COLORS = {
   "Sun": "#ff0000", // Red
-  "Mon": "#000000", // Black
+  "Mon": "#000000", // Black 
   "Mar": "#ff0000", // Red
   "Mer": "#00aa00", // Green
   "Jup": "#808000", // Olive/Gold
@@ -40,7 +40,7 @@ export const RelationshipTable = ({ title, matrixData }) => {
       <div className="border-[3px] border-[#3b82f6] rounded-[10px] bg-white mx-1 mb-1 shadow-sm px-3 py-0.5">
         <h2 className="text-[#000000] font-serif text-[18px] leading-tight m-0">{title}</h2>
       </div>
-      
+
       {/* Table Body */}
       <div className="border-[2px] border-[#ff6b81] bg-[#ffffe6] mx-1">
         <table className="w-full font-serif border-collapse">
@@ -66,7 +66,7 @@ export const RelationshipTable = ({ title, matrixData }) => {
                   const rawRel = matrixData[fullRowName]?.[fullColName] || "-";
                   const relText = formatRelationText(rawRel);
                   const color = getRelationColor(relText);
-                  
+
                   return (
                     <td key={pCol} className="py-[2px] text-[15px]" style={{ color }}>
                       {relText}
@@ -87,7 +87,7 @@ const PlanetaryRelationshipsViewer = ({ data }) => {
 
   // Since we updated the backend to return 3 objects, handle both old and new formats.
   const isNewFormat = friendshipData?.compound !== undefined;
-  
+
   const natural = isNewFormat ? friendshipData.natural : null;
   const temporary = isNewFormat ? friendshipData.temporary : null;
   const compound = isNewFormat ? friendshipData.compound : friendshipData;
@@ -103,29 +103,29 @@ const PlanetaryRelationshipsViewer = ({ data }) => {
   return (
     <div className="w-full h-full bg-[#cbd5e1] p-1 font-serif overflow-auto">
       <div className="bg-[#cbd5e1] max-w-7xl mx-auto h-full flex flex-col pt-1">
-        
+
         {/* Natural Relationships */}
         {natural && (
-          <RelationshipTable 
-            title="Natural Relationships (Naisargika)" 
-            matrixData={natural} 
+          <RelationshipTable
+            title="Natural Relationships (Naisargika)"
+            matrixData={natural}
           />
         )}
 
         {/* Temporary Relationships */}
         {temporary && (
-          <RelationshipTable 
-            title="Temporary Relationships (Tatkalika)" 
-            matrixData={temporary} 
+          <RelationshipTable
+            title="Temporary Relationships (Tatkalika)"
+            matrixData={temporary}
           />
         )}
 
         {/* Compound Relationships */}
-        <RelationshipTable 
-          title="Compound Relationships (Panchadha)" 
-          matrixData={compound} 
+        <RelationshipTable
+          title="Compound Relationships (Panchadha)"
+          matrixData={compound}
         />
-        
+
       </div>
     </div>
   );

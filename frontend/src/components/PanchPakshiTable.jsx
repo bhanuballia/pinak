@@ -91,7 +91,7 @@ const PanchPakshiVisualTimeline = ({ timeline, cycleStart, cycleEnd, currentTime
         })}
 
         {showCursor && (
-          <div 
+          <div
             className="absolute top-0 bottom-0 w-0.5 bg-yellow-400 z-10 pointer-events-none"
             style={{ left: `${cursorLeftPercent}%` }}
           >
@@ -215,7 +215,7 @@ const PanchPakshiTable = ({ data }) => {
     // 2. Extract native birth details to calculate correct Birth Bird
     let birthDateStr = "";
     let birthTimeStr = "";
-    
+
     const basic = data?.basic_details || {};
     if (basic.birth_datetime) {
       try {
@@ -280,7 +280,7 @@ const PanchPakshiTable = ({ data }) => {
         if (!res.ok) {
           throw new Error("Failed to fetch Panch Pakshi data");
         }
-        
+
         const result = await res.json();
         setResponse(result);
       } catch (err) {
@@ -340,7 +340,7 @@ const PanchPakshiTable = ({ data }) => {
     if (!startStr || !endStr) return false;
     const start = new Date(startStr);
     const end = new Date(endStr);
-    
+
     // Use simulated transit time as the reference if it represents a different date than today
     // Otherwise, check against real current clock time
     let refTime = currentTime;
@@ -352,7 +352,7 @@ const PanchPakshiTable = ({ data }) => {
         refTime = simDt;
       }
     }
-    
+
     return refTime >= start && refTime < end;
   };
 
@@ -404,7 +404,7 @@ const PanchPakshiTable = ({ data }) => {
 
   return (
     <div className="flex flex-col gap-8 w-full max-w-[95%] mx-auto font-sans text-slate-800">
-      
+
       {/* Astro Metadata Summary Ribbon */}
       <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 shadow-2xl text-white flex flex-col xl:flex-row xl:items-center xl:justify-between gap-6">
         <div>
@@ -429,16 +429,16 @@ const PanchPakshiTable = ({ data }) => {
           <div className="flex flex-col gap-1.5 bg-slate-800/80 border border-slate-700/60 rounded-xl p-3">
             <label className="text-[10px] text-slate-300 uppercase tracking-wider font-mono font-black">Change Transit Day & Date</label>
             <div className="flex gap-2">
-              <input 
-                type="date" 
-                value={transitDate} 
-                onChange={(e) => setTransitDate(e.target.value)} 
+              <input
+                type="date"
+                value={transitDate}
+                onChange={(e) => setTransitDate(e.target.value)}
                 className="bg-slate-950 text-white border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono focus:border-amber-500 focus:outline-none"
               />
-              <input 
-                type="time" 
-                value={transitTime} 
-                onChange={(e) => setTransitTime(e.target.value)} 
+              <input
+                type="time"
+                value={transitTime}
+                onChange={(e) => setTransitTime(e.target.value)}
                 className="bg-slate-950 text-white border border-slate-700 rounded px-2.5 py-1.5 text-xs font-mono focus:border-amber-500 focus:outline-none"
               />
             </div>
@@ -467,7 +467,7 @@ const PanchPakshiTable = ({ data }) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 bg-slate-50 border border-slate-200 rounded-3xl p-6 shadow-sm">
         <div>
           <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-3">🌅 Diurnal (Day) Timeline Bar</h4>
-          <PanchPakshiVisualTimeline 
+          <PanchPakshiVisualTimeline
             timeline={day_timeline}
             cycleStart={sunrise}
             cycleEnd={sunset}
@@ -476,7 +476,7 @@ const PanchPakshiTable = ({ data }) => {
         </div>
         <div>
           <h4 className="text-sm font-bold uppercase tracking-wider text-slate-700 mb-3">🌙 Nocturnal (Night) Timeline Bar</h4>
-          <PanchPakshiVisualTimeline 
+          <PanchPakshiVisualTimeline
             timeline={night_timeline}
             cycleStart={sunset}
             cycleEnd={sunrise_next}
@@ -487,7 +487,7 @@ const PanchPakshiTable = ({ data }) => {
 
       {/* Parallel Side-by-Side Day and Night columns */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
-        
+
         {/* Left Column: DAY CYCLE */}
         <div className="bg-white border-2 border-rose-100 rounded-3xl overflow-hidden shadow-xl flex flex-col transition-all duration-300 hover:shadow-2xl">
           {/* Card Header */}
@@ -530,13 +530,12 @@ const PanchPakshiTable = ({ data }) => {
                 {day_timeline.map((item, idx) => {
                   const isActive = checkIsActive(item.start, item.end);
                   return (
-                    <tr 
-                      key={`day-${idx}`} 
-                      className={`transition-all duration-350 border-l-4 ${
-                        isActive 
-                          ? "bg-amber-100/50 border-l-amber-500 font-extrabold text-slate-900 shadow-md border-y-2 border-y-amber-200" 
-                          : "border-l-transparent hover:bg-slate-50/80 text-slate-700"
-                      }`}
+                    <tr
+                      key={`day-${idx}`}
+                      className={`transition-all duration-350 border-l-4 ${isActive
+                        ? "bg-amber-100/50 border-l-amber-500 font-extrabold text-slate-900 shadow-md border-y-2 border-y-amber-200"
+                        : "border-l-transparent hover:bg-slate-50/80 text-slate-700"
+                        }`}
                     >
                       <td className="py-5 px-5 font-mono text-sm text-slate-800 whitespace-nowrap">
                         <div className="flex items-center">
@@ -618,13 +617,12 @@ const PanchPakshiTable = ({ data }) => {
                 {night_timeline.map((item, idx) => {
                   const isActive = checkIsActive(item.start, item.end);
                   return (
-                    <tr 
-                      key={`night-${idx}`} 
-                      className={`transition-all duration-350 border-l-4 ${
-                        isActive 
-                          ? "bg-amber-100/50 border-l-amber-500 font-extrabold text-slate-900 shadow-md border-y-2 border-y-amber-200" 
-                          : "border-l-transparent hover:bg-slate-50/80 text-slate-700"
-                      }`}
+                    <tr
+                      key={`night-${idx}`}
+                      className={`transition-all duration-350 border-l-4 ${isActive
+                        ? "bg-amber-100/50 border-l-amber-500 font-extrabold text-slate-900 shadow-md border-y-2 border-y-amber-200"
+                        : "border-l-transparent hover:bg-slate-50/80 text-slate-700"
+                        }`}
                     >
                       <td className="py-5 px-5 font-mono text-sm text-slate-800 whitespace-nowrap">
                         <div className="flex items-center">

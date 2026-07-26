@@ -877,6 +877,12 @@ export default function GenerateReport() {
                   <span>💏</span> {t('match_making')}
                 </button>
                 <button
+                  onClick={() => window.open('/?compatibility-hub=true&calculator=weekly-relationship', 'WeeklyRelationshipHoroscope', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-100 text-black shadow hover:bg-rose-700 flex items-center gap-2"
+                >
+                  <span>💑</span> Weekly Relationship Horoscope
+                </button>
+                <button
                   onClick={() => window.open('/?compatibility-hub=true', 'LoveCalculator', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')}
                   className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-100 text-black shadow hover:bg-rose-700 flex items-center gap-2"
                 >

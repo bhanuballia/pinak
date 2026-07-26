@@ -15107,8 +15107,8 @@
                 "Jupiter": "Excellent",
                 "Venus": "Good",
                 "Saturn": "Good",
-                "Rahu": "Average",
-                "Ketu": "Average"
+                "Rahu": "Good",
+                "Ketu": "Good"
             },
             "saptavarga": {
                 "Sun": "Good",
@@ -15124,8 +15124,8 @@
             "dasavarga": {
                 "Sun": "Good",
                 "Moon": "Good",
-                "Mars": "Good",
-                "Mercury": "Good",
+                "Mars": "Excellent",
+                "Mercury": "Excellent",
                 "Jupiter": "Excellent",
                 "Venus": "Good",
                 "Saturn": "Excellent",
@@ -15135,11 +15135,11 @@
             "shodashvarga": {
                 "Sun": "Good",
                 "Moon": "Good",
-                "Mars": "Good",
+                "Mars": "Excellent",
                 "Mercury": "Good",
                 "Jupiter": "Excellent",
                 "Venus": "Good",
-                "Saturn": "Good",
+                "Saturn": "Excellent",
                 "Rahu": "Good",
                 "Ketu": "Good"
             }
@@ -15161,14 +15161,14 @@
             },
             "Mars": {
                 "planet": "Mars",
-                "strength": "Good",
+                "strength": "Excellent",
                 "house": 8,
                 "effect": "Steady and supportive influence throughout life.",
                 "vimsopaka_score": 14
             },
             "Mercury": {
                 "planet": "Mercury",
-                "strength": "Good",
+                "strength": "Excellent",
                 "house": 10,
                 "effect": "Steady and supportive influence throughout life.",
                 "vimsopaka_score": 14
@@ -15217,7 +15217,7 @@
         },
         "mental_pattern": {
             "score": 9.0,
-            "status": "Average"
+            "status": "Good"
         },
         "relationship": {
             "score": 11.43,
@@ -15248,7 +15248,7 @@
             "wealth_potential": "Good",
             "career_potential": "Good",
             "relationship_pattern": "Good",
-            "mental_stability": "Average",
+            "mental_stability": "Good",
             "top_gemstone": {
                 "planet": "Mercury",
                 "stone": "Emerald",
@@ -16084,7 +16084,7 @@
         "Ketu": {
             "jagradadi": "Sushupti\n(State of sleep)",
             "baladi": "Kumaravastha\n(Adolescence)",
-            "lajjitadi": "Kshobhit Kshudit",
+            "lajjitadi": "Kshudit Kshobhit",
             "deeptadi": "Dukhi\n(Tormented)",
             "shyanadi": "Prakashana\n(Luminous)"
         }
@@ -19311,47 +19311,47 @@
     "transits": {
         "Sun": {
             "house": 11,
-            "lon": 94.71,
-            "speed": 0.9546424372476014
+            "lon": 99.24,
+            "speed": 0.955132844922677
         },
         "Moon": {
-            "house": 2,
-            "lon": 187.25,
-            "speed": 12.308882269252166
+            "house": 4,
+            "lon": 244.15,
+            "speed": 11.884616735695015
         },
         "Mercury": {
             "house": 10,
-            "lon": 82.32,
-            "speed": -0.20493304988883107
+            "lon": 82.38,
+            "speed": 0.24186878429042016
         },
         "Venus": {
             "house": 12,
-            "lon": 138.9,
-            "speed": 1.0792030209592463
+            "lon": 143.99,
+            "speed": 1.061618727734849
         },
         "Mars": {
             "house": 9,
-            "lon": 51.81,
-            "speed": 0.6879008709079032
+            "lon": 55.06,
+            "speed": 0.6822350951823334
         },
         "Jupiter": {
             "house": 11,
-            "lon": 100.45,
-            "speed": 0.22103122138517028
+            "lon": 101.5,
+            "speed": 0.22140618914105695
         },
         "Saturn": {
             "house": 7,
-            "lon": 350.5,
-            "speed": 0.008702202393073935
+            "lon": 350.52,
+            "speed": 0.0006032444848090217
         },
         "Rahu": {
             "house": 6,
-            "lon": 306.05,
-            "speed": -0.004724270128004014
+            "lon": 305.81,
+            "speed": -0.07515621129856127
         },
         "Ketu": {
             "house": 12,
-            "lon": 126.05,
+            "lon": 125.81,
             "speed": 0
         }
     },
@@ -19367,47 +19367,47 @@
         "current_positions": {
             "Sun": {
                 "house": 11,
-                "lon": 94.71,
-                "speed": 0.9546424372476014
+                "lon": 99.24,
+                "speed": 0.955132844922677
             },
             "Moon": {
-                "house": 2,
-                "lon": 187.25,
-                "speed": 12.308882269252166
+                "house": 4,
+                "lon": 244.15,
+                "speed": 11.884616735695015
             },
             "Mercury": {
                 "house": 10,
-                "lon": 82.32,
-                "speed": -0.20493304988883107
+                "lon": 82.38,
+                "speed": 0.24186878429042016
             },
             "Venus": {
                 "house": 12,
-                "lon": 138.9,
-                "speed": 1.0792030209592463
+                "lon": 143.99,
+                "speed": 1.061618727734849
             },
             "Mars": {
                 "house": 9,
-                "lon": 51.81,
-                "speed": 0.6879008709079032
+                "lon": 55.06,
+                "speed": 0.6822350951823334
             },
             "Jupiter": {
                 "house": 11,
-                "lon": 100.45,
-                "speed": 0.22103122138517028
+                "lon": 101.5,
+                "speed": 0.22140618914105695
             },
             "Saturn": {
                 "house": 7,
-                "lon": 350.5,
-                "speed": 0.008702202393073935
+                "lon": 350.52,
+                "speed": 0.0006032444848090217
             },
             "Rahu": {
                 "house": 6,
-                "lon": 306.05,
-                "speed": -0.004724270128004014
+                "lon": 305.81,
+                "speed": -0.07515621129856127
             },
             "Ketu": {
                 "house": 12,
-                "lon": 126.05,
+                "lon": 125.81,
                 "speed": 0
             }
         },

@@ -84,3 +84,32 @@ async def get_sun_compatibility(request: SunSignCompatibilityRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+class WeeklyRelationshipHoroscopeRequest(BaseModel):
+    partner_a: dict
+    partner_b: dict
+    start_date: str
+    mode: str = "astrology"  # "astrology" or "numerology"
+
+@router.post("/weekly-horoscope")
+async def get_weekly_relationship_horoscope(request: WeeklyRelationshipHoroscopeRequest):
+    try:
+        if request.mode == "numerology":
+            from transit.relationship_horoscope import calculate_weekly_numerology_horoscope
+            result = calculate_weekly_numerology_horoscope(
+                name_a=request.partner_a.get("name", "Partner A"),
+                dob_a=request.partner_a.get("date"),
+                name_b=request.partner_b.get("name", "Partner B"),
+                dob_b=request.partner_b.get("date"),
+                start_date_str=request.start_date
+            )
+        else:
+            from transit.relationship_horoscope import calculate_weekly_relationship_horoscope
+            result = calculate_weekly_relationship_horoscope(
+                partner_a_details=request.partner_a,
+                partner_b_details=request.partner_b,
+                start_date_str=request.start_date
+            )
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

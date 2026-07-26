@@ -367,3 +367,17 @@ export async function fetchAshtamangala(payload) {
   }
   return res.json();
 }
+
+export async function fetchWeeklyRelationshipHoroscope(payload) {
+  const url = `${BASE}/api/astrology/compatibility/weekly-horoscope`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to fetch Weekly Relationship Horoscope");
+  }
+  return res.json();
+}
