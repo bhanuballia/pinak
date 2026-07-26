@@ -182,6 +182,21 @@ export default function NumerologyDashboard() {
   const [error, setError] = useState(null);
   const [nameSystem, setNameSystem] = useState("Chaldean"); // "Chaldean" | "Pythagorean"
   const [activeTab, setActiveTab] = useState("report");
+  const [hoveredPlane, setHoveredPlane] = useState(null); // 'mental' | 'emotional' | 'practical' | 'thought' | 'will' | 'action' | 'golden' | 'silver' | null
+
+  const isCellHighlighted = (num) => {
+    if (!hoveredPlane) return false;
+    const planeName = hoveredPlane.toLowerCase();
+    if (planeName.includes('mental')) return [4, 9, 2].includes(num);
+    if (planeName.includes('emotional') || planeName.includes('heart')) return [3, 5, 7].includes(num);
+    if (planeName.includes('practical')) return [8, 1, 6].includes(num);
+    if (planeName.includes('thought')) return [4, 3, 8].includes(num);
+    if (planeName.includes('will')) return [9, 5, 1].includes(num);
+    if (planeName.includes('action')) return [2, 7, 6].includes(num);
+    if (planeName.includes('golden') || planeName.includes('success')) return [4, 5, 6].includes(num);
+    if (planeName.includes('silver') || planeName.includes('willpower') || planeName.includes('determination')) return [2, 5, 8].includes(num);
+    return false;
+  };
 
   // Marriage Compatibility states
   const [partnerAName, setPartnerAName] = useState("");
@@ -1177,7 +1192,7 @@ export default function NumerologyDashboard() {
 
                       {/* Row 1 */}
                       {/* Cell 4 */}
-                      <div className="p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-amber-400">
+                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-amber-400 transition-all duration-300 ${isCellHighlighted(4) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
                         <div className="absolute top-2 right-2 bg-amber-100 text-amber-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">4</div>
                         <div className="my-3">
                           {result.loshuGrid[4] > 0 ? (
@@ -1198,7 +1213,7 @@ export default function NumerologyDashboard() {
                       </div>
 
                       {/* Cell 9 */}
-                      <div className="p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-orange-400">
+                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-orange-400 transition-all duration-300 ${isCellHighlighted(9) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
                         <div className="absolute top-2 right-2 bg-orange-100 text-orange-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">9</div>
                         <div className="my-3">
                           {result.loshuGrid[9] > 0 ? (
@@ -1219,7 +1234,7 @@ export default function NumerologyDashboard() {
                       </div>
 
                       {/* Cell 2 */}
-                      <div className="p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-indigo-400">
+                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-indigo-400 transition-all duration-300 ${isCellHighlighted(2) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
                         <div className="absolute top-2 right-2 bg-indigo-100 text-indigo-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">2</div>
                         <div className="my-3">
                           {result.loshuGrid[2] > 0 ? (
@@ -1241,7 +1256,7 @@ export default function NumerologyDashboard() {
 
                       {/* Row 2 */}
                       {/* Cell 3 */}
-                      <div className="p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-emerald-400">
+                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-emerald-400 transition-all duration-300 ${isCellHighlighted(3) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
                         <div className="absolute top-2 right-2 bg-emerald-100 text-emerald-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">3</div>
                         <div className="my-3">
                           {result.loshuGrid[3] > 0 ? (
@@ -1262,7 +1277,7 @@ export default function NumerologyDashboard() {
                       </div>
 
                       {/* Cell 5 */}
-                      <div className="p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-indigo-500">
+                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-indigo-500 transition-all duration-300 ${isCellHighlighted(5) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
                         <div className="absolute top-2 right-2 bg-indigo-100 text-indigo-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">5</div>
                         <div className="my-3">
                           {result.loshuGrid[5] > 0 ? (
@@ -1273,7 +1288,7 @@ export default function NumerologyDashboard() {
                         </div>
                         <div className="space-y-2 text-[16px]">
                           <p className="font-semibold text-slate-700 leading-tight">Freedom, Adaptability, Change, Adventure, Versatility, Movement, Exploration</p>
-                          <div className="text-[16px] bg-indigo-50/70 border border-indigo-100 py-1.5 rounded space-y-0.5 font-bold text-indigo-950 w-full">
+                          <div className="text-[16px] bg-indigo-50/70 border border-indigo-100 py-1.5 rounded space-y-0.5 font-bold text-indigo-955 w-full">
                             <p>Element: Earth</p>
                             <p>Planet: Mercury</p>
                             <p>Merit: Balance</p>
@@ -1283,7 +1298,7 @@ export default function NumerologyDashboard() {
                       </div>
 
                       {/* Cell 7 */}
-                      <div className="p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-teal-400">
+                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-teal-400 transition-all duration-300 ${isCellHighlighted(7) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
                         <div className="absolute top-2 right-2 bg-teal-100 text-teal-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">7</div>
                         <div className="my-3">
                           {result.loshuGrid[7] > 0 ? (
@@ -1305,7 +1320,7 @@ export default function NumerologyDashboard() {
 
                       {/* Row 3 */}
                       {/* Cell 8 */}
-                      <div className="p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-purple-400">
+                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-purple-400 transition-all duration-300 ${isCellHighlighted(8) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
                         <div className="absolute top-2 right-2 bg-purple-100 text-purple-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">8</div>
                         <div className="my-3">
                           {result.loshuGrid[8] > 0 ? (
@@ -1326,7 +1341,7 @@ export default function NumerologyDashboard() {
                       </div>
 
                       {/* Cell 1 */}
-                      <div className="p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-blue-400">
+                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-blue-400 transition-all duration-300 ${isCellHighlighted(1) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
                         <div className="absolute top-2 right-2 bg-blue-100 text-blue-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">1</div>
                         <div className="my-3">
                           {result.loshuGrid[1] > 0 ? (
@@ -1347,7 +1362,7 @@ export default function NumerologyDashboard() {
                       </div>
 
                       {/* Cell 6 */}
-                      <div className="p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-rose-350">
+                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-rose-350 transition-all duration-300 ${isCellHighlighted(6) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
                         <div className="absolute top-2 right-2 bg-rose-100 text-rose-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">6</div>
                         <div className="my-3">
                           {result.loshuGrid[6] > 0 ? (
@@ -1383,7 +1398,12 @@ export default function NumerologyDashboard() {
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {result.loshuPlanes.map((plane, idx) => (
-                        <div key={idx} className="p-4 rounded-2xl border border-rose-100/50 bg-rose-50/10 flex flex-col justify-between">
+                        <div
+                          key={idx}
+                          onMouseEnter={() => setHoveredPlane(plane.name)}
+                          onMouseLeave={() => setHoveredPlane(null)}
+                          className="p-4 rounded-2xl border border-rose-100/50 bg-rose-50/10 flex flex-col justify-between transition-all hover:bg-rose-50/40 hover:border-rose-300 hover:shadow-md cursor-pointer"
+                        >
                           <div>
                             <div className="flex justify-between items-center mb-1">
                               <h4 className="font-extrabold text-rose-955 text-base">{plane.name}</h4>

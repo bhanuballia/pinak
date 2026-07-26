@@ -471,9 +471,10 @@ def calculate_personal_year(dob: str, current_year: int) -> int:
 
 def get_loshu_planes_analysis(grid: dict) -> list:
     """
-    Computes analysis of the 6 major planes of the Loshu Grid:
+    Computes analysis of the 8 major planes of the Loshu Grid:
     Mental (4,9,2), Emotional (3,5,7), Practical (8,1,6),
-    Will (4,3,8), Spiritual (9,5,1), Action (2,7,6)
+    Thought (4,3,8), Will (9,5,1), Action (2,7,6),
+    Golden Success (4,5,6), Silver Willpower (2,5,8)
     """
     planes = [
         {
@@ -511,6 +512,18 @@ def get_loshu_planes_analysis(grid: dict) -> list:
             "numbers": [2, 7, 6],
             "description": "Reflects ability to convert thoughts into rapid action and execute concepts.",
             "remedy": "Wear silver or white color bands, or keep metal windchimes in the house."
+        },
+        {
+            "name": "Golden Success Plane (4-5-6)",
+            "numbers": [4, 5, 6],
+            "description": "Highly auspicious diagonal plane representing fortune, wealth, balance, and smooth career.",
+            "remedy": "Keep a crystal tree in your living room, or carry a green jade/aventurine token."
+        },
+        {
+            "name": "Silver Willpower / Determination Plane (2-5-8)",
+            "numbers": [2, 5, 8],
+            "description": "Diagonal plane representing high willpower, determination, property assets, and business stability.",
+            "remedy": "Keep a rock salt lamp or a brass globe/showpiece in the southwest of your room."
         }
     ]
 
