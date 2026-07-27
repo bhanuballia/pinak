@@ -1926,7 +1926,7 @@ export default function NumerologyDashboard() {
                   }`}
               >
                 <Compass className="w-5 h-5" />
-                <span>Vastu & Directions</span>
+                <span>Vastu & Yogas</span>
               </button>
               <button
                 onClick={() => setActiveTab("analytics")}
