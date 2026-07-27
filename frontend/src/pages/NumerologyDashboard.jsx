@@ -1299,11 +1299,11 @@ export default function NumerologyDashboard() {
     // Calculate elements strength percentage
     const grid = result.loshuGrid;
     const elements = [
-      { name: "Water (Intuition & Career)", num: [1], color: "bg-blue-500", text: "text-blue-800", bg: "bg-blue-50", desc: "Ruling over career opportunity, deep wisdom, and focus." },
-      { name: "Wood (Wealth & Growth)", num: [3, 4], color: "bg-emerald-500", text: "text-emerald-800", bg: "bg-emerald-50", desc: "Ruling over wealth, assets, physical vitality, and expansion." },
-      { name: "Fire (Fame & Energy)", num: [9], color: "bg-rose-500", text: "text-rose-800", bg: "bg-rose-50", desc: "Ruling over fame, recognition, energy levels, and passion." },
-      { name: "Earth (Stability & Marriage)", num: [2, 5, 8], color: "bg-amber-500", text: "text-amber-800", bg: "bg-amber-50", desc: "Ruling over marital harmony, central balance, and material savings." },
-      { name: "Metal (Wisdom & Support)", num: [6, 7], color: "bg-zinc-500", text: "text-zinc-800", bg: "bg-zinc-50", desc: "Ruling over wisdom, planning skills, helpful mentors, and travel." }
+      { name: "Water (Intuition & Career)", num: [1], color: "bg-blue-500", fontsize: "24px", text: "text-blue-800", bg: "bg-blue-50", desc: "Ruling over career opportunity, deep wisdom, and focus." },
+      { name: "Wood (Wealth & Growth)", num: [3, 4], color: "bg-emerald-500", fontsize: "24px", text: "text-emerald-800", bg: "bg-emerald-50", desc: "Ruling over wealth, assets, physical vitality, and expansion." },
+      { name: "Fire (Fame & Energy)", num: [9], color: "bg-rose-500", fontsize: "24px", text: "text-rose-800", bg: "bg-rose-50", desc: "Ruling over fame, recognition, energy levels, and passion." },
+      { name: "Earth (Stability & Marriage)", num: [2, 5, 8], color: "bg-amber-500", fontsize: "24px", text: "text-amber-800", bg: "bg-amber-50", desc: "Ruling over marital harmony, central balance, and material savings." },
+      { name: "Metal (Wisdom & Support)", num: [6, 7], color: "bg-zinc-500", fontsize: "24px", text: "text-zinc-800", bg: "bg-zinc-50", desc: "Ruling over wisdom, planning skills, helpful mentors, and travel." }
     ];
 
     // Compute elemental distribution
@@ -1315,27 +1315,27 @@ export default function NumerologyDashboard() {
 
     return (
       <div className="space-y-6 animate-fadeIn">
-        
+
         {/* Title Card */}
         <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
-          <h3 className="text-xl font-black text-rose-955 flex items-center gap-2 border-b border-rose-100 pb-3 mb-4">
+          <h3 className="text-[22px] font-bold text-rose-955 flex items-center gap-2 border-b border-rose-100 pb-3 mb-4">
             <Award className="w-5 h-5 text-rose-600" />
             Advanced Chart Analytics & Core Indicators
           </h3>
-          <p className="text-xs text-slate-500 leading-relaxed">
+          <p className="text-[18px] text-orange-900 leading-relaxed">
             This module evaluates hidden vibrations, master frequencies, elemental weights, and karmic lessons within your numerological chart structure.
           </p>
         </div>
 
         {/* Master & Karmic Numbers Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
+
           {/* Master Numbers Box */}
           <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-4">
-            <h4 className="font-extrabold text-rose-955 text-base flex items-center gap-1.5">
+            <h4 className="font-bold text-rose-955 text-[20px] flex items-center gap-1.5">
               🌟 Master Number Frequencies
             </h4>
-            <p className="text-xs text-slate-400">
+            <p className="text-[18px] text-slate-900">
               Master Numbers (11, 22, 33) indicate high spiritual potential, vision, and major life challenges.
             </p>
 
@@ -1352,10 +1352,10 @@ export default function NumerologyDashboard() {
                     </div>
                     <div>
                       <div className="flex flex-wrap items-center gap-1.5">
-                        <span className="font-extrabold text-slate-800 text-sm">{m.source}</span>
-                        <span className="text-[9px] font-bold bg-green-100 text-green-800 px-2 py-0.5 rounded-full uppercase tracking-wider">Active</span>
+                        <span className="font-bold text-amber-900 text-[20px]">{m.source}</span>
+                        <span className="text-[16px] font-bold bg-green-100 text-green-800 px-2 py-0.5 rounded-full uppercase tracking-wider">Active</span>
                       </div>
-                      <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                      <p className="text-[16px] text-slate-900 mt-1 leading-relaxed">
                         <strong>Traits:</strong> {m.traits}
                       </p>
                     </div>
@@ -1367,33 +1367,33 @@ export default function NumerologyDashboard() {
 
           {/* Karmic Debt Box */}
           <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-4">
-            <h4 className="font-extrabold text-rose-955 text-base flex items-center gap-1.5">
+            <h4 className="font-bold text-rose-955 text-[20px] flex items-center gap-1.5">
               ⚠️ Karmic Debt Diagnostics
             </h4>
-            <p className="text-xs text-slate-400">
+            <p className="text-[18px] text-slate-900">
               Karmic Debts (13, 14, 16, 19) highlight past behavioral lessons you must work through in this life.
             </p>
 
             {karmicNumbers.length === 0 ? (
-              <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center text-xs text-slate-400">
+              <div className="p-4 bg-slate-50 border border-slate-900 rounded-2xl text-center text-[18px] text-slate-900">
                 No active Karmic Debts detected in this profile! You have a balanced baseline path.
               </div>
             ) : (
               <div className="space-y-3">
                 {karmicNumbers.map((k, idx) => (
                   <div key={idx} className="p-4 border border-rose-200 bg-rose-50/10 rounded-2xl shadow-sm flex items-start gap-3 animate-fadeIn">
-                    <div className="w-12 h-12 bg-rose-600 text-white rounded-xl flex items-center justify-center font-black text-xl shrink-0 shadow-sm">
+                    <div className="w-12 h-12 bg-rose-600 text-amber-900 rounded-xl flex items-center justify-center font-black text-xl shrink-0 shadow-sm">
                       {k.num}
                     </div>
                     <div className="space-y-1">
                       <div className="flex flex-wrap items-center gap-1.5">
-                        <span className="font-extrabold text-slate-800 text-sm">{k.source}</span>
-                        <span className="text-[9px] font-bold bg-rose-105 text-rose-800 px-2 py-0.5 rounded-full uppercase tracking-wider">{k.title}</span>
+                        <span className="font-extrabold text-slate-900 text-[20px]">{k.source}</span>
+                        <span className="text-[16px] font-bold bg-rose-105 text-rose-800 px-2 py-0.5 rounded-full uppercase tracking-wider">{k.title}</span>
                       </div>
-                      <p className="text-xs text-slate-550 leading-relaxed">
+                      <p className="text-[18px] text-slate-550 leading-relaxed">
                         <strong>Shadow Pattern:</strong> {k.pattern}
                       </p>
-                      <p className="text-xs text-slate-700 font-semibold bg-white/70 p-2 rounded-lg border border-rose-100/30 leading-relaxed">
+                      <p className="text-[18px] text-slate-700 font-semibold bg-white/70 p-2 rounded-lg border border-rose-100/30 leading-relaxed">
                         <strong>Actionable Remedy:</strong> {k.remedy}
                       </p>
                     </div>
@@ -1407,17 +1407,17 @@ export default function NumerologyDashboard() {
 
         {/* Elemental Strength Analytics Card */}
         <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-4 animate-fadeIn">
-          <h4 className="font-extrabold text-rose-955 text-base">
+          <h4 className="font-extrabold text-rose-955 text-[20px]">
             🌊 Elemental Strength Analysis
           </h4>
-          <p className="text-xs text-slate-400">
+          <p className="text-[18px] text-slate-550 leading-relaxed">
             Each number in the Lo Shu grid channels one of the five elements. Here is the active balance of elements in your profile:
           </p>
 
           <div className="space-y-4 pt-2">
             {elementData.map((el, idx) => (
               <div key={idx} className="space-y-1">
-                <div className="flex justify-between items-center text-xs font-bold">
+                <div className="flex justify-between items-center text-[20px] font-bold">
                   <span className="text-slate-800">{el.name}</span>
                   <span className={`${el.text} bg-slate-50 px-2.5 py-0.5 rounded-full`}>{el.pct}% Strength</span>
                 </div>
@@ -1427,11 +1427,280 @@ export default function NumerologyDashboard() {
                     style={{ width: `${el.pct}%` }}
                   ></div>
                 </div>
-                <p className="text-[11px] text-slate-400 leading-snug">
+                <p className="text-[18px] text-slate-900 leading-relaxed">
                   {el.desc}
                 </p>
               </div>
             ))}
+          </div>
+        </div>
+
+      </div>
+    );
+  };
+
+  const getPinnacleTheme = (num) => {
+    const themes = {
+      1: "Developing independence, self-reliance, and leadership. Focus on building individuality and standing on your own feet.",
+      2: "Developing cooperation, patience, partnerships, and sensitivity. Focus on teamwork, marriage, and emotional harmony.",
+      3: "Developing self-expression, creativity, public communication, and social connection. Focus on arts, writing, and optimism.",
+      4: "Developing hard work, stability, organizational structures, and building foundations. Focus on career discipline and assets.",
+      5: "Developing freedom, adventure, unexpected changes, networking, and adaptability. Focus on travel and releasing limits.",
+      6: "Developing responsibility, family love, community service, home, and nurturing. Focus on household harmony and healing.",
+      7: "Developing introspection, spiritual wisdom, studies, self-realization, and quiet focus. Focus on meditation and learning.",
+      8: "Developing material authority, career execution, finances, power, and abundance. Focus on commercial success and power.",
+      9: "Developing completion, release, global compassion, humanitarian views, and ends of cycles. Focus on forgiveness and charity."
+    };
+    return themes[num] || themes[1];
+  };
+
+  const getChallengeTheme = (num) => {
+    const challenges = {
+      0: "Lack of major specific challenge. High freedom of choice, but do not drift without purpose or become lazy.",
+      1: "Ego vs. Indecision. Overcome insecurity, fear of standing out, or dominant behavior. Practice self-reliance.",
+      2: "Hypersensitivity and fear of disapproval. Overcome fear of criticism and learn to say no without guilt.",
+      3: "Scattering energy, lack of focus, and self-doubt. Learn to express yourself constructively and avoid gossip.",
+      4: "Disorganized, lack of grounding, or workaholism. Learn routine, structure, and persistence.",
+      5: "Impulsiveness, fear of change, or restlessness. Learn freedom with responsibility and stay committed.",
+      6: "Idealism and over-burdening yourself with duties. Accept others as they are without demanding perfection.",
+      7: "Over-analytical, pride, or fear of emotional depth. Overcome isolation and trust life.",
+      8: "Material greed vs. fear of poverty. Learn balance between spiritual goals and material wealth."
+    };
+    return challenges[num] || challenges[0];
+  };
+
+  const getPinnacleAndChallengeData = (dob, bhagyank) => {
+    if (!dob) return null;
+    const parts = dob.split('-');
+    if (parts.length !== 3) return null;
+
+    const yearStr = parts[0];
+    const monthVal = parseInt(parts[1], 10);
+    const dayVal = parseInt(parts[2], 10);
+
+    const monthDigit = reduceToSingleDigit(monthVal);
+    const dayDigit = reduceToSingleDigit(dayVal);
+    const yearDigit = reduceToSingleDigit(yearStr.split('').map(Number).reduce((a, b) => a + b, 0));
+
+    const p1 = reduceToSingleDigit(monthDigit + dayDigit);
+    const p2 = reduceToSingleDigit(dayDigit + yearDigit);
+    const p3 = reduceToSingleDigit(p1 + p2);
+    const p4 = reduceToSingleDigit(monthDigit + yearDigit);
+
+    const c1 = Math.abs(monthDigit - dayDigit);
+    const c2 = Math.abs(dayDigit - yearDigit);
+    const c3 = Math.abs(c1 - c2);
+    const c4 = Math.abs(monthDigit - yearDigit);
+
+    const p1End = 36 - bhagyank;
+    const p2Start = p1End + 1;
+    const p2End = p1End + 9;
+    const p3Start = p2End + 1;
+    const p3End = p2End + 9;
+    const p4Start = p3End + 1;
+
+    const today = new Date();
+    const birthDate = new Date(dob);
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return {
+      age,
+      pinnacles: [
+        { phase: "First Pinnacle", ageSpan: `0 to ${p1End} Years`, val: p1, challenge: c1, isActive: age <= p1End, theme: getPinnacleTheme(p1), challengeTheme: getChallengeTheme(c1) },
+        { phase: "Second Pinnacle", ageSpan: `${p2Start} to ${p2End} Years`, val: p2, challenge: c2, isActive: age >= p2Start && age <= p2End, theme: getPinnacleTheme(p2), challengeTheme: getChallengeTheme(c2) },
+        { phase: "Third Pinnacle", ageSpan: `${p3Start} to ${p3End} Years`, val: p3, challenge: c3, isActive: age >= p3Start && age <= p3End, theme: getPinnacleTheme(p3), challengeTheme: getChallengeTheme(c3) },
+        { phase: "Fourth Pinnacle", ageSpan: `${p4Start}+ Years`, val: p4, challenge: c4, isActive: age >= p4Start, theme: getPinnacleTheme(p4), challengeTheme: getChallengeTheme(c4) }
+      ]
+    };
+  };
+
+  const renderLifespanCyclesPanel = () => {
+    const data = getPinnacleAndChallengeData(result.dob, result.bhagyank);
+
+    return (
+      <div className="space-y-6 animate-fadeIn">
+        
+        {/* Lifespan Pinnacles & Challenges Card */}
+        <div className="bg-white border border-rose-100 rounded-5xl p-6 shadow-sm space-y-6">
+          <h3 className="text-[22px] font-bold text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
+            <Calendar className="w-5 h-5 text-rose-600 animate-pulse" />
+            Your Lifespan Pinnacle Cycles & Challenge Numbers
+          </h3>
+          <p className="text-[18px] text-slate-900 leading-relaxed">
+            Your life is divided into four major Pinnacles, each bringing a unique vibration or focus area, accompanied by a specific challenge lesson that must be integrated.
+          </p>
+          
+          <div className="bg-rose-50/50 p-4 rounded-2xl border border-rose-100/50 text-[18px] font-medium text-amber-900">
+            Current Age: <strong className="text-rose-700 text-[20px]">{data?.age || 0} Years</strong> (Active cycle phase is highlighted below)
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {data?.pinnacles.map((p, idx) => (
+              <div
+                key={idx}
+                className={`p-6 rounded-3xl border transition-all ${
+                  p.isActive
+                    ? "bg-gradient-to-br from-rose-50/60 to-amber-50/40 border-rose-400 ring-2 ring-rose-200/50 shadow-md"
+                    : "bg-white border-rose-100/60 opacity-80 hover:opacity-100"
+                }`}
+              >
+                <div className="flex justify-between items-center mb-3">
+                  <div>
+                    <h4 className="text-[20px] font-bold text-rose-955">{p.phase}</h4>
+                    <span className="text-[16px] font-bold text-slate-500">{p.ageSpan}</span>
+                  </div>
+                  {p.isActive && (
+                    <span className="bg-rose-600 text-white text-[14px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider animate-pulse">
+                      Active
+                    </span>
+                  )}
+                </div>
+
+                <div className="space-y-4 text-[18px]">
+                  {/* Pinnacle Value */}
+                  <div className="bg-white/80 p-3 rounded-xl border border-rose-100/20">
+                    <span className="font-bold text-rose-800">Pinnacle Number {p.val}:</span>
+                    <p className="text-slate-900 font-medium mt-1 leading-relaxed">
+                      {p.theme}
+                    </p>
+                  </div>
+
+                  {/* Challenge Value */}
+                  <div className="bg-white/80 p-3 rounded-xl border border-rose-100/20">
+                    <span className="font-bold text-orange-800">Challenge Number {p.challenge}:</span>
+                    <p className="text-slate-900 font-medium mt-1 leading-relaxed">
+                      {p.challengeTheme}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Short-Term Progressive predictions & Temporal Cycles Forecast (Relocated here!) */}
+        <div className="bg-white border border-rose-100 rounded-5xl p-6 shadow-sm space-y-6">
+          <h3 className="text-[22px] font-bold text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
+            <Compass className="w-5 h-5 text-rose-600 animate-spin-slow" />
+            Current Progressive Cycles & Forecasts
+          </h3>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            {/* Personal Year Card */}
+            <div className="bg-gradient-to-br from-rose-50 to-amber-50/30 p-5 rounded-2xl border border-rose-100 flex flex-col justify-between">
+              <div>
+                <span className="text-[14px] font-bold uppercase tracking-wider text-rose-800 bg-rose-100/50 px-2.5 py-1 rounded-full">
+                  Current Year Vibration
+                </span>
+                <h4 className="text-[20px] font-bold text-rose-955 mt-3">
+                  Personal Year {result.personalYear}
+                </h4>
+                <p className="text-[16px] text-slate-500 mt-2 leading-relaxed">
+                  Overall vibration theme of the entire year:
+                </p>
+                <p className="text-[18px] font-semibold text-slate-900 mt-2 bg-white/70 p-2.5 rounded-xl border border-rose-100/30 leading-relaxed">
+                  {result.personalYearDetails?.traits || "Year of development and progress."}
+                </p>
+              </div>
+              <div className="text-[14px] text-slate-400 mt-4 border-t border-rose-100/50 pt-2 font-semibold">
+                Ruling Planet: {result.personalYearDetails?.planet || "Sun"}
+              </div>
+            </div>
+
+            {/* Daily Forecast Gauge */}
+            {(() => {
+              const today = new Date();
+              const currentMonthNum = today.getMonth() + 1;
+              const currentDayNum = today.getDate();
+              const pMonth = reduceToSingleDigit(result.personalYear + currentMonthNum);
+              const pDay = reduceToSingleDigit(pMonth + currentDayNum);
+              const dayData = getDayForecast(pDay);
+              return (
+                <div className="bg-white border border-rose-100 p-5 rounded-2xl shadow-sm text-center flex flex-col justify-between md:col-span-2 relative overflow-hidden">
+                  <div className="absolute top-2 right-2 bg-emerald-100 text-emerald-800 rounded-full px-2.5 py-1 text-[12px] font-bold uppercase">
+                    Today's Energy
+                  </div>
+                  <div className="flex flex-col sm:flex-row items-center gap-4 my-2">
+                    {/* Circular progress ring representing the daily number */}
+                    <div className="relative w-24 h-24 shrink-0 flex items-center justify-center bg-rose-50 rounded-full border-4 border-rose-400 shadow-inner">
+                      <span className="text-5xl font-black text-rose-600">{pDay}</span>
+                    </div>
+                    <div className="text-left space-y-1">
+                      <h5 className="font-bold text-slate-900 text-[20px]">{dayData.tagline}</h5>
+                      <p className="text-[18px] text-slate-900 mt-1 leading-relaxed">
+                        {dayData.advice}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-[14px] text-slate-500 text-left border-t border-slate-100 pt-2 font-semibold">
+                    Current Date: {today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                  </div>
+                </div>
+              );
+            })()}
+
+          </div>
+
+          {/* Personal Month Timeline */}
+          <div className="border-t border-rose-100 pt-4">
+            <h4 className="text-[20px] font-bold text-rose-955 mb-3">
+              Monthly Forecast Timeline ({result.currentYear})
+            </h4>
+            
+            {/* Months slider */}
+            <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-thin scrollbar-thumb-rose-200">
+              {Array.from({ length: 12 }, (_, i) => {
+                const mIndex = i + 1;
+                const pMonth = reduceToSingleDigit(result.personalYear + mIndex);
+                const mName = new Date(2026, i).toLocaleString('en-US', { month: 'short' });
+                const isActive = selectedForecastMonth === mIndex;
+                return (
+                  <button
+                    key={mIndex}
+                    onClick={() => setSelectedForecastMonth(mIndex)}
+                    className={`px-4 py-2.5 rounded-xl border text-center transition-all shrink-0 min-w-[70px] ${isActive
+                      ? 'bg-rose-600 text-white border-rose-600 shadow-md'
+                      : 'bg-rose-50/30 text-rose-950 border-rose-100/50 hover:bg-rose-50'
+                      }`}
+                  >
+                    <span className="text-xs font-bold block leading-none">{mName}</span>
+                    <span className={`text-[10px] font-black block mt-1 ${isActive ? 'text-amber-200' : 'text-rose-600'}`}>
+                      Vib: {pMonth}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Active Month Details Display */}
+            {(() => {
+              const mData = getMonthForecast(reduceToSingleDigit(result.personalYear + selectedForecastMonth));
+              const monthFull = new Date(2026, selectedForecastMonth - 1).toLocaleString('en-US', { month: 'long' });
+              return (
+                <div className="bg-rose-50/20 border border-rose-100/70 rounded-2xl p-4 mt-3">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-[14px] font-bold text-rose-800 uppercase tracking-wider">
+                      {monthFull} Vibration
+                    </span>
+                    <span className="text-[14px] font-bold bg-rose-100 text-rose-900 px-2.5 py-0.5 rounded-full">
+                      Personal Month {reduceToSingleDigit(result.personalYear + selectedForecastMonth)}
+                    </span>
+                  </div>
+                  <h5 className="font-bold text-rose-955 text-[20px] mb-1">{mData.title}</h5>
+                  <p className="text-[18px] text-slate-500 mb-2 leading-relaxed">
+                    <strong>Primary Focus:</strong> {mData.focus}
+                  </p>
+                  <p className="text-[18px] text-slate-900 leading-relaxed bg-white/50 p-3 rounded-xl border border-rose-100/20 font-medium">
+                    <strong>Actionable Advice:</strong> {mData.advice}
+                  </p>
+                </div>
+              );
+            })()}
           </div>
         </div>
 
@@ -1569,6 +1838,16 @@ export default function NumerologyDashboard() {
               >
                 <AlertCircle className="w-5 h-5" />
                 <span>Advanced Analytics</span>
+              </button>
+              <button
+                onClick={() => setActiveTab("cycles")}
+                className={`py-3 px-6 font-extrabold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "cycles"
+                  ? "border-rose-600 text-rose-600"
+                  : "border-transparent text-slate-500 hover:text-rose-600"
+                  }`}
+              >
+                <Calendar className="w-5 h-5" />
+                <span>Cycles & Progression</span>
               </button>
             </div>
 
@@ -2279,6 +2558,7 @@ export default function NumerologyDashboard() {
             {activeTab === "compatibility" && renderMarriageCompatibilityPanel()}
             {activeTab === "vastu" && renderVastuOverlayPanel()}
             {activeTab === "analytics" && renderAdvancedAnalyticsPanel()}
+            {activeTab === "cycles" && renderLifespanCyclesPanel()}
           </div>
         )}
 
