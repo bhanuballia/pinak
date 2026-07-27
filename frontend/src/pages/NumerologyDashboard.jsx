@@ -1052,122 +1052,222 @@ export default function NumerologyDashboard() {
   };
 
   const renderVastuOverlayPanel = () => {
+    const checkVedicYogas = (grid) => {
+      const yogas = [
+        {
+          name: "Raj Yoga (Golden Conjunction)",
+          numbers: [8, 5, 6],
+          desc: "Highly auspicious alignment representing ultimate luck, wealth expansion, social status, and business success.",
+          remedy: "Keep your workdesk clean, avoid dark/grey colors in the center, and wear gold tones."
+        },
+        {
+          name: "Property & Asset Yoga (Silver Conjunction)",
+          numbers: [2, 5, 8],
+          desc: "Incredible planetary support for purchase of land, home ownership, property assets, and long-term financial security.",
+          remedy: "Place a rock salt lamp or a brass globe in the Southwest zone of your bedroom or living room."
+        },
+        {
+          name: "Mental Plan Yoga (4-9-2)",
+          numbers: [4, 9, 2],
+          desc: "Indicates deep intellectual ability, high analytical memory, logical analysis, and sharp calculation capacity.",
+          remedy: "Read daily, perform mind-challenging puzzles, and carry yellow elements."
+        },
+        {
+          name: "Will Power Yoga (4-3-8)",
+          numbers: [4, 3, 8],
+          desc: "Represents absolute willpower, determination, resilience to bounce back from defeats, and hard-working nature.",
+          remedy: "Keep a small table fountain or green plants in your East/North workspace."
+        },
+        {
+          name: "Intellectual / Spiritual Yoga (9-5-1)",
+          numbers: [9, 5, 1],
+          desc: "Brings strong business communication skills, leadership, foresight, and spiritual alignment.",
+          remedy: "Practice breathing exercises daily, perform yoga, and surround yourself with light green accents."
+        },
+        {
+          name: "Action & Execution Yoga (2-7-6)",
+          numbers: [2, 7, 6],
+          desc: "Represents the ability to quickly execute concepts and convert abstract plans into reality without delays.",
+          remedy: "Wear silver or white color bands, or place metal windchimes in the West zone."
+        }
+      ];
+
+      return yogas.map(y => {
+        const activeNumbers = y.numbers.filter(n => grid[n] > 0);
+        const isActive = activeNumbers.length === y.numbers.length;
+        return { ...y, isActive, activeNumbers };
+      });
+    };
+
+    const yogaData = checkVedicYogas(result.loshuGrid);
+
     return (
-      <div className="bg-white border border-rose-100 rounded-5xl p-6 shadow-sm space-y-6 animate-fadeIn">
-        <h3 className="text-[22px] font-bold text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
-          <Compass className="w-5 h-5 text-rose-600 animate-spin-slow" />
-          Vastu & Feng Shui Directions Overlay
-        </h3>
+      <div className="space-y-6 animate-fadeIn">
+        
+        {/* Vastu Compass Overlay Container */}
+        <div className="bg-white border border-rose-100 rounded-5xl p-6 shadow-sm space-y-6">
+          <h3 className="text-[22px] font-bold text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
+            <Compass className="w-5 h-5 text-rose-600 animate-spin-slow" />
+            Vastu & Feng Shui Directions Overlay
+          </h3>
 
-        {/* Vastu Wheel & Diagnostics Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Vastu Wheel & Diagnostics Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
-          {/* Vastu Compass Wheel Layout */}
-          <div className="lg:col-span-1 flex flex-col items-center justify-center bg-rose-50/20 border border-rose-100/50 p-4 rounded-3xl">
-            <span className="text-xs font-extrabold text-rose-900 uppercase tracking-widest mb-3">Vastu Compass Alignment</span>
-            <div className="relative w-80 h-80 rounded-full border-4 border-rose-200 bg-white flex items-center justify-center shadow-md">
+            {/* Vastu Compass Wheel Layout */}
+            <div className="lg:col-span-1 flex flex-col items-center justify-center bg-rose-50/20 border border-rose-100/50 p-4 rounded-3xl">
+              <span className="text-xs font-extrabold text-rose-900 uppercase tracking-widest mb-3">Vastu Compass Alignment</span>
+              <div className="relative w-80 h-80 rounded-full border-4 border-rose-200 bg-white flex items-center justify-center shadow-md">
 
-              {/* Inner center Brahmasthan (5) */}
-              <div className={`absolute w-32 h-32 rounded-full flex flex-col items-center justify-center shadow z-10 transition-all ${result.loshuGrid[5] > 0 ? "bg-green-500 text-white border-2 border-green-600" : "bg-orange-100 text-orange-800 border-2 border-orange-300 border-dashed"
-                }`}>
-                <span className="text-xs font-black leading-none uppercase tracking-wide">Center</span>
-                <span className="text-[10px] font-extrabold mt-1">(5)</span>
+                {/* Inner center Brahmasthan (5) */}
+                <div className={`absolute w-32 h-32 rounded-full flex flex-col items-center justify-center shadow z-10 transition-all ${result.loshuGrid[5] > 0 ? "bg-green-500 text-white border-2 border-green-600" : "bg-orange-100 text-orange-800 border-2 border-orange-300 border-dashed"
+                  }`}>
+                  <span className="text-xs font-black leading-none uppercase tracking-wide">Center</span>
+                  <span className="text-[10px] font-extrabold mt-1">(5)</span>
+                </div>
+
+                {/* Outer Direction Cells */}
+                {[
+                  { dir: "N", num: 1, angle: 0 },
+                  { dir: "NE", num: 8, angle: 45 },
+                  { dir: "E", num: 3, angle: 90 },
+                  { dir: "SE", num: 4, angle: 135 },
+                  { dir: "S", num: 9, angle: 180 },
+                  { dir: "SW", num: 2, angle: 225 },
+                  { dir: "W", num: 7, angle: 270 },
+                  { dir: "NW", num: 6, angle: 315 }
+                ].map((item) => {
+                  const isPresent = result.loshuGrid[item.num] > 0;
+                  // Math to position directions in a circle
+                  const rad = (item.angle - 90) * (Math.PI / 180);
+                  const x = Math.cos(rad) * 122; // radius
+                  const y = Math.sin(rad) * 122;
+                  return (
+                    <div
+                      key={item.dir}
+                      className={`absolute w-16 h-16 rounded-full flex flex-col items-center justify-center text-center text-xs font-extrabold transition-all shadow-sm ${isPresent
+                        ? "bg-emerald-200 text-slate-900 border border-emerald-600 font-black"
+                        : "bg-orange-50 text-orange-700 border border-orange-700 border-dashed"
+                        }`}
+                      style={{
+                        transform: `translate(${x}px, ${y}px)`
+                      }}
+                    >
+                      <span className="font-black leading-none">{item.dir}</span>
+                      <span className="text-[12px]">({item.num})</span>
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="flex gap-4 mt-4 text-[10px] font-bold">
+                <span className="flex items-center gap-1 text-emerald-600">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Harmonious
+                </span>
+                <span className="flex items-center gap-1 text-orange-600">
+                  <span className="w-2.5 h-2.5 rounded-full bg-orange-300"></span> Defect/Missing
+                </span>
+              </div>
+            </div>
+
+            {/* Directional Analysis & Remedies */}
+            <div className="lg:col-span-2 space-y-4 max-h-[650px] overflow-y-auto scrollbar-thin scrollbar-thumb-rose-100 pr-1">
+
+              {/* Heading */}
+              <div className="bg-rose-50/30 p-3.5 rounded-2xl border border-rose-100/50">
+                <h4 className="text-[20px] font-bold text-rose-955 uppercase tracking-wider mb-1">Directional Diagnostics</h4>
+                <p className="text-[18px] text-orange-900  font-medium leading-relaxed">
+                  Numerology maps home directions to birth date vibrations. Missing numbers point to weak Vastu directions in your living space. Follow the remedies below to balance your home layout.
+                </p>
               </div>
 
-              {/* Outer Direction Cells */}
-              {[
-                { dir: "N", num: 1, angle: 0 },
-                { dir: "NE", num: 8, angle: 45 },
-                { dir: "E", num: 3, angle: 90 },
-                { dir: "SE", num: 4, angle: 135 },
-                { dir: "S", num: 9, angle: 180 },
-                { dir: "SW", num: 2, angle: 225 },
-                { dir: "W", num: 7, angle: 270 },
-                { dir: "NW", num: 6, angle: 315 }
-              ].map((item) => {
-                const isPresent = result.loshuGrid[item.num] > 0;
-                // Math to position directions in a circle
-                const rad = (item.angle - 90) * (Math.PI / 180);
-                const x = Math.cos(rad) * 122; // radius
-                const y = Math.sin(rad) * 122;
-                return (
-                  <div
-                    key={item.dir}
-                    className={`absolute w-16 h-16 rounded-full flex flex-col items-center justify-center text-center text-xs font-extrabold transition-all shadow-sm ${isPresent
-                      ? "bg-emerald-200 text-slate-900 border border-emerald-600 font-black"
-                      : "bg-orange-50 text-orange-700 border border-orange-700 border-dashed"
-                      }`}
-                    style={{
-                      transform: `translate(${x}px, ${y}px)`
-                    }}
-                  >
-                    <span className="font-black leading-none">{item.dir}</span>
-                    <span className="text-[12px]">({item.num})</span>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="flex gap-4 mt-4 text-[10px] font-bold">
-              <span className="flex items-center gap-1 text-emerald-600">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Harmonious
-              </span>
-              <span className="flex items-center gap-1 text-orange-600">
-                <span className="w-2.5 h-2.5 rounded-full bg-orange-300"></span> Defect/Missing
-              </span>
-            </div>
-          </div>
+              {/* List of missing direction defects and remedies */}
+              {(() => {
+                const missingList = Object.entries(VASTU_DIRECTIONS)
+                  .filter(([num]) => result.loshuGrid[parseInt(num)] === 0)
+                  .map(([num, data]) => ({ num: parseInt(num), ...data }));
 
-          {/* Directional Analysis & Remedies */}
-          <div className="lg:col-span-2 space-y-4 max-h-[650px] overflow-y-auto scrollbar-thin scrollbar-thumb-rose-100 pr-1">
-
-            {/* Heading */}
-            <div className="bg-rose-50/30 p-3.5 rounded-2xl border border-rose-100/50">
-              <h4 className="text-[20px] font-bold text-rose-955 uppercase tracking-wider mb-1">Directional Diagnostics</h4>
-              <p className="text-[18px] text-orange-900  font-medium leading-relaxed">
-                Numerology maps home directions to birth date vibrations. Missing numbers point to weak Vastu directions in your living space. Follow the remedies below to balance your home layout.
-              </p>
-            </div>
-
-            {/* List of missing direction defects and remedies */}
-            {(() => {
-              const missingList = Object.entries(VASTU_DIRECTIONS)
-                .filter(([num]) => result.loshuGrid[parseInt(num)] === 0)
-                .map(([num, data]) => ({ num: parseInt(num), ...data }));
-
-              if (missingList.length === 0) {
-                return (
-                  <div className="p-4 bg-green-50 border border-green-100 text-green-950 text-xs font-medium rounded-2xl flex items-center gap-2 animate-fadeIn">
-                    <CheckCircle className="w-4 h-4 text-green-700" />
-                    <span>Perfect Vastu Alignment! All 9 compass direction elements are active in your grid profile. Keep your home clutter-free to preserve this flow.</span>
-                  </div>
-                );
-              }
-
-              return missingList.map((item) => (
-                <div key={item.num} className="p-4 border border-rose-100/70 rounded-2xl bg-white shadow-sm flex items-start gap-3 animate-fadeIn">
-                  <div className="p-2.5 bg-orange-50 text-orange-700 rounded-xl font-black text-[18px] shrink-0">
-                    {item.num}
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-bold text-slate-900 text-[20px]">{item.zone} Zone</span>
-                      <span className="text-[16px] font-bold text-amber-900 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-full">
-                        {item.element} Element
-                      </span>
+                if (missingList.length === 0) {
+                  return (
+                    <div className="p-4 bg-green-50 border border-green-100 text-green-950 text-xs font-medium rounded-2xl flex items-center gap-2 animate-fadeIn">
+                      <CheckCircle className="w-4 h-4 text-green-700" />
+                      <span>Perfect Vastu Alignment! All 9 compass direction elements are active in your grid profile. Keep your home clutter-free to preserve this flow.</span>
                     </div>
-                    <p className="text-[18px] text-orange-900 font-medium leading-relaxed">
-                      <strong>Impact:</strong> {item.aspect} — {item.issue}
-                    </p>
-                    <p className="text-[18px] text-slate-900 font-semibold bg-rose-50/30 p-2 rounded-xl border border-rose-100/20 leading-relaxed">
-                      <strong>Vastu Remedy:</strong> {item.remedy}
-                    </p>
-                  </div>
-                </div>
-              ));
-            })()}
+                  );
+                }
 
+                return missingList.map((item) => (
+                  <div key={item.num} className="p-4 border border-rose-100/70 rounded-2xl bg-white shadow-sm flex items-start gap-3 animate-fadeIn">
+                    <div className="p-2.5 bg-orange-50 text-orange-700 rounded-xl font-black text-[18px] shrink-0">
+                      {item.num}
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="font-bold text-slate-900 text-[20px]">{item.zone} Zone</span>
+                        <span className="text-[16px] font-bold text-amber-900 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-full">
+                          {item.element} Element
+                        </span>
+                      </div>
+                      <p className="text-[18px] text-orange-900 font-medium leading-relaxed">
+                        <strong>Impact:</strong> {item.aspect} — {item.issue}
+                      </p>
+                      <p className="text-[18px] text-slate-900 font-semibold bg-rose-50/30 p-2 rounded-xl border border-rose-100/20 leading-relaxed">
+                        <strong>Vastu Remedy:</strong> {item.remedy}
+                      </p>
+                    </div>
+                  </div>
+                ));
+              })()}
+
+            </div>
           </div>
         </div>
+
+        {/* Vedic Number Yogas Card */}
+        <div className="bg-white border border-rose-100 rounded-5xl p-6 shadow-sm space-y-6">
+          <h3 className="text-[22px] font-bold text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-rose-600" />
+            Vedic Number Yogas (Grid Conjunctions)
+          </h3>
+          <p className="text-[18px] text-slate-900 leading-relaxed">
+            In Vedic Numerology, when specific combinations of numbers align in your Lo Shu Grid, they trigger highly powerful life dynamics called **Yogas**.
+          </p>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {yogaData.map((yoga, idx) => (
+              <div
+                key={idx}
+                className={`p-6 rounded-3xl border transition-all ${
+                  yoga.isActive
+                    ? "bg-gradient-to-br from-amber-50/70 to-yellow-50/30 border-amber-300 ring-2 ring-amber-100 shadow-md animate-fadeIn"
+                    : "bg-slate-50/40 border-slate-200 opacity-60"
+                }`}
+              >
+                <div className="flex justify-between items-center mb-3">
+                  <h4 className="text-[20px] font-bold text-rose-955">{yoga.name}</h4>
+                  <span
+                    className={`text-[14px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider ${
+                      yoga.isActive
+                        ? "bg-amber-600 text-white shadow-sm"
+                        : "bg-slate-200 text-slate-500"
+                    }`}
+                  >
+                    {yoga.isActive ? "Active" : "Inactive"}
+                  </span>
+                </div>
+                <p className="text-[18px] text-slate-900 mt-1 leading-relaxed">
+                  {yoga.desc}
+                </p>
+                {yoga.isActive && (
+                  <div className="mt-4 bg-white/80 p-3 rounded-xl border border-amber-200 text-[18px]">
+                    <span className="font-bold text-amber-900">Recommended Remedy: </span>
+                    <span className="text-slate-800 font-medium">{yoga.remedy}</span>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     );
   };
@@ -1523,17 +1623,17 @@ export default function NumerologyDashboard() {
 
     return (
       <div className="space-y-6 animate-fadeIn">
-        
+
         {/* Lifespan Pinnacles & Challenges Card */}
         <div className="bg-white border border-rose-100 rounded-5xl p-6 shadow-sm space-y-6">
           <h3 className="text-[22px] font-bold text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
             <Calendar className="w-5 h-5 text-rose-600 animate-pulse" />
             Your Lifespan Pinnacle Cycles & Challenge Numbers
           </h3>
-          <p className="text-[18px] text-slate-900 leading-relaxed">
+          <p className="text-[18px] text-orange-900 leading-relaxed">
             Your life is divided into four major Pinnacles, each bringing a unique vibration or focus area, accompanied by a specific challenge lesson that must be integrated.
           </p>
-          
+
           <div className="bg-rose-50/50 p-4 rounded-2xl border border-rose-100/50 text-[18px] font-medium text-amber-900">
             Current Age: <strong className="text-rose-700 text-[20px]">{data?.age || 0} Years</strong> (Active cycle phase is highlighted below)
           </div>
@@ -1542,11 +1642,10 @@ export default function NumerologyDashboard() {
             {data?.pinnacles.map((p, idx) => (
               <div
                 key={idx}
-                className={`p-6 rounded-3xl border transition-all ${
-                  p.isActive
-                    ? "bg-gradient-to-br from-rose-50/60 to-amber-50/40 border-rose-400 ring-2 ring-rose-200/50 shadow-md"
-                    : "bg-white border-rose-100/60 opacity-80 hover:opacity-100"
-                }`}
+                className={`p-6 rounded-3xl border transition-all ${p.isActive
+                  ? "bg-gradient-to-br from-rose-50/60 to-amber-50/40 border-rose-400 ring-2 ring-rose-200/50 shadow-md"
+                  : "bg-white border-rose-100/60 opacity-80 hover:opacity-100"
+                  }`}
               >
                 <div className="flex justify-between items-center mb-3">
                   <div>
@@ -1564,7 +1663,7 @@ export default function NumerologyDashboard() {
                   {/* Pinnacle Value */}
                   <div className="bg-white/80 p-3 rounded-xl border border-rose-100/20">
                     <span className="font-bold text-rose-800">Pinnacle Number {p.val}:</span>
-                    <p className="text-slate-900 font-medium mt-1 leading-relaxed">
+                    <p className="text-amber-900 font-medium mt-1 leading-relaxed">
                       {p.theme}
                     </p>
                   </div>
@@ -1590,7 +1689,7 @@ export default function NumerologyDashboard() {
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
+
             {/* Personal Year Card */}
             <div className="bg-gradient-to-br from-rose-50 to-amber-50/30 p-5 rounded-2xl border border-rose-100 flex flex-col justify-between">
               <div>
@@ -1600,14 +1699,14 @@ export default function NumerologyDashboard() {
                 <h4 className="text-[20px] font-bold text-rose-955 mt-3">
                   Personal Year {result.personalYear}
                 </h4>
-                <p className="text-[16px] text-slate-500 mt-2 leading-relaxed">
+                <p className="text-[16px] text-amber-900 mt-2 leading-relaxed">
                   Overall vibration theme of the entire year:
                 </p>
                 <p className="text-[18px] font-semibold text-slate-900 mt-2 bg-white/70 p-2.5 rounded-xl border border-rose-100/30 leading-relaxed">
                   {result.personalYearDetails?.traits || "Year of development and progress."}
                 </p>
               </div>
-              <div className="text-[14px] text-slate-400 mt-4 border-t border-rose-100/50 pt-2 font-semibold">
+              <div className="text-[18px] text-slate-900 mt-4 border-t border-rose-100/50 pt-2 font-semibold">
                 Ruling Planet: {result.personalYearDetails?.planet || "Sun"}
               </div>
             </div>
@@ -1637,7 +1736,7 @@ export default function NumerologyDashboard() {
                       </p>
                     </div>
                   </div>
-                  <div className="text-[14px] text-slate-500 text-left border-t border-slate-100 pt-2 font-semibold">
+                  <div className="text-[18px] text-slate-900 text-left border-t border-slate-100 pt-2 font-semibold">
                     Current Date: {today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                   </div>
                 </div>
@@ -1651,7 +1750,7 @@ export default function NumerologyDashboard() {
             <h4 className="text-[20px] font-bold text-rose-955 mb-3">
               Monthly Forecast Timeline ({result.currentYear})
             </h4>
-            
+
             {/* Months slider */}
             <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-thin scrollbar-thumb-rose-200">
               {Array.from({ length: 12 }, (_, i) => {
@@ -1668,8 +1767,8 @@ export default function NumerologyDashboard() {
                       : 'bg-rose-50/30 text-rose-950 border-rose-100/50 hover:bg-rose-50'
                       }`}
                   >
-                    <span className="text-xs font-bold block leading-none">{mName}</span>
-                    <span className={`text-[10px] font-black block mt-1 ${isActive ? 'text-amber-200' : 'text-rose-600'}`}>
+                    <span className="text-[16px] font-bold block leading-none">{mName}</span>
+                    <span className={`text-[14px] font-black block mt-1 ${isActive ? 'text-amber-200' : 'text-rose-600'}`}>
                       Vib: {pMonth}
                     </span>
                   </button>
@@ -1684,15 +1783,15 @@ export default function NumerologyDashboard() {
               return (
                 <div className="bg-rose-50/20 border border-rose-100/70 rounded-2xl p-4 mt-3">
                   <div className="flex justify-between items-center mb-2">
-                    <span className="text-[14px] font-bold text-rose-800 uppercase tracking-wider">
+                    <span className="text-[18px] font-bold text-rose-800 uppercase tracking-wider">
                       {monthFull} Vibration
                     </span>
-                    <span className="text-[14px] font-bold bg-rose-100 text-rose-900 px-2.5 py-0.5 rounded-full">
+                    <span className="text-[18px] font-bold bg-rose-100 text-slate-900 px-2.5 py-0.5 rounded-full">
                       Personal Month {reduceToSingleDigit(result.personalYear + selectedForecastMonth)}
                     </span>
                   </div>
                   <h5 className="font-bold text-rose-955 text-[20px] mb-1">{mData.title}</h5>
-                  <p className="text-[18px] text-slate-500 mb-2 leading-relaxed">
+                  <p className="text-[18px] text-slate-900 mb-2 leading-relaxed">
                     <strong>Primary Focus:</strong> {mData.focus}
                   </p>
                   <p className="text-[18px] text-slate-900 leading-relaxed bg-white/50 p-3 rounded-xl border border-rose-100/20 font-medium">
