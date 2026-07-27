@@ -1088,12 +1088,12 @@ export default function NumerologyDashboard() {
                 const isPresent = result.loshuGrid[item.num] > 0;
                 // Math to position directions in a circle
                 const rad = (item.angle - 90) * (Math.PI / 180);
-                const x = Math.cos(rad) * 115; // radius
-                const y = Math.sin(rad) * 115;
+                const x = Math.cos(rad) * 135; // radius
+                const y = Math.sin(rad) * 135;
                 return (
                   <div
                     key={item.dir}
-                    className={`absolute w-14 h-14 rounded-full flex flex-col items-center justify-center text-center text-xs font-extrabold transition-all shadow-sm ${isPresent
+                    className={`absolute w-16 h-16 rounded-full flex flex-col items-center justify-center text-center text-xs font-extrabold transition-all shadow-sm ${isPresent
                       ? "bg-emerald-500 text-white border border-emerald-600 font-black"
                       : "bg-orange-50 text-orange-700 border border-orange-200 border-dashed"
                       }`}
