@@ -1051,6 +1051,129 @@ export default function NumerologyDashboard() {
     );
   };
 
+  const renderVastuOverlayPanel = () => {
+    return (
+      <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-6 animate-fadeIn">
+        <h3 className="text-lg font-black text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
+          <Compass className="w-5 h-5 text-rose-600 animate-spin-slow" />
+          Vastu & Feng Shui Directions Overlay
+        </h3>
+
+        {/* Vastu Wheel & Diagnostics Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          
+          {/* Vastu Compass Wheel Layout */}
+          <div className="lg:col-span-1 flex flex-col items-center justify-center bg-rose-50/20 border border-rose-100/50 p-4 rounded-3xl">
+            <span className="text-xs font-extrabold text-rose-900 uppercase tracking-widest mb-3">Vastu Compass Alignment</span>
+            <div className="relative w-52 h-52 rounded-full border-4 border-rose-200 bg-white flex items-center justify-center shadow-md">
+              
+              {/* Inner center Brahmasthan (5) */}
+              <div className={`absolute w-14 h-14 rounded-full flex flex-col items-center justify-center shadow z-10 transition-all ${
+                result.loshuGrid[5] > 0 ? "bg-green-500 text-white border-2 border-green-600" : "bg-orange-100 text-orange-800 border-2 border-orange-300 border-dashed"
+              }`}>
+                <span className="text-[10px] font-black leading-none">Center</span>
+                <span className="text-[9px] font-extrabold">(5)</span>
+              </div>
+
+              {/* Outer Direction Cells */}
+              {[
+                { dir: "N", num: 1, angle: 0 },
+                { dir: "NE", num: 8, angle: 45 },
+                { dir: "E", num: 3, angle: 90 },
+                { dir: "SE", num: 4, angle: 135 },
+                { dir: "S", num: 9, angle: 180 },
+                { dir: "SW", num: 2, angle: 225 },
+                { dir: "W", num: 7, angle: 270 },
+                { dir: "NW", num: 6, angle: 315 }
+              ].map((item) => {
+                const isPresent = result.loshuGrid[item.num] > 0;
+                // Math to position directions in a circle
+                const rad = (item.angle - 90) * (Math.PI / 180);
+                const x = Math.cos(rad) * 72; // radius
+                const y = Math.sin(rad) * 72;
+                return (
+                  <div
+                    key={item.dir}
+                    className={`absolute w-11 h-11 rounded-full flex flex-col items-center justify-center text-center text-[10px] font-extrabold transition-all shadow-sm ${
+                      isPresent
+                        ? "bg-emerald-500 text-white border border-emerald-600"
+                        : "bg-orange-50 text-orange-700 border border-orange-200 border-dashed"
+                    }`}
+                    style={{
+                      transform: `translate(${x}px, ${y}px)`
+                    }}
+                  >
+                    <span className="font-black leading-none">{item.dir}</span>
+                    <span className="text-[9px]">({item.num})</span>
+                  </div>
+                );
+              })}
+            </div>
+            <div className="flex gap-4 mt-4 text-[10px] font-bold">
+              <span className="flex items-center gap-1 text-emerald-600">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Harmonious
+              </span>
+              <span className="flex items-center gap-1 text-orange-600">
+                <span className="w-2.5 h-2.5 rounded-full bg-orange-300"></span> Defect/Missing
+              </span>
+            </div>
+          </div>
+
+          {/* Directional Analysis & Remedies */}
+          <div className="lg:col-span-2 space-y-4 max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-rose-100 pr-1">
+            
+            {/* Heading */}
+            <div className="bg-rose-50/30 p-3.5 rounded-2xl border border-rose-100/50">
+              <h4 className="text-xs font-extrabold text-rose-955 uppercase tracking-wider mb-1">Directional Diagnostics</h4>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                Numerology maps home directions to birth date vibrations. Missing numbers point to weak Vastu directions in your living space. Follow the remedies below to balance your home layout.
+              </p>
+            </div>
+
+            {/* List of missing direction defects and remedies */}
+            {(() => {
+              const missingList = Object.entries(VASTU_DIRECTIONS)
+                .filter(([num]) => result.loshuGrid[parseInt(num)] === 0)
+                .map(([num, data]) => ({ num: parseInt(num), ...data }));
+
+              if (missingList.length === 0) {
+                return (
+                  <div className="p-4 bg-green-50 border border-green-100 text-green-950 text-xs font-medium rounded-2xl flex items-center gap-2 animate-fadeIn">
+                    <CheckCircle className="w-4 h-4 text-green-700" />
+                    <span>Perfect Vastu Alignment! All 9 compass direction elements are active in your grid profile. Keep your home clutter-free to preserve this flow.</span>
+                  </div>
+                );
+              }
+
+              return missingList.map((item) => (
+                <div key={item.num} className="p-4 border border-rose-100/70 rounded-2xl bg-white shadow-sm flex items-start gap-3 animate-fadeIn">
+                  <div className="p-2.5 bg-orange-50 text-orange-700 rounded-xl font-black text-xs shrink-0">
+                    {item.num}
+                  </div>
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-extrabold text-slate-800 text-sm">{item.zone} Zone</span>
+                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-full">
+                        {item.element} Element
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 leading-relaxed">
+                      <strong>Impact:</strong> {item.aspect} — {item.issue}
+                    </p>
+                    <p className="text-xs text-slate-700 font-semibold bg-rose-50/30 p-2 rounded-xl border border-rose-100/20 leading-relaxed">
+                      <strong>Vastu Remedy:</strong> {item.remedy}
+                    </p>
+                  </div>
+                </div>
+              ));
+            })()}
+
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-rose-50 text-slate-800 p-4 md:p-8 font-sans">
       <div className="max-w-7xl mx-auto space-y-6">
@@ -1161,6 +1284,16 @@ export default function NumerologyDashboard() {
               >
                 <Heart className="w-5 h-5" />
                 <span>Marriage Compatibility</span>
+              </button>
+              <button
+                onClick={() => setActiveTab("vastu")}
+                className={`py-3 px-6 font-extrabold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "vastu"
+                  ? "border-rose-600 text-rose-600"
+                  : "border-transparent text-slate-500 hover:text-rose-600"
+                  }`}
+              >
+                <Compass className="w-5 h-5" />
+                <span>Vastu & Directions</span>
               </button>
             </div>
 
@@ -1662,127 +1795,6 @@ export default function NumerologyDashboard() {
                       })()}
                     </div>
                   </div>
-
-                  {/* Vastu / Feng Shui Elemental Directions Overlay */}
-                  <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-6">
-                    <h3 className="text-lg font-black text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
-                      <Compass className="w-5 h-5 text-rose-600 animate-spin-slow" />
-                      Vastu & Feng Shui Directions Overlay
-                    </h3>
-
-                    {/* Vastu Wheel & Diagnostics Grid */}
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                      
-                      {/* Vastu Compass Wheel Layout */}
-                      <div className="lg:col-span-1 flex flex-col items-center justify-center bg-rose-50/20 border border-rose-100/50 p-4 rounded-3xl">
-                        <span className="text-xs font-extrabold text-rose-900 uppercase tracking-widest mb-3">Vastu Compass Alignment</span>
-                        <div className="relative w-52 h-52 rounded-full border-4 border-rose-200 bg-white flex items-center justify-center shadow-md">
-                          
-                          {/* Inner center Brahmasthan (5) */}
-                          <div className={`absolute w-14 h-14 rounded-full flex flex-col items-center justify-center shadow z-10 transition-all ${
-                            result.loshuGrid[5] > 0 ? "bg-green-500 text-white border-2 border-green-600" : "bg-orange-100 text-orange-800 border-2 border-orange-300 border-dashed"
-                          }`}>
-                            <span className="text-[10px] font-black leading-none">Center</span>
-                            <span className="text-[9px] font-extrabold">(5)</span>
-                          </div>
-
-                          {/* Outer Direction Cells */}
-                          {[
-                            { dir: "N", num: 1, angle: 0 },
-                            { dir: "NE", num: 8, angle: 45 },
-                            { dir: "E", num: 3, angle: 90 },
-                            { dir: "SE", num: 4, angle: 135 },
-                            { dir: "S", num: 9, angle: 180 },
-                            { dir: "SW", num: 2, angle: 225 },
-                            { dir: "W", num: 7, angle: 270 },
-                            { dir: "NW", num: 6, angle: 315 }
-                          ].map((item) => {
-                            const isPresent = result.loshuGrid[item.num] > 0;
-                            // Math to position directions in a circle
-                            const rad = (item.angle - 90) * (Math.PI / 180);
-                            const x = Math.cos(rad) * 72; // radius
-                            const y = Math.sin(rad) * 72;
-                            return (
-                              <div
-                                key={item.dir}
-                                className={`absolute w-11 h-11 rounded-full flex flex-col items-center justify-center text-center text-[10px] font-extrabold transition-all shadow-sm ${
-                                  isPresent
-                                    ? "bg-emerald-500 text-white border border-emerald-600"
-                                    : "bg-orange-50 text-orange-700 border border-orange-200 border-dashed"
-                                }`}
-                                style={{
-                                  transform: `translate(${x}px, ${y}px)`
-                                }}
-                              >
-                                <span className="font-black leading-none">{item.dir}</span>
-                                <span className="text-[9px]">({item.num})</span>
-                              </div>
-                            );
-                          })}
-                        </div>
-                        <div className="flex gap-4 mt-4 text-[10px] font-bold">
-                          <span className="flex items-center gap-1 text-emerald-600">
-                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Harmonious
-                          </span>
-                          <span className="flex items-center gap-1 text-orange-600">
-                            <span className="w-2.5 h-2.5 rounded-full bg-orange-300"></span> Defect/Missing
-                          </span>
-                        </div>
-                      </div>
-
-                      {/* Directional Analysis & Remedies */}
-                      <div className="lg:col-span-2 space-y-4 max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-rose-100 pr-1">
-                        
-                        {/* Heading */}
-                        <div className="bg-rose-50/30 p-3.5 rounded-2xl border border-rose-100/50">
-                          <h4 className="text-xs font-extrabold text-rose-955 uppercase tracking-wider mb-1">Directional Diagnostics</h4>
-                          <p className="text-xs text-slate-500 leading-relaxed">
-                            Numerology maps home directions to birth date vibrations. Missing numbers point to weak Vastu directions in your living space. Follow the remedies below to balance your home layout.
-                          </p>
-                        </div>
-
-                        {/* List of missing direction defects and remedies */}
-                        {(() => {
-                          const missingList = Object.entries(VASTU_DIRECTIONS)
-                            .filter(([num]) => result.loshuGrid[parseInt(num)] === 0)
-                            .map(([num, data]) => ({ num: parseInt(num), ...data }));
-
-                          if (missingList.length === 0) {
-                            return (
-                              <div className="p-4 bg-green-50 border border-green-100 text-green-950 text-xs font-medium rounded-2xl flex items-center gap-2">
-                                <CheckCircle className="w-4 h-4 text-green-700" />
-                                <span>Perfect Vastu Alignment! All 9 compass direction elements are active in your grid profile. Keep your home clutter-free to preserve this flow.</span>
-                              </div>
-                            );
-                          }
-
-                          return missingList.map((item) => (
-                            <div key={item.num} className="p-4 border border-rose-100/70 rounded-2xl bg-white shadow-sm flex items-start gap-3">
-                              <div className="p-2.5 bg-orange-50 text-orange-700 rounded-xl font-black text-xs shrink-0">
-                                {item.num}
-                              </div>
-                              <div className="space-y-1">
-                                <div className="flex flex-wrap items-center gap-2">
-                                  <span className="font-extrabold text-slate-800 text-sm">{item.zone} Zone</span>
-                                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-full">
-                                    {item.element} Element
-                                  </span>
-                                </div>
-                                <p className="text-xs text-slate-500 leading-relaxed">
-                                  <strong>Impact:</strong> {item.aspect} — {item.issue}
-                                </p>
-                                <p className="text-xs text-slate-700 font-semibold bg-rose-50/30 p-2 rounded-xl border border-rose-100/20 leading-relaxed">
-                                  <strong>Vastu Remedy:</strong> {item.remedy}
-                                </p>
-                              </div>
-                            </div>
-                          ));
-                        })()}
-
-                      </div>
-                    </div>
-                  </div>
-
                   {/* Lo Shu Grid Life Domain Analytics */}
                   <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-6">
                     <h3 className="text-lg font-black text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
@@ -1991,6 +2003,7 @@ export default function NumerologyDashboard() {
             )}
             {activeTab === "correction" && renderNameCorrectionPanel()}
             {activeTab === "compatibility" && renderMarriageCompatibilityPanel()}
+            {activeTab === "vastu" && renderVastuOverlayPanel()}
           </div>
         )}
 
