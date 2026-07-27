@@ -1068,10 +1068,10 @@ export default function NumerologyDashboard() {
             <div className="relative w-80 h-80 rounded-full border-4 border-rose-200 bg-white flex items-center justify-center shadow-md">
 
               {/* Inner center Brahmasthan (5) */}
-              <div className={`absolute w-24 h-24 rounded-full flex flex-col items-center justify-center shadow z-10 transition-all ${result.loshuGrid[5] > 0 ? "bg-green-500 text-white border-2 border-green-600" : "bg-orange-100 text-orange-800 border-2 border-orange-300 border-dashed"
+              <div className={`absolute w-32 h-32 rounded-full flex flex-col items-center justify-center shadow z-10 transition-all ${result.loshuGrid[5] > 0 ? "bg-green-500 text-white border-2 border-green-600" : "bg-orange-100 text-orange-800 border-2 border-orange-300 border-dashed"
                 }`}>
-                <span className="text-[10px] font-black leading-none">Center</span>
-                <span className="text-[9px] font-extrabold">(5)</span>
+                <span className="text-xs font-black leading-none uppercase tracking-wide">Center</span>
+                <span className="text-[10px] font-extrabold mt-1">(5)</span>
               </div>
 
               {/* Outer Direction Cells */}
@@ -1088,8 +1088,8 @@ export default function NumerologyDashboard() {
                 const isPresent = result.loshuGrid[item.num] > 0;
                 // Math to position directions in a circle
                 const rad = (item.angle - 90) * (Math.PI / 180);
-                const x = Math.cos(rad) * 135; // radius
-                const y = Math.sin(rad) * 135;
+                const x = Math.cos(rad) * 122; // radius
+                const y = Math.sin(rad) * 122;
                 return (
                   <div
                     key={item.dir}
