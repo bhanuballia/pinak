@@ -1054,7 +1054,7 @@ export default function NumerologyDashboard() {
   const renderVastuOverlayPanel = () => {
     return (
       <div className="bg-white border border-rose-100 rounded-5xl p-6 shadow-sm space-y-6 animate-fadeIn">
-        <h3 className="text-lg font-black text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
+        <h3 className="text-[22px] font-bold text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
           <Compass className="w-5 h-5 text-rose-600 animate-spin-slow" />
           Vastu & Feng Shui Directions Overlay
         </h3>
@@ -1094,15 +1094,15 @@ export default function NumerologyDashboard() {
                   <div
                     key={item.dir}
                     className={`absolute w-16 h-16 rounded-full flex flex-col items-center justify-center text-center text-xs font-extrabold transition-all shadow-sm ${isPresent
-                      ? "bg-emerald-500 text-white border border-emerald-600 font-black"
-                      : "bg-orange-50 text-orange-700 border border-orange-200 border-dashed"
+                      ? "bg-emerald-200 text-slate-900 border border-emerald-600 font-black"
+                      : "bg-orange-50 text-orange-700 border border-orange-700 border-dashed"
                       }`}
                     style={{
                       transform: `translate(${x}px, ${y}px)`
                     }}
                   >
                     <span className="font-black leading-none">{item.dir}</span>
-                    <span className="text-[9px]">({item.num})</span>
+                    <span className="text-[12px]">({item.num})</span>
                   </div>
                 );
               })}
@@ -1118,12 +1118,12 @@ export default function NumerologyDashboard() {
           </div>
 
           {/* Directional Analysis & Remedies */}
-          <div className="lg:col-span-2 space-y-4 max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-rose-100 pr-1">
+          <div className="lg:col-span-2 space-y-4 max-h-[650px] overflow-y-auto scrollbar-thin scrollbar-thumb-rose-100 pr-1">
 
             {/* Heading */}
             <div className="bg-rose-50/30 p-3.5 rounded-2xl border border-rose-100/50">
-              <h4 className="text-xs font-extrabold text-rose-955 uppercase tracking-wider mb-1">Directional Diagnostics</h4>
-              <p className="text-xs text-slate-500 leading-relaxed">
+              <h4 className="text-[20px] font-bold text-rose-955 uppercase tracking-wider mb-1">Directional Diagnostics</h4>
+              <p className="text-[18px] text-orange-900  font-medium leading-relaxed">
                 Numerology maps home directions to birth date vibrations. Missing numbers point to weak Vastu directions in your living space. Follow the remedies below to balance your home layout.
               </p>
             </div>
@@ -1145,20 +1145,20 @@ export default function NumerologyDashboard() {
 
               return missingList.map((item) => (
                 <div key={item.num} className="p-4 border border-rose-100/70 rounded-2xl bg-white shadow-sm flex items-start gap-3 animate-fadeIn">
-                  <div className="p-2.5 bg-orange-50 text-orange-700 rounded-xl font-black text-xs shrink-0">
+                  <div className="p-2.5 bg-orange-50 text-orange-700 rounded-xl font-black text-[18px] shrink-0">
                     {item.num}
                   </div>
                   <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-extrabold text-slate-800 text-sm">{item.zone} Zone</span>
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-full">
+                      <span className="font-bold text-slate-900 text-[20px]">{item.zone} Zone</span>
+                      <span className="text-[16px] font-bold text-amber-900 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-full">
                         {item.element} Element
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 leading-relaxed">
+                    <p className="text-[18px] text-orange-900 font-medium leading-relaxed">
                       <strong>Impact:</strong> {item.aspect} — {item.issue}
                     </p>
-                    <p className="text-xs text-slate-700 font-semibold bg-rose-50/30 p-2 rounded-xl border border-rose-100/20 leading-relaxed">
+                    <p className="text-[18px] text-slate-900 font-semibold bg-rose-50/30 p-2 rounded-xl border border-rose-100/20 leading-relaxed">
                       <strong>Vastu Remedy:</strong> {item.remedy}
                     </p>
                   </div>
@@ -1168,6 +1168,273 @@ export default function NumerologyDashboard() {
 
           </div>
         </div>
+      </div>
+    );
+  };
+
+  const getReductionSteps = (num) => {
+    const steps = [];
+    let current = num;
+    while (current > 9) {
+      steps.push(current);
+      current = current.toString().split('').reduce((acc, d) => acc + parseInt(d, 10), 0);
+    }
+    steps.push(current);
+    return steps;
+  };
+
+  const getKarmicDetail = (num) => {
+    const details = {
+      13: {
+        title: "Focus, Structure & Discipline",
+        pattern: "Tendency toward procrastination, laziness, avoiding hard work, or trying to find quick shortcuts.",
+        remedy: "Accept slow progress, commit to daily routines, stay organized, and avoid taking shortcuts."
+      },
+      14: {
+        title: "Freedom, Commitment & Moderation",
+        pattern: "Tendency toward excessive behavior, restlessness, sudden changes, and fear of commitment.",
+        remedy: "Practice moderation in all things. Commit to long-term goals and stay grounded when facing changes."
+      },
+      16: {
+        title: "Spiritual Rebirth & Ego Dissolution",
+        pattern: "Intellectual pride, separation from others, ego clashes, and sudden lifepath collapses.",
+        remedy: "Develop deep humility and authenticity. Avoid arrogance and learn to accept spiritual insights."
+      },
+      19: {
+        title: "Independence, Authority & Collaboration",
+        pattern: "Selfishness, stubbornness, refusal to ask for help, or commanding others with too much ego.",
+        remedy: "Learn to listen and collaborate. Serve others unselfishly and share your power without demanding praise."
+      }
+    };
+    return details[num];
+  };
+
+  const detectMasterAndKarmicNumbers = (dob, name) => {
+    const masterNumbers = [];
+    const karmicNumbers = [];
+
+    if (!dob || !name) return { masterNumbers, karmicNumbers };
+
+    // 1. Check Birth Day
+    const parts = dob.split('-');
+    if (parts.length === 3) {
+      const day = parseInt(parts[2], 10);
+      if ([11, 22].includes(day)) {
+        masterNumbers.push({
+          num: day,
+          source: `Day of Birth (${day}th)`,
+          type: "Master Number",
+          traits: day === 11 ? "Intuitive leader, highly sensitive, visionary." : "Master Builder, practical dreamer, turns concepts into reality."
+        });
+      }
+      if ([13, 14, 16, 19].includes(day)) {
+        karmicNumbers.push({
+          num: day,
+          source: `Day of Birth (${day}th)`,
+          type: "Karmic Debt",
+          ...getKarmicDetail(day)
+        });
+      }
+    }
+
+    // 2. Check Life Path Intermediate Reduction Steps
+    const dobDigits = dob.replace(/\D/g, '').split('').map(Number);
+    const dobSum = dobDigits.reduce((acc, d) => acc + d, 0);
+    const lpSteps = getReductionSteps(dobSum);
+    for (const step of lpSteps) {
+      if ([11, 22, 33].includes(step)) {
+        if (!masterNumbers.some(m => m.num === step && m.source.includes("Life Path"))) {
+          masterNumbers.push({
+            num: step,
+            source: "Life Path Calculation",
+            type: "Master Number",
+            traits: step === 11 ? "Intuitive channel, inspirational speaker, highly empathetic." : step === 22 ? "Master organizer, builder, constructs systems for humanity." : "Master Teacher, selfless healer, high protective energy."
+          });
+        }
+      }
+      if ([13, 14, 16, 19].includes(step)) {
+        if (!karmicNumbers.some(k => k.num === step && k.source.includes("Life Path"))) {
+          karmicNumbers.push({
+            num: step,
+            source: "Life Path Calculation",
+            type: "Karmic Debt",
+            ...getKarmicDetail(step)
+          });
+        }
+      }
+    }
+
+    // 3. Check Name Sum (Chaldean Sum & intermediate steps)
+    const chaldeanSum = getChaldeanSum(name);
+    const nameSteps = getReductionSteps(chaldeanSum);
+    for (const step of nameSteps) {
+      if ([11, 22, 33].includes(step)) {
+        if (!masterNumbers.some(m => m.num === step && m.source.includes("Name"))) {
+          masterNumbers.push({
+            num: step,
+            source: "Name Vibration (Chaldean)",
+            type: "Master Number",
+            traits: step === 11 ? "Magnetic charisma, artistic brilliance, emotional depth." : step === 22 ? "International reach, commercial leader, structures plans." : "Nurturer, creative expression, global influence."
+          });
+        }
+      }
+      if ([13, 14, 16, 19].includes(step)) {
+        if (!karmicNumbers.some(k => k.num === step && k.source.includes("Name"))) {
+          karmicNumbers.push({
+            num: step,
+            source: "Name Vibration (Chaldean)",
+            type: "Karmic Debt",
+            ...getKarmicDetail(step)
+          });
+        }
+      }
+    }
+
+    return { masterNumbers, karmicNumbers };
+  };
+
+  const renderAdvancedAnalyticsPanel = () => {
+    const { masterNumbers, karmicNumbers } = detectMasterAndKarmicNumbers(result.dob, result.name);
+
+    // Calculate elements strength percentage
+    const grid = result.loshuGrid;
+    const elements = [
+      { name: "Water (Intuition & Career)", num: [1], color: "bg-blue-500", text: "text-blue-800", bg: "bg-blue-50", desc: "Ruling over career opportunity, deep wisdom, and focus." },
+      { name: "Wood (Wealth & Growth)", num: [3, 4], color: "bg-emerald-500", text: "text-emerald-800", bg: "bg-emerald-50", desc: "Ruling over wealth, assets, physical vitality, and expansion." },
+      { name: "Fire (Fame & Energy)", num: [9], color: "bg-rose-500", text: "text-rose-800", bg: "bg-rose-50", desc: "Ruling over fame, recognition, energy levels, and passion." },
+      { name: "Earth (Stability & Marriage)", num: [2, 5, 8], color: "bg-amber-500", text: "text-amber-800", bg: "bg-amber-50", desc: "Ruling over marital harmony, central balance, and material savings." },
+      { name: "Metal (Wisdom & Support)", num: [6, 7], color: "bg-zinc-500", text: "text-zinc-800", bg: "bg-zinc-50", desc: "Ruling over wisdom, planning skills, helpful mentors, and travel." }
+    ];
+
+    // Compute elemental distribution
+    const elementData = elements.map(el => {
+      const activeCount = el.num.filter(n => grid[n] > 0).length;
+      const pct = Math.round((activeCount / el.num.length) * 100);
+      return { ...el, pct, activeCount };
+    });
+
+    return (
+      <div className="space-y-6 animate-fadeIn">
+        
+        {/* Title Card */}
+        <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
+          <h3 className="text-xl font-black text-rose-955 flex items-center gap-2 border-b border-rose-100 pb-3 mb-4">
+            <Award className="w-5 h-5 text-rose-600" />
+            Advanced Chart Analytics & Core Indicators
+          </h3>
+          <p className="text-xs text-slate-500 leading-relaxed">
+            This module evaluates hidden vibrations, master frequencies, elemental weights, and karmic lessons within your numerological chart structure.
+          </p>
+        </div>
+
+        {/* Master & Karmic Numbers Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          {/* Master Numbers Box */}
+          <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-4">
+            <h4 className="font-extrabold text-rose-955 text-base flex items-center gap-1.5">
+              🌟 Master Number Frequencies
+            </h4>
+            <p className="text-xs text-slate-400">
+              Master Numbers (11, 22, 33) indicate high spiritual potential, vision, and major life challenges.
+            </p>
+
+            {masterNumbers.length === 0 ? (
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center text-xs text-slate-400">
+                No active Master Numbers in your primary core profiles.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {masterNumbers.map((m, idx) => (
+                  <div key={idx} className="p-4 bg-gradient-to-br from-green-50 to-emerald-50/20 border border-green-200 rounded-2xl shadow-sm flex items-start gap-3 animate-fadeIn">
+                    <div className="w-12 h-12 bg-green-500 text-white rounded-xl flex items-center justify-center font-black text-xl shrink-0 shadow-sm">
+                      {m.num}
+                    </div>
+                    <div>
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="font-extrabold text-slate-800 text-sm">{m.source}</span>
+                        <span className="text-[9px] font-bold bg-green-100 text-green-800 px-2 py-0.5 rounded-full uppercase tracking-wider">Active</span>
+                      </div>
+                      <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                        <strong>Traits:</strong> {m.traits}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Karmic Debt Box */}
+          <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-4">
+            <h4 className="font-extrabold text-rose-955 text-base flex items-center gap-1.5">
+              ⚠️ Karmic Debt Diagnostics
+            </h4>
+            <p className="text-xs text-slate-400">
+              Karmic Debts (13, 14, 16, 19) highlight past behavioral lessons you must work through in this life.
+            </p>
+
+            {karmicNumbers.length === 0 ? (
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center text-xs text-slate-400">
+                No active Karmic Debts detected in this profile! You have a balanced baseline path.
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {karmicNumbers.map((k, idx) => (
+                  <div key={idx} className="p-4 border border-rose-200 bg-rose-50/10 rounded-2xl shadow-sm flex items-start gap-3 animate-fadeIn">
+                    <div className="w-12 h-12 bg-rose-600 text-white rounded-xl flex items-center justify-center font-black text-xl shrink-0 shadow-sm">
+                      {k.num}
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex flex-wrap items-center gap-1.5">
+                        <span className="font-extrabold text-slate-800 text-sm">{k.source}</span>
+                        <span className="text-[9px] font-bold bg-rose-105 text-rose-800 px-2 py-0.5 rounded-full uppercase tracking-wider">{k.title}</span>
+                      </div>
+                      <p className="text-xs text-slate-550 leading-relaxed">
+                        <strong>Shadow Pattern:</strong> {k.pattern}
+                      </p>
+                      <p className="text-xs text-slate-700 font-semibold bg-white/70 p-2 rounded-lg border border-rose-100/30 leading-relaxed">
+                        <strong>Actionable Remedy:</strong> {k.remedy}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+        </div>
+
+        {/* Elemental Strength Analytics Card */}
+        <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-4 animate-fadeIn">
+          <h4 className="font-extrabold text-rose-955 text-base">
+            🌊 Elemental Strength Analysis
+          </h4>
+          <p className="text-xs text-slate-400">
+            Each number in the Lo Shu grid channels one of the five elements. Here is the active balance of elements in your profile:
+          </p>
+
+          <div className="space-y-4 pt-2">
+            {elementData.map((el, idx) => (
+              <div key={idx} className="space-y-1">
+                <div className="flex justify-between items-center text-xs font-bold">
+                  <span className="text-slate-800">{el.name}</span>
+                  <span className={`${el.text} bg-slate-50 px-2.5 py-0.5 rounded-full`}>{el.pct}% Strength</span>
+                </div>
+                <div className="relative w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                  <div
+                    className={`absolute left-0 top-0 h-full ${el.color} transition-all duration-1000`}
+                    style={{ width: `${el.pct}%` }}
+                  ></div>
+                </div>
+                <p className="text-[11px] text-slate-400 leading-snug">
+                  {el.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     );
   };
@@ -1292,6 +1559,16 @@ export default function NumerologyDashboard() {
               >
                 <Compass className="w-5 h-5" />
                 <span>Vastu & Directions</span>
+              </button>
+              <button
+                onClick={() => setActiveTab("analytics")}
+                className={`py-3 px-6 font-extrabold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "analytics"
+                  ? "border-rose-600 text-rose-600"
+                  : "border-transparent text-slate-500 hover:text-rose-600"
+                  }`}
+              >
+                <AlertCircle className="w-5 h-5" />
+                <span>Advanced Analytics</span>
               </button>
             </div>
 
@@ -2001,6 +2278,7 @@ export default function NumerologyDashboard() {
             {activeTab === "correction" && renderNameCorrectionPanel()}
             {activeTab === "compatibility" && renderMarriageCompatibilityPanel()}
             {activeTab === "vastu" && renderVastuOverlayPanel()}
+            {activeTab === "analytics" && renderAdvancedAnalyticsPanel()}
           </div>
         )}
 
