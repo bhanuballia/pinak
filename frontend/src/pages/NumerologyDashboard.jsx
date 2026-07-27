@@ -593,10 +593,10 @@ export default function NumerologyDashboard() {
         <div
           key={num}
           className={`p-3 rounded-2xl flex flex-col items-center justify-center text-center relative border transition-all ${isMissing
-              ? isFilledByOther
-                ? "bg-green-50 border-green-300 text-green-800 ring-2 ring-green-200/50"
-                : "bg-slate-50 border-slate-200 text-slate-300"
-              : "bg-rose-50 border-rose-200 text-rose-900 font-bold shadow-sm"
+            ? isFilledByOther
+              ? "bg-green-50 border-green-300 text-green-800 ring-2 ring-green-200/50"
+              : "bg-slate-50 border-slate-200 text-slate-300"
+            : "bg-rose-50 border-rose-200 text-rose-900 font-bold shadow-sm"
             }`}
         >
           <span className="absolute top-1.5 right-2 text-[9px] font-bold text-slate-400">{num}</span>
@@ -1053,7 +1053,7 @@ export default function NumerologyDashboard() {
 
   const renderVastuOverlayPanel = () => {
     return (
-      <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-6 animate-fadeIn">
+      <div className="bg-white border border-rose-100 rounded-5xl p-6 shadow-sm space-y-6 animate-fadeIn">
         <h3 className="text-lg font-black text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
           <Compass className="w-5 h-5 text-rose-600 animate-spin-slow" />
           Vastu & Feng Shui Directions Overlay
@@ -1061,16 +1061,15 @@ export default function NumerologyDashboard() {
 
         {/* Vastu Wheel & Diagnostics Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          
+
           {/* Vastu Compass Wheel Layout */}
           <div className="lg:col-span-1 flex flex-col items-center justify-center bg-rose-50/20 border border-rose-100/50 p-4 rounded-3xl">
             <span className="text-xs font-extrabold text-rose-900 uppercase tracking-widest mb-3">Vastu Compass Alignment</span>
-            <div className="relative w-52 h-52 rounded-full border-4 border-rose-200 bg-white flex items-center justify-center shadow-md">
-              
+            <div className="relative w-80 h-80 rounded-full border-4 border-rose-200 bg-white flex items-center justify-center shadow-md">
+
               {/* Inner center Brahmasthan (5) */}
-              <div className={`absolute w-14 h-14 rounded-full flex flex-col items-center justify-center shadow z-10 transition-all ${
-                result.loshuGrid[5] > 0 ? "bg-green-500 text-white border-2 border-green-600" : "bg-orange-100 text-orange-800 border-2 border-orange-300 border-dashed"
-              }`}>
+              <div className={`absolute w-24 h-24 rounded-full flex flex-col items-center justify-center shadow z-10 transition-all ${result.loshuGrid[5] > 0 ? "bg-green-500 text-white border-2 border-green-600" : "bg-orange-100 text-orange-800 border-2 border-orange-300 border-dashed"
+                }`}>
                 <span className="text-[10px] font-black leading-none">Center</span>
                 <span className="text-[9px] font-extrabold">(5)</span>
               </div>
@@ -1089,16 +1088,15 @@ export default function NumerologyDashboard() {
                 const isPresent = result.loshuGrid[item.num] > 0;
                 // Math to position directions in a circle
                 const rad = (item.angle - 90) * (Math.PI / 180);
-                const x = Math.cos(rad) * 72; // radius
-                const y = Math.sin(rad) * 72;
+                const x = Math.cos(rad) * 115; // radius
+                const y = Math.sin(rad) * 115;
                 return (
                   <div
                     key={item.dir}
-                    className={`absolute w-11 h-11 rounded-full flex flex-col items-center justify-center text-center text-[10px] font-extrabold transition-all shadow-sm ${
-                      isPresent
-                        ? "bg-emerald-500 text-white border border-emerald-600"
-                        : "bg-orange-50 text-orange-700 border border-orange-200 border-dashed"
-                    }`}
+                    className={`absolute w-14 h-14 rounded-full flex flex-col items-center justify-center text-center text-xs font-extrabold transition-all shadow-sm ${isPresent
+                      ? "bg-emerald-500 text-white border border-emerald-600 font-black"
+                      : "bg-orange-50 text-orange-700 border border-orange-200 border-dashed"
+                      }`}
                     style={{
                       transform: `translate(${x}px, ${y}px)`
                     }}
@@ -1121,7 +1119,7 @@ export default function NumerologyDashboard() {
 
           {/* Directional Analysis & Remedies */}
           <div className="lg:col-span-2 space-y-4 max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-rose-100 pr-1">
-            
+
             {/* Heading */}
             <div className="bg-rose-50/30 p-3.5 rounded-2xl border border-rose-100/50">
               <h4 className="text-xs font-extrabold text-rose-955 uppercase tracking-wider mb-1">Directional Diagnostics</h4>
@@ -1681,7 +1679,7 @@ export default function NumerologyDashboard() {
                     </h3>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      
+
                       {/* Personal Year Card */}
                       <div className="bg-gradient-to-br from-rose-50 to-amber-50/30 p-5 rounded-2xl border border-rose-100 flex flex-col justify-between">
                         <div>
@@ -1742,7 +1740,7 @@ export default function NumerologyDashboard() {
                       <h4 className="text-sm font-extrabold text-rose-955 mb-3">
                         Monthly Forecast Timeline ({result.currentYear})
                       </h4>
-                      
+
                       {/* Months slider */}
                       <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-thin scrollbar-thumb-rose-200">
                         {Array.from({ length: 12 }, (_, i) => {
@@ -1754,11 +1752,10 @@ export default function NumerologyDashboard() {
                             <button
                               key={mIndex}
                               onClick={() => setSelectedForecastMonth(mIndex)}
-                              className={`px-4 py-2.5 rounded-xl border text-center transition-all shrink-0 min-w-[70px] ${
-                                isActive
-                                  ? 'bg-rose-600 text-white border-rose-600 shadow-md'
-                                  : 'bg-rose-50/30 text-rose-950 border-rose-100/50 hover:bg-rose-50'
-                              }`}
+                              className={`px-4 py-2.5 rounded-xl border text-center transition-all shrink-0 min-w-[70px] ${isActive
+                                ? 'bg-rose-600 text-white border-rose-600 shadow-md'
+                                : 'bg-rose-50/30 text-rose-950 border-rose-100/50 hover:bg-rose-50'
+                                }`}
                             >
                               <span className="text-xs font-bold block leading-none">{mName}</span>
                               <span className={`text-[10px] font-black block mt-1 ${isActive ? 'text-amber-200' : 'text-rose-600'}`}>
