@@ -606,7 +606,7 @@ export default function NumerologyDashboard() {
               : String(num).repeat(count)}
           </span>
           {isFilledByOther && (
-            <span className="text-[8px] font-bold text-green-600 tracking-tighter uppercase mt-0.5">Balanced</span>
+            <span className="text-[12px] font-bold text-green-600 tracking-tighter uppercase mt-0.5">Balanced</span>
           )}
         </div>
       );
@@ -630,19 +630,19 @@ export default function NumerologyDashboard() {
           <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm flex flex-col md:flex-row items-center gap-8">
             <div className="relative flex items-center justify-center w-36 h-36 shrink-0 bg-rose-50 rounded-full border border-rose-150 animate-fadeIn">
               <div className="text-center">
-                <p className="text-[10px] font-bold text-slate-400 uppercase">Match Score</p>
+                <p className="text-[12px] font-bold text-slate-900 uppercase">Match Score</p>
                 <p className="text-4xl font-black text-rose-600">{overallScore}%</p>
-                <span className={`inline-block text-[10px] font-bold px-2 py-0.5 rounded-full mt-1.5 ${ratingClass}`}>
+                <span className={`inline-block text-[12px] font-bold px-2 py-0.5 rounded-full mt-1.5 ${ratingClass}`}>
                   {ratingText}
                 </span>
               </div>
             </div>
 
             <div className="space-y-3 flex-1 text-center md:text-left">
-              <h3 className="text-2xl font-black text-rose-955">
+              <h3 className="text-3xl font-bold text-slate-900">
                 {partnerA.name} & {partnerB.name} Compatibility
               </h3>
-              <p className="text-sm text-slate-600 leading-relaxed">
+              <p className="text-[16px] text-slate-900 leading-relaxed">
                 Your combined Lo Shu Magic Squares indicate an overall vibration compatibility of <strong>{overallScore}%</strong>. This report outlines how you balance each other's elemental missing voids and align spiritually through planetary frequencies.
               </p>
             </div>
@@ -651,8 +651,8 @@ export default function NumerologyDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
               <div className="flex justify-between items-center mb-4">
-                <h4 className="font-extrabold text-rose-955 text-base">{partnerA.name}'s Grid</h4>
-                <span className="text-xs font-bold text-slate-500">Psychic: {partnerA.mulank} | Destiny: {partnerA.bhagyank}</span>
+                <h4 className="font-bold text-slate-900 text-[16px]">{partnerA.name}'s Grid</h4>
+                <span className="text-[16px] font-bold text-slate-900">Psychic: {partnerA.mulank} | Destiny: {partnerA.bhagyank}</span>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {renderLoshuCell(4, partnerA.grid, partnerA.name, partnerB.grid)}
@@ -669,8 +669,8 @@ export default function NumerologyDashboard() {
 
             <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
               <div className="flex justify-between items-center mb-4">
-                <h4 className="font-extrabold text-rose-955 text-base">{partnerB.name}'s Grid</h4>
-                <span className="text-xs font-bold text-slate-500">Psychic: {partnerB.mulank} | Destiny: {partnerB.bhagyank}</span>
+                <h4 className="font-bold text-slate-900 text-[16px]">{partnerB.name}'s Grid</h4>
+                <span className="text-[16px] font-bold text-slate-900">Psychic: {partnerB.mulank} | Destiny: {partnerB.bhagyank}</span>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {renderLoshuCell(4, partnerB.grid, partnerB.name, partnerA.grid)}
@@ -688,48 +688,48 @@ export default function NumerologyDashboard() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-white border border-rose-100 rounded-3xl p-5 shadow-sm space-y-2">
-              <div className="flex items-center gap-2 text-rose-900 font-extrabold text-sm uppercase tracking-wider">
-                <Star className="w-4 h-4 text-rose-600" /> Planetary Birth Match
+              <div className="flex items-center gap-2 text-orange-900 font-bold text-[18px] uppercase tracking-wider">
+                <Star className="w-4 h-4 text-orange-900" /> Planetary Birth Match
               </div>
-              <p className="text-2xl font-black text-rose-700">{compatResult.planetaryScore}%</p>
-              <p className="text-xs text-slate-600 leading-relaxed">{compatResult.planetaryMsg}</p>
+              <p className="text-2xl font-bold text-orange-900">{compatResult.planetaryScore}%</p>
+              <p className="text-[16px] font-medium text-slate-900 leading-relaxed">{compatResult.planetaryMsg}</p>
             </div>
 
             <div className="bg-white border border-rose-100 rounded-3xl p-5 shadow-sm space-y-2">
-              <div className="flex items-center gap-2 text-rose-900 font-extrabold text-sm uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-rose-900 font-bold text-[18px] uppercase tracking-wider">
                 <Compass className="w-4 h-4 text-rose-600" /> Complementary Balance
               </div>
-              <p className="text-2xl font-black text-rose-700">{compatResult.complementaryScore}%</p>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-2xl font-bold text-rose-700">{compatResult.complementaryScore}%</p>
+              <p className="text-[16px] font-medium text-slate-900 leading-relaxed">
                 {partnerA.name} fills <strong>{compatResult.filledByA}</strong> of {partnerB.name}'s missing slots, and {partnerB.name} fills <strong>{compatResult.filledByB}</strong> of {partnerA.name}'s missing slots.
               </p>
             </div>
 
             <div className="bg-white border border-rose-100 rounded-3xl p-5 shadow-sm space-y-2">
-              <div className="flex items-center gap-2 text-rose-900 font-extrabold text-sm uppercase tracking-wider">
+              <div className="flex items-center gap-2 text-rose-900 font-bold text-[18px] uppercase tracking-wider">
                 <Heart className="w-4 h-4 text-rose-600" /> Relationship Pillars
               </div>
               <p className="text-2xl font-black text-rose-700">{compatResult.relationshipScore}%</p>
-              <p className="text-xs text-slate-600 leading-relaxed">
+              <p className="text-[16px] font-medium text-slate-900 leading-relaxed">
                 Measures presence of <strong>2</strong> (harmony), <strong>5</strong> (stability), and <strong>6</strong> (support). Strong pillar numbers keep the relationship steady under challenges.
               </p>
             </div>
           </div>
 
           <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-4">
-            <h4 className="font-extrabold text-rose-955 text-lg border-b border-rose-100 pb-2">
+            <h4 className="font-bold text-orange-900 text-[18px] border-b border-rose-100 pb-2">
               🌸 Marriage Compatibility Remedies
             </h4>
             {compatResult.remediesList.length === 0 ? (
-              <p className="text-sm text-green-700 font-medium flex items-center gap-1">
+              <p className="text-[16px] text-green-700 font-medium flex items-center gap-1">
                 <CheckCircle className="w-4 h-4" /> Your joint numerology profiles are naturally balanced! No remedies are needed.
               </p>
             ) : (
               <div className="space-y-4">
                 {compatResult.remediesList.map((rem, idx) => (
                   <div key={idx} className="bg-rose-50/20 border border-rose-100/50 p-4 rounded-2xl">
-                    <h5 className="font-extrabold text-rose-950 text-sm mb-1">{rem.title}</h5>
-                    <p className="text-xs md:text-sm text-slate-600 leading-relaxed">{rem.desc}</p>
+                    <h5 className="font-extrabold text-rose-950 text-[16px] mb-1">{rem.title}</h5>
+                    <p className="text-[16px] font-medium text-slate-900 leading-relaxed">{rem.desc}</p>
                   </div>
                 ))}
               </div>
@@ -739,7 +739,7 @@ export default function NumerologyDashboard() {
           <div className="flex justify-center">
             <button
               onClick={handleResetCompat}
-              className="inline-flex items-center gap-2 px-6 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl transition-all shadow-md shadow-rose-600/20 text-sm"
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl transition-all shadow-md shadow-rose-600/20 text-[14px]"
             >
               <RefreshCw className="w-4 h-4" />
               <span>Match Another Couple</span>
@@ -763,9 +763,9 @@ export default function NumerologyDashboard() {
 
         <form onSubmit={handleCalculateCompatibility} className="space-y-6">
           <div className="space-y-3.5 border-b border-rose-100 pb-4">
-            <h4 className="font-bold text-rose-900 text-sm uppercase tracking-wide">Partner A</h4>
+            <h4 className="font-bold text-slate-900 text-[18px] uppercase tracking-wide">Partner A</h4>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <label className="text-[14px] font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                 <User className="w-3.5 h-3.5" /> Full Name
               </label>
               <input
@@ -774,11 +774,11 @@ export default function NumerologyDashboard() {
                 value={partnerAName}
                 onChange={(e) => setPartnerAName(e.target.value)}
                 placeholder="Partner A Name"
-                className="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all font-medium text-sm"
+                className="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all font-medium text-[14px]"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <label className="text-[14px] font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5" /> Date of Birth
               </label>
               <input
@@ -786,15 +786,15 @@ export default function NumerologyDashboard() {
                 required
                 value={partnerADob}
                 onChange={(e) => setPartnerADob(e.target.value)}
-                className="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all font-medium text-sm"
+                className="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all font-medium text-[14px]"
               />
             </div>
           </div>
 
           <div className="space-y-3.5 pb-4">
-            <h4 className="font-bold text-rose-900 text-sm uppercase tracking-wide">Partner B</h4>
+            <h4 className="font-bold text-rose-900 text-[18px] uppercase tracking-wide">Partner B</h4>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <label className="text-[14px] font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                 <User className="w-3.5 h-3.5" /> Full Name
               </label>
               <input
@@ -803,11 +803,11 @@ export default function NumerologyDashboard() {
                 value={partnerBName}
                 onChange={(e) => setPartnerBName(e.target.value)}
                 placeholder="Partner B Name"
-                className="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all font-medium text-sm"
+                className="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all font-medium text-[14px]"
               />
             </div>
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+              <label className="text-[14px] font-bold text-slate-900 uppercase tracking-wider flex items-center gap-1.5">
                 <Calendar className="w-3.5 h-3.5" /> Date of Birth
               </label>
               <input
@@ -815,7 +815,7 @@ export default function NumerologyDashboard() {
                 required
                 value={partnerBDob}
                 onChange={(e) => setPartnerBDob(e.target.value)}
-                className="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all font-medium text-sm"
+                className="w-full bg-rose-50/50 border border-rose-200 rounded-xl px-4 py-2.5 text-slate-800 focus:outline-none focus:border-rose-500 focus:ring-1 focus:ring-rose-500 transition-all font-medium text-[14px]"
               />
             </div>
           </div>
@@ -823,7 +823,7 @@ export default function NumerologyDashboard() {
           <button
             type="submit"
             disabled={compatLoading}
-            className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-rose-500/20 transition-all transform hover:-translate-y-0.5 disabled:opacity-50 text-sm flex items-center justify-center gap-1.5"
+            className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg shadow-rose-500/20 transition-all transform hover:-translate-y-0.5 disabled:opacity-50 text-[14px] flex items-center justify-center gap-1.5"
           >
             {compatLoading ? (
               <>
@@ -887,32 +887,32 @@ export default function NumerologyDashboard() {
       <div className="space-y-6">
         {/* Compatibility Overview Card */}
         <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
-          <h3 className="text-xl font-black text-rose-950 mb-4 flex items-center gap-2">
+          <h3 className="text-[22px] font-bold text-orange-900 mb-4 flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-rose-600" /> Current Name Spelling Compatibility
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <div className="bg-rose-50/50 p-4 rounded-2xl border border-rose-100/50">
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Target Name Analysed</p>
+                <p className="text-[18px] font-bold text-slate-900 uppercase tracking-wider mb-1">Target Name Analysed</p>
                 <p className="text-xl font-bold text-rose-950">{result.name}</p>
               </div>
 
               <div className="grid grid-cols-3 gap-2">
                 <div className="bg-rose-50/30 p-3 rounded-xl border border-rose-100/20 text-center">
-                  <p className="text-[10px] font-extrabold text-slate-500 uppercase">Psychic (Mulank)</p>
+                  <p className="text-[16px] font-extrabold text-slate-900 uppercase">Psychic (Mulank)</p>
                   <p className="text-2xl font-black text-rose-600">{psychic}</p>
-                  <p className="text-[10px] font-medium text-slate-400">{PLANET_NAMES[psychic]}</p>
+                  <p className="text-[16px] font-medium text-slate-900">{PLANET_NAMES[psychic]}</p>
                 </div>
                 <div className="bg-rose-50/30 p-3 rounded-xl border border-rose-100/20 text-center">
-                  <p className="text-[10px] font-extrabold text-slate-500 uppercase">Destiny (Bhagyank)</p>
+                  <p className="text-[16px] font-extrabold text-slate-900 uppercase">Destiny (Bhagyank)</p>
                   <p className="text-2xl font-black text-rose-600">{destiny}</p>
-                  <p className="text-[10px] font-medium text-slate-400">{PLANET_NAMES[destiny]}</p>
+                  <p className="text-[16px] font-medium text-slate-900">{PLANET_NAMES[destiny]}</p>
                 </div>
                 <div className="bg-rose-50/30 p-3 rounded-xl border border-rose-100/20 text-center">
-                  <p className="text-[10px] font-extrabold text-slate-500 uppercase">Name (Chaldean)</p>
+                  <p className="text-[16px] font-extrabold text-slate-900 uppercase">Name (Chaldean)</p>
                   <p className="text-2xl font-black text-rose-600">{currentChaldeanReduced}</p>
-                  <p className="text-[10px] font-medium text-slate-400">Total: {currentChaldeanCompound}</p>
+                  <p className="text-[16px] font-medium text-slate-900">Total: {currentChaldeanCompound}</p>
                 </div>
               </div>
             </div>
@@ -947,26 +947,26 @@ export default function NumerologyDashboard() {
         {/* Lucky Numbers Table */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
-            <h4 className="font-extrabold text-rose-950 text-base mb-3">Friendly Target Numbers</h4>
-            <p className="text-xs text-slate-500 mb-4">Aim to adjust your name spelling so that the Chaldean sum reduces to one of these single digits:</p>
+            <h4 className="font-bold text-slate-900 text-[20px] mb-3">Friendly Target Numbers</h4>
+            <p className="text-[16px] text-slate-900 mb-4">Aim to adjust your name spelling so that the Chaldean sum reduces to one of these single digits:</p>
             <div className="flex flex-wrap gap-2">
               {friendlyList.map(num => (
                 <span key={num} className="inline-flex flex-col items-center justify-center w-14 h-14 bg-green-50 border border-green-200 rounded-xl">
-                  <span className="text-lg font-black text-green-700">{num}</span>
-                  <span className="text-[8px] font-bold text-slate-400">{PLANET_NAMES[num]}</span>
+                  <span className="text-[18px] font-black text-green-700">{num}</span>
+                  <span className="text-[16px] font-bold text-slate-900">{PLANET_NAMES[num]}</span>
                 </span>
               ))}
             </div>
           </div>
 
           <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
-            <h4 className="font-extrabold text-rose-950 text-base mb-3">Numbers to Avoid</h4>
-            <p className="text-xs text-slate-500 mb-4">Try to avoid name spelling totals that reduce to these conflicting digits:</p>
+            <h4 className="font-bold text-slate-900 text-[18px] mb-3">Numbers to Avoid</h4>
+            <p className="text-[16px] text-slate-900 mb-4">Try to avoid name spelling totals that reduce to these conflicting digits:</p>
             <div className="flex flex-wrap gap-2">
               {avoids.map(num => (
                 <span key={num} className="inline-flex flex-col items-center justify-center w-14 h-14 bg-rose-50 border border-rose-200 rounded-xl">
-                  <span className="text-lg font-black text-rose-700/60 line-through">{num}</span>
-                  <span className="text-[8px] font-bold text-slate-400">{PLANET_NAMES[num]}</span>
+                  <span className="text-[18px] font-black text-rose-700/60 line-through">{num}</span>
+                  <span className="text-[16px] font-bold text-slate-900">{PLANET_NAMES[num]}</span>
                 </span>
               ))}
             </div>
@@ -977,8 +977,8 @@ export default function NumerologyDashboard() {
         <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
           <div className="border-b border-rose-100 pb-3 mb-4 flex justify-between items-center flex-wrap gap-2">
             <div>
-              <h3 className="text-lg font-black text-rose-950">Lucky Spelling Correction Suggestions</h3>
-              <p className="text-xs text-slate-500">Minor spell changes that create maximum compatibility with your charts</p>
+              <h3 className="text-[22px] font-bold text-rose-950">Lucky Spelling Correction Suggestions</h3>
+              <p className="text-[16px] text-slate-900">Minor spell changes that create maximum compatibility with your charts</p>
             </div>
             <span className="bg-rose-100 text-rose-800 text-[11px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider">
               Chaldean Method
@@ -995,7 +995,7 @@ export default function NumerologyDashboard() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs md:text-sm">
                 <thead>
-                  <tr className="border-b border-rose-100 text-rose-900 font-bold uppercase tracking-wider text-[11px]">
+                  <tr className="border-b border-rose-100 text-slate-900 font-bold uppercase tracking-wider text-[16px]">
                     <th className="py-3 px-2">Proposed Spelling</th>
                     <th className="py-3 px-2">Correction Method</th>
                     <th className="py-3 px-2 text-center">Chaldean Sum</th>
@@ -1010,30 +1010,30 @@ export default function NumerologyDashboard() {
                     return (
                       <tr key={idx} className="hover:bg-rose-50/20 transition-all">
                         <td className="py-4 px-2">
-                          <span className="font-extrabold text-slate-900 text-base">{item.name}</span>
+                          <span className="font-semibold text-slate-900 text-[16px]">{item.name}</span>
                         </td>
-                        <td className="py-4 px-2 text-slate-600 text-xs">{item.method}</td>
+                        <td className="py-4 px-2 text-slate-900 text-[16px]">{item.method}</td>
                         <td className="py-4 px-2 text-center text-rose-700 font-black">{item.compound}</td>
                         <td className="py-4 px-2 text-center">
                           <span className="inline-flex flex-col items-center justify-center bg-rose-50 px-2 py-0.5 rounded font-black text-rose-600">
                             {item.single}
-                            <span className="text-[8px] text-slate-400 uppercase tracking-tighter">{PLANET_NAMES[item.single]}</span>
+                            <span className="text-[16px] text-slate-900">{PLANET_NAMES[item.single]}</span>
                           </span>
                         </td>
                         <td className="py-4 px-2 max-w-xs">
                           {compoundDetail ? (
                             <div>
-                              <span className="font-bold text-green-700 block text-xs">🌟 {compoundDetail.title}</span>
-                              <span className="text-[11px] text-slate-500 leading-snug block">{compoundDetail.desc}</span>
+                              <span className="font-bold text-green-700 block text-[16px]">🌟 {compoundDetail.title}</span>
+                              <span className="text-[16px] text-slate-900 leading-snug block">{compoundDetail.desc}</span>
                             </div>
                           ) : (
-                            <span className="text-xs text-slate-500">Harmonious compound vibration. Good for personality and career.</span>
+                            <span className="text-[16px] text-slate-900">Harmonious compound vibration. Good for personality and career.</span>
                           )}
                         </td>
                         <td className="py-4 px-2 text-right">
                           <button
                             onClick={() => handleApplyCorrection(item.name)}
-                            className="inline-flex items-center gap-1 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition-all shadow shadow-rose-200"
+                            className="inline-flex items-center gap-1 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white font-bold px-3 py-1.5 rounded-xl text-[16px] transition-all shadow shadow-rose-200"
                           >
                             <RefreshCw className="w-3 h-3" />
                             <span>Try Spelling</span>
@@ -1103,7 +1103,7 @@ export default function NumerologyDashboard() {
 
     return (
       <div className="space-y-6 animate-fadeIn">
-        
+
         {/* Vastu Compass Overlay Container */}
         <div className="bg-white border border-rose-100 rounded-5xl p-6 shadow-sm space-y-6">
           <h3 className="text-[22px] font-bold text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
@@ -1159,7 +1159,7 @@ export default function NumerologyDashboard() {
                   );
                 })}
               </div>
-              <div className="flex gap-4 mt-4 text-[10px] font-bold">
+              <div className="flex gap-4 mt-4 text-[16px] font-bold">
                 <span className="flex items-center gap-1 text-emerald-600">
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Harmonious
                 </span>
@@ -1236,20 +1236,18 @@ export default function NumerologyDashboard() {
             {yogaData.map((yoga, idx) => (
               <div
                 key={idx}
-                className={`p-6 rounded-3xl border transition-all ${
-                  yoga.isActive
-                    ? "bg-gradient-to-br from-amber-50/70 to-yellow-50/30 border-amber-300 ring-2 ring-amber-100 shadow-md animate-fadeIn"
-                    : "bg-slate-50/40 border-slate-200 opacity-60"
-                }`}
+                className={`p-6 rounded-3xl border transition-all ${yoga.isActive
+                  ? "bg-gradient-to-br from-amber-50/70 to-yellow-50/30 border-amber-300 ring-2 ring-amber-100 shadow-md animate-fadeIn"
+                  : "bg-slate-50/40 border-slate-200 opacity-60"
+                  }`}
               >
                 <div className="flex justify-between items-center mb-3">
                   <h4 className="text-[20px] font-bold text-rose-955">{yoga.name}</h4>
                   <span
-                    className={`text-[14px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider ${
-                      yoga.isActive
-                        ? "bg-amber-600 text-white shadow-sm"
-                        : "bg-slate-200 text-slate-500"
-                    }`}
+                    className={`text-[14px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider ${yoga.isActive
+                      ? "bg-amber-600 text-white shadow-sm"
+                      : "bg-slate-200 text-slate-500"
+                      }`}
                   >
                     {yoga.isActive ? "Active" : "Inactive"}
                   </span>
@@ -1818,10 +1816,10 @@ export default function NumerologyDashboard() {
               <Sparkles className="w-6 h-6" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-extrabold text-rose-950 tracking-tight">
+              <h1 className="text-2xl md:text-3xl font-bold text-rose-950 tracking-tight">
                 Vedic & Chaldean Numerology
               </h1>
-              <p className="text-xs md:text-sm text-rose-700 font-medium">
+              <p className="text-xs md:text-[16px] text-rose-700 font-medium">
                 Deep numerical analytics of your name, personality, destiny, and remedies
               </p>
             </div>
@@ -1890,9 +1888,9 @@ export default function NumerologyDashboard() {
             <div className="flex border-b border-rose-200">
               <button
                 onClick={() => setActiveTab("report")}
-                className={`py-3 px-6 font-extrabold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "report"
+                className={`py-3 px-6 font-bold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "report"
                   ? "border-rose-600 text-rose-600"
-                  : "border-transparent text-slate-500 hover:text-rose-600"
+                  : "border-transparent text-orange-900 hover:text-rose-600"
                   }`}
               >
                 <Award className="w-5 h-5" />
@@ -1900,9 +1898,9 @@ export default function NumerologyDashboard() {
               </button>
               <button
                 onClick={() => setActiveTab("correction")}
-                className={`py-3 px-6 font-extrabold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "correction"
+                className={`py-3 px-6 font-bold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "correction"
                   ? "border-rose-600 text-rose-600"
-                  : "border-transparent text-slate-500 hover:text-rose-600"
+                  : "border-transparent text-orange-900 hover:text-rose-600"
                   }`}
               >
                 <Sparkles className="w-5 h-5" />
@@ -1912,7 +1910,7 @@ export default function NumerologyDashboard() {
                 onClick={() => setActiveTab("compatibility")}
                 className={`py-3 px-6 font-extrabold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "compatibility"
                   ? "border-rose-600 text-rose-600"
-                  : "border-transparent text-slate-500 hover:text-rose-600"
+                  : "border-transparent text-orange-900 hover:text-rose-600"
                   }`}
               >
                 <Heart className="w-5 h-5" />
@@ -1920,9 +1918,9 @@ export default function NumerologyDashboard() {
               </button>
               <button
                 onClick={() => setActiveTab("vastu")}
-                className={`py-3 px-6 font-extrabold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "vastu"
+                className={`py-3 px-6 font-bold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "vastu"
                   ? "border-rose-600 text-rose-600"
-                  : "border-transparent text-slate-500 hover:text-rose-600"
+                  : "border-transparent text-orange-900 hover:text-rose-600"
                   }`}
               >
                 <Compass className="w-5 h-5" />
@@ -1930,9 +1928,9 @@ export default function NumerologyDashboard() {
               </button>
               <button
                 onClick={() => setActiveTab("analytics")}
-                className={`py-3 px-6 font-extrabold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "analytics"
+                className={`py-3 px-6 font-bold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "analytics"
                   ? "border-rose-600 text-rose-600"
-                  : "border-transparent text-slate-500 hover:text-rose-600"
+                  : "border-transparent text-orange-900 hover:text-rose-600"
                   }`}
               >
                 <AlertCircle className="w-5 h-5" />
@@ -1940,9 +1938,9 @@ export default function NumerologyDashboard() {
               </button>
               <button
                 onClick={() => setActiveTab("cycles")}
-                className={`py-3 px-6 font-extrabold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "cycles"
+                className={`py-3 px-6 font-bold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "cycles"
                   ? "border-rose-600 text-rose-600"
-                  : "border-transparent text-slate-500 hover:text-rose-600"
+                  : "border-transparent text-orange-900 hover:text-rose-600"
                   }`}
               >
                 <Calendar className="w-5 h-5" />
@@ -1962,15 +1960,15 @@ export default function NumerologyDashboard() {
                     {/* Mulank (Ruling) */}
                     <div className="bg-white border border-rose-100 p-5 rounded-2xl shadow-sm text-center flex flex-col justify-between">
                       <div>
-                        <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-rose-700 uppercase tracking-wider bg-rose-50 px-2.5 py-1 rounded-full mb-3">
+                        <span className="inline-flex items-center gap-1 text-[18px] font-bold text-slate-900 uppercase tracking-wider bg-rose-50 px-2.5 py-1 rounded-full mb-3">
                           <Star className="w-3 h-3" /> Mulank (Ruling)
                         </span>
-                        <p className="text-slate-500 text-xs font-medium mb-1">Birth Date Day Vibration</p>
+                        <p className="text-orange-900 text-[16px] font-medium mb-1">Birth Date Day Vibration</p>
                       </div>
                       <div className="my-3">
                         <span className="text-5xl font-black text-rose-600">{result.mulank}</span>
                       </div>
-                      <div className="text-xs font-bold text-slate-700 bg-rose-50/50 py-1.5 rounded-lg">
+                      <div className="text-[16px] font-bold text-slate-900 bg-rose-50/50 py-1.5 rounded-lg">
                         Planet: {result.mulankDetails.planet}
                       </div>
                     </div>
@@ -1978,15 +1976,15 @@ export default function NumerologyDashboard() {
                     {/* Bhagyank (Destiny) */}
                     <div className="bg-white border border-rose-100 p-5 rounded-2xl shadow-sm text-center flex flex-col justify-between">
                       <div>
-                        <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-rose-700 uppercase tracking-wider bg-rose-50 px-2.5 py-1 rounded-full mb-3">
+                        <span className="inline-flex items-center gap-1 text-[18px] font-bold text-slate-900 uppercase tracking-wider bg-rose-50 px-2.5 py-1 rounded-full mb-3">
                           <Compass className="w-3 h-3" /> Bhagyank (Destiny)
                         </span>
-                        <p className="text-slate-500 text-xs font-medium mb-1">Full Date of Birth Sum</p>
+                        <p className="text-orange-900 text-[16px] font-medium mb-1">Full Date of Birth Sum</p>
                       </div>
                       <div className="my-3">
                         <span className="text-5xl font-black text-rose-600">{result.bhagyank}</span>
                       </div>
-                      <div className="text-xs font-bold text-slate-700 bg-rose-50/50 py-1.5 rounded-lg">
+                      <div className="text-[16px] font-bold text-slate-900 bg-rose-50/50 py-1.5 rounded-lg">
                         Planet: {result.bhagyankDetails.planet}
                       </div>
                     </div>
@@ -1994,13 +1992,13 @@ export default function NumerologyDashboard() {
                     {/* Namank (Name Vibration with Chaldean vs Pythagorean Toggle) */}
                     <div className="bg-white border border-rose-100 p-5 rounded-2xl shadow-sm text-center flex flex-col justify-between relative overflow-hidden">
                       <div>
-                        <span className="inline-flex items-center gap-1 text-[11px] font-extrabold text-rose-700 uppercase tracking-wider bg-rose-50 px-2.5 py-1 rounded-full mb-2">
+                        <span className="inline-flex items-center gap-1 text-[18px] font-bold text-slate-900 uppercase tracking-wider bg-rose-50 px-2.5 py-1 rounded-full mb-2">
                           <User className="w-3 h-3" /> Namank ({nameSystem})
                         </span>
                         <div className="flex justify-center mb-1">
                           <button
                             onClick={() => setNameSystem(nameSystem === "Chaldean" ? "Pythagorean" : "Chaldean")}
-                            className="inline-flex items-center gap-1 text-[9px] bg-rose-100 hover:bg-rose-200 text-rose-950 font-bold px-2 py-0.5 rounded-full transition-all border border-rose-200"
+                            className="inline-flex items-center gap-1 text-[16px] bg-rose-100 hover:bg-rose-200 text-orange-900 font-bold px-2 py-0.5 rounded-full transition-all border border-rose-200"
                           >
                             Toggle System
                           </button>
@@ -2011,7 +2009,7 @@ export default function NumerologyDashboard() {
                           {nameSystem === "Chaldean" ? result.namank : result.pythagoreanNamank}
                         </span>
                       </div>
-                      <div className="text-xs font-bold text-slate-700 bg-rose-50/50 py-1.5 rounded-lg">
+                      <div className="text-[16px] font-bold text-slate-900 bg-rose-50/50 py-1.5 rounded-lg">
                         Planet: {nameSystem === "Chaldean" ? result.namankDetails.planet : "Calculated"}
                       </div>
                     </div>
@@ -2020,18 +2018,18 @@ export default function NumerologyDashboard() {
 
                   {/* Chaldean vs Pythagorean Comparison Card */}
                   <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
-                    <h3 className="text-base font-black text-rose-950 mb-3 flex items-center gap-2">
+                    <h3 className="text-[20px] font-bold text-slate-900 mb-3 flex items-center gap-2">
                       <ToggleLeft className="w-5 h-5 text-rose-600" /> Name Number System Analysis
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                       <div className={`p-4 rounded-2xl border transition-all ${nameSystem === "Chaldean" ? "bg-rose-50 border-rose-200" : "bg-white border-slate-100"}`}>
-                        <h4 className="font-extrabold text-rose-955 text-sm mb-1">Chaldean / Cheiro System</h4>
-                        <p className="text-slate-600 mb-2 leading-relaxed">Originating in ancient Babylon, it assigns values based on sounds and vibration rather than alphabetical order.</p>
-                        <span className="text-sm font-black text-rose-700">Namank Score: {result.namank}</span>
+                        <h4 className="font-bold text-rose-955 text-[16px] mb-1">Chaldean / Cheiro System</h4>
+                        <p className="text-[16px] text-slate-900 mb-2 leading-relaxed">Originating in ancient Babylon, it assigns values based on sounds and vibration rather than alphabetical order.</p>
+                        <span className="text-[16px] font-bold text-rose-955">Namank Score: {result.namank}</span>
                       </div>
                       <div className={`p-4 rounded-2xl border transition-all ${nameSystem === "Pythagorean" ? "bg-rose-50 border-rose-200" : "bg-white border-slate-100"}`}>
-                        <h4 className="font-extrabold text-rose-950 text-sm mb-1">Pythagorean System</h4>
-                        <p className="text-slate-600 mb-2 leading-relaxed">Developed by the Greek philosopher Pythagoras, it maps letters sequentially from 1 to 9 based on the alphabet.</p>
+                        <h4 className="font-bold text-rose-950 text-[16px] mb-1">Pythagorean System</h4>
+                        <p className="text-[16px] text-slate-900 mb-2 leading-relaxed">Developed by the Greek philosopher Pythagoras, it maps letters sequentially from 1 to 9 based on the alphabet.</p>
                         <span className="text-sm font-black text-rose-700">Namank Score: {result.pythagoreanNamank}</span>
                       </div>
                     </div>
@@ -2039,34 +2037,34 @@ export default function NumerologyDashboard() {
 
                   {/* In-depth Core Profile Panels */}
                   <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-6">
-                    <h3 className="text-lg font-black text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
+                    <h3 className="text-[20px] font-bold text-slate-900 border-b border-rose-100 pb-3 flex items-center gap-2">
                       <Award className="w-5 h-5 text-rose-600" /> Numerological Profile Analysis
                     </h3>
 
                     <div className="space-y-4">
                       <div>
-                        <h4 className="text-sm font-extrabold text-rose-955 mb-1">
+                        <h4 className="text-[18px] font-bold text-orange-900 mb-1">
                           Mulank {result.mulank} - Core Personality
                         </h4>
-                        <p className="text-sm text-slate-600 leading-relaxed bg-rose-50/20 p-3.5 rounded-xl border border-rose-100/50">
+                        <p className="text-[18px] text-slate-900 font-medium leading-relaxed bg-rose-50/20 p-3.5 rounded-xl border border-rose-100/50">
                           {result.mulankDetails.traits}
                         </p>
                       </div>
 
                       <div>
-                        <h4 className="text-sm font-extrabold text-rose-955 mb-1">
+                        <h4 className="text-[18px] font-bold text-orange-900 mb-1">
                           Bhagyank {result.bhagyank} - Destiny & Careers
                         </h4>
-                        <p className="text-sm text-slate-600 leading-relaxed bg-rose-50/20 p-3.5 rounded-xl border border-rose-100/50">
-                          <strong>Best Fields:</strong> {result.bhagyankDetails.careers}
+                        <p className="text-[18px] text-slate-900 font-medium leading-relaxed bg-rose-50/20 p-3.5 rounded-xl border border-rose-100/50">
+                          <strong>Best Fields: </strong> {result.bhagyankDetails.careers}
                         </p>
                       </div>
 
                       <div>
-                        <h4 className="text-sm font-extrabold text-rose-955 mb-1">
+                        <h4 className="text-[18px] font-bold text-orange-900 mb-1">
                           Personal Year Forecast ({result.currentYear})
                         </h4>
-                        <p className="text-sm text-slate-600 leading-relaxed bg-rose-50/20 p-3.5 rounded-xl border border-rose-100/50">
+                        <p className="text-[18px] text-slate-900 font-medium leading-relaxed bg-rose-50/20 p-3.5 rounded-xl border border-rose-100/50">
                           Your Personal Year vibration is <strong className="text-rose-700">{result.personalYear}</strong>.
                           This year is ruled by <strong>{result.personalYearDetails.planet}</strong>, indicating a phase of:{" "}
                           {result.personalYearDetails.traits}
@@ -2077,8 +2075,8 @@ export default function NumerologyDashboard() {
 
                   {/* Loshu Grid Visual Card - Displayed below Numerological Profile Analysis */}
                   <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm flex flex-col items-stretch w-full">
-                    <h3 className="text-lg font-black text-rose-955 mb-1 text-center w-full">Loshu Grid</h3>
-                    <p className="text-[11px] text-slate-900 font-semibold uppercase tracking-wider mb-5 text-center w-full">3x3 Saturnine Magic Square</p>
+                    <h3 className="text-[22px] font-bold text-orange-900 mb-1 text-center w-full">Loshu Grid</h3>
+                    <p className="text-[16px] text-slate-900 font-semibold uppercase tracking-wider mb-5 text-center w-full">3x3 Saturnine Magic Square</p>
 
                     <div className="grid grid-cols-3 gap-4 w-full">
 
@@ -2276,7 +2274,7 @@ export default function NumerologyDashboard() {
 
                     </div>
 
-                    <div className="mt-6 text-xs text-slate-500 space-y-2 leading-relaxed text-center">
+                    <div className="mt-6 text-[16px] text-slate-900 space-y-2 leading-relaxed text-center">
                       <p>
                         <strong>Loshu Grid</strong> indicates which elements and planes are fully active. Repeating numbers boost the respective element, while absent numbers suggest fields for remedy focus.
                       </p>
@@ -2285,8 +2283,8 @@ export default function NumerologyDashboard() {
 
                   {/* Loshu Planes Analysis */}
                   <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
-                    <h3 className="text-lg font-black text-rose-955 border-b border-rose-100 pb-3 mb-4 flex items-center gap-2">
-                      <Compass className="w-5 h-5 text-rose-600" /> Loshu Grid Planes Analysis
+                    <h3 className="text-[22px] font-bold text-orange-900 border-b border-rose-100 pb-3 mb-4 flex items-center gap-2">
+                      <Compass className="w-5 h-5 text-orange-900" /> Loshu Grid Planes Analysis
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {result.loshuPlanes.map((plane, idx) => (
@@ -2298,7 +2296,7 @@ export default function NumerologyDashboard() {
                         >
                           <div>
                             <div className="flex justify-between items-center mb-1">
-                              <h4 className="font-extrabold text-rose-955 text-base">{plane.name}</h4>
+                              <h4 className="font-bold text-slate-900 text-[18px]">{plane.name}</h4>
                               <span className={`text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${plane.status === "Strong" ? "bg-green-100 text-green-800" :
                                 plane.status === "Moderate" ? "bg-yellow-100 text-yellow-800" :
                                   "bg-orange-100 text-orange-800"
@@ -2306,18 +2304,18 @@ export default function NumerologyDashboard() {
                                 {plane.status}
                               </span>
                             </div>
-                            <p className="text-xs md:text-sm text-slate-500 mb-2">{plane.description}</p>
+                            <p className="text-[18px] font-medium text-slate-900 mb-2">{plane.description}</p>
                           </div>
                           {plane.status === "Missing/Weak" && (
-                            <div className="mt-2 text-xs md:text-sm bg-orange-50 text-orange-950 p-2.5 rounded-xl border border-orange-100 flex items-start gap-1">
-                              <AlertCircle className="w-3.5 h-3.5 mt-0.5 text-orange-700 shrink-0" />
+                            <div className="mt-2 text-[18px] md:text-[18px] bg-orange-50 text-emerald-900 p-2.5 rounded-xl border border-orange-100 flex items-start gap-1">
+                              <AlertCircle className="w-3.5 h-3.5 mt-0.5 text-red-700 shrink-0" />
                               <div>
                                 <span className="font-bold">Missing Remedy:</span> {plane.remedy}
                               </div>
                             </div>
                           )}
                           {plane.status !== "Missing/Weak" && (
-                            <div className="mt-2 text-xs md:text-sm bg-green-50 text-green-950 p-2.5 rounded-xl border border-green-100 flex items-center gap-1">
+                            <div className="mt-2 text-[18px] md:text-[18px] bg-green-50 text-green-950 p-2.5 rounded-xl border border-green-100 flex items-center gap-1">
                               <CheckCircle className="w-3.5 h-3.5 text-green-700 shrink-0" />
                               <span className="font-semibold">Plane elements are well balanced!</span>
                             </div>
@@ -2329,7 +2327,7 @@ export default function NumerologyDashboard() {
 
                   {/* Progressive predictions & Temporal Cycles Forecast */}
                   <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-6">
-                    <h3 className="text-lg font-black text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
+                    <h3 className="text-[20px] font-bold text-orange-900 border-b border-rose-100 pb-3 flex items-center gap-2">
                       <Calendar className="w-5 h-5 text-rose-600" /> Progressive Predictions & Cycle Forecasts
                     </h3>
 
@@ -2338,20 +2336,20 @@ export default function NumerologyDashboard() {
                       {/* Personal Year Card */}
                       <div className="bg-gradient-to-br from-rose-50 to-amber-50/30 p-5 rounded-2xl border border-rose-100 flex flex-col justify-between">
                         <div>
-                          <span className="text-[10px] font-extrabold uppercase tracking-wider text-rose-800 bg-rose-100/50 px-2.5 py-1 rounded-full">
+                          <span className="text-[18px] font-semibold uppercase tracking-wider text-slate-900 bg-rose-100/50 px-2.5 py-1 rounded-full">
                             Current Year Vibration
                           </span>
-                          <h4 className="text-base font-black text-rose-955 mt-2">
+                          <h4 className="text-base font-semibold text-slate-900 mt-2">
                             Personal Year {result.personalYear}
                           </h4>
-                          <p className="text-xs text-slate-500 mt-1 leading-relaxed">
+                          <p className="text-[16px] text-slate-900 mt-1 leading-relaxed">
                             Overall vibration theme of the entire year:
                           </p>
-                          <p className="text-xs font-semibold text-slate-700 mt-2 bg-white/70 p-2.5 rounded-xl border border-rose-100/30">
+                          <p className="text-[16px] font-semibold text-slate-900 mt-2 bg-white/70 p-2.5 rounded-xl border border-rose-100/30">
                             {result.personalYearDetails?.traits || "Year of development and progress."}
                           </p>
                         </div>
-                        <div className="text-[10px] text-slate-400 mt-4 border-t border-rose-100/50 pt-2 font-medium">
+                        <div className="text-[16px] text-slate-900 mt-4 border-t border-rose-100/50 pt-2 font-medium">
                           Ruling Planet: {result.personalYearDetails?.planet || "Sun"}
                         </div>
                       </div>
@@ -2366,7 +2364,7 @@ export default function NumerologyDashboard() {
                         const dayData = getDayForecast(pDay);
                         return (
                           <div className="bg-white border border-rose-100 p-5 rounded-2xl shadow-sm text-center flex flex-col justify-between md:col-span-2 relative overflow-hidden">
-                            <div className="absolute top-2 right-2 bg-emerald-100 text-emerald-800 rounded-full px-2 py-0.5 text-[9px] font-extrabold uppercase">
+                            <div className="absolute top-2 right-2 bg-emerald-100 text-emerald-800 rounded-full px-2 py-0.5 text-[16px] font-bold uppercase">
                               Today's Energy
                             </div>
                             <div className="flex flex-col sm:flex-row items-center gap-4 my-2">
@@ -2375,13 +2373,13 @@ export default function NumerologyDashboard() {
                                 <span className="text-4xl font-black text-rose-600">{pDay}</span>
                               </div>
                               <div className="text-left">
-                                <h5 className="font-extrabold text-slate-800 text-sm">{dayData.tagline}</h5>
-                                <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+                                <h5 className="font-bold text-orange-900 text-[18px]">{dayData.tagline}</h5>
+                                <p className="text-[16px] text-slate-900 mt-1 leading-relaxed">
                                   {dayData.advice}
                                 </p>
                               </div>
                             </div>
-                            <div className="text-[10px] text-slate-400 text-left border-t border-slate-100 pt-2 font-semibold">
+                            <div className="text-[16px] text-slate-900 text-left border-t border-slate-100 pt-2 font-semibold">
                               Current Date: {today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
                             </div>
                           </div>
@@ -2392,7 +2390,7 @@ export default function NumerologyDashboard() {
 
                     {/* Personal Month Timeline */}
                     <div className="border-t border-rose-100 pt-4">
-                      <h4 className="text-sm font-extrabold text-rose-955 mb-3">
+                      <h4 className="text-[18px] font-bold text-orange-900 mb-3">
                         Monthly Forecast Timeline ({result.currentYear})
                       </h4>
 
@@ -2428,18 +2426,18 @@ export default function NumerologyDashboard() {
                         return (
                           <div className="bg-rose-50/20 border border-rose-100/70 rounded-2xl p-4 mt-3">
                             <div className="flex justify-between items-center mb-2">
-                              <span className="text-xs font-bold text-rose-800 uppercase tracking-wider">
+                              <span className="text-[16px] font-bold text-orange-900 uppercase tracking-wider">
                                 {monthFull} Vibration
                               </span>
-                              <span className="text-xs font-extrabold bg-rose-100 text-rose-900 px-2 py-0.5 rounded-full">
+                              <span className="text-[16px] font-bold bg-rose-100 text-slate-900 px-2 py-0.5 rounded-full">
                                 Personal Month {reduceToSingleDigit(result.personalYear + selectedForecastMonth)}
                               </span>
                             </div>
-                            <h5 className="font-extrabold text-rose-955 text-sm mb-1">{mData.title}</h5>
-                            <p className="text-xs text-slate-500 mb-2 leading-relaxed">
+                            <h5 className="font-bold text-orange-900 text-[18px] mb-1">{mData.title}</h5>
+                            <p className="text-[16px] text-slate-900 mb-2 leading-relaxed">
                               <strong>Primary Focus:</strong> {mData.focus}
                             </p>
-                            <p className="text-xs text-slate-650 leading-relaxed bg-white/50 p-3 rounded-xl border border-rose-100/20 font-medium">
+                            <p className="text-[16px] text-slate-900 leading-relaxed bg-white/50 p-3 rounded-xl border border-rose-100/20 font-medium">
                               <strong>Actionable Advice:</strong> {mData.advice}
                             </p>
                           </div>
@@ -2449,7 +2447,7 @@ export default function NumerologyDashboard() {
                   </div>
                   {/* Lo Shu Grid Life Domain Analytics */}
                   <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-6">
-                    <h3 className="text-lg font-black text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
+                    <h3 className="text-[20px] font-bold text-orange-900 border-b border-rose-100 pb-3 flex items-center gap-2">
                       <Sparkles className="w-5 h-5 text-rose-600" /> Lo Shu Life Domain Analytics
                     </h3>
 
@@ -2466,7 +2464,7 @@ export default function NumerologyDashboard() {
                                 <div className="p-2 bg-pink-100 text-pink-700 rounded-xl">
                                   <Heart className="w-5 h-5" />
                                 </div>
-                                <h4 className="font-extrabold text-rose-955 text-base md:text-lg">Marriage & Relationship</h4>
+                                <h4 className="font-bold text-slate-900 text-base md:text-lg">Marriage & Relationship</h4>
                               </div>
                               <span className={`text-xs md:text-sm font-black px-3 py-1 rounded-full uppercase tracking-wider ${result.domainAnalytics.marriage.score >= 80 ? "bg-green-100 text-green-800" :
                                 result.domainAnalytics.marriage.score >= 60 ? "bg-yellow-100 text-yellow-800" :
@@ -2476,10 +2474,10 @@ export default function NumerologyDashboard() {
                               </span>
                             </div>
                             <div className="space-y-2">
-                              <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">Status: {result.domainAnalytics.marriage.status}</p>
-                              <p className="text-sm text-slate-600 leading-relaxed">{result.domainAnalytics.marriage.analysis}</p>
+                              <p className="text-[18px] font-bold text-slate-900 uppercase tracking-wider">Status: {result.domainAnalytics.marriage.status}</p>
+                              <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.marriage.analysis}</p>
                             </div>
-                            <div className="bg-pink-50/50 text-slate-800 p-3 rounded-xl border border-pink-100 text-sm">
+                            <div className="bg-pink-50/50 text-slate-900 p-3 rounded-xl border border-pink-100 text-[18px]">
                               <span className="font-bold text-pink-900 block mb-0.5">🌸 Relationship Remedies:</span>
                               {result.domainAnalytics.marriage.remedies}
                             </div>
@@ -2492,7 +2490,7 @@ export default function NumerologyDashboard() {
                                 <div className="p-2 bg-emerald-100 text-emerald-700 rounded-xl">
                                   <Coins className="w-5 h-5" />
                                 </div>
-                                <h4 className="font-extrabold text-rose-955 text-base md:text-lg">Wealth & Assets</h4>
+                                <h4 className="font-bold text-slate-900 text-base md:text-lg">Wealth & Assets</h4>
                               </div>
                               <span className={`text-xs md:text-sm font-black px-3 py-1 rounded-full uppercase tracking-wider ${result.domainAnalytics.money.score >= 80 ? "bg-green-100 text-green-800" :
                                 result.domainAnalytics.money.score >= 50 ? "bg-yellow-100 text-yellow-800" :
@@ -2502,10 +2500,10 @@ export default function NumerologyDashboard() {
                               </span>
                             </div>
                             <div className="space-y-2">
-                              <p className="text-sm font-bold text-slate-500 uppercase tracking-wider">Status: {result.domainAnalytics.money.status}</p>
-                              <p className="text-sm text-slate-600 leading-relaxed">{result.domainAnalytics.money.analysis}</p>
+                              <p className="text-[18px] font-bold text-slate-900 uppercase tracking-wider">Status: {result.domainAnalytics.money.status}</p>
+                              <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.money.analysis}</p>
                             </div>
-                            <div className="bg-emerald-50/50 text-slate-800 p-3 rounded-xl border border-emerald-100 text-sm">
+                            <div className="bg-emerald-50/50 text-slate-900 p-3 rounded-xl border border-emerald-100 text-[18px]">
                               <span className="font-bold text-emerald-900 block mb-0.5">💰 Wealth Remedies:</span>
                               {result.domainAnalytics.money.remedies}
                             </div>
@@ -2523,12 +2521,12 @@ export default function NumerologyDashboard() {
                                 <div className="p-1.5 bg-blue-100 text-blue-700 rounded-lg">
                                   <Baby className="w-4 h-4" />
                                 </div>
-                                <h4 className="font-extrabold text-rose-955 text-sm md:text-base">Child Birth</h4>
+                                <h4 className="font-bold text-slate-900 text-sm md:text-base">Child Birth</h4>
                               </div>
                               <span className="text-xs font-black text-blue-800 bg-blue-50 px-2 py-0.5 rounded-full">{result.domainAnalytics.child_birth.score}%</span>
                             </div>
-                            <p className="text-sm text-slate-600 leading-relaxed">{result.domainAnalytics.child_birth.analysis}</p>
-                            <div className="bg-blue-50/50 text-slate-700 p-2.5 rounded-xl border border-blue-100 text-xs md:text-sm leading-snug">
+                            <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.child_birth.analysis}</p>
+                            <div className="bg-blue-50/50 text-slate-900 p-3 rounded-xl border border-blue-100 text-[18px]">
                               <span className="font-bold text-blue-900 block mb-0.5">🍼 Progeny Remedy:</span>
                               {result.domainAnalytics.child_birth.remedies}
                             </div>
@@ -2541,12 +2539,12 @@ export default function NumerologyDashboard() {
                                 <div className="p-1.5 bg-amber-100 text-amber-700 rounded-lg">
                                   <Briefcase className="w-4 h-4" />
                                 </div>
-                                <h4 className="font-extrabold text-rose-955 text-sm md:text-base">Career & Success</h4>
+                                <h4 className="font-bold text-slate-900 text-[18px] md:text-base">Career & Success</h4>
                               </div>
                               <span className="text-xs font-black text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full">{result.domainAnalytics.career.score}%</span>
                             </div>
-                            <p className="text-sm text-slate-600 leading-relaxed">{result.domainAnalytics.career.analysis}</p>
-                            <div className="bg-amber-50/50 text-slate-700 p-2.5 rounded-xl border border-amber-100 text-xs md:text-sm leading-snug">
+                            <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.career.analysis}</p>
+                            <div className="bg-amber-50/50 text-slate-900 p-3 rounded-xl border border-amber-100 text-[18px]">
                               <span className="font-bold text-amber-900 block mb-0.5">💼 Career Remedy:</span>
                               {result.domainAnalytics.career.remedies}
                             </div>
@@ -2559,12 +2557,12 @@ export default function NumerologyDashboard() {
                                 <div className="p-1.5 bg-purple-100 text-purple-700 rounded-lg">
                                   <Landmark className="w-4 h-4" />
                                 </div>
-                                <h4 className="font-extrabold text-rose-955 text-sm md:text-base">Government Job</h4>
+                                <h4 className="font-bold text-slate-900 text-[18px] md:text-base">Government Job</h4>
                               </div>
                               <span className="text-xs font-black text-purple-800 bg-purple-50 px-2 py-0.5 rounded-full">{result.domainAnalytics.government_job.score}%</span>
                             </div>
-                            <p className="text-sm text-slate-600 leading-relaxed">{result.domainAnalytics.government_job.analysis}</p>
-                            <div className="bg-purple-50/50 text-slate-700 p-2.5 rounded-xl border border-purple-100 text-xs md:text-sm leading-snug">
+                            <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.government_job.analysis}</p>
+                            <div className="bg-purple-50/50 text-slate-900 p-3 rounded-xl border border-purple-100 text-[18px]">
                               <span className="font-bold text-purple-900 block mb-0.5">🏛️ Exam Remedy:</span>
                               {result.domainAnalytics.government_job.remedies}
                             </div>
@@ -2580,36 +2578,36 @@ export default function NumerologyDashboard() {
 
                   {/* Remedies & Lucky Factors */}
                   <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
-                    <h3 className="text-lg font-black text-rose-955 border-b border-rose-100 pb-3 mb-4 flex items-center gap-2">
+                    <h3 className="text-[20px] font-bold text-orange-900 border-b border-rose-100 pb-3 mb-4 flex items-center gap-2">
                       <Flame className="w-5 h-5 text-rose-600" /> Vedic Remedies & Auspicious Energies
                     </h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
                       <div className="space-y-3">
                         <div>
-                          <span className="font-bold text-rose-900">Lucky Colors: </span>
-                          <span className="text-slate-600">{result.mulankDetails.colors.join(", ")}</span>
+                          <span className="font-bold text-[18px] text-rose-900">Lucky Colors: </span>
+                          <span className="text-[18px] font-bold  text-slate-900">{result.mulankDetails.colors.join(", ")}</span>
                         </div>
                         <div>
-                          <span className="font-bold text-rose-900">Lucky Directions: </span>
-                          <span className="text-slate-600">{result.mulankDetails.lucky_directions.join(", ")}</span>
+                          <span className="font-bold text-[18px] text-rose-900">Lucky Directions: </span>
+                          <span className="text-[18px] font-bold text-slate-900">{result.mulankDetails.lucky_directions.join(", ")}</span>
                         </div>
                         <div>
-                          <span className="font-bold text-rose-900">Auspicious Gemstone: </span>
-                          <span className="text-slate-600">{result.mulankDetails.gemstone}</span>
+                          <span className="font-bold text-[18px] text-rose-900">Auspicious Gemstone: </span>
+                          <span className="text-[18px] font-bold text-slate-900">{result.mulankDetails.gemstone}</span>
                         </div>
                       </div>
                       <div className="space-y-3">
                         <div>
-                          <span className="font-bold text-rose-900">Friendly Numbers: </span>
-                          <span className="text-slate-600">{result.mulankDetails.friendly_numbers.join(", ")}</span>
+                          <span className="font-bold text-[18px] text-rose-900">Friendly Numbers: </span>
+                          <span className="text-[18px] font-bold text-slate-900">{result.mulankDetails.friendly_numbers.join(", ")}</span>
                         </div>
                         <div>
-                          <span className="font-bold text-rose-900">Numbers to Avoid: </span>
-                          <span className="text-slate-600">{result.mulankDetails.enemy_numbers.join(", ")}</span>
+                          <span className="font-bold text-[18px] text-rose-900">Numbers to Avoid: </span>
+                          <span className="text-[18px] font-bold text-slate-900">{result.mulankDetails.enemy_numbers.join(", ")}</span>
                         </div>
                         <div className="bg-rose-50/50 p-3 rounded-xl border border-rose-100">
-                          <span className="block font-bold text-rose-950 text-xs mb-1 uppercase tracking-wider">Auspicious Beej Mantra:</span>
-                          <span className="font-semibold text-rose-800 text-xs italic">"{result.mulankDetails.mantra}"</span>
+                          <span className="block font-bold text-rose-950 text-[18px] mb-1 uppercase tracking-wider">Auspicious Beej Mantra:</span>
+                          <span className="font-semibold text-rose-800 text-[18px] italic">"{result.mulankDetails.mantra}"</span>
                         </div>
                       </div>
                     </div>
