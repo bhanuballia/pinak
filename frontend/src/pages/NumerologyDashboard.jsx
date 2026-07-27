@@ -51,6 +51,18 @@ const PLANET_NAMES = {
   9: "Mars"
 };
 
+const VASTU_DIRECTIONS = {
+  4: { zone: "Southeast (SE)", element: "Wood", aspect: "Wealth & Cash Flow", issue: "Wealth leaks, financial instability, bad investment luck", remedy: "Place a healthy green plant or a green aventurine tree in this corner." },
+  9: { zone: "South (S)", element: "Fire", aspect: "Fame, Name & Recognition", issue: "Lack of fame/recognition, low energy levels, lack of confidence", remedy: "Place a red bulb, light a red candle daily, or keep a copper emblem." },
+  2: { zone: "Southwest (SW)", element: "Earth", aspect: "Relationships & Marriage", issue: "Marriage instability, frequent misunderstandings, relationship stress", remedy: "Place rose quartz crystal lovebirds or a family photo in a golden frame." },
+  3: { zone: "East (E)", element: "Wood", aspect: "Health, Ancestors & Family", issue: "Strained family relations, weak health, lack of growth", remedy: "Hang a green aventurine crystal hanging or place wooden artifacts here." },
+  5: { zone: "Center (Brahmasthan)", element: "Earth", aspect: "Stability, Focus & Balance", issue: "Instability, confusion, lack of focus in daily life", remedy: "Keep this area clean and free of heavy clutter. Place a yellow crystal tree here." },
+  7: { zone: "West (W)", element: "Metal", aspect: "Wisdom, Skills & Children", issue: "Delays in learning, difficulty in concentration, creativity blocks", remedy: "Hang a 6-rod or 7-rod metal windchime or keep a metal globe here." },
+  8: { zone: "Northeast (NE)", element: "Earth", aspect: "Knowledge & Savings", issue: "High expenses, money leaks, lack of clarity", remedy: "Keep a rock salt lamp or a bowl of sea salt in this corner." },
+  1: { zone: "North (N)", element: "Water", aspect: "Career Opportunities", issue: "Career stagnation, lack of job options or promotion blocks", remedy: "Keep a small water fountain or a painting of a peaceful water body." },
+  6: { zone: "Northwest (NW)", element: "Metal", aspect: "Helpful Friends & Support", issue: "Lack of support, loneliness, bad luck with networking", remedy: "Hang a silver key or keep a metal windchime in the northwest corner." }
+};
+
 function reduceToSingleDigit(number) {
   let temp = number;
   while (temp > 9) {
@@ -1648,6 +1660,126 @@ export default function NumerologyDashboard() {
                           </div>
                         );
                       })()}
+                    </div>
+                  </div>
+
+                  {/* Vastu / Feng Shui Elemental Directions Overlay */}
+                  <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-6">
+                    <h3 className="text-lg font-black text-rose-955 border-b border-rose-100 pb-3 flex items-center gap-2">
+                      <Compass className="w-5 h-5 text-rose-600 animate-spin-slow" />
+                      Vastu & Feng Shui Directions Overlay
+                    </h3>
+
+                    {/* Vastu Wheel & Diagnostics Grid */}
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                      
+                      {/* Vastu Compass Wheel Layout */}
+                      <div className="lg:col-span-1 flex flex-col items-center justify-center bg-rose-50/20 border border-rose-100/50 p-4 rounded-3xl">
+                        <span className="text-xs font-extrabold text-rose-900 uppercase tracking-widest mb-3">Vastu Compass Alignment</span>
+                        <div className="relative w-52 h-52 rounded-full border-4 border-rose-200 bg-white flex items-center justify-center shadow-md">
+                          
+                          {/* Inner center Brahmasthan (5) */}
+                          <div className={`absolute w-14 h-14 rounded-full flex flex-col items-center justify-center shadow z-10 transition-all ${
+                            result.loshuGrid[5] > 0 ? "bg-green-500 text-white border-2 border-green-600" : "bg-orange-100 text-orange-800 border-2 border-orange-300 border-dashed"
+                          }`}>
+                            <span className="text-[10px] font-black leading-none">Center</span>
+                            <span className="text-[9px] font-extrabold">(5)</span>
+                          </div>
+
+                          {/* Outer Direction Cells */}
+                          {[
+                            { dir: "N", num: 1, angle: 0 },
+                            { dir: "NE", num: 8, angle: 45 },
+                            { dir: "E", num: 3, angle: 90 },
+                            { dir: "SE", num: 4, angle: 135 },
+                            { dir: "S", num: 9, angle: 180 },
+                            { dir: "SW", num: 2, angle: 225 },
+                            { dir: "W", num: 7, angle: 270 },
+                            { dir: "NW", num: 6, angle: 315 }
+                          ].map((item) => {
+                            const isPresent = result.loshuGrid[item.num] > 0;
+                            // Math to position directions in a circle
+                            const rad = (item.angle - 90) * (Math.PI / 180);
+                            const x = Math.cos(rad) * 72; // radius
+                            const y = Math.sin(rad) * 72;
+                            return (
+                              <div
+                                key={item.dir}
+                                className={`absolute w-11 h-11 rounded-full flex flex-col items-center justify-center text-center text-[10px] font-extrabold transition-all shadow-sm ${
+                                  isPresent
+                                    ? "bg-emerald-500 text-white border border-emerald-600"
+                                    : "bg-orange-50 text-orange-700 border border-orange-200 border-dashed"
+                                }`}
+                                style={{
+                                  transform: `translate(${x}px, ${y}px)`
+                                }}
+                              >
+                                <span className="font-black leading-none">{item.dir}</span>
+                                <span className="text-[9px]">({item.num})</span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                        <div className="flex gap-4 mt-4 text-[10px] font-bold">
+                          <span className="flex items-center gap-1 text-emerald-600">
+                            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Harmonious
+                          </span>
+                          <span className="flex items-center gap-1 text-orange-600">
+                            <span className="w-2.5 h-2.5 rounded-full bg-orange-300"></span> Defect/Missing
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Directional Analysis & Remedies */}
+                      <div className="lg:col-span-2 space-y-4 max-h-[300px] overflow-y-auto scrollbar-thin scrollbar-thumb-rose-100 pr-1">
+                        
+                        {/* Heading */}
+                        <div className="bg-rose-50/30 p-3.5 rounded-2xl border border-rose-100/50">
+                          <h4 className="text-xs font-extrabold text-rose-955 uppercase tracking-wider mb-1">Directional Diagnostics</h4>
+                          <p className="text-xs text-slate-500 leading-relaxed">
+                            Numerology maps home directions to birth date vibrations. Missing numbers point to weak Vastu directions in your living space. Follow the remedies below to balance your home layout.
+                          </p>
+                        </div>
+
+                        {/* List of missing direction defects and remedies */}
+                        {(() => {
+                          const missingList = Object.entries(VASTU_DIRECTIONS)
+                            .filter(([num]) => result.loshuGrid[parseInt(num)] === 0)
+                            .map(([num, data]) => ({ num: parseInt(num), ...data }));
+
+                          if (missingList.length === 0) {
+                            return (
+                              <div className="p-4 bg-green-50 border border-green-100 text-green-950 text-xs font-medium rounded-2xl flex items-center gap-2">
+                                <CheckCircle className="w-4 h-4 text-green-700" />
+                                <span>Perfect Vastu Alignment! All 9 compass direction elements are active in your grid profile. Keep your home clutter-free to preserve this flow.</span>
+                              </div>
+                            );
+                          }
+
+                          return missingList.map((item) => (
+                            <div key={item.num} className="p-4 border border-rose-100/70 rounded-2xl bg-white shadow-sm flex items-start gap-3">
+                              <div className="p-2.5 bg-orange-50 text-orange-700 rounded-xl font-black text-xs shrink-0">
+                                {item.num}
+                              </div>
+                              <div className="space-y-1">
+                                <div className="flex flex-wrap items-center gap-2">
+                                  <span className="font-extrabold text-slate-800 text-sm">{item.zone} Zone</span>
+                                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider bg-slate-100 px-2 py-0.5 rounded-full">
+                                    {item.element} Element
+                                  </span>
+                                </div>
+                                <p className="text-xs text-slate-500 leading-relaxed">
+                                  <strong>Impact:</strong> {item.aspect} — {item.issue}
+                                </p>
+                                <p className="text-xs text-slate-700 font-semibold bg-rose-50/30 p-2 rounded-xl border border-rose-100/20 leading-relaxed">
+                                  <strong>Vastu Remedy:</strong> {item.remedy}
+                                </p>
+                              </div>
+                            </div>
+                          ));
+                        })()}
+
+                      </div>
                     </div>
                   </div>
 
