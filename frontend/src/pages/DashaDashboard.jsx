@@ -62,7 +62,13 @@ export default function DashaDashboard({ data: worksheetData }) {
             </h1>
             <p className="text-slate-500 mt-2">Enterprise-grade astrological forecasting powered by Swiss Ephemeris</p>
           </div>
-          <div className="flex gap-3">
+          <div className="flex flex-wrap gap-3">
+            <button 
+              onClick={() => window.open('/?vimshottari_ref=true', 'VimshottariReference', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no')}
+              className="px-5 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-xl font-medium shadow-sm hover:bg-slate-50 transition-all"
+            >
+              Vimshottari Reference
+            </button>
             <button className="px-5 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-xl font-medium shadow-sm hover:bg-slate-50 transition-all">
               Export PDF
             </button>
@@ -73,55 +79,57 @@ export default function DashaDashboard({ data: worksheetData }) {
         </header>
 
         {data && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Main Stats */}
-            <div className="md:col-span-2 space-y-6">
-              <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
-                <h2 className="text-xl font-bold text-slate-800 mb-4">Current Period Overview</h2>
-                <div className="bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100 whitespace-pre-line text-indigo-900 leading-relaxed">
-                  {data.summary}
+          <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Main Stats */}
+              <div className="md:col-span-2 space-y-6">
+                <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-100">
+                  <h2 className="text-xl font-bold text-slate-800 mb-4">Current Period Overview</h2>
+                  <div className="bg-indigo-50/50 p-6 rounded-2xl border border-indigo-100 whitespace-pre-line text-indigo-900 leading-relaxed">
+                    {data.summary}
+                  </div>
                 </div>
+
+                {data.timeline && <MonthlyTimeline timeline={data.timeline} />}
               </div>
 
-              {data.timeline && <MonthlyTimeline timeline={data.timeline} />}
-            </div>
-
-            {/* Sidebar / AI Scores */}
-            <div className="space-y-6">
-              <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                <h3 className="text-lg font-bold text-slate-800 mb-4">AI Probability Scores</h3>
-                <div className="space-y-4">
-                  <ScoreCard 
-                    label="Marriage Timing" 
-                    score={data.marriage_ai?.probability} 
-                    result={data.marriage_ai?.result}
-                    color="rose"
-                  />
-                  <ScoreCard 
-                    label="Wealth Probability" 
-                    score={data.wealth_ai?.wealth_probability} 
-                    result={data.wealth_ai?.wealth_period ? "High Opportunity" : "Steady"}
-                    color="emerald"
-                  />
-                  <ScoreCard 
-                    label="Health Risk" 
-                    score={data.health_ai?.risk_score} 
-                    result={`${data.health_ai?.risk_level} Risk`}
-                    color="amber"
-                  />
+              {/* Sidebar / AI Scores */}
+              <div className="space-y-6">
+                <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
+                  <h3 className="text-lg font-bold text-slate-800 mb-4">AI Probability Scores</h3>
+                  <div className="space-y-4">
+                    <ScoreCard 
+                      label="Marriage Timing" 
+                      score={data.marriage_ai?.probability} 
+                      result={data.marriage_ai?.result}
+                      color="rose"
+                    />
+                    <ScoreCard 
+                      label="Wealth Probability" 
+                      score={data.wealth_ai?.wealth_probability} 
+                      result={data.wealth_ai?.wealth_period ? "High Opportunity" : "Steady"}
+                      color="emerald"
+                    />
+                    <ScoreCard 
+                      label="Health Risk" 
+                      score={data.health_ai?.risk_score} 
+                      result={`${data.health_ai?.risk_level} Risk`}
+                      color="amber"
+                    />
+                  </div>
                 </div>
-              </div>
 
-              <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-6 rounded-3xl shadow-xl text-white">
-                <h3 className="text-lg font-bold mb-2">Nakshatra Detail</h3>
-                <div className="flex items-center gap-3 mt-4">
-                   <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
-                      <span className="text-2xl font-bold">{data.nakshatra?.pada}</span>
-                   </div>
-                   <div>
-                      <div className="text-sm opacity-80">Moon Nakshatra</div>
-                      <div className="text-xl font-bold">{data.nakshatra?.nakshatra}</div>
-                   </div>
+                <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-6 rounded-3xl shadow-xl text-white">
+                  <h3 className="text-lg font-bold mb-2">Nakshatra Detail</h3>
+                  <div className="flex items-center gap-3 mt-4">
+                     <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
+                        <span className="text-2xl font-bold">{data.nakshatra?.pada}</span>
+                     </div>
+                     <div>
+                        <div className="text-sm opacity-80">Moon Nakshatra</div>
+                        <div className="text-xl font-bold">{data.nakshatra?.nakshatra}</div>
+                     </div>
+                  </div>
                 </div>
               </div>
             </div>

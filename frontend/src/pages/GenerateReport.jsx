@@ -557,6 +557,24 @@ export default function GenerateReport() {
     if (win) win.focus();
   };
 
+  const handleOpenRemedies = () => {
+    if (reportData) {
+      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch (e) { }
+    }
+    const params = new URLSearchParams({
+      remedy: 'true',
+      name: name || '',
+      date: date || '',
+      time: time || '',
+      lat: latLon?.lat || '',
+      lon: latLon?.lon || '',
+      tz: tzOffset || '5.5',
+      loc: latLon?.display_name || ''
+    });
+    const win = window.open(`/?${params.toString()}`, 'RemedyViewer', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 p-6 relative">
       {/* Welcome Poster Modal */}
@@ -840,6 +858,12 @@ export default function GenerateReport() {
                   className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-blue-100 text-black shadow hover:bg-blue-700 flex items-center gap-2"
                 >
                   <span>🌐</span> {t('detailed_report')}
+                </button>
+                <button
+                  onClick={handleOpenRemedies}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-amber-100 text-black shadow hover:bg-amber-600 flex items-center gap-2"
+                >
+                  <span>📿</span> Remedy
                 </button>
                 <div className="flex bg-amber-100 rounded-full border border-amber-300 shadow overflow-hidden">
                   <div className="px-3 py-1.5 bg-amber-100 text-black font-bold border-r border-amber-300 flex items-center text-[13px] tracking-tight">

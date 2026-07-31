@@ -63,6 +63,18 @@ const VASTU_DIRECTIONS = {
   6: { zone: "Northwest (NW)", element: "Metal", aspect: "Helpful Friends & Support", issue: "Lack of support, loneliness, bad luck with networking", remedy: "Hang a silver key or keep a metal windchime in the northwest corner." }
 };
 
+const NUMEROLOGY_RUDRAKSHA_DATA = {
+  1: { dates: "1st, 10th, 19th, 28th", planet: "Sun (Surya)", mukhi: "1 Mukhi Rudraksha", icon: "👑", benefits: "Leadership, focus, and confidence." },
+  2: { dates: "2nd, 11th, 20th, 29th", planet: "Moon (Chandra)", mukhi: "2 Mukhi Rudraksha", icon: "🌙", benefits: "Emotional balance and peace." },
+  3: { dates: "3rd, 12th, 21st, 30th", planet: "Jupiter (Guru)", mukhi: "4 or 5 Mukhi Rudraksha", icon: "🕉️", benefits: "Wisdom, knowledge, and growth." },
+  4: { dates: "4th, 13th, 22nd, 31st", planet: "Rahu", mukhi: "9 Mukhi Rudraksha", icon: "🛡️", benefits: "Courage and protection." },
+  5: { dates: "5th, 14th, 23rd", planet: "Mercury (Budh)", mukhi: "14 or 6 Mukhi Rudraksha", icon: "⚡", benefits: "Sharp intellect and communication." },
+  6: { dates: "6th, 15th, 24th", planet: "Venus (Shukra)", mukhi: "6 Mukhi or Gauri Shankar Rudraksha", icon: "💎", benefits: "Harmony and luxury." },
+  7: { dates: "7th, 16th, 25th", planet: "Ketu", mukhi: "7 Mukhi or Ganesh Rudraksha", icon: "🧘", benefits: "Intuition and grounding." },
+  8: { dates: "8th, 17th, 26th", planet: "Saturn (Shani)", mukhi: "7 Mukhi or 14 Mukhi Rudraksha", icon: "⚖️", benefits: "Ease obstacles and attract stability." },
+  9: { dates: "9th, 18th, 27th", planet: "Mars (Mangal)", mukhi: "3 Mukhi Rudraksha", icon: "🔥", benefits: "Energy, action, and overcoming fears." }
+};
+
 function reduceToSingleDigit(number) {
   let temp = number;
   while (temp > 9) {
@@ -2069,597 +2081,627 @@ export default function NumerologyDashboard() {
                           This year is ruled by <strong>{result.personalYearDetails.planet}</strong>, indicating a phase of:{" "}
                           {result.personalYearDetails.traits}
                         </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Loshu Grid Visual Card - Displayed below Numerological Profile Analysis */}
-                  <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm flex flex-col items-stretch w-full">
-                    <h3 className="text-[22px] font-bold text-orange-900 mb-1 text-center w-full">Loshu Grid</h3>
-                    <p className="text-[16px] text-slate-900 font-semibold uppercase tracking-wider mb-5 text-center w-full">3x3 Saturnine Magic Square</p>
-
-                    <div className="grid grid-cols-3 gap-4 w-full">
-
-                      {/* Row 1 */}
-                      {/* Cell 4 */}
-                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-amber-400 transition-all duration-300 ${isCellHighlighted(4) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
-                        <div className="absolute top-2 right-2 bg-amber-100 text-amber-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">4</div>
-                        <div className="my-3">
-                          {result.loshuGrid[4] > 0 ? (
-                            <span className="text-3xl font-black text-amber-600">{getGridVal(4)}</span>
-                          ) : (
-                            <span className="text-2xl font-bold text-slate-300 line-through">4</span>
-                          )}
-                        </div>
-                        <div className="space-y-2 text-[16px]">
-                          <p className="font-semibold text-slate-700 leading-tight">Discipline, Stability, Hard Work, Practicality, Organization, Structure</p>
-                          <div className="text-[16px] bg-amber-50/70 border border-amber-100 py-1.5 rounded space-y-0.5 font-bold text-amber-900 w-full">
-                            <p>Element: Wood</p>
-                            <p>Planet: Rahu</p>
-                            <p>Merit: Stability</p>
-                            <p>Direction: Southeast</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Cell 9 */}
-                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-orange-400 transition-all duration-300 ${isCellHighlighted(9) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
-                        <div className="absolute top-2 right-2 bg-orange-100 text-orange-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">9</div>
-                        <div className="my-3">
-                          {result.loshuGrid[9] > 0 ? (
-                            <span className="text-3xl font-black text-orange-600">{getGridVal(9)}</span>
-                          ) : (
-                            <span className="text-2xl font-bold text-slate-300 line-through">9</span>
-                          )}
-                        </div>
-                        <div className="space-y-2 text-[16px]">
-                          <p className="font-semibold text-slate-700 leading-tight">Compassion, Empathy, Idealism, Generosity, Sacrifice, Vision, Humanitarianism</p>
-                          <div className="text-[16px] bg-orange-50/70 border border-orange-100 py-1.5 rounded space-y-0.5 font-bold text-orange-900 w-full">
-                            <p>Element: Fire</p>
-                            <p>Planet: Mars</p>
-                            <p>Merit: Compassion</p>
-                            <p>Direction: South</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Cell 2 */}
-                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-indigo-400 transition-all duration-300 ${isCellHighlighted(2) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
-                        <div className="absolute top-2 right-2 bg-indigo-100 text-indigo-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">2</div>
-                        <div className="my-3">
-                          {result.loshuGrid[2] > 0 ? (
-                            <span className="text-3xl font-black text-indigo-600">{getGridVal(2)}</span>
-                          ) : (
-                            <span className="text-2xl font-bold text-slate-300 line-through">2</span>
-                          )}
-                        </div>
-                        <div className="space-y-2 text-[16px]">
-                          <p className="font-semibold text-slate-700 leading-tight">Cooperation, Sensitivity, Harmony, Balance, Partnership, Diplomacy, Receptivity</p>
-                          <div className="text-[16px] bg-indigo-50/70 border border-indigo-100 py-1.5 rounded space-y-0.5 font-bold text-indigo-900 w-full">
-                            <p>Element: Earth</p>
-                            <p>Planet: Moon</p>
-                            <p>Merit: Supportiveness</p>
-                            <p>Direction: Southwest</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Row 2 */}
-                      {/* Cell 3 */}
-                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-emerald-400 transition-all duration-300 ${isCellHighlighted(3) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
-                        <div className="absolute top-2 right-2 bg-emerald-100 text-emerald-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">3</div>
-                        <div className="my-3">
-                          {result.loshuGrid[3] > 0 ? (
-                            <span className="text-3xl font-black text-emerald-600">{getGridVal(3)}</span>
-                          ) : (
-                            <span className="text-2xl font-bold text-slate-300 line-through">3</span>
-                          )}
-                        </div>
-                        <div className="space-y-2 text-[16px]">
-                          <p className="font-semibold text-slate-700 leading-tight">Expression, Creativity, Joy, Charisma, Communication, Art, Optimism</p>
-                          <div className="text-[16px] bg-emerald-50/70 border border-emerald-100 py-1.5 rounded space-y-0.5 font-bold text-emerald-900 w-full">
-                            <p>Element: Wood</p>
-                            <p>Planet: Jupiter</p>
-                            <p>Merit: Creativity</p>
-                            <p>Direction: East</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Cell 5 */}
-                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-indigo-500 transition-all duration-300 ${isCellHighlighted(5) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
-                        <div className="absolute top-2 right-2 bg-indigo-100 text-indigo-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">5</div>
-                        <div className="my-3">
-                          {result.loshuGrid[5] > 0 ? (
-                            <span className="text-3xl font-black text-indigo-700">{getGridVal(5)}</span>
-                          ) : (
-                            <span className="text-2xl font-bold text-slate-300 line-through">5</span>
-                          )}
-                        </div>
-                        <div className="space-y-2 text-[16px]">
-                          <p className="font-semibold text-slate-700 leading-tight">Freedom, Adaptability, Change, Adventure, Versatility, Movement, Exploration</p>
-                          <div className="text-[16px] bg-indigo-50/70 border border-indigo-100 py-1.5 rounded space-y-0.5 font-bold text-indigo-955 w-full">
-                            <p>Element: Earth</p>
-                            <p>Planet: Mercury</p>
-                            <p>Merit: Balance</p>
-                            <p>Direction: Center</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Cell 7 */}
-                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-teal-400 transition-all duration-300 ${isCellHighlighted(7) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
-                        <div className="absolute top-2 right-2 bg-teal-100 text-teal-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">7</div>
-                        <div className="my-3">
-                          {result.loshuGrid[7] > 0 ? (
-                            <span className="text-3xl font-black text-teal-600">{getGridVal(7)}</span>
-                          ) : (
-                            <span className="text-2xl font-bold text-slate-300 line-through">7</span>
-                          )}
-                        </div>
-                        <div className="space-y-2 text-[16px]">
-                          <p className="font-semibold text-slate-700 leading-tight">Spirituality, Wisdom, Research, Inner Growth, Solitude, Introspection, Knowledge</p>
-                          <div className="text-[16px] bg-teal-50/70 border border-teal-100 py-1.5 rounded space-y-0.5 font-bold text-teal-900 w-full">
-                            <p>Element: Metal</p>
-                            <p>Planet: Ketu</p>
-                            <p>Merit: Wisdom</p>
-                            <p>Direction: West</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Row 3 */}
-                      {/* Cell 8 */}
-                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-purple-400 transition-all duration-300 ${isCellHighlighted(8) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
-                        <div className="absolute top-2 right-2 bg-purple-100 text-purple-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">8</div>
-                        <div className="my-3">
-                          {result.loshuGrid[8] > 0 ? (
-                            <span className="text-3xl font-black text-purple-600">{getGridVal(8)}</span>
-                          ) : (
-                            <span className="text-2xl font-bold text-slate-300 line-through">8</span>
-                          )}
-                        </div>
-                        <div className="space-y-2 text-[16px]">
-                          <p className="font-semibold text-slate-700 leading-tight">Power, Ambition, Authority, Status, Success, Control, Leadership</p>
-                          <div className="text-[16px] bg-purple-50/70 border border-purple-100 py-1.5 rounded space-y-0.5 font-bold text-purple-900 w-full">
-                            <p>Element: Earth</p>
-                            <p>Planet: Saturn</p>
-                            <p>Merit: Success</p>
-                            <p>Direction: Northeast</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Cell 1 */}
-                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-blue-400 transition-all duration-300 ${isCellHighlighted(1) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
-                        <div className="absolute top-2 right-2 bg-blue-100 text-blue-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">1</div>
-                        <div className="my-3">
-                          {result.loshuGrid[1] > 0 ? (
-                            <span className="text-3xl font-black text-blue-600">{getGridVal(1)}</span>
-                          ) : (
-                            <span className="text-2xl font-bold text-slate-300 line-through">1</span>
-                          )}
-                        </div>
-                        <div className="space-y-2 text-[16px]">
-                          <p className="font-semibold text-slate-700 leading-tight">Leadership, Individualism, Confidence, Creativity, Determination, Originality, Willpower</p>
-                          <div className="text-[16px] bg-blue-50/70 border border-blue-100 py-1.5 rounded space-y-0.5 font-bold text-blue-900 w-full">
-                            <p>Element: Water</p>
-                            <p>Planet: Sun</p>
-                            <p>Merit: Individualism</p>
-                            <p>Direction: North</p>
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Cell 6 */}
-                      <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-rose-350 transition-all duration-300 ${isCellHighlighted(6) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
-                        <div className="absolute top-2 right-2 bg-rose-100 text-rose-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">6</div>
-                        <div className="my-3">
-                          {result.loshuGrid[6] > 0 ? (
-                            <span className="text-3xl font-black text-rose-600">{getGridVal(6)}</span>
-                          ) : (
-                            <span className="text-2xl font-bold text-slate-300 line-through">6</span>
-                          )}
-                        </div>
-                        <div className="space-y-2 text-[16px]">
-                          <p className="font-semibold text-slate-700 leading-tight">Responsibility, Love, Service, Family, Compassion, Support, Harmony</p>
-                          <div className="text-[16px] bg-rose-50/70 border border-rose-100 py-1.5 rounded space-y-0.5 font-bold text-rose-900 w-full">
-                            <p>Element: Metal</p>
-                            <p>Planet: Venus</p>
-                            <p>Merit: Service</p>
-                            <p>Direction: Northwest</p>
-                          </div>
-                        </div>
-                      </div>
-
-                    </div>
-
-                    <div className="mt-6 text-[16px] text-slate-900 space-y-2 leading-relaxed text-center">
-                      <p>
-                        <strong>Loshu Grid</strong> indicates which elements and planes are fully active. Repeating numbers boost the respective element, while absent numbers suggest fields for remedy focus.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Loshu Planes Analysis */}
-                  <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
-                    <h3 className="text-[22px] font-bold text-orange-900 border-b border-rose-100 pb-3 mb-4 flex items-center gap-2">
-                      <Compass className="w-5 h-5 text-orange-900" /> Loshu Grid Planes Analysis
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {result.loshuPlanes.map((plane, idx) => (
-                        <div
-                          key={idx}
-                          onMouseEnter={() => setHoveredPlane(plane.name)}
-                          onMouseLeave={() => setHoveredPlane(null)}
-                          className="p-4 rounded-2xl border border-rose-100/50 bg-rose-50/10 flex flex-col justify-between transition-all hover:bg-rose-50/40 hover:border-rose-300 hover:shadow-md cursor-pointer"
-                        >
-                          <div>
-                            <div className="flex justify-between items-center mb-1">
-                              <h4 className="font-bold text-slate-900 text-[18px]">{plane.name}</h4>
-                              <span className={`text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${plane.status === "Strong" ? "bg-green-100 text-green-800" :
-                                plane.status === "Moderate" ? "bg-yellow-100 text-yellow-800" :
-                                  "bg-orange-100 text-orange-800"
-                                }`}>
-                                {plane.status}
-                              </span>
-                            </div>
-                            <p className="text-[18px] font-medium text-slate-900 mb-2">{plane.description}</p>
-                          </div>
-                          {plane.status === "Missing/Weak" && (
-                            <div className="mt-2 text-[18px] md:text-[18px] bg-orange-50 text-emerald-900 p-2.5 rounded-xl border border-orange-100 flex items-start gap-1">
-                              <AlertCircle className="w-3.5 h-3.5 mt-0.5 text-red-700 shrink-0" />
-                              <div>
-                                <span className="font-bold">Missing Remedy:</span> {plane.remedy}
-                              </div>
-                            </div>
-                          )}
-                          {plane.status !== "Missing/Weak" && (
-                            <div className="mt-2 text-[18px] md:text-[18px] bg-green-50 text-green-950 p-2.5 rounded-xl border border-green-100 flex items-center gap-1">
-                              <CheckCircle className="w-3.5 h-3.5 text-green-700 shrink-0" />
-                              <span className="font-semibold">Plane elements are well balanced!</span>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-
-                  {/* Progressive predictions & Temporal Cycles Forecast */}
-                  <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-6">
-                    <h3 className="text-[20px] font-bold text-orange-900 border-b border-rose-100 pb-3 flex items-center gap-2">
-                      <Calendar className="w-5 h-5 text-rose-600" /> Progressive Predictions & Cycle Forecasts
-                    </h3>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-                      {/* Personal Year Card */}
-                      <div className="bg-gradient-to-br from-rose-50 to-amber-50/30 p-5 rounded-2xl border border-rose-100 flex flex-col justify-between">
-                        <div>
-                          <span className="text-[18px] font-semibold uppercase tracking-wider text-slate-900 bg-rose-100/50 px-2.5 py-1 rounded-full">
-                            Current Year Vibration
-                          </span>
-                          <h4 className="text-base font-semibold text-slate-900 mt-2">
-                            Personal Year {result.personalYear}
-                          </h4>
-                          <p className="text-[16px] text-slate-900 mt-1 leading-relaxed">
-                            Overall vibration theme of the entire year:
-                          </p>
-                          <p className="text-[16px] font-semibold text-slate-900 mt-2 bg-white/70 p-2.5 rounded-xl border border-rose-100/30">
-                            {result.personalYearDetails?.traits || "Year of development and progress."}
-                          </p>
-                        </div>
-                        <div className="text-[16px] text-slate-900 mt-4 border-t border-rose-100/50 pt-2 font-medium">
-                          Ruling Planet: {result.personalYearDetails?.planet || "Sun"}
-                        </div>
-                      </div>
-
-                      {/* Daily Forecast Gauge */}
-                      {(() => {
-                        const today = new Date();
-                        const currentMonthNum = today.getMonth() + 1;
-                        const currentDayNum = today.getDate();
-                        const pMonth = reduceToSingleDigit(result.personalYear + currentMonthNum);
-                        const pDay = reduceToSingleDigit(pMonth + currentDayNum);
-                        const dayData = getDayForecast(pDay);
-                        return (
-                          <div className="bg-white border border-rose-100 p-5 rounded-2xl shadow-sm text-center flex flex-col justify-between md:col-span-2 relative overflow-hidden">
-                            <div className="absolute top-2 right-2 bg-emerald-100 text-emerald-800 rounded-full px-2 py-0.5 text-[16px] font-bold uppercase">
-                              Today's Energy
-                            </div>
-                            <div className="flex flex-col sm:flex-row items-center gap-4 my-2">
-                              {/* Circular progress ring representing the daily number */}
-                              <div className="relative w-20 h-20 shrink-0 flex items-center justify-center bg-rose-50 rounded-full border-4 border-rose-400 shadow-inner">
-                                <span className="text-4xl font-black text-rose-600">{pDay}</span>
-                              </div>
-                              <div className="text-left">
-                                <h5 className="font-bold text-orange-900 text-[18px]">{dayData.tagline}</h5>
-                                <p className="text-[16px] text-slate-900 mt-1 leading-relaxed">
-                                  {dayData.advice}
+                        {/* Numerology & Rudraksha Recommendation */}
+                        {(() => {
+                          const rudrakshaInfo = NUMEROLOGY_RUDRAKSHA_DATA[result.mulank];
+                          if (!rudrakshaInfo) return null;
+                          return (
+                            <div className="pt-2 border-t border-rose-100">
+                              <h4 className="text-[18px] font-bold text-orange-900 mb-2 flex items-center gap-2">
+                                <span>📿</span> Numerology & Rudraksha Recommendation
+                              </h4>
+                              <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-4 rounded-xl border border-amber-200 space-y-2">
+                                <div className="flex flex-wrap items-center justify-between gap-2">
+                                  <span className="text-sm font-bold text-amber-900 flex items-center gap-1.5">
+                                    <span>{rudrakshaInfo.icon}</span> Root Number (Mulank {result.mulank}): Ruled by {rudrakshaInfo.planet}
+                                  </span>
+                                  <span className="text-xs bg-amber-200 text-amber-900 px-2.5 py-1 rounded-full font-bold">
+                                    Born on: {rudrakshaInfo.dates}
+                                  </span>
+                                </div>
+                                <p className="text-sm font-semibold text-rose-950">
+                                  <strong>Recommended Bead:</strong> <span className="text-amber-800 font-extrabold">{rudrakshaInfo.mukhi}</span>
+                                </p>
+                                <p className="text-xs text-slate-700 leading-relaxed">
+                                  <strong>Purpose & Benefits:</strong> {rudrakshaInfo.benefits}
                                 </p>
                               </div>
                             </div>
-                            <div className="text-[16px] text-slate-900 text-left border-t border-slate-100 pt-2 font-semibold">
-                              Current Date: {today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
-                            </div>
-                          </div>
-                        );
-                      })()}
-
-                    </div>
-
-                    {/* Personal Month Timeline */}
-                    <div className="border-t border-rose-100 pt-4">
-                      <h4 className="text-[18px] font-bold text-orange-900 mb-3">
-                        Monthly Forecast Timeline ({result.currentYear})
-                      </h4>
-
-                      {/* Months slider */}
-                      <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-thin scrollbar-thumb-rose-200">
-                        {Array.from({ length: 12 }, (_, i) => {
-                          const mIndex = i + 1;
-                          const pMonth = reduceToSingleDigit(result.personalYear + mIndex);
-                          const mName = new Date(2026, i).toLocaleString('en-US', { month: 'short' });
-                          const isActive = selectedForecastMonth === mIndex;
-                          return (
-                            <button
-                              key={mIndex}
-                              onClick={() => setSelectedForecastMonth(mIndex)}
-                              className={`px-4 py-2.5 rounded-xl border text-center transition-all shrink-0 min-w-[70px] ${isActive
-                                ? 'bg-rose-600 text-white border-rose-600 shadow-md'
-                                : 'bg-rose-50/30 text-rose-950 border-rose-100/50 hover:bg-rose-50'
-                                }`}
-                            >
-                              <span className="text-xs font-bold block leading-none">{mName}</span>
-                              <span className={`text-[10px] font-black block mt-1 ${isActive ? 'text-amber-200' : 'text-rose-600'}`}>
-                                Vib: {pMonth}
-                              </span>
-                            </button>
                           );
-                        })}
-                      </div>
-
-                      {/* Active Month Details Display */}
-                      {(() => {
-                        const mData = getMonthForecast(reduceToSingleDigit(result.personalYear + selectedForecastMonth));
-                        const monthFull = new Date(2026, selectedForecastMonth - 1).toLocaleString('en-US', { month: 'long' });
-                        return (
-                          <div className="bg-rose-50/20 border border-rose-100/70 rounded-2xl p-4 mt-3">
-                            <div className="flex justify-between items-center mb-2">
-                              <span className="text-[16px] font-bold text-orange-900 uppercase tracking-wider">
-                                {monthFull} Vibration
-                              </span>
-                              <span className="text-[16px] font-bold bg-rose-100 text-slate-900 px-2 py-0.5 rounded-full">
-                                Personal Month {reduceToSingleDigit(result.personalYear + selectedForecastMonth)}
-                              </span>
-                            </div>
-                            <h5 className="font-bold text-orange-900 text-[18px] mb-1">{mData.title}</h5>
-                            <p className="text-[16px] text-slate-900 mb-2 leading-relaxed">
-                              <strong>Primary Focus:</strong> {mData.focus}
-                            </p>
-                            <p className="text-[16px] text-slate-900 leading-relaxed bg-white/50 p-3 rounded-xl border border-rose-100/20 font-medium">
-                              <strong>Actionable Advice:</strong> {mData.advice}
-                            </p>
-                          </div>
-                        );
-                      })()}
-                    </div>
-                  </div>
-                  {/* Lo Shu Grid Life Domain Analytics */}
-                  <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-6">
-                    <h3 className="text-[20px] font-bold text-orange-900 border-b border-rose-100 pb-3 flex items-center gap-2">
-                      <Sparkles className="w-5 h-5 text-rose-600" /> Lo Shu Life Domain Analytics
-                    </h3>
-
-                    {result.domainAnalytics ? (
-                      <div className="space-y-6">
-
-                        {/* Marriage & Money Row */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-
-                          {/* Marriage Card */}
-                          <div className="p-5 rounded-2xl border border-rose-100 bg-rose-50/5 flex flex-col justify-between space-y-4">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center space-x-2.5">
-                                <div className="p-2 bg-pink-100 text-pink-700 rounded-xl">
-                                  <Heart className="w-5 h-5" />
-                                </div>
-                                <h4 className="font-bold text-slate-900 text-base md:text-lg">Marriage & Relationship</h4>
-                              </div>
-                              <span className={`text-xs md:text-sm font-black px-3 py-1 rounded-full uppercase tracking-wider ${result.domainAnalytics.marriage.score >= 80 ? "bg-green-100 text-green-800" :
-                                result.domainAnalytics.marriage.score >= 60 ? "bg-yellow-100 text-yellow-800" :
-                                  "bg-orange-100 text-orange-800"
-                                }`}>
-                                {result.domainAnalytics.marriage.score}%
-                              </span>
-                            </div>
-                            <div className="space-y-2">
-                              <p className="text-[18px] font-bold text-slate-900 uppercase tracking-wider">Status: {result.domainAnalytics.marriage.status}</p>
-                              <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.marriage.analysis}</p>
-                            </div>
-                            <div className="bg-pink-50/50 text-slate-900 p-3 rounded-xl border border-pink-100 text-[18px]">
-                              <span className="font-bold text-pink-900 block mb-0.5">🌸 Relationship Remedies:</span>
-                              {result.domainAnalytics.marriage.remedies}
-                            </div>
-                          </div>
-
-                          {/* Money Card */}
-                          <div className="p-5 rounded-2xl border border-rose-100 bg-rose-50/5 flex flex-col justify-between space-y-4">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center space-x-2.5">
-                                <div className="p-2 bg-emerald-100 text-emerald-700 rounded-xl">
-                                  <Coins className="w-5 h-5" />
-                                </div>
-                                <h4 className="font-bold text-slate-900 text-base md:text-lg">Wealth & Assets</h4>
-                              </div>
-                              <span className={`text-xs md:text-sm font-black px-3 py-1 rounded-full uppercase tracking-wider ${result.domainAnalytics.money.score >= 80 ? "bg-green-100 text-green-800" :
-                                result.domainAnalytics.money.score >= 50 ? "bg-yellow-100 text-yellow-800" :
-                                  "bg-orange-100 text-orange-800"
-                                }`}>
-                                {result.domainAnalytics.money.score}%
-                              </span>
-                            </div>
-                            <div className="space-y-2">
-                              <p className="text-[18px] font-bold text-slate-900 uppercase tracking-wider">Status: {result.domainAnalytics.money.status}</p>
-                              <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.money.analysis}</p>
-                            </div>
-                            <div className="bg-emerald-50/50 text-slate-900 p-3 rounded-xl border border-emerald-100 text-[18px]">
-                              <span className="font-bold text-emerald-900 block mb-0.5">💰 Wealth Remedies:</span>
-                              {result.domainAnalytics.money.remedies}
-                            </div>
-                          </div>
-
-                        </div>
-
-                        {/* Child Birth, Career & Gov Job Row */}
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-
-                          {/* Child Birth Card */}
-                          <div className="p-4 rounded-2xl border border-rose-100 bg-rose-50/5 flex flex-col justify-between space-y-3">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center space-x-2">
-                                <div className="p-1.5 bg-blue-100 text-blue-700 rounded-lg">
-                                  <Baby className="w-4 h-4" />
-                                </div>
-                                <h4 className="font-bold text-slate-900 text-sm md:text-base">Child Birth</h4>
-                              </div>
-                              <span className="text-xs font-black text-blue-800 bg-blue-50 px-2 py-0.5 rounded-full">{result.domainAnalytics.child_birth.score}%</span>
-                            </div>
-                            <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.child_birth.analysis}</p>
-                            <div className="bg-blue-50/50 text-slate-900 p-3 rounded-xl border border-blue-100 text-[18px]">
-                              <span className="font-bold text-blue-900 block mb-0.5">🍼 Progeny Remedy:</span>
-                              {result.domainAnalytics.child_birth.remedies}
-                            </div>
-                          </div>
-
-                          {/* Career Card */}
-                          <div className="p-4 rounded-2xl border border-rose-100 bg-rose-50/5 flex flex-col justify-between space-y-3">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center space-x-2">
-                                <div className="p-1.5 bg-amber-100 text-amber-700 rounded-lg">
-                                  <Briefcase className="w-4 h-4" />
-                                </div>
-                                <h4 className="font-bold text-slate-900 text-[18px] md:text-base">Career & Success</h4>
-                              </div>
-                              <span className="text-xs font-black text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full">{result.domainAnalytics.career.score}%</span>
-                            </div>
-                            <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.career.analysis}</p>
-                            <div className="bg-amber-50/50 text-slate-900 p-3 rounded-xl border border-amber-100 text-[18px]">
-                              <span className="font-bold text-amber-900 block mb-0.5">💼 Career Remedy:</span>
-                              {result.domainAnalytics.career.remedies}
-                            </div>
-                          </div>
-
-                          {/* Gov Job Card */}
-                          <div className="p-4 rounded-2xl border border-rose-100 bg-rose-50/5 flex flex-col justify-between space-y-3">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center space-x-2">
-                                <div className="p-1.5 bg-purple-100 text-purple-700 rounded-lg">
-                                  <Landmark className="w-4 h-4" />
-                                </div>
-                                <h4 className="font-bold text-slate-900 text-[18px] md:text-base">Government Job</h4>
-                              </div>
-                              <span className="text-xs font-black text-purple-800 bg-purple-50 px-2 py-0.5 rounded-full">{result.domainAnalytics.government_job.score}%</span>
-                            </div>
-                            <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.government_job.analysis}</p>
-                            <div className="bg-purple-50/50 text-slate-900 p-3 rounded-xl border border-purple-100 text-[18px]">
-                              <span className="font-bold text-purple-900 block mb-0.5">🏛️ Exam Remedy:</span>
-                              {result.domainAnalytics.government_job.remedies}
-                            </div>
-                          </div>
-
-                        </div>
-
-                      </div>
-                    ) : (
-                      <p className="text-xs text-slate-400">Loading domain analytics details...</p>
-                    )}
-                  </div>
-
-                  {/* Remedies & Lucky Factors */}
-                  <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
-                    <h3 className="text-[20px] font-bold text-orange-900 border-b border-rose-100 pb-3 mb-4 flex items-center gap-2">
-                      <Flame className="w-5 h-5 text-rose-600" /> Vedic Remedies & Auspicious Energies
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-                      <div className="space-y-3">
-                        <div>
-                          <span className="font-bold text-[18px] text-rose-900">Lucky Colors: </span>
-                          <span className="text-[18px] font-bold  text-slate-900">{result.mulankDetails.colors.join(", ")}</span>
-                        </div>
-                        <div>
-                          <span className="font-bold text-[18px] text-rose-900">Lucky Directions: </span>
-                          <span className="text-[18px] font-bold text-slate-900">{result.mulankDetails.lucky_directions.join(", ")}</span>
-                        </div>
-                        <div>
-                          <span className="font-bold text-[18px] text-rose-900">Auspicious Gemstone: </span>
-                          <span className="text-[18px] font-bold text-slate-900">{result.mulankDetails.gemstone}</span>
-                        </div>
-                      </div>
-                      <div className="space-y-3">
-                        <div>
-                          <span className="font-bold text-[18px] text-rose-900">Friendly Numbers: </span>
-                          <span className="text-[18px] font-bold text-slate-900">{result.mulankDetails.friendly_numbers.join(", ")}</span>
-                        </div>
-                        <div>
-                          <span className="font-bold text-[18px] text-rose-900">Numbers to Avoid: </span>
-                          <span className="text-[18px] font-bold text-slate-900">{result.mulankDetails.enemy_numbers.join(", ")}</span>
-                        </div>
-                        <div className="bg-rose-50/50 p-3 rounded-xl border border-rose-100">
-                          <span className="block font-bold text-rose-950 text-[18px] mb-1 uppercase tracking-wider">Auspicious Beej Mantra:</span>
-                          <span className="font-semibold text-rose-800 text-[18px] italic">"{result.mulankDetails.mantra}"</span>
-                        </div>
+                        })()}
                       </div>
                     </div>
+
+                    {/* Loshu Grid Visual Card - Displayed below Numerological Profile Analysis */}
+                    <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm flex flex-col items-stretch w-full">
+                      <h3 className="text-[22px] font-bold text-orange-900 mb-1 text-center w-full">Loshu Grid</h3>
+                      <p className="text-[16px] text-slate-900 font-semibold uppercase tracking-wider mb-5 text-center w-full">3x3 Saturnine Magic Square</p>
+
+                      <div className="grid grid-cols-3 gap-4 w-full">
+
+                        {/* Row 1 */}
+                        {/* Cell 4 */}
+                        <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-amber-400 transition-all duration-300 ${isCellHighlighted(4) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
+                          <div className="absolute top-2 right-2 bg-amber-100 text-amber-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">4</div>
+                          <div className="my-3">
+                            {result.loshuGrid[4] > 0 ? (
+                              <span className="text-3xl font-black text-amber-600">{getGridVal(4)}</span>
+                            ) : (
+                              <span className="text-2xl font-bold text-slate-300 line-through">4</span>
+                            )}
+                          </div>
+                          <div className="space-y-2 text-[16px]">
+                            <p className="font-semibold text-slate-700 leading-tight">Discipline, Stability, Hard Work, Practicality, Organization, Structure</p>
+                            <div className="text-[16px] bg-amber-50/70 border border-amber-100 py-1.5 rounded space-y-0.5 font-bold text-amber-900 w-full">
+                              <p>Element: Wood</p>
+                              <p>Planet: Rahu</p>
+                              <p>Merit: Stability</p>
+                              <p>Direction: Southeast</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Cell 9 */}
+                        <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-orange-400 transition-all duration-300 ${isCellHighlighted(9) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
+                          <div className="absolute top-2 right-2 bg-orange-100 text-orange-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">9</div>
+                          <div className="my-3">
+                            {result.loshuGrid[9] > 0 ? (
+                              <span className="text-3xl font-black text-orange-600">{getGridVal(9)}</span>
+                            ) : (
+                              <span className="text-2xl font-bold text-slate-300 line-through">9</span>
+                            )}
+                          </div>
+                          <div className="space-y-2 text-[16px]">
+                            <p className="font-semibold text-slate-700 leading-tight">Compassion, Empathy, Idealism, Generosity, Sacrifice, Vision, Humanitarianism</p>
+                            <div className="text-[16px] bg-orange-50/70 border border-orange-100 py-1.5 rounded space-y-0.5 font-bold text-orange-900 w-full">
+                              <p>Element: Fire</p>
+                              <p>Planet: Mars</p>
+                              <p>Merit: Compassion</p>
+                              <p>Direction: South</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Cell 2 */}
+                        <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-indigo-400 transition-all duration-300 ${isCellHighlighted(2) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
+                          <div className="absolute top-2 right-2 bg-indigo-100 text-indigo-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">2</div>
+                          <div className="my-3">
+                            {result.loshuGrid[2] > 0 ? (
+                              <span className="text-3xl font-black text-indigo-600">{getGridVal(2)}</span>
+                            ) : (
+                              <span className="text-2xl font-bold text-slate-300 line-through">2</span>
+                            )}
+                          </div>
+                          <div className="space-y-2 text-[16px]">
+                            <p className="font-semibold text-slate-700 leading-tight">Cooperation, Sensitivity, Harmony, Balance, Partnership, Diplomacy, Receptivity</p>
+                            <div className="text-[16px] bg-indigo-50/70 border border-indigo-100 py-1.5 rounded space-y-0.5 font-bold text-indigo-900 w-full">
+                              <p>Element: Earth</p>
+                              <p>Planet: Moon</p>
+                              <p>Merit: Supportiveness</p>
+                              <p>Direction: Southwest</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Row 2 */}
+                        {/* Cell 3 */}
+                        <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-emerald-400 transition-all duration-300 ${isCellHighlighted(3) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
+                          <div className="absolute top-2 right-2 bg-emerald-100 text-emerald-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">3</div>
+                          <div className="my-3">
+                            {result.loshuGrid[3] > 0 ? (
+                              <span className="text-3xl font-black text-emerald-600">{getGridVal(3)}</span>
+                            ) : (
+                              <span className="text-2xl font-bold text-slate-300 line-through">3</span>
+                            )}
+                          </div>
+                          <div className="space-y-2 text-[16px]">
+                            <p className="font-semibold text-slate-700 leading-tight">Expression, Creativity, Joy, Charisma, Communication, Art, Optimism</p>
+                            <div className="text-[16px] bg-emerald-50/70 border border-emerald-100 py-1.5 rounded space-y-0.5 font-bold text-emerald-900 w-full">
+                              <p>Element: Wood</p>
+                              <p>Planet: Jupiter</p>
+                              <p>Merit: Creativity</p>
+                              <p>Direction: East</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Cell 5 */}
+                        <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-indigo-500 transition-all duration-300 ${isCellHighlighted(5) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
+                          <div className="absolute top-2 right-2 bg-indigo-100 text-indigo-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">5</div>
+                          <div className="my-3">
+                            {result.loshuGrid[5] > 0 ? (
+                              <span className="text-3xl font-black text-indigo-700">{getGridVal(5)}</span>
+                            ) : (
+                              <span className="text-2xl font-bold text-slate-300 line-through">5</span>
+                            )}
+                          </div>
+                          <div className="space-y-2 text-[16px]">
+                            <p className="font-semibold text-slate-700 leading-tight">Freedom, Adaptability, Change, Adventure, Versatility, Movement, Exploration</p>
+                            <div className="text-[16px] bg-indigo-50/70 border border-indigo-100 py-1.5 rounded space-y-0.5 font-bold text-indigo-955 w-full">
+                              <p>Element: Earth</p>
+                              <p>Planet: Mercury</p>
+                              <p>Merit: Balance</p>
+                              <p>Direction: Center</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Cell 7 */}
+                        <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-teal-400 transition-all duration-300 ${isCellHighlighted(7) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
+                          <div className="absolute top-2 right-2 bg-teal-100 text-teal-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">7</div>
+                          <div className="my-3">
+                            {result.loshuGrid[7] > 0 ? (
+                              <span className="text-3xl font-black text-teal-600">{getGridVal(7)}</span>
+                            ) : (
+                              <span className="text-2xl font-bold text-slate-300 line-through">7</span>
+                            )}
+                          </div>
+                          <div className="space-y-2 text-[16px]">
+                            <p className="font-semibold text-slate-700 leading-tight">Spirituality, Wisdom, Research, Inner Growth, Solitude, Introspection, Knowledge</p>
+                            <div className="text-[16px] bg-teal-50/70 border border-teal-100 py-1.5 rounded space-y-0.5 font-bold text-teal-900 w-full">
+                              <p>Element: Metal</p>
+                              <p>Planet: Ketu</p>
+                              <p>Merit: Wisdom</p>
+                              <p>Direction: West</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Row 3 */}
+                        {/* Cell 8 */}
+                        <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-purple-400 transition-all duration-300 ${isCellHighlighted(8) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
+                          <div className="absolute top-2 right-2 bg-purple-100 text-purple-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">8</div>
+                          <div className="my-3">
+                            {result.loshuGrid[8] > 0 ? (
+                              <span className="text-3xl font-black text-purple-600">{getGridVal(8)}</span>
+                            ) : (
+                              <span className="text-2xl font-bold text-slate-300 line-through">8</span>
+                            )}
+                          </div>
+                          <div className="space-y-2 text-[16px]">
+                            <p className="font-semibold text-slate-700 leading-tight">Power, Ambition, Authority, Status, Success, Control, Leadership</p>
+                            <div className="text-[16px] bg-purple-50/70 border border-purple-100 py-1.5 rounded space-y-0.5 font-bold text-purple-900 w-full">
+                              <p>Element: Earth</p>
+                              <p>Planet: Saturn</p>
+                              <p>Merit: Success</p>
+                              <p>Direction: Northeast</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Cell 1 */}
+                        <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-blue-400 transition-all duration-300 ${isCellHighlighted(1) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
+                          <div className="absolute top-2 right-2 bg-blue-100 text-blue-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">1</div>
+                          <div className="my-3">
+                            {result.loshuGrid[1] > 0 ? (
+                              <span className="text-3xl font-black text-blue-600">{getGridVal(1)}</span>
+                            ) : (
+                              <span className="text-2xl font-bold text-slate-300 line-through">1</span>
+                            )}
+                          </div>
+                          <div className="space-y-2 text-[16px]">
+                            <p className="font-semibold text-slate-700 leading-tight">Leadership, Individualism, Confidence, Creativity, Determination, Originality, Willpower</p>
+                            <div className="text-[16px] bg-blue-50/70 border border-blue-100 py-1.5 rounded space-y-0.5 font-bold text-blue-900 w-full">
+                              <p>Element: Water</p>
+                              <p>Planet: Sun</p>
+                              <p>Merit: Individualism</p>
+                              <p>Direction: North</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Cell 6 */}
+                        <div className={`p-4 rounded-3xl flex flex-col items-center justify-between text-center relative text-slate-900 bg-white shadow-md border-2 border-rose-350 transition-all duration-300 ${isCellHighlighted(6) ? 'ring-4 ring-rose-500 border-rose-500 scale-[1.04] bg-rose-50/50 shadow-lg z-10' : ''}`}>
+                          <div className="absolute top-2 right-2 bg-rose-100 text-rose-800 rounded-full px-2.5 py-0.5 text-[10px] font-extrabold">6</div>
+                          <div className="my-3">
+                            {result.loshuGrid[6] > 0 ? (
+                              <span className="text-3xl font-black text-rose-600">{getGridVal(6)}</span>
+                            ) : (
+                              <span className="text-2xl font-bold text-slate-300 line-through">6</span>
+                            )}
+                          </div>
+                          <div className="space-y-2 text-[16px]">
+                            <p className="font-semibold text-slate-700 leading-tight">Responsibility, Love, Service, Family, Compassion, Support, Harmony</p>
+                            <div className="text-[16px] bg-rose-50/70 border border-rose-100 py-1.5 rounded space-y-0.5 font-bold text-rose-900 w-full">
+                              <p>Element: Metal</p>
+                              <p>Planet: Venus</p>
+                              <p>Merit: Service</p>
+                              <p>Direction: Northwest</p>
+                            </div>
+                          </div>
+                        </div>
+
+                      </div>
+
+                      <div className="mt-6 text-[16px] text-slate-900 space-y-2 leading-relaxed text-center">
+                        <p>
+                          <strong>Loshu Grid</strong> indicates which elements and planes are fully active. Repeating numbers boost the respective element, while absent numbers suggest fields for remedy focus.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Loshu Planes Analysis */}
+                    <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
+                      <h3 className="text-[22px] font-bold text-orange-900 border-b border-rose-100 pb-3 mb-4 flex items-center gap-2">
+                        <Compass className="w-5 h-5 text-orange-900" /> Loshu Grid Planes Analysis
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {result.loshuPlanes.map((plane, idx) => (
+                          <div
+                            key={idx}
+                            onMouseEnter={() => setHoveredPlane(plane.name)}
+                            onMouseLeave={() => setHoveredPlane(null)}
+                            className="p-4 rounded-2xl border border-rose-100/50 bg-rose-50/10 flex flex-col justify-between transition-all hover:bg-rose-50/40 hover:border-rose-300 hover:shadow-md cursor-pointer"
+                          >
+                            <div>
+                              <div className="flex justify-between items-center mb-1">
+                                <h4 className="font-bold text-slate-900 text-[18px]">{plane.name}</h4>
+                                <span className={`text-xs font-extrabold px-2.5 py-0.5 rounded-full uppercase tracking-wider ${plane.status === "Strong" ? "bg-green-100 text-green-800" :
+                                  plane.status === "Moderate" ? "bg-yellow-100 text-yellow-800" :
+                                    "bg-orange-100 text-orange-800"
+                                  }`}>
+                                  {plane.status}
+                                </span>
+                              </div>
+                              <p className="text-[18px] font-medium text-slate-900 mb-2">{plane.description}</p>
+                            </div>
+                            {plane.status === "Missing/Weak" && (
+                              <div className="mt-2 text-[18px] md:text-[18px] bg-orange-50 text-emerald-900 p-2.5 rounded-xl border border-orange-100 flex items-start gap-1">
+                                <AlertCircle className="w-3.5 h-3.5 mt-0.5 text-red-700 shrink-0" />
+                                <div>
+                                  <span className="font-bold">Missing Remedy:</span> {plane.remedy}
+                                </div>
+                              </div>
+                            )}
+                            {plane.status !== "Missing/Weak" && (
+                              <div className="mt-2 text-[18px] md:text-[18px] bg-green-50 text-green-950 p-2.5 rounded-xl border border-green-100 flex items-center gap-1">
+                                <CheckCircle className="w-3.5 h-3.5 text-green-700 shrink-0" />
+                                <span className="font-semibold">Plane elements are well balanced!</span>
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Progressive predictions & Temporal Cycles Forecast */}
+                    <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-6">
+                      <h3 className="text-[20px] font-bold text-orange-900 border-b border-rose-100 pb-3 flex items-center gap-2">
+                        <Calendar className="w-5 h-5 text-rose-600" /> Progressive Predictions & Cycle Forecasts
+                      </h3>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+                        {/* Personal Year Card */}
+                        <div className="bg-gradient-to-br from-rose-50 to-amber-50/30 p-5 rounded-2xl border border-rose-100 flex flex-col justify-between">
+                          <div>
+                            <span className="text-[18px] font-semibold uppercase tracking-wider text-slate-900 bg-rose-100/50 px-2.5 py-1 rounded-full">
+                              Current Year Vibration
+                            </span>
+                            <h4 className="text-base font-semibold text-slate-900 mt-2">
+                              Personal Year {result.personalYear}
+                            </h4>
+                            <p className="text-[16px] text-slate-900 mt-1 leading-relaxed">
+                              Overall vibration theme of the entire year:
+                            </p>
+                            <p className="text-[16px] font-semibold text-slate-900 mt-2 bg-white/70 p-2.5 rounded-xl border border-rose-100/30">
+                              {result.personalYearDetails?.traits || "Year of development and progress."}
+                            </p>
+                          </div>
+                          <div className="text-[16px] text-slate-900 mt-4 border-t border-rose-100/50 pt-2 font-medium">
+                            Ruling Planet: {result.personalYearDetails?.planet || "Sun"}
+                          </div>
+                        </div>
+
+                        {/* Daily Forecast Gauge */}
+                        {(() => {
+                          const today = new Date();
+                          const currentMonthNum = today.getMonth() + 1;
+                          const currentDayNum = today.getDate();
+                          const pMonth = reduceToSingleDigit(result.personalYear + currentMonthNum);
+                          const pDay = reduceToSingleDigit(pMonth + currentDayNum);
+                          const dayData = getDayForecast(pDay);
+                          return (
+                            <div className="bg-white border border-rose-100 p-5 rounded-2xl shadow-sm text-center flex flex-col justify-between md:col-span-2 relative overflow-hidden">
+                              <div className="absolute top-2 right-2 bg-emerald-100 text-emerald-800 rounded-full px-2 py-0.5 text-[16px] font-bold uppercase">
+                                Today's Energy
+                              </div>
+                              <div className="flex flex-col sm:flex-row items-center gap-4 my-2">
+                                {/* Circular progress ring representing the daily number */}
+                                <div className="relative w-20 h-20 shrink-0 flex items-center justify-center bg-rose-50 rounded-full border-4 border-rose-400 shadow-inner">
+                                  <span className="text-4xl font-black text-rose-600">{pDay}</span>
+                                </div>
+                                <div className="text-left">
+                                  <h5 className="font-bold text-orange-900 text-[18px]">{dayData.tagline}</h5>
+                                  <p className="text-[16px] text-slate-900 mt-1 leading-relaxed">
+                                    {dayData.advice}
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="text-[16px] text-slate-900 text-left border-t border-slate-100 pt-2 font-semibold">
+                                Current Date: {today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                              </div>
+                            </div>
+                          );
+                        })()}
+
+                      </div>
+
+                      {/* Personal Month Timeline */}
+                      <div className="border-t border-rose-100 pt-4">
+                        <h4 className="text-[18px] font-bold text-orange-900 mb-3">
+                          Monthly Forecast Timeline ({result.currentYear})
+                        </h4>
+
+                        {/* Months slider */}
+                        <div className="flex overflow-x-auto gap-2 pb-2 scrollbar-thin scrollbar-thumb-rose-200">
+                          {Array.from({ length: 12 }, (_, i) => {
+                            const mIndex = i + 1;
+                            const pMonth = reduceToSingleDigit(result.personalYear + mIndex);
+                            const mName = new Date(2026, i).toLocaleString('en-US', { month: 'short' });
+                            const isActive = selectedForecastMonth === mIndex;
+                            return (
+                              <button
+                                key={mIndex}
+                                onClick={() => setSelectedForecastMonth(mIndex)}
+                                className={`px-4 py-2.5 rounded-xl border text-center transition-all shrink-0 min-w-[70px] ${isActive
+                                  ? 'bg-rose-600 text-white border-rose-600 shadow-md'
+                                  : 'bg-rose-50/30 text-rose-950 border-rose-100/50 hover:bg-rose-50'
+                                  }`}
+                              >
+                                <span className="text-xs font-bold block leading-none">{mName}</span>
+                                <span className={`text-[10px] font-black block mt-1 ${isActive ? 'text-amber-200' : 'text-rose-600'}`}>
+                                  Vib: {pMonth}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Active Month Details Display */}
+                        {(() => {
+                          const mData = getMonthForecast(reduceToSingleDigit(result.personalYear + selectedForecastMonth));
+                          const monthFull = new Date(2026, selectedForecastMonth - 1).toLocaleString('en-US', { month: 'long' });
+                          return (
+                            <div className="bg-rose-50/20 border border-rose-100/70 rounded-2xl p-4 mt-3">
+                              <div className="flex justify-between items-center mb-2">
+                                <span className="text-[16px] font-bold text-orange-900 uppercase tracking-wider">
+                                  {monthFull} Vibration
+                                </span>
+                                <span className="text-[16px] font-bold bg-rose-100 text-slate-900 px-2 py-0.5 rounded-full">
+                                  Personal Month {reduceToSingleDigit(result.personalYear + selectedForecastMonth)}
+                                </span>
+                              </div>
+                              <h5 className="font-bold text-orange-900 text-[18px] mb-1">{mData.title}</h5>
+                              <p className="text-[16px] text-slate-900 mb-2 leading-relaxed">
+                                <strong>Primary Focus:</strong> {mData.focus}
+                              </p>
+                              <p className="text-[16px] text-slate-900 leading-relaxed bg-white/50 p-3 rounded-xl border border-rose-100/20 font-medium">
+                                <strong>Actionable Advice:</strong> {mData.advice}
+                              </p>
+                            </div>
+                          );
+                        })()}
+                      </div>
+                    </div>
+                    {/* Lo Shu Grid Life Domain Analytics */}
+                    <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-6">
+                      <h3 className="text-[20px] font-bold text-orange-900 border-b border-rose-100 pb-3 flex items-center gap-2">
+                        <Sparkles className="w-5 h-5 text-rose-600" /> Lo Shu Life Domain Analytics
+                      </h3>
+
+                      {result.domainAnalytics ? (
+                        <div className="space-y-6">
+
+                          {/* Marriage & Money Row */}
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                            {/* Marriage Card */}
+                            <div className="p-5 rounded-2xl border border-rose-100 bg-rose-50/5 flex flex-col justify-between space-y-4">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2.5">
+                                  <div className="p-2 bg-pink-100 text-pink-700 rounded-xl">
+                                    <Heart className="w-5 h-5" />
+                                  </div>
+                                  <h4 className="font-bold text-slate-900 text-base md:text-lg">Marriage & Relationship</h4>
+                                </div>
+                                <span className={`text-xs md:text-sm font-black px-3 py-1 rounded-full uppercase tracking-wider ${result.domainAnalytics.marriage.score >= 80 ? "bg-green-100 text-green-800" :
+                                  result.domainAnalytics.marriage.score >= 60 ? "bg-yellow-100 text-yellow-800" :
+                                    "bg-orange-100 text-orange-800"
+                                  }`}>
+                                  {result.domainAnalytics.marriage.score}%
+                                </span>
+                              </div>
+                              <div className="space-y-2">
+                                <p className="text-[18px] font-bold text-slate-900 uppercase tracking-wider">Status: {result.domainAnalytics.marriage.status}</p>
+                                <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.marriage.analysis}</p>
+                              </div>
+                              <div className="bg-pink-50/50 text-slate-900 p-3 rounded-xl border border-pink-100 text-[18px]">
+                                <span className="font-bold text-pink-900 block mb-0.5">🌸 Relationship Remedies:</span>
+                                {result.domainAnalytics.marriage.remedies}
+                              </div>
+                            </div>
+
+                            {/* Money Card */}
+                            <div className="p-5 rounded-2xl border border-rose-100 bg-rose-50/5 flex flex-col justify-between space-y-4">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2.5">
+                                  <div className="p-2 bg-emerald-100 text-emerald-700 rounded-xl">
+                                    <Coins className="w-5 h-5" />
+                                  </div>
+                                  <h4 className="font-bold text-slate-900 text-base md:text-lg">Wealth & Assets</h4>
+                                </div>
+                                <span className={`text-xs md:text-sm font-black px-3 py-1 rounded-full uppercase tracking-wider ${result.domainAnalytics.money.score >= 80 ? "bg-green-100 text-green-800" :
+                                  result.domainAnalytics.money.score >= 50 ? "bg-yellow-100 text-yellow-800" :
+                                    "bg-orange-100 text-orange-800"
+                                  }`}>
+                                  {result.domainAnalytics.money.score}%
+                                </span>
+                              </div>
+                              <div className="space-y-2">
+                                <p className="text-[18px] font-bold text-slate-900 uppercase tracking-wider">Status: {result.domainAnalytics.money.status}</p>
+                                <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.money.analysis}</p>
+                              </div>
+                              <div className="bg-emerald-50/50 text-slate-900 p-3 rounded-xl border border-emerald-100 text-[18px]">
+                                <span className="font-bold text-emerald-900 block mb-0.5">💰 Wealth Remedies:</span>
+                                {result.domainAnalytics.money.remedies}
+                              </div>
+                            </div>
+
+                          </div>
+
+                          {/* Child Birth, Career & Gov Job Row */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                            {/* Child Birth Card */}
+                            <div className="p-4 rounded-2xl border border-rose-100 bg-rose-50/5 flex flex-col justify-between space-y-3">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                  <div className="p-1.5 bg-blue-100 text-blue-700 rounded-lg">
+                                    <Baby className="w-4 h-4" />
+                                  </div>
+                                  <h4 className="font-bold text-slate-900 text-sm md:text-base">Child Birth</h4>
+                                </div>
+                                <span className="text-xs font-black text-blue-800 bg-blue-50 px-2 py-0.5 rounded-full">{result.domainAnalytics.child_birth.score}%</span>
+                              </div>
+                              <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.child_birth.analysis}</p>
+                              <div className="bg-blue-50/50 text-slate-900 p-3 rounded-xl border border-blue-100 text-[18px]">
+                                <span className="font-bold text-blue-900 block mb-0.5">🍼 Progeny Remedy:</span>
+                                {result.domainAnalytics.child_birth.remedies}
+                              </div>
+                            </div>
+
+                            {/* Career Card */}
+                            <div className="p-4 rounded-2xl border border-rose-100 bg-rose-50/5 flex flex-col justify-between space-y-3">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                  <div className="p-1.5 bg-amber-100 text-amber-700 rounded-lg">
+                                    <Briefcase className="w-4 h-4" />
+                                  </div>
+                                  <h4 className="font-bold text-slate-900 text-[18px] md:text-base">Career & Success</h4>
+                                </div>
+                                <span className="text-xs font-black text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full">{result.domainAnalytics.career.score}%</span>
+                              </div>
+                              <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.career.analysis}</p>
+                              <div className="bg-amber-50/50 text-slate-900 p-3 rounded-xl border border-amber-100 text-[18px]">
+                                <span className="font-bold text-amber-900 block mb-0.5">💼 Career Remedy:</span>
+                                {result.domainAnalytics.career.remedies}
+                              </div>
+                            </div>
+
+                            {/* Gov Job Card */}
+                            <div className="p-4 rounded-2xl border border-rose-100 bg-rose-50/5 flex flex-col justify-between space-y-3">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                  <div className="p-1.5 bg-purple-100 text-purple-700 rounded-lg">
+                                    <Landmark className="w-4 h-4" />
+                                  </div>
+                                  <h4 className="font-bold text-slate-900 text-[18px] md:text-base">Government Job</h4>
+                                </div>
+                                <span className="text-xs font-black text-purple-800 bg-purple-50 px-2 py-0.5 rounded-full">{result.domainAnalytics.government_job.score}%</span>
+                              </div>
+                              <p className="text-[18px] text-slate-900 leading-relaxed">{result.domainAnalytics.government_job.analysis}</p>
+                              <div className="bg-purple-50/50 text-slate-900 p-3 rounded-xl border border-purple-100 text-[18px]">
+                                <span className="font-bold text-purple-900 block mb-0.5">🏛️ Exam Remedy:</span>
+                                {result.domainAnalytics.government_job.remedies}
+                              </div>
+                            </div>
+
+                          </div>
+
+                        </div>
+                      ) : (
+                        <p className="text-xs text-slate-400">Loading domain analytics details...</p>
+                      )}
+                    </div>
+
+                    {/* Remedies & Lucky Factors */}
+                    <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm">
+                      <h3 className="text-[20px] font-bold text-orange-900 border-b border-rose-100 pb-3 mb-4 flex items-center gap-2">
+                        <Flame className="w-5 h-5 text-rose-600" /> Vedic Remedies & Auspicious Energies
+                      </h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+                        <div className="space-y-3">
+                          <div>
+                            <span className="font-bold text-[18px] text-rose-900">Lucky Colors: </span>
+                            <span className="text-[18px] font-bold  text-slate-900">{result.mulankDetails.colors.join(", ")}</span>
+                          </div>
+                          <div>
+                            <span className="font-bold text-[18px] text-rose-900">Lucky Directions: </span>
+                            <span className="text-[18px] font-bold text-slate-900">{result.mulankDetails.lucky_directions.join(", ")}</span>
+                          </div>
+                          <div>
+                            <span className="font-bold text-[18px] text-rose-900">Auspicious Gemstone: </span>
+                            <span className="text-[18px] font-bold text-slate-900">{result.mulankDetails.gemstone}</span>
+                          </div>
+                        </div>
+                        <div className="space-y-3">
+                          <div>
+                            <span className="font-bold text-[18px] text-rose-900">Friendly Numbers: </span>
+                            <span className="text-[18px] font-bold text-slate-900">{result.mulankDetails.friendly_numbers.join(", ")}</span>
+                          </div>
+                          <div>
+                            <span className="font-bold text-[18px] text-rose-900">Numbers to Avoid: </span>
+                            <span className="text-[18px] font-bold text-slate-900">{result.mulankDetails.enemy_numbers.join(", ")}</span>
+                          </div>
+                          <div className="bg-rose-50/50 p-3 rounded-xl border border-rose-100">
+                            <span className="block font-bold text-rose-950 text-[18px] mb-1 uppercase tracking-wider">Auspicious Beej Mantra:</span>
+                            <span className="font-semibold text-rose-800 text-[18px] italic">"{result.mulankDetails.mantra}"</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* Right Column: Lucky Matrix */}
+                  <div className="space-y-6">
+
+                    {/* Lucky Match Matrix */}
+                    <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-4">
+                      <h3 className="text-lg font-black text-rose-955 text-center w-full">Lucky Match Matrix</h3>
+                      <p className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider text-center">Best Calendar Dates of the Month</p>
+                      <div className="space-y-3.5 text-xs">
+                        <div className="p-3 bg-green-50/60 border border-green-100 rounded-2xl">
+                          <span className="block font-extrabold text-green-800 mb-1">🌟 Super Lucky Dates</span>
+                          <span className="text-slate-700 font-bold">{result.luckyDates.super_lucky.join(", ")}</span>
+                        </div>
+                        <div className="p-3 bg-yellow-50/60 border border-yellow-100 rounded-2xl">
+                          <span className="block font-extrabold text-yellow-800 mb-1">⚖️ Neutral Dates</span>
+                          <span className="text-slate-700 font-bold">{result.luckyDates.neutral.join(", ")}</span>
+                        </div>
+                        <div className="p-3 bg-orange-50/60 border border-orange-100 rounded-2xl">
+                          <span className="block font-extrabold text-orange-800 mb-1">⚠️ Dates to Avoid</span>
+                          <span className="text-slate-700 font-bold">{result.luckyDates.avoid.join(", ")}</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Action Button to test another */}
+                    <button
+                      onClick={resetForm}
+                      className="w-full flex items-center justify-center space-x-2 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl transition-all shadow-md shadow-rose-600/20"
+                    >
+                      <RefreshCw className="w-5 h-5" />
+                      <span>Analyze Another Profile</span>
+                    </button>
+
                   </div>
 
                 </div>
 
-                {/* Right Column: Lucky Matrix */}
-                <div className="space-y-6">
-
-                  {/* Lucky Match Matrix */}
-                  <div className="bg-white border border-rose-100 rounded-3xl p-6 shadow-sm space-y-4">
-                    <h3 className="text-lg font-black text-rose-955 text-center w-full">Lucky Match Matrix</h3>
-                    <p className="text-[11px] text-slate-400 font-semibold uppercase tracking-wider text-center">Best Calendar Dates of the Month</p>
-                    <div className="space-y-3.5 text-xs">
-                      <div className="p-3 bg-green-50/60 border border-green-100 rounded-2xl">
-                        <span className="block font-extrabold text-green-800 mb-1">🌟 Super Lucky Dates</span>
-                        <span className="text-slate-700 font-bold">{result.luckyDates.super_lucky.join(", ")}</span>
-                      </div>
-                      <div className="p-3 bg-yellow-50/60 border border-yellow-100 rounded-2xl">
-                        <span className="block font-extrabold text-yellow-800 mb-1">⚖️ Neutral Dates</span>
-                        <span className="text-slate-700 font-bold">{result.luckyDates.neutral.join(", ")}</span>
-                      </div>
-                      <div className="p-3 bg-orange-50/60 border border-orange-100 rounded-2xl">
-                        <span className="block font-extrabold text-orange-800 mb-1">⚠️ Dates to Avoid</span>
-                        <span className="text-slate-700 font-bold">{result.luckyDates.avoid.join(", ")}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Action Button to test another */}
-                  <button
-                    onClick={resetForm}
-                    className="w-full flex items-center justify-center space-x-2 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl transition-all shadow-md shadow-rose-600/20"
-                  >
-                    <RefreshCw className="w-5 h-5" />
-                    <span>Analyze Another Profile</span>
-                  </button>
-
-                </div>
-
+                {activeTab === "correction" && renderNameCorrectionPanel()}
+                {activeTab === "compatibility" && renderMarriageCompatibilityPanel()}
+                {activeTab === "vastu" && renderVastuOverlayPanel()}
+                {activeTab === "analytics" && renderAdvancedAnalyticsPanel()}
+                {activeTab === "cycles" && renderLifespanCyclesPanel()}
               </div>
             )}
-            {activeTab === "correction" && renderNameCorrectionPanel()}
-            {activeTab === "compatibility" && renderMarriageCompatibilityPanel()}
-            {activeTab === "vastu" && renderVastuOverlayPanel()}
-            {activeTab === "analytics" && renderAdvancedAnalyticsPanel()}
-            {activeTab === "cycles" && renderLifespanCyclesPanel()}
-          </div>
-        )}
 
+          </div>
+
+        )};
       </div>
     </div>
-  );
-}
+  )
+};

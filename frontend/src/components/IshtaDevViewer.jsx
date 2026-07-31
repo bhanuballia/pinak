@@ -418,27 +418,27 @@ export default function IshtaDevViewer({ data }) {
         {displayNum && PILGRIMAGE_GUIDE[displayNum] && (
           <div className="mt-12 p-8 bg-teal-900/20 rounded-3xl border border-teal-500/20 text-left shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
-               <span className="text-8xl font-serif text-teal-500 uppercase -rotate-12">⛰️</span>
+              <span className="text-8xl font-serif text-teal-500 uppercase -rotate-12">⛰️</span>
             </div>
-            
+
             <h3 className="text-2xl font-serif font-bold text-teal-200 mb-6 flex items-center gap-3">
               <span>🚩</span> प्राचीन तीर्थ यात्रा (Pilgrimage Guide)
             </h3>
-            
+
             <div className="space-y-6">
               <div className="bg-white/5 p-6 rounded-2xl border border-white/5">
                 <span className="text-xs text-teal-400 uppercase tracking-widest block mb-2 font-bold italic">
-                  {numerology && numerology.psychic_number 
+                  {numerology && numerology.psychic_number
                     ? `जन्म तारीख (${numerology.psychic_number}) के अनुसार अनुशंसित तीर्थ:`
                     : `रूलिंग प्लानेट (${ruling_planet}) के अनुसार अनुशंसित तीर्थ:`
                   }
                 </span>
                 <p className="text-2xl font-serif text-teal-500 border-b border-teal-500/20 pb-2 mb-3 leading-tight">{PILGRIMAGE_GUIDE[displayNum].temple}</p>
-                
+
                 <div className="flex gap-4 items-center mb-4">
-                   <div className="bg-teal-500/20 px-3 py-1 rounded-full text-xs text-teal-300 border border-teal-500/30">
-                      रूलिंग प्लानेट: {PILGRIMAGE_GUIDE[displayNum].planet}
-                   </div>
+                  <div className="bg-teal-500/20 px-3 py-1 rounded-full text-xs text-teal-300 border border-teal-500/30">
+                    रूलिंग प्लानेट: {PILGRIMAGE_GUIDE[displayNum].planet}
+                  </div>
                 </div>
 
                 <div className="space-y-3">

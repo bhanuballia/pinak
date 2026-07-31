@@ -1580,7 +1580,7 @@ const PlanetTable = ({ data, onPlanetClick }) => (
   </div>
 );
 
-const DrishtiTable = ({ houses, reportData }) => {
+const DrishtiTable = ({ houses, reportData, hideGraha = false, hideJaimini = false, hideSphuta = false }) => {
   if (!houses) return null;
 
   const positions = [];
@@ -1815,297 +1815,303 @@ const DrishtiTable = ({ houses, reportData }) => {
   return (
     <div className="flex flex-col gap-12">
       {/* Planetary Graha Drishti Table */}
-      <div className="space-y-6 mt-12 border-t border-indigo-200 pt-12">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-indigo-900 rounded-lg flex items-center justify-center text-2xl shadow-lg border-2 border-white/20">👁️</div>
-          <div>
-            <h4 className="text-xl font-black text-slate-800 uppercase tracking-tighter leading-none">Planetary Drishti (Aspects)</h4>
-            <div className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mt-1">Sight of Influence & Karma</div>
+      {!hideGraha && (
+        <div className="space-y-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-indigo-900 rounded-lg flex items-center justify-center text-2xl shadow-lg border-2 border-white/20">👁️</div>
+            <div>
+              <h4 className="text-xl font-black text-slate-800 uppercase tracking-tighter leading-none">Planetary Drishti (Aspects)</h4>
+              <div className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mt-1">Sight of Influence & Karma</div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-indigo-100 shadow-xl overflow-hidden font-sans">
+            <div className="overflow-x-auto overflow-y-auto max-h-[450px]">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-indigo-900 text-white text-xs uppercase tracking-wider font-bold sticky top-0 z-10 shadow-[0_1px_0_0_rgba(0,0,0,0.1)]">
+                    <th className="p-4 bg-indigo-900">
+                      <div className="text-[14px] text-white font-medium lowercase italic">ग्रह</div>
+                      <div>Planet</div>
+                    </th>
+                    <th className="p-4 bg-indigo-900">
+                      <div className="text-[14px] text-white font-medium lowercase italic">स्थित भाव</div>
+                      <div>Occupied House</div>
+                    </th>
+                    <th className="p-4 bg-indigo-900">
+                      <div className="text-[14px] text-white font-medium lowercase italic">दृष्टि</div>
+                      <div>Aspect</div>
+                    </th>
+                    <th className="p-4 bg-indigo-900">
+                      <div className="text-[14px] text-white font-medium lowercase italic">दृष्ट भाव</div>
+                      <div>Aspect House</div>
+                    </th>
+                    <th className="p-4 bg-indigo-900">
+                      <div className="text-[14px] text-white font-medium lowercase italic">स्थित ग्रह</div>
+                      <div>Occupying Planets</div>
+                    </th>
+                    <th className="p-4 bg-indigo-900">
+                      <div className="text-[14px] text-white font-medium lowercase italic">दृष्टि गुणवत्ता</div>
+                      <div>Drishti Quality</div>
+                    </th>
+                    <th className="p-4 bg-indigo-900">
+                      <div className="text-[14px] text-white font-medium lowercase italic">ज्योतिषीय व्याख्या</div>
+                      <div>Astrological Interpretation</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-[14px] divide-y divide-indigo-50">
+                  {tableRows.map((row, idx) => {
+                    const color = PLANET_COLORS[row.planet] || "#000";
+                    const targetHouseData = houses[row.targetHouse] || {};
+                    const residingPlanets = (targetHouseData.planets || [])
+                      .map(p => typeof p === 'string' ? p : (p.planet || p.name))
+                      .filter(p => p !== "Ascendant" && p !== "Lagna" && p !== "L");
+
+                    // --- Dynamic Quality and Interpretation Computation ---
+                    const getDynamicDetails = () => {
+                      let baseNature = row.nature;
+                      let desc = row.description;
+
+                      if (residingPlanets.length === 0) {
+                        return {
+                          label: baseNature === "Benefic" ? "🟢 Positive (Benefic)" : "🔴 Challenging (Malefic)",
+                          badgeClass: baseNature === "Benefic" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-rose-50 text-rose-700 border-rose-200",
+                          text: desc
+                        };
+                      }
+
+                      const relations = residingPlanets.map(planet => {
+                        const rel = getPlanetRelationshipBadge(row.planet, planet);
+                        return { planet, rel };
+                      });
+
+                      const hasFriends = relations.some(r => r.rel.label.includes("Friendly"));
+                      const hasEnemies = relations.some(r => r.rel.label.includes("Inimical"));
+
+                      let label = "";
+                      let badgeClass = "";
+
+                      if (baseNature === "Benefic") {
+                        if (hasEnemies && hasFriends) {
+                          label = "🟡 Mixed Benefic";
+                          badgeClass = "bg-amber-50 text-amber-700 border-amber-200";
+                        } else if (hasFriends) {
+                          label = "🟢 Highly Positive (Benefic & Friendly)";
+                          badgeClass = "bg-emerald-100 text-emerald-900 border-emerald-300 font-extrabold";
+                        } else if (hasEnemies) {
+                          label = "🟡 Weakened Benefic (Inimical Target)";
+                          badgeClass = "bg-amber-100 text-amber-800 border-amber-300";
+                        } else {
+                          label = "🟢 Positive (Benefic & Neutral)";
+                          badgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
+                        }
+                      } else {
+                        // Malefic
+                        if (hasFriends) {
+                          label = "🟡 Softened Malefic (Friendly Target)";
+                          badgeClass = "bg-amber-50 text-amber-700 border-amber-200";
+                        } else if (hasEnemies) {
+                          label = "🔴 Highly Challenging (Malefic & Inimical)";
+                          badgeClass = "bg-rose-100 text-rose-900 border-rose-300 font-extrabold";
+                        } else {
+                          label = "🔴 Challenging (Malefic & Neutral)";
+                          badgeClass = "bg-rose-50 text-rose-700 border-rose-200";
+                        }
+                      }
+
+                      let relDescriptions = [];
+                      relations.forEach(r => {
+                        const isFriend = r.rel.label.includes("Friendly");
+                        const isEnemy = r.rel.label.includes("Inimical");
+                        const relStatus = isFriend ? "Mitra (Friendly)" : isEnemy ? "Shatru (Inimical)" : "Sama (Neutral)";
+
+                        relDescriptions.push(`aspecting the residing planet ${r.planet} (${relStatus})`);
+                      });
+
+                      const relationshipSummary = `${row.planet}'s energy is modified because it is ${relDescriptions.join(" and ")}.`;
+                      const fullDesc = `${desc} ${relationshipSummary}`;
+
+                      return { label, badgeClass, text: fullDesc };
+                    };
+
+                    const dynamicInfo = getDynamicDetails();
+
+                    return (
+                      <tr key={`${row.planet}-${row.relativeAspect}-${idx}`} className="hover:bg-indigo-50/30 transition-colors">
+                        <td className="p-4 font-bold flex items-center gap-2" style={{ color: color }}>
+                          <span>✨</span> {row.planet} {row.is_retrograde ? '*' : ''}
+                        </td>
+                        <td className="p-4 font-semibold text-slate-900">
+                          House {row.occupiedHouse}
+                        </td>
+                        <td className="p-4 text-[16px] font-mono font-bold text-slate-900">
+                          {row.relativeAspect}th Aspect
+                        </td>
+                        <td className="p-4 font-bold text-indigo-900">
+                          House {row.targetHouse}
+                        </td>
+                        <td className="p-4">
+                          {residingPlanets.length > 0 ? (
+                            <div className="flex flex-col gap-1.5">
+                              {residingPlanets.map(planet => {
+                                const rel = getPlanetRelationshipBadge(row.planet, planet);
+                                const planetColor = PLANET_COLORS[planet] || "#000";
+                                return (
+                                  <div key={planet} className="flex items-center justify-between gap-2 text-xs border border-indigo-50 bg-indigo-50/10 p-1 rounded">
+                                    <span className="font-bold text-[14px]" style={{ color: planetColor }}>{planet}</span>
+                                    <span className={`px-1 py-0.5 border text-[7px] font-black uppercase rounded ${rel.bg}`}>
+                                      {rel.label}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          ) : (
+                            <span className="text-xs italic text-slate-900">Empty House</span>
+                          )}
+                        </td>
+                        <td className="p-4">
+                          <span className={`px-3 py-1 border text-[11px] font-black uppercase tracking-wider rounded-full whitespace-nowrap inline-block ${dynamicInfo.badgeClass}`}>
+                            {dynamicInfo.label}
+                          </span>
+                        </td>
+                        <td className="p-4 text-[14px] text-slate-900 leading-relaxed max-w-sm font-medium">
+                          {dynamicInfo.text}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+            <div className="p-4 bg-indigo-50/20 text-xs text-slate-500 border-t border-indigo-50">
+              * = Vakri (Retrograde). Aspects are counted in clockwise order starting from the occupied house as 1st.
+            </div>
           </div>
         </div>
-
-        <div className="bg-white rounded-2xl border border-indigo-100 shadow-xl overflow-hidden font-sans">
-          <div className="overflow-x-auto overflow-y-auto max-h-[450px]">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-indigo-900 text-white text-xs uppercase tracking-wider font-bold sticky top-0 z-10 shadow-[0_1px_0_0_rgba(0,0,0,0.1)]">
-                  <th className="p-4 bg-indigo-900">
-                    <div className="text-[14px] text-white font-medium lowercase italic">ग्रह</div>
-                    <div>Planet</div>
-                  </th>
-                  <th className="p-4 bg-indigo-900">
-                    <div className="text-[14px] text-white font-medium lowercase italic">स्थित भाव</div>
-                    <div>Occupied House</div>
-                  </th>
-                  <th className="p-4 bg-indigo-900">
-                    <div className="text-[14px] text-white font-medium lowercase italic">दृष्टि</div>
-                    <div>Aspect</div>
-                  </th>
-                  <th className="p-4 bg-indigo-900">
-                    <div className="text-[14px] text-white font-medium lowercase italic">दृष्ट भाव</div>
-                    <div>Aspect House</div>
-                  </th>
-                  <th className="p-4 bg-indigo-900">
-                    <div className="text-[14px] text-white font-medium lowercase italic">स्थित ग्रह</div>
-                    <div>Occupying Planets</div>
-                  </th>
-                  <th className="p-4 bg-indigo-900">
-                    <div className="text-[14px] text-white font-medium lowercase italic">दृष्टि गुणवत्ता</div>
-                    <div>Drishti Quality</div>
-                  </th>
-                  <th className="p-4 bg-indigo-900">
-                    <div className="text-[14px] text-white font-medium lowercase italic">ज्योतिषीय व्याख्या</div>
-                    <div>Astrological Interpretation</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="text-[14px] divide-y divide-indigo-50">
-                {tableRows.map((row, idx) => {
-                  const color = PLANET_COLORS[row.planet] || "#000";
-                  const targetHouseData = houses[row.targetHouse] || {};
-                  const residingPlanets = (targetHouseData.planets || [])
-                    .map(p => typeof p === 'string' ? p : (p.planet || p.name))
-                    .filter(p => p !== "Ascendant" && p !== "Lagna" && p !== "L");
-
-                  // --- Dynamic Quality and Interpretation Computation ---
-                  const getDynamicDetails = () => {
-                    let baseNature = row.nature;
-                    let desc = row.description;
-
-                    if (residingPlanets.length === 0) {
-                      return {
-                        label: baseNature === "Benefic" ? "🟢 Positive (Benefic)" : "🔴 Challenging (Malefic)",
-                        badgeClass: baseNature === "Benefic" ? "bg-emerald-50 text-emerald-700 border-emerald-200" : "bg-rose-50 text-rose-700 border-rose-200",
-                        text: desc
-                      };
-                    }
-
-                    const relations = residingPlanets.map(planet => {
-                      const rel = getPlanetRelationshipBadge(row.planet, planet);
-                      return { planet, rel };
-                    });
-
-                    const hasFriends = relations.some(r => r.rel.label.includes("Friendly"));
-                    const hasEnemies = relations.some(r => r.rel.label.includes("Inimical"));
-
-                    let label = "";
-                    let badgeClass = "";
-
-                    if (baseNature === "Benefic") {
-                      if (hasEnemies && hasFriends) {
-                        label = "🟡 Mixed Benefic";
-                        badgeClass = "bg-amber-50 text-amber-700 border-amber-200";
-                      } else if (hasFriends) {
-                        label = "🟢 Highly Positive (Benefic & Friendly)";
-                        badgeClass = "bg-emerald-100 text-emerald-900 border-emerald-300 font-extrabold";
-                      } else if (hasEnemies) {
-                        label = "🟡 Weakened Benefic (Inimical Target)";
-                        badgeClass = "bg-amber-100 text-amber-800 border-amber-300";
-                      } else {
-                        label = "🟢 Positive (Benefic & Neutral)";
-                        badgeClass = "bg-emerald-50 text-emerald-700 border-emerald-200";
-                      }
-                    } else {
-                      // Malefic
-                      if (hasFriends) {
-                        label = "🟡 Softened Malefic (Friendly Target)";
-                        badgeClass = "bg-amber-50 text-amber-700 border-amber-200";
-                      } else if (hasEnemies) {
-                        label = "🔴 Highly Challenging (Malefic & Inimical)";
-                        badgeClass = "bg-rose-100 text-rose-900 border-rose-300 font-extrabold";
-                      } else {
-                        label = "🔴 Challenging (Malefic & Neutral)";
-                        badgeClass = "bg-rose-50 text-rose-700 border-rose-200";
-                      }
-                    }
-
-                    let relDescriptions = [];
-                    relations.forEach(r => {
-                      const isFriend = r.rel.label.includes("Friendly");
-                      const isEnemy = r.rel.label.includes("Inimical");
-                      const relStatus = isFriend ? "Mitra (Friendly)" : isEnemy ? "Shatru (Inimical)" : "Sama (Neutral)";
-
-                      relDescriptions.push(`aspecting the residing planet ${r.planet} (${relStatus})`);
-                    });
-
-                    const relationshipSummary = `${row.planet}'s energy is modified because it is ${relDescriptions.join(" and ")}.`;
-                    const fullDesc = `${desc} ${relationshipSummary}`;
-
-                    return { label, badgeClass, text: fullDesc };
-                  };
-
-                  const dynamicInfo = getDynamicDetails();
-
-                  return (
-                    <tr key={`${row.planet}-${row.relativeAspect}-${idx}`} className="hover:bg-indigo-50/30 transition-colors">
-                      <td className="p-4 font-bold flex items-center gap-2" style={{ color: color }}>
-                        <span>✨</span> {row.planet} {row.is_retrograde ? '*' : ''}
-                      </td>
-                      <td className="p-4 font-semibold text-slate-900">
-                        House {row.occupiedHouse}
-                      </td>
-                      <td className="p-4 text-[16px] font-mono font-bold text-slate-900">
-                        {row.relativeAspect}th Aspect
-                      </td>
-                      <td className="p-4 font-bold text-indigo-900">
-                        House {row.targetHouse}
-                      </td>
-                      <td className="p-4">
-                        {residingPlanets.length > 0 ? (
-                          <div className="flex flex-col gap-1.5">
-                            {residingPlanets.map(planet => {
-                              const rel = getPlanetRelationshipBadge(row.planet, planet);
-                              const planetColor = PLANET_COLORS[planet] || "#000";
-                              return (
-                                <div key={planet} className="flex items-center justify-between gap-2 text-xs border border-indigo-50 bg-indigo-50/10 p-1 rounded">
-                                  <span className="font-bold text-[14px]" style={{ color: planetColor }}>{planet}</span>
-                                  <span className={`px-1 py-0.5 border text-[7px] font-black uppercase rounded ${rel.bg}`}>
-                                    {rel.label}
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        ) : (
-                          <span className="text-xs italic text-slate-900">Empty House</span>
-                        )}
-                      </td>
-                      <td className="p-4">
-                        <span className={`px-3 py-1 border text-[11px] font-black uppercase tracking-wider rounded-full whitespace-nowrap inline-block ${dynamicInfo.badgeClass}`}>
-                          {dynamicInfo.label}
-                        </span>
-                      </td>
-                      <td className="p-4 text-[14px] text-slate-900 leading-relaxed max-w-sm font-medium">
-                        {dynamicInfo.text}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-          <div className="p-4 bg-indigo-50/20 text-xs text-slate-500 border-t border-indigo-50">
-            * = Vakri (Retrograde). Aspects are counted in clockwise order starting from the occupied house as 1st.
-          </div>
-        </div>
-      </div>
+      )}
 
       {/* Jaimini Rasi Drishti Table */}
-      <div className="space-y-6 mt-12 border-t border-indigo-200 pt-12">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 bg-indigo-900 rounded-lg flex items-center justify-center text-2xl shadow-lg border-2 border-white/20">📐</div>
-          <div>
-            <h4 className="text-xl font-black text-slate-800 uppercase tracking-tighter leading-none">Jaimini Rasi Drishti (Sign Aspects)</h4>
-            <div className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mt-1">Constant Sign-to-Sign Gaze of Jaimini</div>
+      {!hideJaimini && (
+        <div className="space-y-6">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-indigo-900 rounded-lg flex items-center justify-center text-2xl shadow-lg border-2 border-white/20">📐</div>
+            <div>
+              <h4 className="text-xl font-black text-slate-800 uppercase tracking-tighter leading-none">Jaimini Rasi Drishti (Sign Aspects)</h4>
+              <div className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mt-1">Constant Sign-to-Sign Gaze of Jaimini</div>
+            </div>
           </div>
-        </div>
 
-        <div className="bg-white rounded-2xl border border-indigo-100 shadow-xl overflow-hidden font-sans">
-          <div className="overflow-x-auto overflow-y-auto max-h-[450px]">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-indigo-900 text-white text-xs uppercase tracking-wider font-bold sticky top-0 z-10 shadow-[0_1px_0_0_rgba(0,0,0,0.1)]">
-                  <th className="p-4 bg-indigo-900">
-                    <div className="text-[14px] text-white font-medium lowercase italic">स्रोत भाव</div>
-                    <div>Source House</div>
-                  </th>
-                  <th className="p-4 bg-indigo-900">
-                    <div className="text-[14px] text-white font-medium lowercase italic">राशि</div>
-                    <div>Zodiac Sign</div>
-                  </th>
-                  <th className="p-4 bg-indigo-900">
-                    <div className="text-[14px] text-white font-medium lowercase italic">राशि प्रकार</div>
-                    <div>Sign Type</div>
-                  </th>
-                  <th className="p-4 bg-indigo-900">
-                    <div className="text-[14px] text-white font-medium lowercase italic">स्थित ग्रह</div>
-                    <div>Occupying Planets</div>
-                  </th>
-                  <th className="p-4 bg-indigo-900">
-                    <div className="text-[14px] text-white font-medium lowercase italic">दृष्ट राशियां और भाव</div>
-                    <div>Aspected Signs & Houses</div>
-                  </th>
-                  <th className="p-4 bg-indigo-900">
-                    <div className="text-[14px] text-white font-medium lowercase italic">दृष्टि से प्रभावित ग्रह</div>
-                    <div>Planets Influenced by Aspect</div>
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="text-[16px] divide-y divide-indigo-50">
-                {rasiRows.map((row) => {
-                  let badgeColor = "bg-slate-100 text-slate-800 border-slate-200";
-                  if (row.signType === "Movable") badgeColor = "bg-sky-50 text-sky-700 border-sky-200";
-                  else if (row.signType === "Fixed") badgeColor = "bg-amber-50 text-amber-700 border-amber-200";
-                  else if (row.signType === "Dual") badgeColor = "bg-purple-50 text-purple-700 border-purple-200";
+          <div className="bg-white rounded-2xl border border-indigo-100 shadow-xl overflow-hidden font-sans">
+            <div className="overflow-x-auto overflow-y-auto max-h-[450px]">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-indigo-900 text-white text-xs uppercase tracking-wider font-bold sticky top-0 z-10 shadow-[0_1px_0_0_rgba(0,0,0,0.1)]">
+                    <th className="p-4 bg-indigo-900">
+                      <div className="text-[14px] text-white font-medium lowercase italic">स्रोत भाव</div>
+                      <div>Source House</div>
+                    </th>
+                    <th className="p-4 bg-indigo-900">
+                      <div className="text-[14px] text-white font-medium lowercase italic">राशि</div>
+                      <div>Zodiac Sign</div>
+                    </th>
+                    <th className="p-4 bg-indigo-900">
+                      <div className="text-[14px] text-white font-medium lowercase italic">राशि प्रकार</div>
+                      <div>Sign Type</div>
+                    </th>
+                    <th className="p-4 bg-indigo-900">
+                      <div className="text-[14px] text-white font-medium lowercase italic">स्थित ग्रह</div>
+                      <div>Occupying Planets</div>
+                    </th>
+                    <th className="p-4 bg-indigo-900">
+                      <div className="text-[14px] text-white font-medium lowercase italic">दृष्ट राशियां और भाव</div>
+                      <div>Aspected Signs & Houses</div>
+                    </th>
+                    <th className="p-4 bg-indigo-900">
+                      <div className="text-[14px] text-white font-medium lowercase italic">दृष्टि से प्रभावित ग्रह</div>
+                      <div>Planets Influenced by Aspect</div>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="text-[16px] divide-y divide-indigo-50">
+                  {rasiRows.map((row) => {
+                    let badgeColor = "bg-slate-100 text-slate-800 border-slate-200";
+                    if (row.signType === "Movable") badgeColor = "bg-sky-50 text-sky-700 border-sky-200";
+                    else if (row.signType === "Fixed") badgeColor = "bg-amber-50 text-amber-700 border-amber-200";
+                    else if (row.signType === "Dual") badgeColor = "bg-purple-50 text-purple-700 border-purple-200";
 
-                  const aspectedText = row.aspects.map(a => `${a.signName} (House ${a.houseNum})`).join(", ");
+                    const aspectedText = row.aspects.map(a => `${a.signName} (House ${a.houseNum})`).join(", ");
 
-                  const allAspectedPlanets = [];
-                  row.aspects.forEach(a => {
-                    a.planets.forEach(p => {
-                      allAspectedPlanets.push({ planet: p, house: a.houseNum, sign: a.signName });
+                    const allAspectedPlanets = [];
+                    row.aspects.forEach(a => {
+                      a.planets.forEach(p => {
+                        allAspectedPlanets.push({ planet: p, house: a.houseNum, sign: a.signName });
+                      });
                     });
-                  });
 
-                  return (
-                    <tr key={row.houseNum} className="hover:bg-indigo-50/30 transition-colors">
-                      <td className="p-4 font-bold text-slate-800 text-[16px]">
-                        House {row.houseNum}
-                      </td>
-                      <td className="p-4 font-bold text-indigo-950 text-[18px]">
-                        {row.signName}
-                      </td>
-                      <td className="p-4">
-                        <span className={`px-2.5 py-1 border text-[13px] font-black uppercase tracking-wider rounded-full ${badgeColor}`}>
-                          {row.signType}
-                        </span>
-                      </td>
-                      <td className="p-4">
-                        {row.sourcePlanets.length > 0 ? (
-                          <div className="flex flex-wrap gap-1.5">
-                            {row.sourcePlanets.map(p => (
-                              <span key={p} className="px-2.5 py-1 bg-indigo-50 border border-indigo-100 rounded text-[14px] font-bold" style={{ color: PLANET_COLORS[p] || "#000" }}>
-                                {p}
-                              </span>
-                            ))}
-                          </div>
-                        ) : (
-                          <span className="text-[14px] italic text-slate-900">Empty</span>
-                        )}
-                      </td>
-                      <td className="p-4 font-medium text-indigo-900 leading-normal max-w-xs text-[16px]">
-                        {aspectedText}
-                      </td>
-                      <td className="p-4">
-                        {allAspectedPlanets.length > 0 ? (
-                          <div className="flex flex-col gap-1.5">
-                            {allAspectedPlanets.map((ap, idx) => (
-                              <div key={`${ap.planet}-${idx}`} className="flex items-center gap-2 text-[14px] border border-indigo-50 bg-indigo-50/10 p-1.5 rounded">
-                                <span className="font-bold text-[14px]" style={{ color: PLANET_COLORS[ap.planet] || "#000" }}>{ap.planet}</span>
-                                <span className="text-[12px] text-slate-900 font-semibold">in House {ap.house} ({ap.sign})</span>
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <span className="text-[14px] italic text-slate-900">No planets aspected</span>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+                    return (
+                      <tr key={row.houseNum} className="hover:bg-indigo-50/30 transition-colors">
+                        <td className="p-4 font-bold text-slate-800 text-[16px]">
+                          House {row.houseNum}
+                        </td>
+                        <td className="p-4 font-bold text-indigo-950 text-[18px]">
+                          {row.signName}
+                        </td>
+                        <td className="p-4">
+                          <span className={`px-2.5 py-1 border text-[13px] font-black uppercase tracking-wider rounded-full ${badgeColor}`}>
+                            {row.signType}
+                          </span>
+                        </td>
+                        <td className="p-4">
+                          {row.sourcePlanets.length > 0 ? (
+                            <div className="flex flex-wrap gap-1.5">
+                              {row.sourcePlanets.map(p => (
+                                <span key={p} className="px-2.5 py-1 bg-indigo-50 border border-indigo-100 rounded text-[14px] font-bold" style={{ color: PLANET_COLORS[p] || "#000" }}>
+                                  {p}
+                                </span>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-[14px] italic text-slate-900">Empty</span>
+                          )}
+                        </td>
+                        <td className="p-4 font-medium text-indigo-900 leading-normal max-w-xs text-[16px]">
+                          {aspectedText}
+                        </td>
+                        <td className="p-4">
+                          {allAspectedPlanets.length > 0 ? (
+                            <div className="flex flex-col gap-1.5">
+                              {allAspectedPlanets.map((ap, idx) => (
+                                <div key={`${ap.planet}-${idx}`} className="flex items-center gap-2 text-[14px] border border-indigo-50 bg-indigo-50/10 p-1.5 rounded">
+                                  <span className="font-bold text-[14px]" style={{ color: PLANET_COLORS[ap.planet] || "#000" }}>{ap.planet}</span>
+                                  <span className="text-[12px] text-slate-900 font-semibold">in House {ap.house} ({ap.sign})</span>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <span className="text-[14px] italic text-slate-900">No planets aspected</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Sphuta Drishti (Mathematical Aspect Strength Heatmap) */}
-      <div className="space-y-6 mt-12 border-t border-indigo-200 pt-12">
-        <SphutaDrishtiViewer
-          sphutaDrishtiData={reportData?.sphuta_drishti}
-          planetPositions={reportData?.planet_positions || reportData?.chart?.planet_positions}
-        />
-      </div>
+      {!hideSphuta && (
+        <div className="space-y-6">
+          <SphutaDrishtiViewer
+            sphutaDrishtiData={reportData?.sphuta_drishti}
+            planetPositions={reportData?.planet_positions || reportData?.chart?.planet_positions}
+          />
+        </div>
+      )}
     </div>
   );
 };
@@ -3045,11 +3051,1153 @@ export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', 
   );
 };
 
+const RETROGRADE_DATABASE = {
+  Saturn: {
+    nameHindi: "शनि (Saturn)",
+    startDate: "July 27, 2026",
+    expiryDate: "December 11, 2026",
+    durationDays: 138,
+    signDefault: "Pisces",
+    overview: "Saturn retrograde (reverse movement of Saturn) is currently in effect in Pisces for a total of 138 days, starting from July 27, 2026, until December 11, 2026. This period is a time for career, discipline, review of past deeds, and re-examination of stalled tasks in life.",
+    influences: [
+      { title: "Karma and Truth", desc: "This is the time for introspection and correcting your past mistakes." },
+      { title: "Workplace", desc: "More caution is needed in job, business and financial matters." },
+      { title: "Mental State", desc: "People of some zodiac signs get results only after hard work and mental stress may increase." }
+    ],
+    remedies: [
+      "Donate to the poor on Saturday.",
+      'Chant Shani Mantra: "Om Pran Preen Pran Sa: Shanaishcharaya Namah".',
+      "Before taking any major decision, check the documents thoroughly."
+    ]
+  },
+  Jupiter: {
+    nameHindi: "गुरु (Jupiter)",
+    startDate: "October 9, 2026",
+    expiryDate: "February 4, 2027",
+    durationDays: 118,
+    signDefault: "Taurus",
+    overview: "Jupiter retrograde is a sacred phase for re-evaluating higher knowledge, spiritual ethics, investments, and long-term mentorship.",
+    influences: [
+      { title: "Wisdom & Ethics", desc: "Re-align personal values and seek inner spiritual clarity." },
+      { title: "Finance & Wealth", desc: "Review investment strategies; avoid speculative financial bets." },
+      { title: "Education & Guidance", desc: "Excellent time to revise study material and reconnect with mentors." }
+    ],
+    remedies: [
+      "Offer yellow sweets or gram dal to cows or priests on Thursdays.",
+      'Chant Jupiter Mantra: "Om Gram Greem Graum Sah Gurave Namah".',
+      "Maintain respect towards teachers, elders, and gurus."
+    ]
+  },
+  Mars: {
+    nameHindi: "मंगल (Mars)",
+    startDate: "January 10, 2027",
+    expiryDate: "April 1, 2027",
+    durationDays: 81,
+    signDefault: "Cancer",
+    overview: "Mars retrograde (reverse movement of Mars) is in effect from January 10, 2027, until April 1, 2027 for a total of 81 days. This period prompts an internal audit of physical energy, ambition, anger control, and real estate projects.",
+    influences: [
+      { title: "Energy & Courage", desc: "Channel physical strength into constructive projects; avoid aggressive conflicts." },
+      { title: "Property & Machinery", desc: "Delay purchase of land or heavy vehicles during deep retrograde peak." },
+      { title: "Patience", desc: "Drive carefully and practice breathwork to manage impulse." }
+    ],
+    remedies: [
+      "Recite Hanuman Chalisa daily, especially on Tuesdays.",
+      'Chant Mars Mantra: "Om Kram Kreem Kraum Sah Bhaumaya Namah".',
+      "Donate red lentils (Masoor dal) to those in need."
+    ]
+  },
+  Mercury: {
+    nameHindi: "बुध (Mercury)",
+    startDate: "August 12, 2026",
+    expiryDate: "September 5, 2026",
+    durationDays: 24,
+    signDefault: "Leo",
+    overview: "Mercury retrograde invites careful communication, review of digital contracts, software code, and travel schedules.",
+    influences: [
+      { title: "Communication", desc: "Double check emails, texts, and speech to avoid misunderstandings." },
+      { title: "Business Contracts", desc: "Thoroughly review fine print in legal agreements before signing." },
+      { title: "Technology", desc: "Backup important data and verify travel itineraries." }
+    ],
+    remedies: [
+      "Feed green fodder or spinach to cows on Wednesdays.",
+      'Chant Mercury Mantra: "Om Bram Breem Braum Sah Budhaya Namah".',
+      "Keep green plants in your workspace."
+    ]
+  },
+  Venus: {
+    nameHindi: "शुक्र (Venus)",
+    startDate: "March 2, 2027",
+    expiryDate: "April 13, 2027",
+    durationDays: 42,
+    signDefault: "Aries",
+    overview: "Venus retrograde focuses on inner harmony, artistic refinement, relationship boundary reviews, and luxury budgets.",
+    influences: [
+      { title: "Relationships", desc: "Reflect on mutual respect and relationship expectations." },
+      { title: "Finances & Aesthetics", desc: "Avoid impulse luxury purchases; focus on budgeting." },
+      { title: "Creative Arts", desc: "Revisit past artistic projects and refine creative skills." }
+    ],
+    remedies: [
+      "Donate white clothes or sweets to underprivileged women on Fridays.",
+      'Chant Venus Mantra: "Om Dram Dreem Draum Sah Shukraya Namah".',
+      "Practice gratitude and artistic self-expression."
+    ]
+  }
+};
+
+const RETROGRADE_EVENTS = [
+  // Historical 1426 - 1427 Ephemeris Data (Exact Timestamps & Nakshatras)
+  { planet: "Saturn", startDate: "Feb 28, 1426 (Tue at 02:03 AM)", expiryDate: "July 16, 1426", durationDays: 138, sign: "Libra / Scorpio", startMs: new Date("1426-02-28T02:03:00").getTime(), endMs: new Date("1426-07-16").getTime() },
+  { planet: "Jupiter", startDate: "Mar 28, 1426 (Tue at 05:15 AM)", expiryDate: "July 26, 1426", durationDays: 120, sign: "Virgo", startMs: new Date("1426-03-28T05:15:00").getTime(), endMs: new Date("1426-07-26").getTime() },
+  { planet: "Mars", startDate: "Dec 18, 1426 (Mon at 07:10 PM)", expiryDate: "March 8, 1427", durationDays: 80, sign: "Simha Rashi (Magha Nakshatra)", startMs: new Date("1426-12-18T19:10:00").getTime(), endMs: new Date("1427-03-08").getTime() },
+  { planet: "Mercury", startDate: "Mar 11, 1426 (Sat at 03:44 AM)", expiryDate: "April 2, 1426", durationDays: 22, sign: "Pisces / Aries", startMs: new Date("1426-03-11T03:44:00").getTime(), endMs: new Date("1426-04-02").getTime() },
+  { planet: "Mercury", startDate: "Jul 14, 1426 (Fri at 09:59 AM)", expiryDate: "August 5, 1426", durationDays: 22, sign: "Cancer / Leo", startMs: new Date("1426-07-14T09:59:00").getTime(), endMs: new Date("1426-08-05").getTime() },
+  { planet: "Mercury", startDate: "Nov 04, 1426 (Sat at 06:29 PM)", expiryDate: "November 26, 1426", durationDays: 22, sign: "Scorpio", startMs: new Date("1426-11-04T18:29:00").getTime(), endMs: new Date("1426-11-26").getTime() },
+  { planet: "Venus", startDate: "Mar 22, 1427 (Thu at 12:03 AM)", expiryDate: "May 3, 1427", durationDays: 42, sign: "Taurus / Aries", startMs: new Date("1427-03-22T00:03:00").getTime(), endMs: new Date("1427-05-03").getTime() },
+
+  // Saturn
+  { planet: "Saturn", startDate: "June 29, 2024", expiryDate: "November 15, 2024", durationDays: 139, sign: "Aquarius", startMs: new Date("2024-06-29").getTime(), endMs: new Date("2024-11-15").getTime() },
+  { planet: "Saturn", startDate: "July 13, 2025", expiryDate: "November 28, 2025", durationDays: 138, sign: "Pisces", startMs: new Date("2025-07-13").getTime(), endMs: new Date("2025-11-28").getTime() },
+  { planet: "Saturn", startDate: "July 27, 2026", expiryDate: "December 11, 2026", durationDays: 138, sign: "Pisces", startMs: new Date("2026-07-27").getTime(), endMs: new Date("2026-12-11").getTime() },
+  { planet: "Saturn", startDate: "August 10, 2027", expiryDate: "December 24, 2027", durationDays: 136, sign: "Aries", startMs: new Date("2027-08-10").getTime(), endMs: new Date("2027-12-24").getTime() },
+  { planet: "Saturn", startDate: "August 23, 2028", expiryDate: "January 6, 2029", durationDays: 136, sign: "Aries", startMs: new Date("2028-08-23").getTime(), endMs: new Date("2029-01-06").getTime() },
+  { planet: "Saturn", startDate: "August 23, 2029", expiryDate: "January 6, 2030", durationDays: 136, sign: "Aries / Taurus", startMs: new Date("2029-08-23").getTime(), endMs: new Date("2030-01-06").getTime() },
+  { planet: "Saturn", startDate: "September 5, 2030", expiryDate: "January 19, 2031", durationDays: 136, sign: "Taurus", startMs: new Date("2030-09-05").getTime(), endMs: new Date("2031-01-19").getTime() },
+
+  // Jupiter
+  { planet: "Jupiter", startDate: "October 9, 2024", expiryDate: "February 4, 2025", durationDays: 118, sign: "Taurus", startMs: new Date("2024-10-09").getTime(), endMs: new Date("2025-02-04").getTime() },
+  { planet: "Jupiter", startDate: "November 11, 2025", expiryDate: "March 11, 2026", durationDays: 120, sign: "Gemini", startMs: new Date("2025-11-11").getTime(), endMs: new Date("2026-03-11").getTime() },
+  { planet: "Jupiter", startDate: "December 13, 2026", expiryDate: "April 12, 2027", durationDays: 120, sign: "Cancer", startMs: new Date("2026-12-13").getTime(), endMs: new Date("2027-04-12").getTime() },
+
+  // Mars
+  { planet: "Mars", startDate: "December 6, 2024", expiryDate: "February 24, 2025", durationDays: 80, sign: "Cancer / Gemini", startMs: new Date("2024-12-06").getTime(), endMs: new Date("2025-02-24").getTime() },
+  { planet: "Mars", startDate: "January 10, 2027", expiryDate: "April 1, 2027", durationDays: 81, sign: "Leo / Cancer", startMs: new Date("2027-01-10").getTime(), endMs: new Date("2027-04-01").getTime() },
+
+  // Mercury
+  { planet: "Mercury", startDate: "April 1, 2024", expiryDate: "April 25, 2024", durationDays: 24, sign: "Aries", startMs: new Date("2024-04-01").getTime(), endMs: new Date("2024-04-25").getTime() },
+  { planet: "Mercury", startDate: "August 5, 2024", expiryDate: "August 28, 2024", durationDays: 23, sign: "Leo / Virgo", startMs: new Date("2024-08-05").getTime(), endMs: new Date("2024-08-28").getTime() },
+  { planet: "Mercury", startDate: "November 25, 2024", expiryDate: "December 15, 2024", durationDays: 20, sign: "Sagittarius", startMs: new Date("2024-11-25").getTime(), endMs: new Date("2024-12-15").getTime() },
+
+  { planet: "Mercury", startDate: "March 15, 2025", expiryDate: "April 7, 2025", durationDays: 23, sign: "Aries / Pisces", startMs: new Date("2025-03-15").getTime(), endMs: new Date("2025-04-07").getTime() },
+  { planet: "Mercury", startDate: "July 18, 2025", expiryDate: "August 11, 2025", durationDays: 24, sign: "Cancer / Leo", startMs: new Date("2025-07-18").getTime(), endMs: new Date("2025-08-11").getTime() },
+  { planet: "Mercury", startDate: "November 9, 2025", expiryDate: "November 29, 2025", durationDays: 20, sign: "Scorpio", startMs: new Date("2025-11-09").getTime(), endMs: new Date("2025-11-29").getTime() },
+
+  { planet: "Mercury", startDate: "February 26, 2026", expiryDate: "March 20, 2026", durationDays: 22, sign: "Pisces / Aquarius", startMs: new Date("2026-02-26").getTime(), endMs: new Date("2026-03-20").getTime() },
+  { planet: "Mercury", startDate: "June 29, 2026", expiryDate: "July 23, 2026", durationDays: 24, sign: "Gemini / Cancer", startMs: new Date("2026-06-29").getTime(), endMs: new Date("2026-07-23").getTime() },
+  { planet: "Mercury", startDate: "October 24, 2026", expiryDate: "November 13, 2026", durationDays: 20, sign: "Libra / Scorpio", startMs: new Date("2026-10-24").getTime(), endMs: new Date("2026-11-13").getTime() },
+
+  { planet: "Mercury", startDate: "February 9, 2027", expiryDate: "March 3, 2027", durationDays: 22, sign: "Aquarius", startMs: new Date("2027-02-09").getTime(), endMs: new Date("2027-03-03").getTime() },
+  { planet: "Mercury", startDate: "June 10, 2027", expiryDate: "July 4, 2027", durationDays: 24, sign: "Taurus / Gemini", startMs: new Date("2027-06-10").getTime(), endMs: new Date("2027-07-04").getTime() },
+  { planet: "Mercury", startDate: "October 7, 2027", expiryDate: "October 28, 2027", durationDays: 21, sign: "Virgo / Libra", startMs: new Date("2027-10-07").getTime(), endMs: new Date("2027-10-28").getTime() },
+
+  // Venus
+  { planet: "Venus", startDate: "March 2, 2025", expiryDate: "April 13, 2025", durationDays: 42, sign: "Aries / Pisces", startMs: new Date("2025-03-02").getTime(), endMs: new Date("2025-04-13").getTime() },
+  { planet: "Venus", startDate: "October 3, 2026", expiryDate: "November 14, 2026", durationDays: 42, sign: "Scorpio / Libra", startMs: new Date("2026-10-03").getTime(), endMs: new Date("2026-11-14").getTime() }
+];
+
+const getRetrogradeEventsForYear = (selectedYear) => {
+  const exactEvents = RETROGRADE_EVENTS.filter(e => {
+    const startY = new Date(e.startMs).getFullYear();
+    const endY = new Date(e.endMs).getFullYear();
+    return startY === selectedYear || endY === selectedYear;
+  });
+
+  const planetsToInclude = ["Saturn", "Jupiter", "Mars", "Venus", "Mercury"];
+  const finalEvents = [];
+
+  planetsToInclude.forEach(planet => {
+    const pEvents = exactEvents.filter(e => e.planet === planet);
+    if (pEvents.length > 0) {
+      pEvents.forEach(pe => finalEvents.push(pe));
+    } else {
+      // Dynamic ephemeris calculation with 1426 as the base calculation anchor year
+      const diffY = selectedYear - 1426;
+
+      if (planet === "Saturn") {
+        // Anchor to modern base: August 23, 2029
+        const diffY2029 = selectedYear - 2029;
+        const sStart = new Date(2029, 7, 23);
+        sStart.setDate(sStart.getDate() + Math.round(diffY2029 * 378.09));
+        const sEnd = new Date(sStart);
+        sEnd.setDate(sEnd.getDate() + 136);
+        const signs = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+        const signIdx = (Math.floor(diffY2029 / 2.5) + 1200) % 12;
+        finalEvents.push({
+          planet: "Saturn",
+          startDate: sStart.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+          expiryDate: sEnd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+          durationDays: 136,
+          sign: signs[signIdx],
+          startMs: sStart.getTime(),
+          endMs: sEnd.getTime()
+        });
+      } else if (planet === "Jupiter") {
+        // Base Jupiter 2026: Dec 13, 2026
+        const diffY2026 = selectedYear - 2026;
+        const jStart = new Date(2026, 11, 13);
+        jStart.setDate(jStart.getDate() + Math.round(diffY2026 * 398.88));
+        const jEnd = new Date(jStart);
+        jEnd.setDate(jEnd.getDate() + 120);
+        const signs = ["Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces", "Aries", "Taurus", "Gemini"];
+        const signIdx = (diffY2026 + 1200) % 12;
+        finalEvents.push({
+          planet: "Jupiter",
+          startDate: jStart.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+          expiryDate: jEnd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+          durationDays: 120,
+          sign: signs[signIdx],
+          startMs: jStart.getTime(),
+          endMs: jEnd.getTime()
+        });
+      } else if (planet === "Mars") {
+        // Base Mars 1426: Dec 18, 1426 (Simha Rashi)
+        if (Math.abs(diffY) % 2 === 0) {
+          const mStart = new Date(selectedYear, 11, 18);
+          const mEnd = new Date(mStart);
+          mEnd.setDate(mEnd.getDate() + 80);
+          finalEvents.push({
+            planet: "Mars",
+            startDate: mStart.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+            expiryDate: mEnd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+            durationDays: 80,
+            sign: "Simha (Leo) / Cancer",
+            startMs: mStart.getTime(),
+            endMs: mEnd.getTime()
+          });
+        }
+      } else if (planet === "Venus") {
+        // Base Venus 1427: Mar 22, 1427
+        if (Math.abs(selectedYear - 1427) % 3 !== 1) {
+          const vStart = new Date(selectedYear, 2, 22);
+          const vEnd = new Date(vStart);
+          vEnd.setDate(vEnd.getDate() + 42);
+          finalEvents.push({
+            planet: "Venus",
+            startDate: vStart.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+            expiryDate: vEnd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+            durationDays: 42,
+            sign: "Taurus / Aries",
+            startMs: vStart.getTime(),
+            endMs: vEnd.getTime()
+          });
+        }
+      } else if (planet === "Mercury") {
+        // Base Mercury 1426: Mar 11, Jul 14, Nov 04
+        [
+          { m: 2, d: 11, sign: "Pisces / Aries" },
+          { m: 6, d: 14, sign: "Cancer / Leo" },
+          { m: 10, d: 4, sign: "Scorpio / Sagittarius" }
+        ].forEach((cycle) => {
+          const mStart = new Date(selectedYear, cycle.m, cycle.d);
+          const mEnd = new Date(mStart);
+          mEnd.setDate(mEnd.getDate() + 22);
+          finalEvents.push({
+            planet: "Mercury",
+            startDate: mStart.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+            expiryDate: mEnd.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+            durationDays: 22,
+            sign: cycle.sign,
+            startMs: mStart.getTime(),
+            endMs: mEnd.getTime()
+          });
+        });
+      }
+    }
+  });
+
+  return finalEvents;
+};
+
+const RETROGRADE_BENEFIT_SIGN_DATABASE = {
+  "Saturn": {
+    benefitedSigns: [
+      { sign: "Capricorn (मकर)", reason: "Swakshetra (Own Sign) – Provides stability, discipline & karmic rewards." },
+      { sign: "Aquarius (कुंभ)", reason: "Moolatrikona (Own Sign) – High executive power & financial endurance." },
+      { sign: "Libra (तुला)", reason: "Uchha Rashi (Exaltation) – Justice, career elevation & public recognition." },
+      { sign: "Taurus (वृषभ) & Gemini (मिथुन)", reason: "Mitra Rashi (Friendly Signs) – Upachaya house gains." }
+    ],
+    challengedSigns: [
+      { sign: "Aries (मेष)", reason: "Neecha Rashi (Debilitation) – Extreme delays, physical fatigue & frustration." },
+      { sign: "Leo (सिंह) & Cancer (कर्क)", reason: "Shatru Rashi (Enemy Signs) – Heavy emotional stress & workplace friction." }
+    ]
+  },
+  "Jupiter": {
+    benefitedSigns: [
+      { sign: "Sagittarius (धनु)", reason: "Swakshetra (Own Sign) – Wisdom, luck, higher learning & spiritual grace." },
+      { sign: "Pisces (मीन)", reason: "Swakshetra (Own Sign) – Financial recovery, peace & mentor support." },
+      { sign: "Cancer (कर्क)", reason: "Uchha Rashi (Exaltation) – Family happiness, wealth & emotional fulfillment." },
+      { sign: "Aries (मेष) & Scorpio (वृश्चिक)", reason: "Mitra Rashi – Auspicious 5th/9th house trine blessings." }
+    ],
+    challengedSigns: [
+      { sign: "Capricorn (मकर)", reason: "Neecha Rashi (Debilitation) – Misjudgment in investments & health neglect." },
+      { sign: "Gemini (मिथुन) & Virgo (कन्या)", reason: "Shatru Rashi – Overthinking & intellectual fatigue." }
+    ]
+  },
+  "Mars": {
+    benefitedSigns: [
+      { sign: "Aries (मेष) & Scorpio (वृश्चिक)", reason: "Swakshetra (Own Signs) – High energy, courage & physical strength." },
+      { sign: "Capricorn (मकर)", reason: "Uchha Rashi (Exaltation) – Victory in competitions & property/land gains." }
+    ],
+    challengedSigns: [
+      { sign: "Cancer (कर्क)", reason: "Neecha Rashi (Debilitation) – Restlessness, rash decisions & minor injuries." },
+      { sign: "Gemini (मिथुन) & Virgo (कन्या)", reason: "Shatru Rashi – Arguments & impatience in partnerships." }
+    ]
+  },
+  "Venus": {
+    benefitedSigns: [
+      { sign: "Taurus (वृषभ) & Libra (तुला)", reason: "Swakshetra (Own Signs) – Relationship harmony, creative luxury & wealth." },
+      { sign: "Pisces (मीन)", reason: "Uchha Rashi (Exaltation) – Spiritual love, sudden luck & artistic breakthroughs." }
+    ],
+    challengedSigns: [
+      { sign: "Virgo (कन्या)", reason: "Neecha Rashi (Debilitation) – Relationship friction & financial overspending." }
+    ]
+  },
+  "Mercury": {
+    benefitedSigns: [
+      { sign: "Gemini (मिथुन)", reason: "Swakshetra (Own Sign) – Analytical clarity & business contract success." },
+      { sign: "Virgo (कन्या)", reason: "Uchha Rashi (Exaltation) – Financial acumen & strategic intelligence." }
+    ],
+    challengedSigns: [
+      { sign: "Pisces (मीन)", reason: "Neecha Rashi (Debilitation) – Communication errors & electronic glitches." }
+    ]
+  }
+};
+
+const VakriMargiInsightPanel = ({ transitPositions, currentDate }) => {
+  if (!transitPositions) return null;
+
+  const validPlanets = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
+
+  const retrogradeList = [];
+  const directList = [];
+
+  Object.entries(transitPositions).forEach(([planet, pos]) => {
+    if (!validPlanets.includes(planet)) return;
+    const isRetro = pos.is_retrograde || pos.sidereal?.is_retrograde;
+    const signIdx = pos.sidereal?.sign_index !== undefined ? pos.sidereal.sign_index : Math.floor((pos.sidereal?.lon || pos.lon || 0) / 30);
+    const signName = SIGNS[signIdx] || "Pisces";
+
+    if (isRetro && planet !== "Rahu" && planet !== "Ketu") {
+      retrogradeList.push({ planet, signName, pos });
+    } else {
+      directList.push({ planet, signName, pos });
+    }
+  });
+
+  const initialYear = currentDate ? new Date(currentDate).getFullYear() : 2026;
+  const [selectedYear, setSelectedYear] = useState(initialYear);
+  const [selectedPlanet, setSelectedPlanet] = useState(retrogradeList.length > 0 ? retrogradeList[0].planet : "Saturn");
+  const [backendEvents, setBackendEvents] = useState([]);
+  const [backendBenefitData, setBackendBenefitData] = useState(null);
+
+  // Year options dropdown starting from 1426 up to 2050
+  const yearOptions = Array.from({ length: 625 }, (_, i) => 1426 + i);
+
+  useEffect(() => {
+    if (retrogradeList.length > 0) {
+      const isSelectedRetro = retrogradeList.some(r => r.planet === selectedPlanet);
+      if (!isSelectedRetro) {
+        setSelectedPlanet(retrogradeList[0].planet);
+      }
+    }
+  }, [currentDate, transitPositions]);
+
+  // Fetch exact Swiss Ephemeris retrograde start/end dates from Python backend
+  useEffect(() => {
+    let isMounted = true;
+    fetch(`/api/vakri-yearly-explorer?year=${selectedYear}`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (isMounted && data && data.events && data.events.length > 0) {
+          setBackendEvents(data.events);
+        }
+      })
+      .catch(err => console.log("Backend vakri fetch fallback:", err));
+
+    return () => { isMounted = false; };
+  }, [selectedYear]);
+
+  // Fetch Parashara Benefited vs Challenged Zodiac Signs calculation from Python backend
+  useEffect(() => {
+    let isMounted = true;
+    fetch(`/api/vakri-benefited-challenged-signs?planet=${selectedPlanet}&year=${selectedYear}`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (isMounted && data) {
+          setBackendBenefitData(data);
+        }
+      })
+      .catch(err => console.error("Backend benefit signs fetch error:", err));
+
+    return () => { isMounted = false; };
+  }, [selectedPlanet, selectedYear]);
+
+  const activePlanetInfo = RETROGRADE_DATABASE[selectedPlanet] || RETROGRADE_DATABASE["Saturn"];
+  const targetDateObj = currentDate ? new Date(currentDate) : new Date();
+  const targetMs = targetDateObj.getTime();
+
+  // Prefer backend calculated events (Swiss Ephemeris), with fallback to local ephemeris engine
+  const yearAllEvents = backendEvents.length > 0 ? backendEvents : getRetrogradeEventsForYear(selectedYear);
+
+  // Find retrograde events for selected planet matching selectedYear
+  let matchedEvent = yearAllEvents.find(e => e.planet === selectedPlanet);
+  if (!matchedEvent) {
+    const planetEvents = RETROGRADE_EVENTS.filter(e => e.planet === selectedPlanet);
+    matchedEvent = planetEvents.find(e => targetMs >= (e.startMs - 86400000) && targetMs <= (e.endMs + 86400000)) || planetEvents[0];
+  }
+
+  const startDate = matchedEvent?.startDate || activePlanetInfo.startDate;
+  const expiryDate = matchedEvent?.expiryDate || activePlanetInfo.expiryDate;
+  const durationDays = matchedEvent?.durationDays || activePlanetInfo.durationDays;
+
+  const currentTransitData = transitPositions[selectedPlanet] || {};
+  const currentSignIdx = currentTransitData.sidereal?.sign_index !== undefined
+    ? currentTransitData.sidereal.sign_index
+    : Math.floor((currentTransitData.sidereal?.lon || currentTransitData.lon || 0) / 30);
+  const currentSignName = matchedEvent?.sign || SIGNS[currentSignIdx] || activePlanetInfo.signDefault || "Pisces";
+  const isCurrentlyRetrograde = currentTransitData.is_retrograde || currentTransitData.sidereal?.is_retrograde;
+
+  const dynamicOverview = `${selectedPlanet} retrograde (Vakri ℞ movement) for Year ${selectedYear} is in effect from ${startDate} until ${expiryDate} for a total of ${durationDays} days in ${currentSignName}. This period is a key astrological phase for introspection, reviewing past actions, career audit, and refining long-term goals.`;
+
+  return (
+    <div className="space-y-8 max-w-5xl mx-auto">
+      {/* Header Banner */}
+      <div className="bg-gradient-to-r from-amber-900 via-slate-900 to-indigo-950 p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden border border-amber-500/30">
+        <div className="absolute top-0 right-0 p-6 opacity-10 text-8xl font-serif">℞</div>
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/20 border border-amber-400/40 rounded-full text-[10px] font-black uppercase tracking-widest text-amber-300 mb-3">
+              <span>🌀</span> Gochar Transit Intelligence
+            </div>
+            <h3 className="text-3xl font-black italic tracking-tight text-white uppercase">Vakri & Margi Planetary Movement Insights</h3>
+            <p className="text-xs text-amber-200/80 mt-1 max-w-2xl font-serif leading-relaxed">
+              Real-time analysis of celestial planetary direction (Vakri / Retrograde & Margi / Direct), sign durations, career impacts, and remedies.
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <div className="bg-amber-500/20 border border-amber-400/30 px-4 py-3 rounded-2xl text-center">
+              <p className="text-2xl font-black text-amber-300">{retrogradeList.length}</p>
+              <p className="text-[9px] font-bold uppercase tracking-wider text-amber-200">Vakri Active</p>
+            </div>
+            <div className="bg-emerald-500/20 border border-emerald-400/30 px-4 py-3 rounded-2xl text-center">
+              <p className="text-2xl font-black text-emerald-300">{directList.length}</p>
+              <p className="text-[9px] font-bold uppercase tracking-wider text-emerald-200">Margi Direct</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Interactive Year Selector Bar */}
+      <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 rounded-3xl border border-amber-500/30 shadow-xl space-y-4 text-white">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/10 pb-3">
+          <div>
+            <span className="text-[18px] font-black uppercase text-amber-400 tracking-widest flex items-center gap-2">
+              <span>📅</span> Dynamic Yearly Vakri (Retrograde) Movement Explorer
+            </span>
+            <p className="text-[16px] text-slate-300 font-serif mt-0.5">Select any year from the dropdown or click quick year pills to explore planetary Vakri periods.</p>
+          </div>
+
+          {/* Dynamic Year Dropdown Selector */}
+          <div className="flex items-center gap-2 bg-white/10 p-2 rounded-2xl border border-amber-400/30">
+            <label htmlFor="yearSelect" className="text-xs font-bold text-amber-300 uppercase tracking-wider">
+              Select Year:
+            </label>
+            <select
+              id="yearSelect"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+              className="bg-slate-900 text-amber-300 font-black text-sm px-3 py-1.5 rounded-xl border border-amber-500/40 outline-none cursor-pointer focus:ring-2 focus:ring-amber-400"
+            >
+              {yearOptions.map((y) => (
+                <option key={y} value={y}>
+                  Year {y}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Quick Year Pills */}
+        <div className="flex flex-wrap gap-2 justify-center sm:justify-start items-center">
+          <span className="text-[10px] uppercase font-bold text-slate-400 mr-1">Quick Select:</span>
+          {[1426, 1427, 2024, 2025, 2026, 2027, 2028, 2029, 2030].map((year) => (
+            <button
+              key={year}
+              onClick={() => setSelectedYear(year)}
+              className={`px-4 py-1.5 rounded-xl text-xs font-black tracking-wider transition-all cursor-pointer border ${selectedYear === year
+                ? 'bg-amber-500 text-black border-amber-300 shadow-lg scale-105 ring-2 ring-amber-300/50'
+                : 'bg-white/10 text-slate-200 border-white/10 hover:bg-amber-500/20 hover:text-white'
+                }`}
+            >
+              {year}
+            </button>
+          ))}
+        </div>
+
+        {/* Yearly Vakri Events Summary Grid */}
+        {yearAllEvents.length > 0 && (
+          <div className="pt-2 border-t border-white/10">
+            <p className="text-[16px] font-black uppercase tracking-widest text-amber-400 mb-2">
+              Planets in Vakri (Retrograde) Motion during Year {selectedYear} ({yearAllEvents.length} Events):
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+              {yearAllEvents.map((ev, idx) => (
+                <div
+                  key={idx}
+                  onClick={() => setSelectedPlanet(ev.planet)}
+                  className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${selectedPlanet === ev.planet
+                    ? 'bg-amber-500/20 border-amber-400/60 shadow-md ring-1 ring-amber-400'
+                    : 'bg-white/5 border-white/10 hover:bg-white/10'
+                    }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[16px] font-bold text-orange-400">{ev.planet}</span>
+                    <span className="text-[14px] font-bold px-1.5 py-0.5 bg-white text-black rounded border border-amber-500/30 uppercase">
+                      {ev.durationDays} Days
+                    </span>
+                  </div>
+                  <p className="text-[14px] font-semibold text-emerald-200 mt-1">
+                    {ev.startDate} → {ev.expiryDate}
+                  </p>
+                  <p className="text-[14px] text-yellow-200 font-serif mt-0.5 italic">
+                    Sign: {ev.sign}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Interactive Planet Selector Bar */}
+      <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-md space-y-3">
+        <p className="text-[18px] font-black uppercase tracking-wider text-slate-900 text-center">Select Planet for Retrograde & Transit Analysis</p>
+        <div className="flex flex-wrap gap-2 justify-center">
+          {["Saturn", "Jupiter", "Mars", "Mercury", "Venus"].map((p) => {
+            const pData = transitPositions[p] || {};
+            const pRetro = pData.is_retrograde || pData.sidereal?.is_retrograde;
+            return (
+              <button
+                key={p}
+                onClick={() => setSelectedPlanet(p)}
+                className={`px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 border ${selectedPlanet === p
+                  ? 'bg-amber-600 text-white border-amber-600 shadow-md scale-105'
+                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-amber-50'
+                  }`}
+              >
+                <span>{p}</span>
+                {pRetro ? (
+                  <span className="px-1.5 py-0.5 bg-amber-900 text-amber-200 text-[8px] rounded font-extrabold">Vakri ℞</span>
+                ) : (
+                  <span className="px-1.5 py-0.5 bg-emerald-100 text-emerald-800 text-[8px] rounded font-extrabold">Margi</span>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Selected Planet Retrograde Card */}
+      <div className="bg-white p-8 md:p-10 rounded-[2.5rem] border border-amber-200 shadow-xl space-y-8 relative overflow-hidden">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-amber-100 pb-6 gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 bg-gradient-to-br from-amber-500 to-amber-700 rounded-2xl flex items-center justify-center text-white text-2xl font-black shadow-lg">
+              {isCurrentlyRetrograde ? '℞' : '🪐'}
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h4 className="text-2xl font-black text-slate-900 uppercase tracking-tight">{activePlanetInfo.nameHindi || selectedPlanet} Retrograde Analysis</h4>
+                {isCurrentlyRetrograde ? (
+                  <span className="px-2.5 py-0.5 bg-amber-100 text-amber-800 border border-amber-300 rounded-full text-[10px] font-black uppercase tracking-wider">Vakri ℞ Currently Active</span>
+                ) : (
+                  <span className="px-2.5 py-0.5 bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-full text-[10px] font-black uppercase tracking-wider">Currently Margi (Direct)</span>
+                )}
+              </div>
+              <p className="text-xs font-bold text-indigo-700 uppercase tracking-widest mt-1">Position: {currentSignName}</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Overview Text */}
+        <div className="bg-amber-50/60 p-6 rounded-2xl border border-amber-200/80">
+          <p className="text-[16px] font-serif italic text-slate-900 leading-relaxed">
+            "{dynamicOverview}"
+          </p>
+        </div>
+
+        {/* Metrics Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center">
+            <p className="text-[14px] font-black uppercase tracking-wider text-orange-400">Start Date</p>
+            <p className="text-[14px] font-bold text-slate-800 mt-1">{startDate}</p>
+          </div>
+          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center">
+            <p className="text-[14px] font-black uppercase tracking-wider text-orange-400">Expiry Date</p>
+            <p className="text-[14px] font-bold text-slate-800 mt-1">{expiryDate}</p>
+          </div>
+          <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center">
+            <p className="text-[14px] font-black uppercase tracking-wider text-orange-400">Zodiac Sign</p>
+            <p className="text-[14px] font-bold text-indigo-900 mt-1">{currentSignName}</p>
+          </div>
+          <div className="bg-amber-100/50 p-4 rounded-2xl border border-amber-200 text-center">
+            <p className="text-[14px] font-black uppercase tracking-wider text-amber-800">Total Duration</p>
+            <p className="text-[14px] font-black text-amber-900 mt-1">{durationDays} Days</p>
+          </div>
+        </div>
+
+        {/* Benefited (शुभ), Neutral (सम) & Challenged (अशुभ) Zodiac Signs Analysis for Selected Retrograde Planet */}
+        {(() => {
+          const benefitInfo = backendBenefitData || RETROGRADE_BENEFIT_SIGN_DATABASE[selectedPlanet] || RETROGRADE_BENEFIT_SIGN_DATABASE["Saturn"];
+          const neutralSigns = benefitInfo.neutralSigns || [];
+          return (
+            <div className="bg-gradient-to-br from-slate-900 to-indigo-950 p-6 md:p-8 rounded-3xl text-white space-y-6 border border-amber-500/30 shadow-xl">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-amber-500/30 pb-4">
+                <div>
+                  <span className="text-[11px] font-black uppercase text-amber-400 tracking-widest flex items-center gap-1.5">
+                    <span>⚖️</span> Vedic Astrology Principles (पराशर सिद्धांत)
+                  </span>
+                  <h5 className="text-xl md:text-2xl font-black uppercase tracking-tight text-white mt-1">
+                    {selectedPlanet} Vakri Impact in Year {selectedYear}: Benefited, Neutral & Challenged Signs
+                  </h5>
+                </div>
+                <span className="px-3 py-1 bg-amber-500/20 text-amber-300 border border-amber-400/40 rounded-full text-xs font-black uppercase tracking-wider">
+                  Cheshta Bala Active
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                {/* Benefited Signs */}
+                <div className="bg-emerald-950/50 p-5 rounded-2xl border border-emerald-500/40 space-y-4">
+                  <h6 className="text-base font-black uppercase tracking-wider text-emerald-300 flex items-center gap-2 border-b border-emerald-500/30 pb-2">
+                    <span>✨</span> Benefited Signs (शुभ प्रभाव)
+                  </h6>
+                  <div className="space-y-3">
+                    {benefitInfo.benefitedSigns && benefitInfo.benefitedSigns.map((item, idx) => (
+                      <div key={idx} className="bg-emerald-900 p-3.5 rounded-xl border border-emerald-500/30 space-y-1">
+                        <p className="text-[18px] font-bold text-emerald-100 uppercase tracking-tight">{item.sign}</p>
+                        <p className="text-[16px] text-emerald-100 font-serif leading-relaxed">{item.reason}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Neutral Effect Signs */}
+                <div className="bg-amber-950/50 p-5 rounded-2xl border border-amber-500/40 space-y-4">
+                  <h6 className="text-base font-black uppercase tracking-wider text-amber-300 flex items-center gap-2 border-b border-amber-500/30 pb-2">
+                    <span>⚖️</span> Neutral Effect Signs (सम प्रभाव)
+                  </h6>
+                  <div className="space-y-3">
+                    {neutralSigns.length > 0 ? (
+                      neutralSigns.map((item, idx) => (
+                        <div key={idx} className="bg-amber-900/40 p-3.5 rounded-xl border border-amber-500/30 space-y-1">
+                          <p className="text-[18px] font-bold text-amber-200 uppercase tracking-tight">{item.sign}</p>
+                          <p className="text-[16px] text-amber-100 font-serif leading-relaxed">{item.reason}</p>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="bg-amber-900/30 p-3.5 rounded-xl border border-amber-500/20 text-xs text-amber-200/80 font-serif italic">
+                        All 12 signs fall cleanly into Benefited or Challenged categories for this transit.
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Challenged Signs */}
+                <div className="bg-rose-950/50 p-5 rounded-2xl border border-rose-500/40 space-y-4">
+                  <h6 className="text-base font-black uppercase tracking-wider text-rose-300 flex items-center gap-2 border-b border-rose-500/30 pb-2">
+                    <span>⚠️</span> Challenged Signs (अशुभ / सावधानी)
+                  </h6>
+                  <div className="space-y-3">
+                    {benefitInfo.challengedSigns && benefitInfo.challengedSigns.map((item, idx) => (
+                      <div key={idx} className="bg-rose-900/40 p-3.5 rounded-xl border border-rose-500/30 space-y-1">
+                        <p className="text-[18px] font-bold text-rose-200 uppercase tracking-tight">{item.sign}</p>
+                        <p className="text-[16px] text-rose-100 font-serif leading-relaxed">{item.reason}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white/5 p-4 rounded-xl border border-white/10 text-xs text-amber-200 font-serif italic leading-relaxed">
+                💡 <strong>Vedic Classification:</strong> Benefited signs experience growth through Upachaya/Trine house alignment; Neutral signs experience balanced, steady progress; Challenged signs require extra patience & health awareness.
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* Astrological Influences */}
+        <div>
+          <h5 className="text-lg font-black uppercase text-slate-800 tracking-tight mb-4 flex items-center gap-2">
+            <span>🌟</span> Astrological Influences (ज्योतिषीय प्रभाव)
+          </h5>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {activePlanetInfo.influences.map((inf, idx) => (
+              <div key={idx} className="p-5 bg-slate-50 rounded-2xl border border-slate-100 hover:border-indigo-200 transition-colors space-y-2">
+                <p className="text-[18px] font-black uppercase tracking-wider text-indigo-900">{inf.title}</p>
+                <p className="text-[16px] text-slate-900 font-serif leading-relaxed">{inf.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Prevention & Measures */}
+        <div className="bg-slate-900 p-6 md:p-8 rounded-3xl text-white space-y-4 border border-slate-800">
+          <h5 className="text-lg font-black uppercase text-amber-400 tracking-tight flex items-center gap-2">
+            <span>🛡️</span> Prevention & Measures (निवारण एवं उपाय)
+          </h5>
+          <ul className="space-y-3 text-[16px] font-serif leading-relaxed text-orange-400">
+            {activePlanetInfo.remedies.map((rem, idx) => (
+              <li key={idx} className="flex items-start gap-3 bg-white/5 p-3 rounded-xl border border-white/10">
+                <span className="text-amber-400 font-bold">✦</span>
+                <span>{rem}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* Direct Planets (Margi) Summary Card */}
+      <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-6">
+        <h4 className="text-xl font-black uppercase tracking-tight text-slate-800 border-b border-slate-100 pb-4 flex items-center gap-2">
+          <span>🌿</span> Live Transit Motion Summary
+        </h4>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          {validPlanets.map((planet) => {
+            if (planet === "Rahu" || planet === "Ketu") return null;
+            const pData = transitPositions[planet] || {};
+            const isRetro = pData.is_retrograde || pData.sidereal?.is_retrograde;
+            const signIdx = pData.sidereal?.sign_index !== undefined ? pData.sidereal.sign_index : Math.floor((pData.sidereal?.lon || pData.lon || 0) / 30);
+            const signName = SIGNS[signIdx] || "Pisces";
+
+            return (
+              <div key={planet} className={`p-3.5 rounded-2xl border flex items-center justify-between ${isRetro ? 'bg-amber-50 border-amber-200' : 'bg-emerald-50/60 border-emerald-200'}`}>
+                <div>
+                  <p className="text-xs font-black uppercase text-slate-800">{planet}</p>
+                  <p className={`text-[10px] font-bold uppercase tracking-wider mt-0.5 ${isRetro ? 'text-amber-800' : 'text-emerald-800'}`}>{signName}</p>
+                </div>
+                {isRetro ? (
+                  <span className="px-2 py-0.5 bg-amber-600 text-white rounded-md text-[8px] font-black uppercase tracking-widest">Vakri ℞</span>
+                ) : (
+                  <span className="px-2 py-0.5 bg-emerald-600 text-white rounded-md text-[8px] font-black uppercase tracking-widest">Margi</span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const calculateTransitSphutaDrishti = (transitPositions) => {
+  if (!transitPositions) return null;
+
+  const planets = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
+  const longitudes = {};
+
+  planets.forEach(p => {
+    const data = transitPositions[p];
+    if (data) {
+      longitudes[p] = data.degree !== undefined ? data.degree : (data.sidereal?.fullDegree || data.sidereal?.lon || data.lon || 0);
+    }
+  });
+
+  const specialAspectTargets = {
+    "Saturn": [60.0, 270.0],
+    "Mars": [90.0, 210.0],
+    "Jupiter": [120.0, 240.0],
+    "Rahu": [120.0, 240.0],
+    "Ketu": [120.0, 240.0]
+  };
+
+  const calculateSingleAspect = (lon1, lon2, planet) => {
+    let diff = (lon2 - lon1) % 360.0;
+    if (diff < 0) diff += 360.0;
+
+    let genAspect = 0.0;
+    if (diff >= 30.0 && diff < 60.0) genAspect = (diff - 30.0) / 2.0;
+    else if (diff >= 60.0 && diff < 90.0) genAspect = 15.0 + (diff - 60.0) / 2.0;
+    else if (diff >= 90.0 && diff < 120.0) genAspect = 30.0 + (diff - 90.0) / 2.0;
+    else if (diff >= 120.0 && diff < 150.0) genAspect = 45.0 - (diff - 120.0) / 2.0;
+    else if (diff >= 150.0 && diff < 180.0) genAspect = 30.0 + (diff - 150.0);
+    else if (diff >= 180.0 && diff < 210.0) genAspect = 60.0 - (diff - 180.0) * 2.0;
+    else if (diff >= 270.0 && diff < 300.0) genAspect = (diff - 270.0) / 2.0;
+    else if (diff >= 300.0 && diff < 330.0) genAspect = 15.0 - (diff - 300.0) / 2.0;
+
+    genAspect = Math.max(0.0, genAspect);
+
+    let specialAspect = 0.0;
+    if (specialAspectTargets[planet]) {
+      for (const target of specialAspectTargets[planet]) {
+        const dist = Math.abs(diff - target);
+        if (dist < 15.0) {
+          const val = 60.0 * (1.0 - (dist / 15.0));
+          specialAspect = Math.max(specialAspect, val);
+        }
+      }
+    }
+
+    return Math.round(Math.max(genAspect, specialAspect));
+  };
+
+  const matrix = {};
+  planets.forEach(p1 => {
+    matrix[p1] = {};
+    planets.forEach(p2 => {
+      if (p1 === p2 || longitudes[p1] === undefined || longitudes[p2] === undefined) {
+        matrix[p1][p2] = 0;
+      } else {
+        matrix[p1][p2] = calculateSingleAspect(longitudes[p1], longitudes[p2], p1);
+      }
+    });
+  });
+
+  return matrix;
+};
+
+const AsthUdayAnalysisPanel = ({ transitPositions }) => {
+  if (!transitPositions) return null;
+
+  const [backendData, setBackendData] = useState(null);
+
+  useEffect(() => {
+    let isMounted = true;
+    if (!transitPositions) return;
+
+    fetch('/api/calculate-asth-uday', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ transitPositions })
+    })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (isMounted && data && data.results) {
+          setBackendData(data);
+        }
+      })
+      .catch(err => console.log("Backend Asth Uday fetch fallback:", err));
+
+    return () => { isMounted = false; };
+  }, [transitPositions]);
+
+  const sunData = transitPositions["Sun"] || {};
+  const sunLon = sunData.sidereal?.lon !== undefined ? sunData.sidereal.lon : (sunData.lon || 0);
+
+  const COMBUSTION_THRESHOLDS = {
+    "Mars": 17.0,
+    "Mercury": 14.0, // 12.0 if retrograde
+    "Jupiter": 11.0,
+    "Venus": 10.0,   // 8.0 if retrograde
+    "Saturn": 15.0,
+    "Moon": 12.0
+  };
+
+  const planetsToAnalyze = ["Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
+
+  const localAnalysisResults = planetsToAnalyze.map(planet => {
+    const pData = transitPositions[planet] || {};
+    const planetLon = pData.sidereal?.lon !== undefined ? pData.sidereal.lon : (pData.lon || 0);
+    const isRetro = pData.is_retrograde || pData.sidereal?.is_retrograde || false;
+    const signIdx = pData.sidereal?.sign_index !== undefined ? pData.sidereal.sign_index : Math.floor(planetLon / 30);
+    const signName = SIGNS[signIdx] || "Pisces";
+
+    let rawDiff = Math.abs(planetLon - sunLon) % 360.0;
+    let angularDistance = Math.min(rawDiff, 360.0 - rawDiff);
+
+    let threshold = COMBUSTION_THRESHOLDS[planet] || null;
+    if (planet === "Mercury" && isRetro) threshold = 12.0;
+    if (planet === "Venus" && isRetro) threshold = 8.0;
+
+    let isAsth = false;
+    let statusText = "Uday (Risen / उदय ✨)";
+    let statusColor = "bg-emerald-100 text-emerald-900 border-emerald-300 font-bold";
+
+    if (planet === "Rahu" || planet === "Ketu") {
+      statusText = "Shadow Node (N/A)";
+      statusColor = "bg-slate-100 text-slate-700 border-slate-300";
+    } else if (threshold !== null && angularDistance <= threshold) {
+      isAsth = true;
+      statusText = "Asth (Combust / अस्तागत 💥)";
+      statusColor = "bg-rose-100 text-rose-900 border-rose-300 font-extrabold";
+    }
+
+    return {
+      planet,
+      signName,
+      planetDegree: (planetLon % 30).toFixed(2),
+      angularDistance: angularDistance.toFixed(2),
+      threshold: threshold ? `${threshold}°` : "N/A",
+      isRetro,
+      isAsth,
+      statusText,
+      statusColor
+    };
+  });
+
+  const localSunSignName = SIGNS[Math.floor(sunLon / 30)] || "Aries";
+  const localSunDegree = (sunLon % 30).toFixed(2);
+
+  const analysisResults = backendData?.results || localAnalysisResults;
+  const sunSignName = backendData?.sunSign || localSunSignName;
+  const sunDegree = backendData?.sunDegree || localSunDegree;
+
+  return (
+    <div className="space-y-8 max-w-5xl mx-auto my-6 animate-in fade-in duration-500">
+      {/* Banner */}
+      <div className="bg-gradient-to-r from-amber-950 via-slate-900 to-indigo-950 p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden border border-amber-500/30">
+        <div className="absolute top-0 right-0 p-6 opacity-10 text-8xl font-serif">☀️</div>
+        <div className="relative z-10">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-500/20 border border-amber-400/40 rounded-full text-xs font-black uppercase tracking-widest text-amber-300 mb-3">
+            <span>✨</span> Surya Siddhanta Classical Principles
+          </div>
+          <h3 className="text-3xl font-black italic tracking-tight text-white uppercase">Planetary Asth & Uday Analysis (अस्त एवं उदय)</h3>
+          <p className="text-sm text-amber-200/80 mt-1 max-w-2xl font-serif leading-relaxed">
+            Real-time evaluation of planetary combustion (Asth) and rising (Uday) status based on exact angular distance from the Sun.
+          </p>
+        </div>
+      </div>
+
+      {/* Asth & Uday Table */}
+      <div className="bg-white p-6 md:p-8 rounded-[2.5rem] border border-amber-200 shadow-xl space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-amber-100 pb-4">
+          <div>
+            <h4 className="text-xl font-black text-slate-900 uppercase tracking-tight">Planetary Asth (Combust) & Uday (Risen) Status Table</h4>
+            <p className="text-[18px] text-slate-600 font-serif mt-0.5">
+              Sun Reference Position: <strong className="text-amber-700">{sunSignName} ({sunDegree}°)</strong>
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <span className="px-3 py-1 bg-rose-100 text-rose-900 rounded-full text-xs font-black uppercase border border-rose-300">
+              Combust: {analysisResults.filter(r => r.isAsth).length} Planets
+            </span>
+            <span className="px-3 py-1 bg-emerald-100 text-emerald-900 rounded-full text-xs font-black uppercase border border-emerald-300">
+              Risen (Uday): {analysisResults.filter(r => !r.isAsth && r.planet !== "Rahu" && r.planet !== "Ketu").length} Planets
+            </span>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="bg-slate-900 text-amber-300 text-xs uppercase font-black tracking-wider border-b border-slate-700">
+                <th className="p-3.5 rounded-tl-2xl">Planet</th>
+                <th className="p-3.5">Zodiac Sign & Degree</th>
+                <th className="p-3.5">Dist. from Sun (°)|Δλ|</th>
+                <th className="p-3.5">Asth Orb Threshold</th>
+                <th className="p-3.5">Motion State</th>
+                <th className="p-3.5 rounded-tr-2xl">Calculated Status</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 text-sm font-serif">
+              {analysisResults.map((row, idx) => (
+                <tr key={idx} className="hover:bg-amber-50/50 transition-colors">
+                  <td className="p-3.5 font-bold text-slate-900 font-sans flex items-center gap-2">
+                    <span className="text-lg">🪐</span>
+                    <span className="text-[15px]">{row.planet}</span>
+                  </td>
+                  <td className="p-3.5 font-sans font-semibold text-[14px] text-indigo-950">
+                    {row.signName} ({row.planetDegree}°)
+                  </td>
+                  <td className="p-3.5 font-sans font-bold text-[14px] text-slate-900">
+                    {row.angularDistance}°
+                  </td>
+                  <td className="p-3.5 font-sans font-semibold text-[14px] text-emerald-600">
+                    {row.threshold}
+                  </td>
+                  <td className="p-3.5 font-sans">
+                    {row.isRetro ? (
+                      <span className="px-2 py-0.5 bg-amber-900 text-amber-200 text-[14px] font-black uppercase rounded">Vakri ℞</span>
+                    ) : (
+                      <span className="px-2 py-0.5 bg-emerald-100 text-emerald-800 text-[14px] font-black uppercase rounded">Margi</span>
+                    )}
+                  </td>
+                  <td className="p-3.5 font-sans">
+                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${row.statusColor}`}>
+                      {row.statusText}
+                    </span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const PlanetaryRashiTransitTimelinePanel = ({ currentDate, transitPositions, initialData }) => {
+  const initialYear = currentDate ? new Date(currentDate).getFullYear() : 2026;
+  const [selectedPlanet, setSelectedPlanet] = useState("Mercury");
+  const [selectedYear, setSelectedYear] = useState(initialYear);
+  const [timelineData, setTimelineData] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const yearOptions = Array.from({ length: 625 }, (_, i) => 1426 + i);
+  const planetsList = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
+
+  // Calculate Natal Lagna (Ascendant) Sign Index (0-indexed: 0=Mesha, 1=Vrishabha ... 11=Meena)
+  const ascSignIdx = (() => {
+    if (initialData?.planet_positions) {
+      const asc = initialData.planet_positions.find(p => p.planet === "Ascendant" || p.name === "Ascendant" || p.planet === "Lagna" || p.name === "Lagna");
+      if (asc && asc.sign_index !== undefined) return asc.sign_index;
+      if (asc && (asc.degree !== undefined || asc.lon !== undefined)) return Math.floor((asc.degree || asc.lon) / 30);
+    }
+    if (initialData?.charts?.houses && initialData.charts.houses[0]) {
+      const h0 = initialData.charts.houses[0];
+      if (h0.sign_index !== undefined) return h0.sign_index;
+      if (h0.longitude !== undefined) return Math.floor(h0.longitude / 30);
+    }
+    if (transitPositions) {
+      const asc = Object.values(transitPositions).find(p => p.planet === "Ascendant" || p.name === "Ascendant" || p.planet === "Lagna" || p.name === "Lagna");
+      if (asc && asc.sidereal?.sign_index !== undefined) return asc.sidereal.sign_index;
+      if (asc && (asc.sidereal?.lon !== undefined || asc.lon !== undefined)) return Math.floor((asc.sidereal?.lon || asc.lon) / 30);
+    }
+    return 0; // Default Mesha
+  })();
+
+  useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    fetch(`/api/planetary-rashi-transit-timeline?planet=${selectedPlanet}&year=${selectedYear}`)
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (isMounted && data) {
+          setTimelineData(data);
+        }
+      })
+      .catch(err => console.error("Transit timeline fetch error:", err))
+      .finally(() => { if (isMounted) setLoading(false); });
+
+    return () => { isMounted = false; };
+  }, [selectedPlanet, selectedYear]);
+
+  return (
+    <div className="space-y-8 max-w-6xl mx-auto my-6 animate-in fade-in duration-500 font-sans">
+      {/* Controls Header */}
+      <div className="bg-gradient-to-r from-amber-950 via-slate-900 to-amber-950 p-6 md:p-8 rounded-[2.5rem] text-white shadow-2xl space-y-6 border border-amber-500/30">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-amber-500/30 pb-4">
+          <div>
+            <span className="text-xs font-black uppercase text-amber-400 tracking-widest flex items-center gap-2">
+              <span>📅</span> Annual Rashi Transit Calendar & Movement Grid
+            </span>
+            <h3 className="text-2xl md:text-3xl font-black italic tracking-tight text-white uppercase mt-1">
+              {selectedPlanet} Rashi Transit Timeline ({selectedYear})
+            </h3>
+          </div>
+
+          {/* Year Dropdown */}
+          <div className="flex items-center gap-2 bg-white/10 p-2 rounded-2xl border border-amber-400/30">
+            <label htmlFor="timelineYear" className="text-xs font-bold text-amber-300 uppercase tracking-wider">Year:</label>
+            <select
+              id="timelineYear"
+              value={selectedYear}
+              onChange={(e) => setSelectedYear(Number(e.target.value))}
+              className="bg-slate-900 text-amber-300 font-black text-sm px-3 py-1.5 rounded-xl border border-amber-500/40 focus:outline-none cursor-pointer"
+            >
+              {yearOptions.map(y => (
+                <option key={y} value={y}>{y}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Planet Select Pills */}
+        <div className="space-y-2">
+          <p className="text-[18spx] font-medium uppercase tracking-widest text-amber-400">Select Planet to View Signs & Entry Timestamps:</p>
+          <div className="flex flex-wrap gap-2">
+            {planetsList.map(p => (
+              <button
+                key={p}
+                onClick={() => setSelectedPlanet(p)}
+                className={`px-4 py-1.5 rounded-xl text-[16px] font-medium tracking-wider transition-all cursor-pointer border ${selectedPlanet === p
+                  ? 'bg-amber-500 text-black border-amber-300 shadow-lg scale-105 ring-2 ring-amber-300/50'
+                  : 'bg-white  text-slate-900 border-white/10 hover:bg-amber-500/20 hover:text-white'
+                  }`}
+              >
+                {p}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Loading Indicator */}
+      {loading && (
+        <div className="p-12 text-center bg-amber-500/10 rounded-3xl border border-amber-500/30">
+          <div className="w-10 h-10 border-4 border-amber-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-amber-700 font-bold text-sm mt-3 animate-pulse">Calculating Gochar (गोचर गणना) {selectedPlanet} ({selectedYear})...</p>
+        </div>
+      )}
+
+      {/* Transit Card Grid - Exact Visual Aesthetic Matching User Image */}
+      {!loading && timelineData && timelineData.transits && (
+        <div className="bg-rose-50 p-6 md:p-8 rounded-[2.5rem] border-2 border-[#e6b453] shadow-2xl space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {timelineData.transits.map((item, idx) => {
+              const isCurrentActive = item.isActive;
+              const rashiIdx = item.rashiNumber !== undefined ? item.rashiNumber - 1 : 0;
+              const houseNumber = (((rashiIdx - ascSignIdx + 12) % 12) + 1);
+
+              return (
+                <div
+                  key={idx}
+                  className={`relative p-5 rounded-xl transition-all border ${isCurrentActive
+                    ? 'bg-[#f7c873] border-red-600 ring-2 ring-red-500 shadow-xl scale-[1.01]'
+                    : 'bg-[#f5cf82] border-[#dfaf55] hover:border-amber-600'
+                    }`}
+                >
+                  {/* Circle Step Number Badge displaying Zodiac Sign Number (1 to 12) */}
+                  <div
+                    className={`absolute -top-3 -left-3 w-8 h-8 rounded-full flex items-center justify-center font-black text-[14px] text-black shadow-md border-2 border-white ${isCurrentActive ? 'bg-[#b81d1d]' : 'bg-[#7ba33c]'
+                      }`}
+                  >
+                    {item.rashiNumber !== undefined ? item.rashiNumber : item.step}
+                  </div>
+
+                  {/* Sign Name, Symbol & House Number */}
+                  <div className="ml-3 flex items-center justify-between gap-2 flex-wrap">
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-[20px] font-bold text-orange-900 tracking-tight">
+                        {item.sign}
+                      </h4>
+                      <span className="text-lg text-[#7a1c06]">{item.symbol}</span>
+                    </div>
+
+                    {/* House Number Badge */}
+                    <span className="px-3 py-1 bg-white text-slate-900 rounded-xl text-[13px] font-medium uppercase border border-amber-500/40 shadow-sm">
+                      House {houseNumber} ({houseNumber}वां भाव)
+                    </span>
+                  </div>
+
+                  {/* Exact Timestamp */}
+                  <p className="ml-3 text-[16px] font-semibold text-black mt-1">
+                    {item.dateStr}
+                  </p>
+
+                  {/* Active Transit Indicator */}
+                  {isCurrentActive && (
+                    <div className="ml-3 mt-2 text-[16px] font-extrabold text-black flex items-center gap-1.5 animate-pulse">
+                      <span>📌</span>
+                      <span>{selectedPlanet} is transiting in {item.sign} Rashi (House {houseNumber})</span>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const CurrentPositionsDashboard = ({ initialData }) => {
   const [transitPositions, setTransitPositions] = useState(null);
   const [transitHouses, setTransitHouses] = useState(null);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isFetching, setIsFetching] = useState(false);
+  const [currentTab, setCurrentTab] = useState('map');
+
   const addTime = (amount, unit) => {
     setCurrentDate(prev => {
       const d = new Date(prev);
@@ -3101,6 +4249,7 @@ const CurrentPositionsDashboard = ({ initialData }) => {
     };
     fetchTransit();
   }, [currentDate]);
+
   if (!transitPositions) {
     return (
       <div className="h-screen w-full flex items-center justify-center bg-slate-900">
@@ -3112,20 +4261,132 @@ const CurrentPositionsDashboard = ({ initialData }) => {
     );
   }
 
+  let formattedTransitPositions = initialData?.planet_positions;
+  if (transitPositions) {
+    formattedTransitPositions = Object.entries(transitPositions).map(([k, v]) => ({
+      planet: k,
+      degree: v.sidereal?.lon || v.lon,
+      is_retrograde: v.is_retrograde || v.sidereal?.is_retrograde,
+      is_combust: v.is_combust || v.sidereal?.is_combust,
+      nakshatra: v.nakshatra || v.sidereal?.nakshatra
+    }));
+  }
+
+  const activeHouses = transitHouses || initialData?.charts?.houses;
+  const calculatedSphuta = calculateTransitSphutaDrishti(transitPositions) || initialData?.sphuta_drishti;
+
+  const transitReportData = {
+    ...initialData,
+    planet_positions: formattedTransitPositions,
+    sphuta_drishti: calculatedSphuta,
+    charts: {
+      ...(initialData?.charts || {}),
+      houses: activeHouses
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#fdfbf7] p-4 md:p-10 font-serif overflow-auto custom-scrollbar">
       <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-        <div className="bg-slate-200 p-10 rounded-[3rem] text-amber-600 shadow-2xl relative overflow-hidden group">
+        <div className="bg-slate-200 p-8 md:p-10 rounded-[3rem] text-amber-600 shadow-2xl relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-8 opacity-10 text-[10rem] font-serif pointer-events-none group-hover:scale-110 transition-transform duration-1000 uppercase">NOW</div>
-          <div className="relative z-10">
-            <h2 className="text-4xl md:text-5xl font-black italic tracking-tighter uppercase mb-2">Transit Analysis</h2>
-            <div className="flex items-center gap-4 text-xs font-black uppercase tracking-[0.3em] text-indigo-600">
-              <span>Planetary Movements</span>
-              <span className="w-8 h-[1px] bg-indigo-800"></span>
-              <span>{currentDate.toLocaleString()}</span>
+
+          <div className="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-black italic tracking-tighter uppercase mb-1">Transit Analysis</h2>
+              <div className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em] text-indigo-600">
+                <span>Planetary Movements</span>
+                <span className="w-6 h-[1px] bg-indigo-800"></span>
+                <span>{currentDate.toLocaleString()}</span>
+              </div>
+            </div>
+
+            {/* Navigation Sub-Tabs displayed directly adjacent to Transit Analysis */}
+            <div className="flex flex-wrap gap-2 items-center bg-white/70 p-2 rounded-2xl border border-slate-300 shadow-sm backdrop-blur-sm">
+              <button
+                onClick={() => setCurrentTab('map')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'map'
+                  ? 'bg-indigo-300 text-white shadow-md scale-105'
+                  : 'text-slate-700 hover:text-indigo-900 hover:bg-white'
+                  }`}
+              >
+                <span>🗺️</span> Gochar Map & Coordinates
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('planetary_drishti')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'planetary_drishti'
+                  ? 'bg-indigo-900 text-white shadow-md scale-105'
+                  : 'text-slate-700 hover:text-indigo-900 hover:bg-white'
+                  }`}
+              >
+                <span>🪐</span> Planetary Drishti (Graha)
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('jaimini_drishti')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'jaimini_drishti'
+                  ? 'bg-indigo-900 text-white shadow-md scale-105'
+                  : 'text-slate-700 hover:text-indigo-900 hover:bg-white'
+                  }`}
+              >
+                <span>♈</span> Jaimini Rasi Drishti
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('sphuta_drishti')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'sphuta_drishti'
+                  ? 'bg-indigo-900 text-white shadow-md scale-105'
+                  : 'text-slate-700 hover:text-indigo-900 hover:bg-white'
+                  }`}
+              >
+                <span>🔮</span> Sphuta Drishti Matrix
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('rashi_timeline')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'rashi_timeline'
+                  ? 'bg-amber-600 text-white shadow-md scale-105'
+                  : 'text-amber-900 hover:bg-amber-100/60'
+                  }`}
+              >
+                <span>📅</span> Rashi Transit Timeline
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('asth_uday')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'asth_uday'
+                  ? 'bg-rose-900 text-white shadow-md scale-105'
+                  : 'text-rose-900 hover:bg-rose-100/60'
+                  }`}
+              >
+                <span>☀️</span> Asth & Uday Analysis
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('vakri_insights')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'vakri_insights'
+                  ? 'bg-amber-600 text-white shadow-md scale-105'
+                  : 'text-amber-900 hover:bg-amber-100/60'
+                  }`}
+              >
+                <span>🌀</span> Vakri & Margi Insights
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('all_aspects')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'all_aspects'
+                  ? 'bg-amber-600 text-white shadow-md scale-105'
+                  : 'text-amber-800 hover:bg-amber-100/60'
+                  }`}
+              >
+                <span>✨</span> All Aspect Analytics
+              </button>
             </div>
           </div>
-          <div className="relative z-10 mt-8 flex flex-wrap gap-4 items-center bg-slate-800/10 p-4 rounded-2xl border border-slate-700/50 backdrop-blur-sm">
+
+          {/* Time Controls Row */}
+          <div className="relative z-10 mt-6 flex flex-wrap gap-4 items-center bg-slate-800/10 p-4 rounded-2xl border border-slate-700/50 backdrop-blur-sm">
             <button onClick={resetToNow} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold uppercase tracking-widest rounded-lg transition-colors shadow-lg">Live Now</button>
             <div className="w-px h-8 bg-amber-400 mx-2 hidden sm:block"></div>
             <div className="flex gap-2 items-center">
@@ -3150,34 +4411,37 @@ const CurrentPositionsDashboard = ({ initialData }) => {
             </div>
           </div>
         </div>
-        <div className={`flex flex-col gap-12 max-w-4xl mx-auto transition-opacity duration-500 ${isFetching ? 'opacity-50 blur-sm' : 'opacity-100'}`}>
+
+
+
+        <button
+          onClick={() => setCurrentTab('all_aspects')}
+          className={`px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 ${currentTab === 'all_aspects'
+            ? 'bg-amber-600 text-white shadow-lg scale-105'
+            : 'text-amber-800 hover:bg-amber-100/60'
+            }`}
+        >
+          <span>✨</span> All Aspect Analytics
+        </button>
+      </div>
+
+
+      {/* Tab 1: Gochar Map & Coordinates */}
+      {currentTab === 'map' && (
+        <div className={`flex flex-col gap-8 max-w-4xl mx-auto transition-opacity duration-500 ${isFetching ? 'opacity-50 blur-sm' : 'opacity-100'}`}>
           <div className="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-xl relative overflow-hidden">
             <div className="absolute top-4 left-6 z-20 px-4 py-1.5 bg-indigo-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">Current Gochar Map</div>
             <div className="mt-8">
-              {(() => {
-                let formattedTransitPositions = initialData?.planet_positions;
-                if (transitPositions) {
-                  formattedTransitPositions = Object.entries(transitPositions).map(([k, v]) => ({
-                    planet: k,
-                    degree: v.sidereal?.lon || v.lon,
-                    is_retrograde: v.is_retrograde || v.sidereal?.is_retrograde,
-                    is_combust: v.is_combust || v.sidereal?.is_combust,
-                    nakshatra: v.nakshatra || v.sidereal?.nakshatra
-                  }));
-                }
-                return (
-                  <ZodiacChart
-                    planetPositions={formattedTransitPositions}
-                    houses={transitHouses || initialData.charts?.houses}
-                    title="Current Planet Positions"
-                    variant="legacy"
-                    defaultRect={true}
-                    scaleText={1.5}
-                    showNakshatra={true}
-                    showDegree={true}
-                  />
-                );
-              })()}
+              <ZodiacChart
+                planetPositions={formattedTransitPositions}
+                houses={activeHouses}
+                title="Current Planet Positions"
+                variant="legacy"
+                defaultRect={true}
+                scaleText={1.5}
+                showNakshatra={true}
+                showDegree={true}
+              />
             </div>
           </div>
 
@@ -3222,77 +4486,142 @@ const CurrentPositionsDashboard = ({ initialData }) => {
                 </p>
               </div>
             </div>
+
+            {/* Inline Planetary Rashi Transit Timeline Panel */}
+            <div className="mt-8">
+              <PlanetaryRashiTransitTimelinePanel currentDate={currentDate} transitPositions={transitPositions} initialData={initialData} />
+            </div>
+
+            {/* Inline Asth & Uday Analysis Panel */}
+            <div className="mt-8">
+              <AsthUdayAnalysisPanel transitPositions={transitPositions} />
+            </div>
+
+            {/* Inline Vakri & Margi Insights Panel */}
+            <div className="mt-8">
+              <VakriMargiInsightPanel transitPositions={transitPositions} currentDate={currentDate} />
+            </div>
           </div>
         </div>
+      )}
 
-        {/* Detailed Gochar Analysis Section */}
-        <div className="mt-12 bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-xl">
-          <h3 className="text-2xl font-black uppercase tracking-tight mb-8 text-slate-800 border-b border-slate-100 pb-4">Detailed Gochar Analysis (गोचर फल)</h3>
-          <div className="space-y-6">
-            {Object.entries(transitPositions).map(([planet, pos]) => {
-              const valid = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
-              if (!valid.includes(planet)) return null;
+      {/* Tab: Planetary Rashi Transit Timeline */}
+      {currentTab === 'rashi_timeline' && (
+        <PlanetaryRashiTransitTimelinePanel currentDate={currentDate} transitPositions={transitPositions} initialData={initialData} />
+      )}
 
-              const signIdx = pos.sidereal?.sign_index !== undefined ? pos.sidereal.sign_index : Math.floor(pos.sidereal.lon / 30);
-              let moonSignIndex = 0;
-              if (initialData?.planet_positions) {
-                const moonPos = Array.isArray(initialData.planet_positions)
-                  ? initialData.planet_positions.find(p => p.planet === "Moon" || p.name === "Moon")
-                  : Object.values(initialData.planet_positions).find(p => p.planet === "Moon" || p.name === "Moon");
-                if (moonPos) {
-                  moonSignIndex = moonPos.sidereal?.sign_index !== undefined
-                    ? moonPos.sidereal.sign_index
-                    : Math.floor((moonPos.sidereal?.lon || moonPos.lon || 0) / 30);
-                }
+      {/* Tab: Asth & Uday Analysis */}
+      {currentTab === 'asth_uday' && (
+        <AsthUdayAnalysisPanel transitPositions={transitPositions} />
+      )}
+
+      {/* Tab 2: Planetary Drishti (Graha) */}
+      {currentTab === 'planetary_drishti' && (
+        <div className="max-w-6xl mx-auto bg-white p-6 md:p-10 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-6">
+          <h3 className="text-2xl font-black uppercase text-slate-800 border-b border-slate-100 pb-3">Transit Planetary Drishti (Graha Aspects)</h3>
+          <DrishtiTable houses={activeHouses} reportData={transitReportData} hideJaimini={true} hideSphuta={true} />
+        </div>
+      )}
+
+      {/* Tab 3: Jaimini Rasi Drishti */}
+      {currentTab === 'jaimini_drishti' && (
+        <div className="max-w-6xl mx-auto bg-white p-6 md:p-10 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-6">
+          <h3 className="text-2xl font-black uppercase text-slate-800 border-b border-slate-100 pb-3">Transit Jaimini Rasi Drishti (Sign Aspects)</h3>
+          <DrishtiTable houses={activeHouses} reportData={transitReportData} hideGraha={true} hideSphuta={true} />
+        </div>
+      )}
+
+      {/* Tab 4: Sphuta Drishti Matrix */}
+      {currentTab === 'sphuta_drishti' && (
+        <div className="max-w-6xl mx-auto bg-white p-6 md:p-10 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-6">
+          <h3 className="text-2xl font-black uppercase text-slate-800 border-b border-slate-100 pb-3">Transit Sphuta Drishti Matrix (Shashtiamsa Aspect Strengths)</h3>
+          <SphutaDrishtiViewer sphutaDrishtiData={calculatedSphuta} planetPositions={formattedTransitPositions} />
+        </div>
+      )}
+
+      {/* Tab 5: Vakri & Margi Insights */}
+      {currentTab === 'vakri_insights' && (
+        <div className="max-w-6xl mx-auto space-y-6">
+          <VakriMargiInsightPanel transitPositions={transitPositions} currentDate={currentDate} />
+        </div>
+      )}
+
+      {/* Tab 6: All Aspect Analytics */}
+      {currentTab === 'all_aspects' && (
+        <div className="max-w-6xl mx-auto bg-white p-6 md:p-10 rounded-[2.5rem] border border-slate-200 shadow-xl space-y-6">
+          <h3 className="text-2xl font-black uppercase text-slate-800 border-b border-slate-100 pb-3">All Transit Aspect Analytics</h3>
+          <DrishtiTable houses={activeHouses} reportData={transitReportData} />
+        </div>
+      )}
+
+      {/* Detailed Gochar Analysis Section */}
+      <div className="mt-12 bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-xl">
+        <h3 className="text-2xl font-black uppercase tracking-tight mb-8 text-slate-800 border-b border-slate-100 pb-4">Detailed Gochar Analysis (गोचर फल)</h3>
+        <div className="space-y-6">
+          {Object.entries(transitPositions).map(([planet, pos]) => {
+            const valid = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
+            if (!valid.includes(planet)) return null;
+
+            const signIdx = pos.sidereal?.sign_index !== undefined ? pos.sidereal.sign_index : Math.floor(pos.sidereal.lon / 30);
+            let moonSignIndex = 0;
+            if (initialData?.planet_positions) {
+              const moonPos = Array.isArray(initialData.planet_positions)
+                ? initialData.planet_positions.find(p => p.planet === "Moon" || p.name === "Moon")
+                : Object.values(initialData.planet_positions).find(p => p.planet === "Moon" || p.name === "Moon");
+              if (moonPos) {
+                moonSignIndex = moonPos.sidereal?.sign_index !== undefined
+                  ? moonPos.sidereal.sign_index
+                  : Math.floor((moonPos.sidereal?.lon || moonPos.lon || 0) / 30);
               }
-              const transitHouse = ((signIdx - moonSignIndex + 12) % 12) + 1;
-              const HINDI_PLANETS = {
-                "Sun": "सूर्य", "Moon": "चंद्र", "Mars": "मंगल", "Mercury": "बुध", "Jupiter": "गुरु", "Venus": "शुक्र", "Saturn": "शनि", "Rahu": "राहु", "Ketu": "केतु"
+            }
+            const transitHouse = ((signIdx - moonSignIndex + 12) % 12) + 1;
+            const HINDI_PLANETS = {
+              "Sun": "सूर्य", "Moon": "चंद्र", "Mars": "मंगल", "Mercury": "बुध", "Jupiter": "गुरु", "Venus": "शुक्र", "Saturn": "शनि", "Rahu": "राहु", "Ketu": "केतु"
+            };
+            const HINDI_SIGNS = [
+              "मेष", "वृषभ", "मिथुन", "कर्क", "सिंह", "कन्या", "तुला", "वृश्चिक", "धनु", "मकर", "कुंभ", "मीन"
+            ];
+            const getGocharText = (pName, house) => {
+              const auspicious = {
+                "Sun": [3, 6, 10, 11],
+                "Moon": [1, 3, 6, 7, 10, 11],
+                "Mars": [3, 6, 11],
+                "Mercury": [2, 4, 6, 8, 10, 11],
+                "Jupiter": [2, 5, 7, 9, 11],
+                "Venus": [1, 2, 3, 4, 5, 8, 9, 11, 12],
+                "Saturn": [3, 6, 11],
+                "Rahu": [3, 6, 10, 11],
+                "Ketu": [3, 6, 11]
               };
-              const HINDI_SIGNS = [
-                "मेष", "वृषभ", "मिथुन", "कर्क", "सिंह", "कन्या", "तुला", "वृश्चिक", "धनु", "मकर", "कुंभ", "मीन"
-              ];
-              const getGocharText = (pName, house) => {
-                const auspicious = {
-                  "Sun": [3, 6, 10, 11],
-                  "Moon": [1, 3, 6, 7, 10, 11],
-                  "Mars": [3, 6, 11],
-                  "Mercury": [2, 4, 6, 8, 10, 11],
-                  "Jupiter": [2, 5, 7, 9, 11],
-                  "Venus": [1, 2, 3, 4, 5, 8, 9, 11, 12],
-                  "Saturn": [3, 6, 11],
-                  "Rahu": [3, 6, 10, 11],
-                  "Ketu": [3, 6, 11]
-                };
-                const isGood = auspicious[pName]?.includes(house);
-                const hindiP = HINDI_PLANETS[pName] || pName;
-                if (isGood) {
-                  return `आपकी जन्म चंद्र राशि से ${house}वें भाव में ${hindiP} का गोचर अत्यंत शुभ फलदायक माना जाता है। इस अवधि में आपको अपने प्रयासों में सफलता, आर्थिक लाभ, और स्वास्थ्य में सुधार देखने को मिलेगा। रुके हुए कार्य संपन्न होंगे और सामाजिक मान-सम्मान में वृद्धि होगी। सकारात्मक ऊर्जा का संचार होगा।`;
-                } else {
-                  return `आपकी जन्म चंद्र राशि से ${house}वें भाव में ${hindiP} का गोचर संघर्ष और कुछ चुनौतियों का संकेत देता है। इस अवधि में आपको स्वास्थ्य के प्रति सावधान रहना चाहिए, व्यर्थ के वाद-विवाद से बचना चाहिए, और आर्थिक मामलों में अत्यधिक सतर्कता बरतनी चाहिए। धैर्य और संयम से काम लें।`;
-                }
-              };
-              const pName = HINDI_PLANETS[planet] || planet;
-              const sName = HINDI_SIGNS[signIdx] || "";
+              const isGood = auspicious[pName]?.includes(house);
+              const hindiP = HINDI_PLANETS[pName] || pName;
+              if (isGood) {
+                return `आपकी जन्म चंद्र राशि से ${house}वें भाव में ${hindiP} का गोचर अत्यंत शुभ फलदायक माना जाता है। इस अवधि में आपको अपने प्रयासों में सफलता, आर्थिक लाभ, और स्वास्थ्य में सुधार देखने को मिलेगा। रुके हुए कार्य संपन्न होंगे और सामाजिक मान-सम्मान में वृद्धि होगी। सकारात्मक ऊर्जा का संचार होगा।`;
+              } else {
+                return `आपकी जन्म चंद्र राशि से ${house}वें भाव में ${hindiP} का गोचर संघर्ष और कुछ चुनौतियों का संकेत देता है। इस अवधि में आपको स्वास्थ्य के प्रति सावधान रहना चाहिए, व्यर्थ के वाद-विवाद से बचना चाहिए, और आर्थिक मामलों में अत्यधिक सतर्कता बरतनी चाहिए। धैर्य और संयम से काम लें।`;
+              }
+            };
+            const pName = HINDI_PLANETS[planet] || planet;
+            const sName = HINDI_SIGNS[signIdx] || "";
 
-              return (
-                <div key={planet} className="bg-slate-50 p-6 rounded-2xl border border-slate-100 shadow-sm">
-                  <h4 className="text-xl font-bold text-indigo-900 mb-3 border-b border-slate-200 pb-2">
-                    {pName} {sName} राशि में आपकी चंद्र राशि से भाव {transitHouse} में गोचर कर रहा है
-                  </h4>
-                  <p className="text-gray-700 leading-relaxed font-serif text-lg">
-                    {getGocharText(planet, transitHouse)}
-                  </p>
-                </div>
-              );
-            })}
-          </div>
+            return (
+              <div key={planet} className="bg-slate-50 p-6 rounded-2xl border border-slate-100 shadow-sm">
+                <h4 className="text-xl font-bold text-indigo-900 mb-3 border-b border-slate-200 pb-2">
+                  {pName} {sName} राशि में आपकी चंद्र राशि से भाव {transitHouse} में गोचर कर रहा है
+                </h4>
+                <p className="text-gray-700 leading-relaxed font-serif text-lg">
+                  {getGocharText(planet, transitHouse)}
+                </p>
+              </div>
+            );
+          })}
         </div>
-
       </div>
+
     </div>
   );
-};
+}
+
 
 const TransitGemstonePanel = ({ data, transitPositions }) => {
   const lagnaHouse = data.charts?.houses?.[1] || data.charts?.houses?.["1"] || {};

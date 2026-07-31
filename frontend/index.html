@@ -10,27 +10,26 @@
 
 <body>
   <style>
-    /* Wrapper that sticks to the right side of the screen */
+    /* Wrapper that sticks to the left side of the screen */
     .translate-wrapper {
       position: fixed;
       top: 50%;
-      right: 0;
+      left: 0;
       transform: translateY(-50%);
       z-index: 10000;
       display: flex;
-      flex-direction: row-reverse;
+      flex-direction: row;
       align-items: center;
     }
 
-    /* The vertical blue button */
+    /* The vertical button */
     .translate-btn {
       background-color: hsl(34, 91%, 60%);
-      /* Blue */
       color: #130a0a;
       padding: 16px 8px;
-      border-radius: 8px 0 0 8px;
+      border-radius: 0 8px 8px 0;
       cursor: pointer;
-      box-shadow: -2px 0 6px rgba(0, 0, 0, 0.2);
+      box-shadow: 2px 0 6px rgba(0, 0, 0, 0.2);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -52,13 +51,13 @@
       font-size: 16px;
     }
 
-    /* The actual Google Translate container (hidden by default, expands on hover) */
+    /* The actual Google Translate container (hidden by default, expands on click/hover) */
     .translate-content {
       background: white;
       padding: 10px;
-      border-radius: 8px 0 0 8px;
-      box-shadow: -4px 0 8px rgba(0, 0, 0, 0.1);
-      margin-right: -100%;
+      border-radius: 0 8px 8px 0;
+      box-shadow: 4px 0 8px rgba(0, 0, 0, 0.1);
+      margin-left: -100%;
       /* Hide off-screen initially */
       opacity: 0;
       visibility: hidden;
@@ -67,7 +66,7 @@
 
     /* Show the translate dropdown when clicking the wrapper */
     .translate-wrapper.active .translate-content {
-      margin-right: 0;
+      margin-left: 0;
       opacity: 1;
       visibility: visible;
     }
@@ -110,7 +109,7 @@
   <!-- Clickable Vertical Translate Tab -->
   <div class="translate-wrapper" id="translateWrapper">
     <div class="translate-btn" id="translateBtn">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"
         stroke-linecap="round" stroke-linejoin="round">
         <path d="m5 8 6 6"></path>
         <path d="m4 14 6-6 2-3"></path>

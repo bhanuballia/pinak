@@ -629,6 +629,210 @@ const CompatibilityDashboard = ({ bride, groom, brideFullData, groomFullData, re
                </section>
             )}
 
+            {/* Strī Jātak (Female Horoscopy) Insights */}
+            {report.stri_jatak_insights && (
+               <section className="bg-white rounded-[2.5rem] p-12 shadow-xl border border-slate-100 relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-48 h-48 bg-pink-500/5 rounded-full blur-[80px] -mr-10 -mt-10"></div>
+                  <div className="text-center mb-10">
+                     <h3 className="text-[14px] font-black uppercase tracking-[0.5em] text-pink-600 mb-2">Strī Jātak (स्त्री जातक)</h3>
+                     <h2 className="text-3xl font-serif italic text-slate-800">Female Horoscopy Compatibility Insights</h2>
+                     <p className="text-sm text-slate-500 mt-2 max-w-xl mx-auto">
+                        Classical astrological assessments for the bride based on Maharishi Parasara's rules for temperament, character, longevity, and marital harmony.
+                     </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                     {/* Temperament Sign Polarity */}
+                     {report.stri_jatak_insights.temperament && (
+                        <div className="p-6 rounded-3xl border border-slate-100 bg-slate-50/50 flex flex-col justify-between">
+                           <div>
+                              <div className="flex justify-between items-start mb-4">
+                                 <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-2xl">🌸</div>
+                                 <span className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-full ${
+                                    report.stri_jatak_insights.temperament.status === 'Truly Feminine'
+                                       ? 'bg-emerald-100 text-emerald-800'
+                                       : 'bg-indigo-100 text-indigo-800'
+                                 }`}>
+                                    {report.stri_jatak_insights.temperament.status}
+                                 </span>
+                              </div>
+                              <h4 className="text-lg font-bold text-slate-800 mb-2">Temperament & Polarities</h4>
+                              <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                                 {report.stri_jatak_insights.temperament.description}
+                              </p>
+                              {report.stri_jatak_insights.temperament.simple_explanation && (
+                                 <div className="mt-auto pt-3 border-t border-slate-200/50">
+                                    <div className="text-[10px] font-black uppercase text-indigo-500 mb-1 tracking-wider">🌱 Simple Meaning</div>
+                                    <div className="text-[12px] text-slate-700 font-medium italic">
+                                       "{report.stri_jatak_insights.temperament.simple_explanation}"
+                                    </div>
+                                 </div>
+                              )}
+                           </div>
+                        </div>
+                     )}
+
+                     {/* Trimsamsa Character Profile */}
+                     {report.stri_jatak_insights.trimsamsa && (
+                        <div className="p-6 rounded-3xl border border-slate-100 bg-slate-50/50 flex flex-col justify-between">
+                           <div>
+                              <div className="flex justify-between items-start mb-4">
+                                 <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-2xl">💎</div>
+                                 <span className="text-[10px] font-black uppercase px-3 py-1.5 rounded-full bg-amber-100 text-amber-800">
+                                    {report.stri_jatak_insights.trimsamsa.trimsamsa_lord} Trimsamsa
+                                 </span>
+                              </div>
+                              <h4 className="text-lg font-bold text-slate-800 mb-2">Character & Virtues (Trimsamsa)</h4>
+                              <p className="text-slate-600 text-sm leading-relaxed mb-1">
+                                 {report.stri_jatak_insights.trimsamsa.outcome}
+                              </p>
+                              <div className="text-[10px] text-slate-400 font-semibold mb-4">
+                                 Moon Owner: {report.stri_jatak_insights.trimsamsa.moon_sign_owner} | Trimsamsa Lord: {report.stri_jatak_insights.trimsamsa.trimsamsa_lord}
+                              </div>
+                              {report.stri_jatak_insights.trimsamsa.simple_explanation && (
+                                 <div className="mt-auto pt-3 border-t border-slate-200/50">
+                                    <div className="text-[10px] font-black uppercase text-amber-600 mb-1 tracking-wider">🌱 Simple Meaning</div>
+                                    <div className="text-[12px] text-slate-700 font-medium italic">
+                                       "{report.stri_jatak_insights.trimsamsa.simple_explanation}"
+                                    </div>
+                                 </div>
+                              )}
+                           </div>
+                        </div>
+                     )}
+
+                     {/* Visha Kanya Yoga */}
+                     {report.stri_jatak_insights.visha_kanya && (
+                        <div className="p-6 rounded-3xl border border-slate-100 bg-slate-50/50 flex flex-col justify-between">
+                           <div>
+                              <div className="flex justify-between items-start mb-4">
+                                 <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-2xl">🐍</div>
+                                 <span className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-full ${
+                                    report.stri_jatak_insights.visha_kanya.present
+                                       ? (report.stri_jatak_insights.visha_kanya.cancelled ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800')
+                                       : 'bg-emerald-100 text-emerald-800'
+                                 }`}>
+                                    {report.stri_jatak_insights.visha_kanya.present
+                                       ? (report.stri_jatak_insights.visha_kanya.cancelled ? 'Cancelled' : 'Dosha Present')
+                                       : 'Clear'}
+                                 </span>
+                              </div>
+                              <h4 className="text-lg font-bold text-slate-800 mb-2">Visha Kanya (विषकन्या) Analysis</h4>
+                              <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                                 {report.stri_jatak_insights.visha_kanya.present
+                                    ? report.stri_jatak_insights.visha_kanya.details
+                                    : "No Visha Kanya configurations detected in the birth profile."}
+                              </p>
+                              {report.stri_jatak_insights.visha_kanya.cancelled && (
+                                 <div className="mb-4 p-3 bg-emerald-50 border border-emerald-100 rounded-xl text-[11px] text-emerald-800 font-bold">
+                                    ✨ {report.stri_jatak_insights.visha_kanya.cancellation_reason}
+                                 </div>
+                              )}
+                              {report.stri_jatak_insights.visha_kanya.simple_explanation && (
+                                 <div className="mt-auto pt-3 border-t border-slate-200/50">
+                                    <div className="text-[10px] font-black uppercase text-rose-500 mb-1 tracking-wider">🌱 Simple Meaning</div>
+                                    <div className="text-[12px] text-slate-700 font-medium italic">
+                                       "{report.stri_jatak_insights.visha_kanya.simple_explanation}"
+                                    </div>
+                                 </div>
+                              )}
+                           </div>
+                        </div>
+                     )}
+
+                     {/* 7th House */}
+                     {report.stri_jatak_insights.seventh_house && (
+                        <div className="p-6 rounded-3xl border border-slate-100 bg-slate-50/50 flex flex-col justify-between">
+                           <div>
+                              <div className="flex justify-between items-start mb-4">
+                                 <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-2xl">🏰</div>
+                                 <span className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-full ${
+                                    report.stri_jatak_insights.seventh_house.status.includes('Malefic')
+                                       ? 'bg-rose-100 text-rose-800'
+                                       : 'bg-emerald-100 text-emerald-800'
+                                 }`}>
+                                    {report.stri_jatak_insights.seventh_house.status}
+                                 </span>
+                              </div>
+                              <h4 className="text-lg font-bold text-slate-800 mb-2">7th House (Marital Happiness)</h4>
+                              <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                                 {report.stri_jatak_insights.seventh_house.description}
+                              </p>
+                              {report.stri_jatak_insights.seventh_house.simple_explanation && (
+                                 <div className="mt-auto pt-3 border-t border-slate-200/50">
+                                    <div className="text-[10px] font-black uppercase text-indigo-500 mb-1 tracking-wider">🌱 Simple Meaning</div>
+                                    <div className="text-[12px] text-slate-700 font-medium italic">
+                                       "{report.stri_jatak_insights.seventh_house.simple_explanation}"
+                                    </div>
+                                 </div>
+                              )}
+                           </div>
+                        </div>
+                     )}
+
+                     {/* 8th House */}
+                     {report.stri_jatak_insights.eighth_house && (
+                        <div className="p-6 rounded-3xl border border-slate-100 bg-slate-50/50 flex flex-col justify-between">
+                           <div>
+                              <div className="flex justify-between items-start mb-4">
+                                 <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-2xl">⏳</div>
+                                 <span className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-full ${
+                                    report.stri_jatak_insights.eighth_house.status.includes('Malefic')
+                                       ? 'bg-rose-100 text-rose-800'
+                                       : 'bg-emerald-100 text-emerald-800'
+                                 }`}>
+                                    {report.stri_jatak_insights.eighth_house.status}
+                                 </span>
+                              </div>
+                              <h4 className="text-lg font-bold text-slate-800 mb-2">8th House (Spouse's Longevity)</h4>
+                              <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                                 {report.stri_jatak_insights.eighth_house.description}
+                              </p>
+                              {report.stri_jatak_insights.eighth_house.simple_explanation && (
+                                 <div className="mt-auto pt-3 border-t border-slate-200/50">
+                                    <div className="text-[10px] font-black uppercase text-indigo-500 mb-1 tracking-wider">🌱 Simple Meaning</div>
+                                    <div className="text-[12px] text-slate-700 font-medium italic">
+                                       "{report.stri_jatak_insights.eighth_house.simple_explanation}"
+                                    </div>
+                                 </div>
+                              )}
+                           </div>
+                        </div>
+                     )}
+
+                     {/* Mangal Matching */}
+                     {report.stri_jatak_insights.mangal_matching && (
+                        <div className="p-6 rounded-3xl border border-slate-100 bg-slate-50/50 flex flex-col justify-between">
+                           <div>
+                              <div className="flex justify-between items-start mb-4">
+                                 <div className="w-12 h-12 bg-pink-100 rounded-full flex items-center justify-center text-2xl">🔥</div>
+                                 <span className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-full ${
+                                    report.stri_jatak_insights.mangal_matching.status.includes('Perfect')
+                                       ? 'bg-emerald-100 text-emerald-800'
+                                       : (report.stri_jatak_insights.mangal_matching.status.includes('Afflicted') ? 'bg-rose-100 text-rose-800' : 'bg-slate-100 text-slate-800')
+                                 }`}>
+                                    {report.stri_jatak_insights.mangal_matching.status}
+                                 </span>
+                              </div>
+                              <h4 className="text-lg font-bold text-slate-800 mb-2">Manglik Dosha Matching</h4>
+                              <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                                 {report.stri_jatak_insights.mangal_matching.description}
+                              </p>
+                              {report.stri_jatak_insights.mangal_matching.simple_explanation && (
+                                 <div className="mt-auto pt-3 border-t border-slate-200/50">
+                                    <div className="text-[10px] font-black uppercase text-red-500 mb-1 tracking-wider">🌱 Simple Meaning</div>
+                                    <div className="text-[12px] text-slate-700 font-medium italic">
+                                       "{report.stri_jatak_insights.mangal_matching.simple_explanation}"
+                                    </div>
+                                 </div>
+                              )}
+                           </div>
+                        </div>
+                     )}
+                  </div>
+               </section>
+            )}
+
             {/* Step 2.5: Vivah Muhurta Planner Section */}
             {report && (
                <section className="bg-white rounded-[2.5rem] p-12 shadow-xl border border-slate-100 relative overflow-hidden">

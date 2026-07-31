@@ -143,6 +143,9 @@ def run_marriage_matching(bride_data: Dict[str, Any], groom_data: Dict[str, Any]
         bride_kundali_analysis = analyze_bride_chart(bride_data)
         groom_kundali_analysis = analyze_groom_chart(groom_data)
         
+        from matchmaking.female_horoscopy import calculate_stri_jatak
+        stri_jatak_insights = calculate_stri_jatak(bride_data, groom_data)
+        
         # Calculate custom matchmaking topics (In-laws, family, living, etc.)
         from matchmaking.family.custom_topics import CustomTopicsEngine
         custom_topics_eng = CustomTopicsEngine()
@@ -194,7 +197,8 @@ def run_marriage_matching(bride_data: Dict[str, Any], groom_data: Dict[str, Any]
             },
             "enterprise_analysis": enterprise_results,
             "bride_kundali_analysis": bride_kundali_analysis,
-            "groom_kundali_analysis": groom_kundali_analysis
+            "groom_kundali_analysis": groom_kundali_analysis,
+            "stri_jatak_insights": stri_jatak_insights
         }
     except Exception as e:
         print(f"[MARRIAGE ENGINE ERROR] {e}")

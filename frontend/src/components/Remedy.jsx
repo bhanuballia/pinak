@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import EncyclopediaRemediesViewer from './EncyclopediaRemediesViewer';
 
 export default function Remedy() {
     const [data, setData] = useState(null);
@@ -83,14 +84,16 @@ export default function Remedy() {
     const suggestions = getSuggestions();
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#020617', color: 'white', fontFamily: 'serif', padding: '60px' }}>
-            <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
-                <header style={{ textAlign: 'center', marginBottom: '80px' }}>
-                    <h4 style={{ color: '#d4af37', textTransform: 'uppercase', letterSpacing: '8px', fontSize: '14px', fontWeight: 900 }}>Divine Remedies</h4>
-                    <h1 style={{ fontSize: '64px', fontWeight: 900, fontStyle: 'italic', marginTop: '10px', background: 'linear-gradient(to right, #dc2626, #fde68a, #dc2626)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                        Yantra Suggestions
+        <div className="min-h-screen bg-slate-950 text-white">
+            <EncyclopediaRemediesViewer />
+
+            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '0 40px 60px 40px' }}>
+                <header style={{ textAlign: 'center', marginBottom: '40px', paddingTop: '40px', borderTop: '1px solid rgba(255,255,255,0.1)' }}>
+                    <h4 style={{ color: '#d4af37', textTransform: 'uppercase', letterSpacing: '8px', fontSize: '14px', fontWeight: 900 }}>Sacred Yantras</h4>
+                    <h1 style={{ fontSize: '48px', fontWeight: 900, fontStyle: 'italic', marginTop: '10px', background: 'linear-gradient(to right, #dc2626, #fde68a, #dc2626)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                        Personalized Yantra Prescriptions
                     </h1>
-                    <p style={{ opacity: 0.6, fontSize: '18px', maxWidth: '700px', margin: '20px auto' }}>
+                    <p style={{ opacity: 0.6, fontSize: '16px', maxWidth: '700px', margin: '15px auto' }}>
                         Sacred geometry prescriptions based on your unique planetary configuration and cosmic alignments.
                     </p>
                 </header>

@@ -1,0 +1,2637 @@
+{
+  "bookTitle": "Encyclopedia of Astrological Remedies",
+  "author": "Yashkaran Sharma",
+  "editor": "Arun Kumar Bansal",
+  "publisher": "All India Federation of Astrologers' Societies (AIFAS) / Future Point Pvt. Ltd.",
+  "generalPrinciples": {
+    "durationDays": 43,
+    "rule43Days": "All types of Pujas, Yagyas, Mantrajapa, Gemstones, and Rudrakshas start giving their auspicious results after 40 to 43 days of continuous practice or wearing.",
+    "ringVsLocket": "Wearing a gem in a ring is more effective because the stone touches the skin of the finger, which connects directly to brain nerves. In lockets, the gemstone weight should be double that of a ring.",
+    "gemLifespanYears": 3,
+    "gemLifespanNote": "All gemstones (except Diamond) yield maximum power for 3 years, after which they should be recharged, replaced, or donated.",
+    "exceptions": [
+      "Diamond is forever and does not require replacement after 3 years."
+    ]
+  },
+  "presidingDeities": {
+    "Sun": {
+      "planet": "Sun (Surya)",
+      "vishnuAvatar": "Sri Rama",
+      "presidingDeity": "Agni / Surya God",
+      "jaiminiDeity": "Lord Shiva",
+      "tantrikDeity": "Goddess Matangi",
+      "vedicMantra": "Om Hraang Hreeng Hraung Sah Suryaye Namah",
+      "lalKitabDeity": "Lord Vishnu",
+      "lalKitabDonations": "Wheat, Copper, Red Cloth",
+      "signElementRemedy": "Fiery Signs (Aries, Leo, Sagi): Perform Yagya, Homa & Fasting (Vrat)"
+    },
+    "Moon": {
+      "planet": "Moon (Chandra)",
+      "vishnuAvatar": "Sri Krishna",
+      "presidingDeity": "Jala (Water God)",
+      "jaiminiDeity": "Gauri",
+      "tantrikDeity": "Goddess Bhuvaneswari",
+      "vedicMantra": "Om Shraang Shreeng Shraung Sah Chandramase Namah",
+      "lalKitabDeity": "Lord Shiva",
+      "lalKitabDonations": "Rice, Milk, Ghee, Curd, Pearl, Silver",
+      "signElementRemedy": "Watery Signs (Cancer, Scorpio, Pisces): Practice Charity (Daan) & Jal Visarjan"
+    },
+    "Mars": {
+      "planet": "Mars (Mangal)",
+      "vishnuAvatar": "Sri Narasimha",
+      "presidingDeity": "Skanda (Kartikeya)",
+      "jaiminiDeity": "Skanda",
+      "tantrikDeity": "Goddess Baglamukhi / Durga",
+      "vedicMantra": "Om Kraang Kreeng Kraung Sah Bhoumaye Namah",
+      "lalKitabDeity": "Lord Hanuman",
+      "lalKitabDonations": "Masoor Dal (Red Lentil), Saunf, Red Coral, Sugar, Bull",
+      "signElementRemedy": "Fiery Signs (Aries, Leo, Sagi): Yagya, Homa & Hanuman Worship"
+    },
+    "Mercury": {
+      "planet": "Mercury (Budh)",
+      "vishnuAvatar": "Sri Buddha",
+      "presidingDeity": "Lord Vishnu",
+      "jaiminiDeity": "Lord Vishnu",
+      "tantrikDeity": "Goddess Tripursundari / Tripurbhairavi",
+      "vedicMantra": "Om Braang Breeng Braung Sah Buddhaye Namah",
+      "lalKitabDeity": "Goddess Durga",
+      "lalKitabDonations": "Moong Dal (Green Lentil), Emerald, Green Cloth",
+      "signElementRemedy": "Airy Signs (Gemini, Libra, Aquarius): Mantra Japa & Stotra Chanting"
+    },
+    "Jupiter": {
+      "planet": "Jupiter (Guru)",
+      "vishnuAvatar": "Sri Vamana",
+      "presidingDeity": "Indra",
+      "jaiminiDeity": "Sambasiva",
+      "tantrikDeity": "Goddess Tara",
+      "vedicMantra": "Om Graang Greeng Graung Sah Guruvey Namah",
+      "lalKitabDeity": "Lord Brahma",
+      "lalKitabDonations": "Gram Dal, Turmeric, Saffron, Yellow Sapphire, Gold",
+      "signElementRemedy": "Fiery Signs (Aries, Leo, Sagi): Yagya, Guru Puja & Fasting on Thursday"
+    },
+    "Venus": {
+      "planet": "Venus (Shukra)",
+      "vishnuAvatar": "Sri Parasurama",
+      "presidingDeity": "Shachi Devi",
+      "jaiminiDeity": "Goddess Lakshmi",
+      "tantrikDeity": "Goddess Kamala / Tripura Sundari",
+      "vedicMantra": "Om Draang Dreeng Draung Sah Shukraay Namah",
+      "lalKitabDeity": "Goddess Lakshmi",
+      "lalKitabDonations": "Curd, Jwar (Sorghum), Pearl, Silk, Silver",
+      "signElementRemedy": "Airy/Earthy Signs: Wearing Diamond/Zircon, Charity to Women"
+    },
+    "Saturn": {
+      "planet": "Saturn (Shani)",
+      "vishnuAvatar": "Sri Koorma",
+      "presidingDeity": "Lord Brahma",
+      "jaiminiDeity": "Narayana",
+      "tantrikDeity": "Goddess Kali / Bhairava",
+      "vedicMantra": "Om Praang Preeng Praung Sah Shaneshcharaay Namah",
+      "lalKitabDeity": "Lord Bhairava",
+      "lalKitabDonations": "Sesame Oil Lamp, Urad Dal (Black Gram), Iron, Black Gem, Mustard Oil",
+      "signElementRemedy": "Earthy Signs (Taurus, Virgo, Cap): Metal Ring, Dev Darshana & Oil Lamp"
+    },
+    "Rahu": {
+      "planet": "Rahu",
+      "vishnuAvatar": "Sri Varaha",
+      "presidingDeity": "Goddess Durga",
+      "jaiminiDeity": "Durga",
+      "tantrikDeity": "Goddess Chhinnamasta / Saraswati",
+      "vedicMantra": "Om Bhraang Bhreeng Bhraung Sah Rahve Namah",
+      "lalKitabDeity": "Goddess Saraswati",
+      "lalKitabDonations": "Barley, Lead/Coins, Blue Sapphire, Mustard, Goat",
+      "signElementRemedy": "Watery Signs: Jal Visarjan of Barley / Coconut in running water"
+    },
+    "Ketu": {
+      "planet": "Ketu",
+      "vishnuAvatar": "Sri Matsya",
+      "presidingDeity": "Ganpati (Lord Ganesha)",
+      "jaiminiDeity": "Ganpati",
+      "tantrikDeity": "Goddess Dhumavati",
+      "vedicMantra": "Om Sraang Sreeng Sraung Sah Ketue Namah",
+      "lalKitabDeity": "Lord Ganesha",
+      "lalKitabDonations": "Black & White Blanket, Banana, Til (Sesame) Seeds",
+      "signElementRemedy": "Watery/Airy Signs: Ganesh Puja, Feeding street dogs, Jal Visarjan"
+    }
+  },
+  "ninePrimaryGems": [
+    {
+      "planet": "Sun",
+      "gem": "Ruby (Manikya)",
+      "substitutes": [
+        "Garnet",
+        "Spinel (Suryamani)"
+      ],
+      "color": "Rose / Pigeon Blood Red",
+      "caratWeight": "5 to 8 carats",
+      "metal": "Gold",
+      "finger": "Ring Finger",
+      "day": "Sunday (Morning at Sunrise)",
+      "mantra": "Om Hraang Hreeng Hraung Sah Suryaye Namah",
+      "benefits": "Glory, government recognition, confidence, leadership, curing peptic ulcer and rheumatism."
+    },
+    {
+      "planet": "Moon",
+      "gem": "Pearl (Moti)",
+      "substitutes": [
+        "Moon Stone"
+      ],
+      "color": "White / Cream",
+      "caratWeight": "3 to 9 carats",
+      "metal": "Silver",
+      "finger": "Little Finger / Ring Finger",
+      "day": "Monday (Morning)",
+      "mantra": "Om Shraang Shreeng Shraung Sah Chandramase Namah",
+      "benefits": "Mental peace, emotional stability, sound sleep, beauty, curing hysteria and mood swings."
+    },
+    {
+      "planet": "Mars",
+      "gem": "Coral (Moonga)",
+      "substitutes": [
+        "White Coral"
+      ],
+      "color": "Red",
+      "caratWeight": "4 to 12 carats",
+      "metal": "Gold, Silver, or Copper",
+      "finger": "Ring Finger",
+      "day": "Tuesday (Morning)",
+      "mantra": "Om Kraang Kreeng Kraung Sah Bhoumaye Namah",
+      "benefits": "Physical stamina, courage, victory over enemies, curing fever, blood disorders, and vital energy."
+    },
+    {
+      "planet": "Mercury",
+      "gem": "Emerald (Panna)",
+      "substitutes": [
+        "Peridot",
+        "Green Tourmaline"
+      ],
+      "color": "Emerald Green",
+      "caratWeight": "3 to 7 carats",
+      "metal": "Gold",
+      "finger": "Little Finger",
+      "day": "Wednesday (Morning)",
+      "mantra": "Om Braang Breeng Braung Sah Buddhaye Namah",
+      "benefits": "Sharp intellect, business communication, memory power, curing stammering and nervousness."
+    },
+    {
+      "planet": "Jupiter",
+      "gem": "Yellow Sapphire (Pukhraj)",
+      "substitutes": [
+        "Topaz",
+        "Citrine (Sunela)"
+      ],
+      "color": "Yellow / Golden",
+      "caratWeight": "4 to 8 carats",
+      "metal": "Gold",
+      "finger": "Index Finger",
+      "day": "Thursday (Morning)",
+      "mantra": "Om Graang Greeng Graung Sah Guruvey Namah",
+      "benefits": "Wisdom, higher education, spiritual growth, financial prosperity, marital bliss."
+    },
+    {
+      "planet": "Venus",
+      "gem": "Diamond (Heera)",
+      "substitutes": [
+        "Zircon",
+        "Opal",
+        "Crystal"
+      ],
+      "color": "White / Sparkling",
+      "caratWeight": "0.25 to 1.25 carats",
+      "metal": "White Gold / Platinum / Silver",
+      "finger": "Middle Finger or Ring Finger",
+      "day": "Friday (Morning)",
+      "mantra": "Om Draang Dreeng Draung Sah Shukraay Namah",
+      "benefits": "Luxury, romance, glamour, creative arts, physical attraction, marital happiness."
+    },
+    {
+      "planet": "Saturn",
+      "gem": "Blue Sapphire (Neelam)",
+      "substitutes": [
+        "Neeli (Sodalite)",
+        "Amethyst",
+        "Lapis Lazuli",
+        "Turquoise",
+        "Aquamarine"
+      ],
+      "color": "Deep Blue",
+      "caratWeight": "4 to 7 carats",
+      "metal": "Five Metals (Panchdhatu) / Iron / Steel",
+      "finger": "Middle Finger",
+      "day": "Saturday (Evening)",
+      "mantra": "Om Praang Preeng Praung Sah Shaneshcharaay Namah",
+      "benefits": "Instant Rajyoga, overcoming chronic delays, wealth accumulation, protection from evil eye."
+    },
+    {
+      "planet": "Rahu",
+      "gem": "Hessonite (Gomed)",
+      "substitutes": [
+        "Brown Agate",
+        "Brown Zircon",
+        "Brown Tourmaline"
+      ],
+      "color": "Honey Brown",
+      "caratWeight": "6 to 13 carats",
+      "metal": "Eight Metals (Ashtadhatu) / Silver",
+      "finger": "Middle Finger",
+      "day": "Saturday (Evening)",
+      "mantra": "Om Bhraang Bhreeng Bhraung Sah Rahve Namah",
+      "benefits": "Political success, quick wealth gains, curing skin & digestive issues, removing confusion."
+    },
+    {
+      "planet": "Ketu",
+      "gem": "Cat's Eye (Lehsuniya)",
+      "substitutes": [
+        "Tiger's Eye",
+        "Alexandrite",
+        "Amber"
+      ],
+      "color": "Greyish Green with Cat's Eye Chatoyancy",
+      "caratWeight": "3 to 7 carats",
+      "metal": "Gold or Silver",
+      "finger": "Middle Finger or Ring Finger",
+      "day": "Saturday (Evening)",
+      "mantra": "Om Sraang Sreeng Sraung Sah Ketue Namah",
+      "benefits": "Protection from sudden business losses, speculative gains, spiritual awakening, curing stomach disorders."
+    }
+  ],
+  "lagnaGemMatrix": {
+    "Aries": {
+      "ascendant": "Aries (Mesha)",
+      "lifeStone": "Coral (Moonga)",
+      "karakaStone": "Ruby (Manikya)",
+      "luckyStone": "Yellow Sapphire (Pukhraj)",
+      "incompatible": [
+        "Diamond",
+        "Emerald",
+        "Blue Sapphire"
+      ]
+    },
+    "Taurus": {
+      "ascendant": "Taurus (Vrishabha)",
+      "lifeStone": "Diamond (Heera)",
+      "karakaStone": "Emerald (Panna)",
+      "luckyStone": "Blue Sapphire (Neelam)",
+      "incompatible": [
+        "Ruby",
+        "Pearl",
+        "Coral",
+        "Yellow Sapphire"
+      ]
+    },
+    "Gemini": {
+      "ascendant": "Gemini (Mithuna)",
+      "lifeStone": "Emerald (Panna)",
+      "karakaStone": "Diamond (Heera)",
+      "luckyStone": "Blue Sapphire (Neelam)",
+      "incompatible": [
+        "Ruby",
+        "Pearl",
+        "Coral"
+      ]
+    },
+    "Cancer": {
+      "ascendant": "Cancer (Karka)",
+      "lifeStone": "Pearl (Moti)",
+      "karakaStone": "Coral (Moonga)",
+      "luckyStone": "Yellow Sapphire (Pukhraj)",
+      "incompatible": [
+        "Blue Sapphire",
+        "Emerald",
+        "Diamond"
+      ]
+    },
+    "Leo": {
+      "ascendant": "Leo (Simha)",
+      "lifeStone": "Ruby (Manikya)",
+      "karakaStone": "Coral (Moonga)",
+      "luckyStone": "Yellow Sapphire (Pukhraj)",
+      "incompatible": [
+        "Diamond",
+        "Blue Sapphire",
+        "Emerald"
+      ]
+    },
+    "Virgo": {
+      "ascendant": "Virgo (Kanya)",
+      "lifeStone": "Emerald (Panna)",
+      "karakaStone": "Diamond (Heera)",
+      "luckyStone": "Blue Sapphire (Neelam)",
+      "incompatible": [
+        "Ruby",
+        "Coral",
+        "Yellow Sapphire"
+      ]
+    },
+    "Libra": {
+      "ascendant": "Libra (Tula)",
+      "lifeStone": "Diamond (Heera)",
+      "karakaStone": "Emerald (Panna)",
+      "luckyStone": "Blue Sapphire (Neelam)",
+      "incompatible": [
+        "Ruby",
+        "Coral",
+        "Yellow Sapphire"
+      ]
+    },
+    "Scorpio": {
+      "ascendant": "Scorpio (Vrishchika)",
+      "lifeStone": "Coral (Moonga)",
+      "karakaStone": "Yellow Sapphire (Pukhraj)",
+      "luckyStone": "Ruby (Manikya)",
+      "incompatible": [
+        "Diamond",
+        "Emerald",
+        "Blue Sapphire"
+      ]
+    },
+    "Sagittarius": {
+      "ascendant": "Sagittarius (Dhanu)",
+      "lifeStone": "Yellow Sapphire (Pukhraj)",
+      "karakaStone": "Ruby (Manikya)",
+      "luckyStone": "Coral (Moonga)",
+      "incompatible": [
+        "Diamond",
+        "Emerald",
+        "Blue Sapphire"
+      ]
+    },
+    "Capricorn": {
+      "ascendant": "Capricorn (Makara)",
+      "lifeStone": "Blue Sapphire (Neelam)",
+      "karakaStone": "Emerald (Panna)",
+      "luckyStone": "Diamond (Heera)",
+      "incompatible": [
+        "Ruby",
+        "Pearl",
+        "Coral",
+        "Yellow Sapphire"
+      ]
+    },
+    "Aquarius": {
+      "ascendant": "Aquarius (Kumbha)",
+      "lifeStone": "Blue Sapphire (Neelam)",
+      "karakaStone": "Diamond (Heera)",
+      "luckyStone": "Emerald (Panna)",
+      "incompatible": [
+        "Ruby",
+        "Pearl",
+        "Coral"
+      ]
+    },
+    "Pisces": {
+      "ascendant": "Pisces (Meena)",
+      "lifeStone": "Yellow Sapphire (Pukhraj)",
+      "karakaStone": "Coral (Moonga)",
+      "luckyStone": "Pearl (Moti)",
+      "incompatible": [
+        "Diamond",
+        "Emerald",
+        "Blue Sapphire"
+      ]
+    }
+  },
+  "rudrakshaDetails": [
+    {
+      "mukhi": "1 Mukhi",
+      "deity": "Param Shiva",
+      "planet": "Sun (Surya)",
+      "mantra": "Om Hreeng Namah / Om Namah Shivay",
+      "benefits": "Immense power, wealth, confidence, leadership, Raja Janak salvation.",
+      "healthEffect": "Cures right eye, head, ear, bowel, and bone diseases."
+    },
+    {
+      "mukhi": "2 Mukhi",
+      "deity": "Ardhanarishwara (Shiva & Parvati)",
+      "planet": "Moon (Chandra)",
+      "mantra": "Om Shreeng Hreeng Kshoung Vreeng",
+      "benefits": "Harmony in relationships, marital bliss, mental peace, contentment.",
+      "healthEffect": "Cures left eye, kidney, and intestine troubles."
+    },
+    {
+      "mukhi": "3 Mukhi",
+      "deity": "Agni Deva (Fire God)",
+      "planet": "Mars (Mangal)",
+      "mantra": "Om Kleeng Namah / Om Reng Hung Hreeng Hung",
+      "benefits": "Victory over enemies, removes inferiority complex, boosts self-confidence.",
+      "healthEffect": "Cures blood diseases, blood pressure, depression, jaundice, menstrual issues."
+    },
+    {
+      "mukhi": "4 Mukhi",
+      "deity": "Lord Brahma / Saraswati",
+      "planet": "Mercury (Budh)",
+      "mantra": "Om Hreeng Namah / Om Vang Kang Thang Hang",
+      "benefits": "Creativity, logic, structural thinking, speech, attractiveness.",
+      "healthEffect": "Cures schizophrenia, mental fatigue, memory loss."
+    },
+    {
+      "mukhi": "5 Mukhi",
+      "deity": "Kalagni Rudra / Sadashiva",
+      "planet": "Jupiter (Guru)",
+      "mantra": "Om Hreeng Namah / Om Hram Aam Kshamyom Sah",
+      "benefits": "Knowledge, academic success, power, wealth, eternal bliss.",
+      "healthEffect": "Cures lung, heart, and blood diseases."
+    },
+    {
+      "mukhi": "6 Mukhi",
+      "deity": "Lord Kartikeya (Shatrunjaya)",
+      "planet": "Venus (Shukra)",
+      "mantra": "Om Hreeng Hroong Namah / Om Hreeng Shreeng Kleeng Soung",
+      "benefits": "Managerial abilities, luxurious life, sexual power, marital harmony.",
+      "healthEffect": "Cures hysteria, fainting fits, epilepsy, female ailments."
+    },
+    {
+      "mukhi": "7 Mukhi",
+      "deity": "Mahalaxmi & Saptarishi",
+      "planet": "Saturn (Shani)",
+      "mantra": "Om Hroong Namah / Om Hraang Kreeng Hreeng Soung",
+      "benefits": "Eradicates poverty, amasses wealth, protects cash box, long life.",
+      "healthEffect": "Cures impotency, cold, chronic disease, worry."
+    },
+    {
+      "mukhi": "8 Mukhi",
+      "deity": "Lord Ganesha & Bhairawa",
+      "planet": "Rahu",
+      "mantra": "Om Hroong Namah / Om Hraang Greeng Loong Shreeng",
+      "benefits": "Removes all obstacles (Riddhi & Siddhi), fame, protection by 8 goddesses.",
+      "healthEffect": "Eliminates all diseases, prevents sudden mishaps."
+    },
+    {
+      "mukhi": "9 Mukhi",
+      "deity": "Navdurga & Bhairawa",
+      "planet": "Ketu",
+      "mantra": "Om Hreeng Hroong Namah / Om Hreeng Vyang Reng Lang",
+      "benefits": "Bravery, patience, tolerance, action-oriented, Navdurga blessings.",
+      "healthEffect": "Cures mental fatigue, lack of energy, sudden fears."
+    },
+    {
+      "mukhi": "10 Mukhi",
+      "deity": "Dash-Avatar Lord Vishnu",
+      "planet": "All Planets (Lagna)",
+      "mantra": "Om Hreeng Hroong Namah / Om Shreeng Hreeng Kleeng Greeng",
+      "benefits": "Protection of whole family for generations, security, fulfills all wishes.",
+      "healthEffect": "Cures chronic cough, asthma, respiratory diseases."
+    },
+    {
+      "mukhi": "11 Mukhi",
+      "deity": "Ekadash Rudra / Lord Hanuman / Indra",
+      "planet": "Mars & Jupiter",
+      "mantra": "Om Hreeng Hung Namah",
+      "benefits": "Wisdom, public speaking, victory in battles, long life for spouse.",
+      "healthEffect": "Protects against accidents, hazards, and physical weakness."
+    },
+    {
+      "mukhi": "12 Mukhi",
+      "deity": "Dwadash Adityas (Sun God)",
+      "planet": "Sun (Surya)",
+      "mantra": "Om Kroung Shroung Roung Namah",
+      "benefits": "Political power, ministership, leadership, charisma, supreme authority.",
+      "healthEffect": "Protects from wild animals, thieves, eye/head/bone diseases."
+    },
+    {
+      "mukhi": "13 Mukhi",
+      "deity": "Lord Indra & Kamadeva",
+      "planet": "Venus (Shukra)",
+      "mantra": "Om Hreeng Namah",
+      "benefits": "Hypnotic charm, attraction, fulfillment of desires, worldly luxuries.",
+      "healthEffect": "Cures physical weakness, sexual disorders."
+    },
+    {
+      "mukhi": "14 Mukhi",
+      "deity": "Jyotirlinga & Lord Hanuman",
+      "planet": "Saturn & Mars",
+      "mantra": "Om Namah",
+      "benefits": "Deva Mani bead, all Siddhis, victory in difficult situations, sixth sense.",
+      "healthEffect": "Cures severe diseases of body and head."
+    },
+    {
+      "mukhi": "15 Mukhi",
+      "deity": "Lord Pashupatinath",
+      "planet": "Rahu",
+      "mantra": "Om Namah Shivay",
+      "benefits": "Financial & spiritual success, protects pregnant women against miscarriage.",
+      "healthEffect": "Cures skin diseases, smooth delivery."
+    },
+    {
+      "mukhi": "16 Mukhi",
+      "deity": "Kaalvijay Rudra",
+      "planet": "Ketu",
+      "mantra": "Om Vaang Kraang Taang Hraang Aing Shreeng",
+      "benefits": "Protection from seasonal disasters, theft, robbery, riots.",
+      "healthEffect": "Protects against fatal diseases."
+    },
+    {
+      "mukhi": "17 Mukhi",
+      "deity": "Vishwakarma",
+      "planet": "Saturn",
+      "mantra": "Om Hraang Krang Kshoung Swaha",
+      "benefits": "Sudden gain of wealth, property, land, and vehicles.",
+      "healthEffect": "Cures physical ailments."
+    },
+    {
+      "mukhi": "18 Mukhi",
+      "deity": "Bhoomi (Mother Earth)",
+      "planet": "Rahu",
+      "mantra": "Om Hreeng Shreeng Kleeng Soung Aing Hreeng",
+      "benefits": "Elimination of child & fetal diseases, glowing face, land gains.",
+      "healthEffect": "Gives radiant health."
+    },
+    {
+      "mukhi": "19 Mukhi",
+      "deity": "Lord Narayan",
+      "planet": "Mercury",
+      "mantra": "Om Hang Sang Aing Hreeng Shreeng",
+      "benefits": "Business expansion, financial consolidation.",
+      "healthEffect": "Cures general debility."
+    },
+    {
+      "mukhi": "20 Mukhi",
+      "deity": "Lord Brahma",
+      "planet": "Jupiter",
+      "mantra": "Om Gyang Gying Lang Ang Aing Shreeng",
+      "benefits": "Concentration of mind, spiritual upliftment, eyesight improvement.",
+      "healthEffect": "Improves eyesight and brain focus."
+    },
+    {
+      "mukhi": "21 Mukhi",
+      "deity": "Lord Kuber (God of Wealth)",
+      "planet": "Saturn",
+      "mantra": "Om Hreeng Hreeng Hreeng Shreeng Shreeng Shreeng Aing",
+      "benefits": "Ultimate financial gains, equipment of all comforts, Kuber blessings.",
+      "healthEffect": "Eliminates chronic health problems."
+    },
+    {
+      "mukhi": "Gauri Shankar",
+      "deity": "Shiva & Parvati",
+      "planet": "Moon & Venus",
+      "mantra": "Om Aing Hreeng Kleeng Khoung Swaha",
+      "benefits": "Enhances marital harmony, attraction, joy, family unity.",
+      "healthEffect": "Improves mental peace."
+    },
+    {
+      "mukhi": "Ganesh Rudraksha",
+      "deity": "Lord Ganesha",
+      "planet": "Ketu / Rahu",
+      "mantra": "Om Gang Ganpataye Namah",
+      "benefits": "Removes hurdles in studies and business, intellectual brilliance.",
+      "healthEffect": "Protects students from exam stress."
+    }
+  ],
+  "yantraDetails": [
+    {
+      "name": "Sri Yantra (King of Yantras)",
+      "deity": "Goddess Lalita Tripura Sundari",
+      "direction": "East / North-East",
+      "mantra": "Om Shreeng Hreeng Shreeng Kamaley Kamlalaye Praseed Praseed Shreeng Hreeng Shreeng Om Mahalaxmyai Namah",
+      "benefits": "Ultimate wealth, prosperity, spatial Vastu correction in North/NE, spiritual enlightenment."
+    },
+    {
+      "name": "Mahalaxmi Yantra",
+      "deity": "Goddess Mahalaxmi",
+      "direction": "North / Cash Counter",
+      "mantra": "Om Shreeng Hreeng Shreeng Kamaley Kamlalaye Praseed Om Mahalaxmyai Namah",
+      "benefits": "Quickest method for financial gains, business expansion, removing poverty."
+    },
+    {
+      "name": "Kuber Yantra",
+      "deity": "Lord Kuber (God of Riches)",
+      "direction": "North Wall / Vault",
+      "mantra": "Om Kuberay Namah",
+      "benefits": "Unlocks buried/ancestral wealth, steady income flow, business growth."
+    },
+    {
+      "name": "Kanakdhara Yantra",
+      "deity": "Goddess Kanakdhara (Laxmi)",
+      "direction": "North-East",
+      "mantra": "Om Vang Shreeng Vang Aing Hreeng Shreeng Kleeng Kanakdharayai Namah",
+      "benefits": "Multi-source wealth attraction, debt clearance, business relief."
+    },
+    {
+      "name": "Baglamukhi Yantra",
+      "deity": "Goddess Baglamukhi",
+      "direction": "East (On Yellow Cloth)",
+      "mantra": "Om Hreeng Baglamukhi Sarvdushtanaam Vacham Mukham Padam Stambhay Jeevhaam Keelay Keelay Baddhim Vinaashay Hreeng Om Swaha",
+      "benefits": "Victory over enemies, winning court cases, legal protection, Mars power."
+    },
+    {
+      "name": "Mahamrityunjaya Yantra",
+      "deity": "Lord Shiva (Mrityunjaya)",
+      "direction": "North-East",
+      "mantra": "Om Trayambakam Yajamahe Sugandhim Pushti Vardhanam Urwarukmivbandhanaan Mrityormuksheey maamritaat",
+      "benefits": "Panacea for incurable diseases, protection from sudden accidents & death, peace."
+    },
+    {
+      "name": "Gayatri Yantra",
+      "deity": "Goddess Gayatri / Sun God",
+      "direction": "East / Worship Room",
+      "mantra": "Om Bhoor Bhuwah Swah Tatsavitur Varenyam Bhargodevasya Dheemahi Dhiyoyonah Prachodayaat",
+      "benefits": "Sharpening intellect, removing past life bad karma, protection from spirits."
+    },
+    {
+      "name": "Durga Beesa Yantra",
+      "deity": "Goddess Durga",
+      "direction": "Main Entrance / Office",
+      "mantra": "Om Aing Hreeng Kleeng Chamundayai Vichai",
+      "benefits": "Proactive protection from thieves, fire, quarrels; business prosperity ('Jaake Ghar Ho Beesa')."
+    },
+    {
+      "name": "Vastu Yantra",
+      "deity": "Vastu Purusha",
+      "direction": "North-East / Foundation",
+      "mantra": "Om Vastupurushai Namah",
+      "benefits": "Eradicates structural Vastu faults, neutralizes negative directional energies."
+    },
+    {
+      "name": "Navgrah Yantra",
+      "deity": "All Nine Navagrahas",
+      "direction": "North",
+      "mantra": "Om Bramha Murari Tripurantkari Bhanushashi Bhumisutau Bhudhashch Gurushcha Shukra Shani Rahu Ketavah Sarve Grahah Shantikara Bhawantu",
+      "benefits": "Overall planetary harmony, nullifies Dasa afflictions, brings prosperity."
+    }
+  ],
+    "navagrahaPlantRemedies": {
+    "Sun": {
+      "physicalGovernance": "Rules the skeletal system, skin, stomach, skull, and the right eye.",
+      "sacredPlant": "Arka (Milkweed)",
+      "medicinalComponents": "Dried roots, bark, leaves, flowers, and latex",
+      "therapeuticProfile": "Powerful analgesic, antibacterial, anti-diarrheal, antipyretic, anti-malarial, anti-inflammatory, and hypertensive properties",
+      "practicalRemedies": {
+        "Migraines": "Alleviated using tender young leaves",
+        "Aphrodisiac & Purgative Needs": "Addressed via dried leaves",
+        "Rheumatism": "Managed by applying warmed leaves directly to the legs",
+        "Boils & Blemishes": "Cleared by combining the plant's latex with turmeric",
+        "Ear Infections": "Treated using ear drops made from fresh leaves boiled in ghee"
+      }
+    },
+    "Moon": {
+      "physicalGovernance": "Oversees the heart, circulatory system, brain, breasts, and lungs.",
+      "sacredPlant": "Palash (Forest Flame)",
+      "medicinalComponents": "Roots, stem bark, flowers, leaves, and gum",
+      "therapeuticProfile": "Acts as a blood purifier and exhibits anti-leprotic, antimicrobial, anti-ulcer, anti-asthmatic, anti-diarrheal, anti-stress, anti-diabetic, and hormone-balancing actions. Supports wound healing.",
+      "practicalRemedies": {
+        "Sacred Rituals": "Dried stems are traditionally used to kindle holy fires during Poojas",
+        "Brain & Women's Health": "Flowers stimulate cognitive function and regulate menstrual irregularities or an enlarged spleen; roots are used to induce partial infertility",
+        "Snake Bites": "Managed using root preparations",
+        "Skin Conditions": "Alleviated by bathing in water infused with soaked flowers",
+        "Joint Pain": "Reduced by consuming the resin powder mixed with milk"
+      }
+    },
+    "Mercury": {
+      "physicalGovernance": "Associated with the face, hair, nose, chest, and tongue.",
+      "sacredPlant": "Apamarga (Prickly Chaff Flower)",
+      "medicinalComponents": "Leaves, roots, and seeds",
+      "therapeuticProfile": "Notable for nephroprotective, cardioprotective, hepatoprotective, antiparasitic, anti-inflammatory, hypoglycemic, analgesic, anti-allergic, and spermicidal traits. Highly effective against fevers, coughs, and colds.",
+      "practicalRemedies": {
+        "Ear & Eye Infections": "Leaf juice serves as ear drops for infections, while root juice mixed with rose water relieves eye redness",
+        "Mouth & Digestive Care": "Chewing fresh leaves heals oral ulcers; leaf juice also cures dysentery and regulates stomach functions",
+        "Migraines": "Reduced by inhaling finely ground ripe seed powder",
+        "Bites": "Highly effective against toxic stings and animal bites"
+      }
+    },
+    "Venus": {
+      "physicalGovernance": "Controls the reproductive system, urinary tract, facial expressions, and overall physical beauty.",
+      "sacredPlant": "Goolar (Fig Tree)",
+      "medicinalComponents": "Leaves, fruits, bark, latex, and root sap",
+      "therapeuticProfile": "Offers broad anti-inflammatory, analgesic, hypoglycemic, antifilarial, radioprotective, chemo-preventive, anti-antitussive, anti-diarrheal, and hypotensive benefits",
+      "practicalRemedies": {
+        "General": "Highly integrated into traditional medicine to heal wounds and manage chronic inflammatory conditions, jaundice, dysentery, diabetes, diarrhea, and biliary disorders"
+      }
+    },
+    "Mars": {
+      "physicalGovernance": "Commands the marrow, neck, and anal region.",
+      "sacredPlant": "Khadira (Cutch Tree)",
+      "medicinalComponents": "Heartwood and bark",
+      "therapeuticProfile": "Highly astringent nature that optimizes digestive health and targets systemic inflammation.",
+      "practicalRemedies": {
+        "Respiratory Relief": "A warm decoction of Khadira bark mixed with milk soothes intense coughs and colds. It also treats bronchitis and asthma.",
+        "Oral & Skin Care": "Boiling and processing the heartwood yields kattha, which topically heals mouth ulcers, boils, sore throats, and painful skin eruptions.",
+        "Diarrhea": "Managed effectively by blending Khadira powder with cinnamon powder"
+      }
+    },
+    "Jupiter": {
+      "physicalGovernance": "Affiliated with the liver, pancreas, kidneys, and thighs.",
+      "sacredPlant": "Ashwattha (Sacred Fig / Peepal Tree)",
+      "medicinalComponents": "Bark, roots, leaves, and fruits",
+      "therapeuticProfile": "Combines anti-inflammatory, anti-diabetic, anticonvulsant, and antimicrobial actions to accelerate wound recovery.",
+      "practicalRemedies": {
+        "Respiratory Care": "A bark infusion treats severe whooping cough and chronic asthma.",
+        "Gastrointestinal Relief": "Swallowing powdered tender leaves with milk stops acute stomach aches, while the natural laxative properties of the fruit relieve constipation.",
+        "Dental Hygiene": "Using a bark decoction or fresh juice as a mouthwash strengthens gums and minimizes toothaches.",
+        "Dermatology": "Applying a paste made from tender roots topically heals persistent skin diseases"
+      }
+    },
+    "Saturn": {
+      "physicalGovernance": "Rules muscular structures, the knees, legs, and teeth.",
+      "sacredPlant": "Shami (Spunge Tree)",
+      "medicinalComponents": "Stem bark, flowers, leaves, pods, and seeds",
+      "therapeuticProfile": "Widely used for its cooling, blood-purifying, insect-repellent, and anti-diabetic attributes.",
+      "practicalRemedies": {
+        "Pain & Cold Relief": "The stem bark is used to relieve the discomfort of hemorrhoids (piles), rheumatism, and the common cold.",
+        "Oral & Throat Care": "Mouth ulcers, sore throats, and severe toothaches are treated with a warm bark decoction.",
+        "Gastrointestinal & Urinary Health": "An infusion of tender leaves quickly halts diarrhea and dysentery, while the seed pods treat complex urico-genital disorders.",
+        "Skin Health": "Flowers serve as a systemic purifier to clear up skin breakouts"
+      }
+    },
+    "Rahu": {
+      "physicalGovernance": "Linked to respiration, the lungs, neck, and legs.",
+      "sacredPlant": "Durva (Bermuda Grass)",
+      "medicinalComponents": "Whole grass",
+      "therapeuticProfile": "Rich in vital antioxidants, this grass serves as an antidepressant, cardioprotective, hepatoprotective, antipyretic, anti-inflammatory, and anti-emetic agent.",
+      "practicalRemedies": {
+        "General": "Widely recognized as a robust anti-diabetic remedy, it stimulates the appetite, cures standard fevers, coughs, and colds, purifies the bloodstream, and mitigates heavy menstrual bleeding"
+      }
+    },
+    "Ketu": {
+      "physicalGovernance": "Regulates the abdomen, hands, and feet.",
+      "sacredPlant": "Darbha (Halfa Grass)",
+      "medicinalComponents": "Whole grass",
+      "therapeuticProfile": "Functions as a highly potent natural adaptogen packed with dense antioxidant levels.",
+      "practicalRemedies": {
+        "General": "Utilized across diverse traditional medical systems for its astringent, antiviral, antipyretic, insecticidal, and antihypertensive traits to restore systemic balance"
+      }
+    }
+  },
+    "planetaryReliefRemedies": {
+    "Sun": {
+      "malaType": "Ruby (Manikya), Red Sandalwood (Lal Chandan), or Rudraksha Mala",
+      "fastingDuration": "12 consecutive Sundays",
+      "donationItems": "Copper vessels, wheat grains, jaggery (gur), red ruby gemstones, red clothes, or saffron before sunset",
+      "fastingProtocol": "Consume only one meal a day, ideally before sunset. Strictly avoid salt, oil, and milk products. Focus meals on wheat-based items like roti sweetened with jaggery.",
+      "amuletRitualTiming": "Surya Hora (first hour after local sunrise)",
+      "mantraTiming": "Brahma Muhurta or exactly at Abhijit Muhurat (around midday)",
+      "amuletRemedy": "Enclose the root of a Belpatra plant inside a red cloth and wear it",
+      "sacredFireRitual": "Burn the wood of the Aak tree as the primary fuel source for your Havan",
+      "vedicInvocation": "Om Hram Hreem Hroma Saha Suraya Namah",
+      "invocationCount": 7000
+    },
+    "Moon": {
+      "malaType": "White Pearl (Moti), Sphatik (Quartz Crystal), or White Sandalwood Mala",
+      "fastingDuration": "11 or 54 consecutive Mondays",
+      "donationItems": "Raw white rice, milk, curd, sugar, silver ornaments, white pearls, white clothes, or camphor on Monday evening",
+      "fastingProtocol": "Keep a partial or full fast until evening. Salt must be completely avoided. Break the fast after sunset with a white-colored, saltless meal, such as kheer or curd-rice.",
+      "amuletRitualTiming": "Chandra Hora (first hour following sunrise on Monday)",
+      "mantraTiming": "Late evening or night hours when the Moon is physically visible",
+      "amuletRemedy": "Tie the roots of a Khirni plant within a clean white cloth and wear it",
+      "sacredFireRitual": "Use the dried wood of the Palash tree for ceremonial fire offerings",
+      "vedicInvocation": "Om Shram Shreem Shroma Saha Chandramase Namah",
+      "invocationCount": 11000
+    },
+    "Mars": {
+      "malaType": "Red Coral (Moonga) or Red Sandalwood Mala",
+      "fastingDuration": "21 consecutive Tuesdays",
+      "donationItems": "Red lentils (masoor dal), copper utensils, jaggery, red coral stones, red flowers, or pure ghee to a young man or a temple priest",
+      "fastingProtocol": "Maintain a fast from sunrise to sunset. Strictly refrain from consuming salt. Break the fast in the evening with a meal made of wheat and jaggery.",
+      "amuletRitualTiming": "Mangal Hora (first hour after sunrise)",
+      "mantraTiming": "Midday hours, avoiding any overlapping Rahu Kalam on Tuesday afternoons",
+      "amuletRemedy": "Fasten the roots of the Anantmool herb using a red cloth to wear",
+      "sacredFireRitual": "Stoke the holy ritual fire pit using wood harvested from the Khair tree",
+      "vedicInvocation": "Om Kram Kreem Kroma Saha Bhomaya Namah",
+      "invocationCount": 10000
+    },
+    "Mercury": {
+      "malaType": "Emerald (Panna), Green Jade, or Rudraksha Mala",
+      "fastingDuration": "17 or 21 consecutive Wednesdays",
+      "donationItems": "Whole green mung dal, green clothes, emeralds, brass utensils, camphor, or leafy green vegetables on Wednesday afternoon",
+      "fastingProtocol": "Consume a single meal during the day after performing your prayers. Green foods like mung dal are prioritized; avoid heavy oils entirely.",
+      "amuletRitualTiming": "Budha Hora (first hour after sunrise)",
+      "mantraTiming": "Pradosha time (twilight around sunset)",
+      "amuletRemedy": "Wrap the root system of a Vidhaar plant using a green thread to wear",
+      "sacredFireRitual": "Offer the wood of the Apamarg tree to the sacrificial flames",
+      "vedicInvocation": "Om Bram Breem Broma Saha Budhaya Namah",
+      "invocationCount": 9000
+    },
+    "Jupiter": {
+      "malaType": "Turmeric (Haldi) or Yellow Topaz Mala",
+      "fastingDuration": "16 consecutive Thursdays (concluding with a special Udyapan ritual on the 17th)",
+      "donationItems": "Chana dal, yellow clothes, turmeric powder, yellow sapphires, bananas, gold items, or religious scriptures to a teacher or mentor",
+      "fastingProtocol": "Fast throughout the day and eat only one saltless meal in the evening. Yellow items are highly auspicious. Strictly avoid washing your hair or shaving on this day.",
+      "amuletRitualTiming": "Guru Hora (first hour post-sunrise)",
+      "mantraTiming": "Abhijit Muhurat (midday) significantly expands Jupiter's blessings",
+      "amuletRemedy": "Bind a piece of Banana plant root to your person using a yellow thread",
+      "sacredFireRitual": "Mitigate severe planetary transits by using the wood of a Peepal tree during the Havan",
+      "vedicInvocation": "Om Gram Greem Groma Saha Gurveya Namah",
+      "invocationCount": 19000
+    },
+    "Venus": {
+      "malaType": "Sphatik (Quartz Crystal), White Pearl, or Lotus Seed (Kamal Gatta) Mala",
+      "fastingDuration": "11 or 21 consecutive Fridays",
+      "donationItems": "White silk clothes, silver pieces, sugar, rice, white cows, diamonds, or scented perfumes to a married woman or a young girl",
+      "fastingProtocol": "Observe a white-themed fast. Consume foods like milk, kheer, and white rice after sunset. Sour foods, pickles, and salt must be completely avoided.",
+      "amuletRitualTiming": "Shukra Hora (first hour after sunrise)",
+      "mantraTiming": "Evening twilight or during a secondary Shukra Hora later in the day",
+      "amuletRemedy": "Secure the root of a Sarponkha plant with a glistening, shiny thread",
+      "sacredFireRitual": "Burn Gular tree wood in the holy fire to soothe Venus",
+      "vedicInvocation": "Om Dram Dreem Droma Saha Shukraya Namah",
+      "invocationCount": 16000
+    },
+    "Saturn": {
+      "malaType": "Black Agate (Kala Hakik), Amethyst, or Rudraksha Mala",
+      "fastingDuration": "19 or 51 consecutive Saturdays",
+      "donationItems": "Mustard oil, black sesame seeds, iron vessels, black blankets, footwear, blue sapphires, or whole black urad dal to laborers or cleaning workers",
+      "fastingProtocol": "Fast until dusk. Break the fast after sunset with a simple vegetarian meal prepared with black sesame seeds, mustard oil, or black urad dal. Avoid milk and curd.",
+      "amuletRitualTiming": "Shani Hora (first hour post-sunrise) or late evening after dusk",
+      "mantraTiming": "After sunset is highly recommended, as Saturn's strength peaks during the night",
+      "amuletRemedy": "Keep the root of the Bichu plant next to your skin, anchored tightly with a black thread",
+      "sacredFireRitual": "Pacify Saturn's heavy lessons by introducing Shami tree wood into the ceremonial pit",
+      "vedicInvocation": "Om Pram Preem Proma Saha Shaneshcharya Namah",
+      "invocationCount": 23000
+    },
+    "Rahu": {
+      "malaType": "Gomed (Hessonite Garnet), Black Agate, or Rudraksha Mala",
+      "fastingDuration": "18 consecutive Saturdays",
+      "donationItems": "Raw lead metal, blankets made of dual/mixed colors, sesame seeds, mustard oil, seven varieties of grain (Satnaja), or old coins to the needy",
+      "fastingProtocol": "Follow the same fasting guidelines as Saturday's Shanivar Vrat. Additionally, feeding your evening meal to stray dogs or crows is essential to appease Rahu.",
+      "amuletRitualTiming": "Rahu Kalam on Saturday",
+      "mantraTiming": "Late night hours (post 9:00 PM) are exceptionally effective for calming Rahu’s chaotic influence",
+      "amuletRemedy": "Wear an authentic piece of Sandalwood; choose a thread color that matches the specific zodiac house containing Rahu",
+      "sacredFireRitual": "Provide Durva grass/wood as the main offering inside the sacrificial fire altar",
+      "vedicInvocation": "Om Bhram Bhreem Bhroma Saha Rahve Namah",
+      "invocationCount": 18000
+    },
+    "Ketu": {
+      "malaType": "Cat's Eye (Lehsuniya) or Rudraksha Mala",
+      "fastingDuration": "18 consecutive Tuesdays",
+      "donationItems": "Multi-colored blankets, woolen items, iron weapons, sharp tools, black sesame seeds, or goat-milk products. Feeding multi-colored dogs in the evening is critical.",
+      "fastingProtocol": "Mirror the fasting conditions of Tuesday's Mangalvar Vrat (fasting until evening, avoiding salt entirely, and eating a single sweet meal).",
+      "amuletRitualTiming": "Rahukalam of Tuesday or deep within the night hours",
+      "mantraTiming": "Midnight or Brahma Muhurta are ideal for Ketu",
+      "amuletRemedy": "Carry the root of an Ashwagandha plant, selecting a thread color determined by the exact zodiac sign holding Ketu in your chart",
+      "sacredFireRitual": "Fuel the Havan altar fire using the sacred Kush grass/wood",
+      "vedicInvocation": "Om Sram Sreem Sroma Saha Ketve Namah",
+      "invocationCount": 10000
+    }
+  },
+    "zodiacSignRemedies": {
+    "Aries": {
+      "rulingPlanet": "Mars (Mangal)",
+      "sacredRootTree": "Red Sandalwood (Rakta Chandana) Root",
+      "physicalAstrologicalProperties": "Calms erratic fiery energy, balances aggressive traits, and builds structured courage. Combines well with tonics like Ashwagandha.",
+      "harvestingAlignment": "Perform on Tuesday under Mrigashira, Chitra, or Dhanishta Nakshatras.",
+      "talismanWrapCloth": "Red Fabric",
+      "activationBeejMantra": {
+        "direction": "South",
+        "mantra": "Om Kram Kreem Kroma Saha Bhomaya Namah",
+        "chantCount": 108
+      },
+      "countingMalaType": "Red Coral (Moonga) or Red Sandalwood Mala",
+      "fastingRules": {
+        "duration": "21 consecutive Tuesdays",
+        "protocol": "Fast from sunrise to sunset; avoid salt entirely. Break fast in the evening with wheat and jaggery items like sweet puris."
+      },
+      "donationItems": "Red lentils (masoor dal), copper utensils, jaggery, red coral stones, or pure ghee given to a young man or priest."
+    },
+    "Taurus": {
+      "rulingPlanet": "Venus (Shukra)",
+      "sacredRootTree": "Saptaparna (Alstonia scholaris) Root",
+      "physicalAstrologicalProperties": "Establishes structural emotional balance, brings personal stability, and invites harmony into domestic environments.",
+      "harvestingAlignment": "Perform on Friday under Bharani, Poorva Phalguni, or Poorva Ashadha Nakshatras.",
+      "talismanWrapCloth": "Pink or Pure White Fabric",
+      "activationBeejMantra": {
+        "direction": "Southeast",
+        "mantra": "Om Dram Dreem Droma Saha Shukraya Namah",
+        "chantCount": 108
+      },
+      "countingMalaType": "Sphatik (Quartz Crystal) or White Pearl Mala",
+      "fastingRules": {
+        "duration": "11 or 21 consecutive Fridays",
+        "protocol": "Fast until sunset; avoid salt and all sour foods/pickles. Eat white foods like milk, sugar, and kheer after dark."
+      },
+      "donationItems": "White silk clothes, silver pieces, sugar, rice, white cows, or scented perfumes gifted to a married woman or young girl."
+    },
+    "Gemini": {
+      "rulingPlanet": "Mercury (Budha)",
+      "sacredRootTree": "Jackfruit (Panas) Root",
+      "physicalAstrologicalProperties": "Shakes off mental fog, sharpens the intellect, boosts memory retention, and enhances articulate communication skills.",
+      "harvestingAlignment": "Perform on Wednesday under Ashlesha, Jyeshtha, or Revati Nakshatras.",
+      "talismanWrapCloth": "Green Fabric",
+      "activationBeejMantra": {
+        "direction": "North",
+        "mantra": "Om Bram Breem Broma Saha Budhaya Namah",
+        "chantCount": 108
+      },
+      "countingMalaType": "Emerald (Panna), Green Jade, or Rudraksha Mala",
+      "fastingRules": {
+        "duration": "17 or 21 consecutive Wednesdays",
+        "protocol": "Consume a single clean meal after prayers. Focus on green foods (mung dal, leafy vegetables); completely avoid heavy oils."
+      },
+      "donationItems": "Whole green mung dal, green clothes, emeralds, brass utensils, or camphor distributed on Wednesday afternoon."
+    },
+    "Cancer": {
+      "rulingPlanet": "Moon (Chandra)",
+      "sacredRootTree": "Flame of the Forest (Palasha) Root",
+      "physicalAstrologicalProperties": "Provides profound emotional soothing, anchors severe mood swings, and establishes inner peace.",
+      "harvestingAlignment": "Perform on Monday under Rohini, Hasta, or Shravana Nakshatras.",
+      "talismanWrapCloth": "White Fabric",
+      "activationBeejMantra": {
+        "direction": "Northwest",
+        "mantra": "Om Shram Shreem Shroma Saha Chandramase Namah",
+        "chantCount": 108
+      },
+      "countingMalaType": "White Pearl, Sphatik, or White Sandalwood Mala",
+      "fastingRules": {
+        "duration": "11 or 54 consecutive Mondays",
+        "protocol": "Keep a partial or full fast; completely eliminate salt. Break the fast after dark with white items like unsalted curd-rice or kheer."
+      },
+      "donationItems": "Raw white rice, fresh milk, curd, sugar, silver ornaments, white pearls, or camphor given on Monday evening."
+    },
+    "Leo": {
+      "rulingPlanet": "Sun (Surya)",
+      "sacredRootTree": "Trumpet Flower (Patala) Root",
+      "physicalAstrologicalProperties": "Directly expands baseline physical vitality, triggers innate leadership capabilities, and reinforces clean personal power.",
+      "harvestingAlignment": "Perform on Sunday under Krittika, Uttara Phalguni, or Uttara Ashadha Nakshatras.",
+      "talismanWrapCloth": "Bright Red or Saffron Fabric",
+      "activationBeejMantra": {
+        "direction": "East",
+        "mantra": "Om Hram Hreem Hroma Saha Suraya Namah",
+        "chantCount": 108
+      },
+      "countingMalaType": "Ruby (Manikya), Red Sandalwood, or Rudraksha Mala",
+      "fastingRules": {
+        "duration": "12 consecutive Sundays",
+        "protocol": "Consume only one salt-free, oil-free, milk-free meal before sunset. Focus on wheat items or daliya sweetened with jaggery."
+      },
+      "donationItems": "Copper vessels, wheat grains, jaggery, red ruby stones, red clothes, or saffron handed over before sunset."
+    },
+    "Virgo": {
+      "rulingPlanet": "Mercury (Budha)",
+      "sacredRootTree": "Mango (Amra) Tree Root",
+      "physicalAstrologicalProperties": "Grounds hyperactive analytical tendencies, protects health, and stabilizes nervous system tension caused by chronic overthinking.",
+      "harvestingAlignment": "Perform on Wednesday under Ashlesha, Jyeshtha, or Revati Nakshatras.",
+      "talismanWrapCloth": "Green Fabric",
+      "activationBeejMantra": {
+        "direction": "North",
+        "mantra": "Om Bram Breem Broma Saha Budhaya Namah",
+        "chantCount": 108
+      },
+      "countingMalaType": "Emerald, Green Jade, or Rudraksha Mala",
+      "fastingRules": {
+        "duration": "17 or 21 consecutive Wednesdays",
+        "protocol": "Eat a single clean vegetarian meal during the day; avoid heavy oils and spices."
+      },
+      "donationItems": "Whole green mung dal, green clothes, leafy vegetables, or brass utensils distributed to those in need on Wednesday afternoon."
+    },
+    "Libra": {
+      "rulingPlanet": "Venus (Shukra)",
+      "sacredRootTree": "Bullet Wood (Bakula) Root",
+      "physicalAstrologicalProperties": "Calms interpersonal friction, naturally attracts positive relationships, and maintains strict emotional equilibrium.",
+      "harvestingAlignment": "Perform on Friday under Bharani, Poorva Phalguni, or Poorva Ashadha Nakshatras.",
+      "talismanWrapCloth": "Pink or Pure White Fabric",
+      "activationBeejMantra": {
+        "direction": "Southeast",
+        "mantra": "Om Dram Dreem Droma Saha Shukraya Namah",
+        "chantCount": 108
+      },
+      "countingMalaType": "Sphatik, White Pearl, or Lotus Seed (Kamal Gatta) Mala",
+      "fastingRules": {
+        "duration": "11 or 21 consecutive Fridays",
+        "protocol": "Fast until sunset; completely exclude salt and sour foods. Eat plain kheer or sugar-sweetened white rice after dark."
+      },
+      "donationItems": "White silk garments, silver pieces, sugar, rice, or natural scented perfumes presented to a married woman or young girl."
+    },
+    "Scorpio": {
+      "rulingPlanet": "Mars (Mangal)",
+      "sacredRootTree": "Cutch Tree (Khadira) Root",
+      "physicalAstrologicalProperties": "Directs intense, deep-seated emotional undercurrents into constructive channels, aids internal transformation, and builds relentless willpower.",
+      "harvestingAlignment": "Perform on Tuesday under Mrigashira, Chitra, or Dhanishta Nakshatras.",
+      "talismanWrapCloth": "Red Fabric",
+      "activationBeejMantra": {
+        "direction": "South",
+        "mantra": "Om Kram Kreem Kroma Saha Bhomaya Namah",
+        "chantCount": 108
+      },
+      "countingMalaType": "Red Coral or Red Sandalwood Mala",
+      "fastingRules": {
+        "duration": "21 consecutive Tuesdays",
+        "protocol": "Fast from sunrise to sunset without salt. Break fast in the evening hours using wheat puriss or halwa sweetened with jaggery."
+      },
+      "donationItems": "Red lentils (masoor dal), copper vessels, jaggery, red coral stones, or pure ghee offered to a young man or a temple priest."
+    },
+    "Sagittarius": {
+      "rulingPlanet": "Jupiter (Guru)",
+      "sacredRootTree": "Sacred Fig (Ashwattha / Peepal) Root",
+      "physicalAstrologicalProperties": "Cultivates deep academic and life wisdom, encourages clean growth, and establishes strong spiritual alignment.",
+      "harvestingAlignment": "Perform on Thursday under Punarvasu, Vishakha, or Poorva Bhadrapada Nakshatras.",
+      "talismanWrapCloth": "Yellow Fabric",
+      "activationBeejMantra": {
+        "direction": "Northeast",
+        "mantra": "Om Gram Greem Groma Saha Gurveya Namah",
+        "chantCount": 108
+      },
+      "countingMalaType": "Turmeric (Haldi) or Yellow Topaz Mala",
+      "fastingRules": {
+        "duration": "16 consecutive Thursdays (perform Udyapan on the 17th)",
+        "protocol": "Eat one saltless meal in the evening focused on yellow ingredients (chana dal, besan, turmeric rice). Avoid shaving or washing hair on this day."
+      },
+      "donationItems": "Chana dal, yellow clothes, turmeric powder, yellow sapphires, fresh bananas, or religious scriptures presented to a teacher, mentor, or older priest."
+    },
+    "Capricorn": {
+      "rulingPlanet": "Saturn (Shani)",
+      "sacredRootTree": "Indian Rosewood (Shinshupa) Root",
+      "physicalAstrologicalProperties": "Maximizes personal resilience against workplace delays, encourages sustained hard work, and builds legendary long-term endurance.",
+      "harvestingAlignment": "Perform on Saturday under Pushya, Anuradha, or Uttara Bhadrapada Nakshatras.",
+      "talismanWrapCloth": "Black or Dark Blue Fabric",
+      "activationBeejMantra": {
+        "direction": "West",
+        "mantra": "Om Pram Preem Proma Saha Shaneshcharya Namah",
+        "chantCount": 108
+      },
+      "countingMalaType": "Black Agate (Kala Hakik), Amethyst, or Rudraksha Mala",
+      "fastingRules": {
+        "duration": "19 or 51 consecutive Saturdays",
+        "protocol": "Fast completely until dusk. Break fast after sunset with simple vegetarian meals containing black sesame seeds, mustard oil, or black urad dal. Avoid milk or curd."
+      },
+      "donationItems": "Mustard oil, black sesame seeds, iron vessels, black blankets, dark leather footwear, or whole black urad dal given to laborers or cleaning workers."
+    },
+    "Aquarius": {
+      "rulingPlanet": "Saturn (Shani)",
+      "sacredRootTree": "Banni / Shami Tree Root",
+      "physicalAstrologicalProperties": "Acts as a grounding rod against structural stress, neutralizes environmental pressure, and blocks surrounding negative energies.",
+      "harvestingAlignment": "Perform on Saturday under Pushya, Anuradha, or Uttara Bhadrapada Nakshatras.",
+      "talismanWrapCloth": "Black or Dark Blue Fabric",
+      "activationBeejMantra": {
+        "direction": "West",
+        "mantra": "Om Pram Preem Proma Saha Shaneshcharya Namah",
+        "chantCount": 108
+      },
+      "countingMalaType": "Black Agate, Amethyst, or Rudraksha Mala",
+      "fastingRules": {
+        "duration": "19 or 51 consecutive Saturdays",
+        "protocol": "Fast strictly until dusk; break fast after sunset using simple vegetarian food seasoned with black sesame or prepared in mustard oil."
+      },
+      "donationItems": "Black blankets, mustard oil, iron cookware, black sesame seeds, or whole black urd dal gifted directly to the physically challenged or working class."
+    },
+    "Pisces": {
+      "rulingPlanet": "Jupiter (Guru)",
+      "sacredRootTree": "Banyan (Nyagrodha) Root",
+      "physicalAstrologicalProperties": "Tethers boundless imagination, supports profound spiritual depth, installs lasting mental peace, and anchors psychological well-being.",
+      "harvestingAlignment": "Perform on Thursday under Punarvasu, Vishakha, or Poorva Bhadrapada Nakshatras.",
+      "talismanWrapCloth": "Yellow Fabric",
+      "activationBeejMantra": {
+        "direction": "Northeast",
+        "mantra": "Om Gram Greem Groma Saha Gurveya Namah",
+        "chantCount": 108
+      },
+      "countingMalaType": "Turmeric (Haldi) or Yellow Topaz Mala",
+      "fastingRules": {
+        "duration": "16 consecutive Thursdays",
+        "protocol": "Maintain a single saltless, yellow-themed meal in the evening hours (using chana dal or gram flour). Refrain from hair washing or shaving on this day."
+      },
+      "donationItems": "Yellow clothes, turmeric powder, fresh bananas, chana dal, gold items, or spiritual textbooks gifted to an elder priest or spiritual guide."
+    }
+  },
+  "lalKitabHouseRemedies": {
+    "Sun": {
+      "H1": "Bore a hand pump or install a tap at home.",
+      "H2": "Donate oil, almonds, or coconut to mitigate evil effects.",
+      "H3": "Maintain strong moral character to prosper.",
+      "H4": "Distribute free food to blind persons in ancestral home.",
+      "H5": "Keep kitchen on the Eastern side of house.",
+      "H6": "Donate food to a dog at a religious place.",
+      "H7": "Offer a morsel of meal into fire (Ahuti) before eating.",
+      "H8": "Serve non-white cows; avoid extramarital relations.",
+      "H9": "Use a big brass utensil at home; avoid accepting donations.",
+      "H10": "Use handpump water; do not remain bare-headed outside.",
+      "H11": "Maintain pure vegetarian diet to bless progeny growth.",
+      "H12": "Keep peace at home; indulge in self-discipline."
+    },
+    "Moon": {
+      "H1": "Do not sell milk; keep natural spring water, rice, and silver at home.",
+      "H2": "Keep a white horse or serve elderly persons.",
+      "H3": "Donate green cloth to an unmarried girl.",
+      "H4": "Do not drink milk at night.",
+      "H5": "Offer sweet food to guests and take some with you when going for work.",
+      "H6": "Donate Sun, Mars, and Jupiter articles in a temple; avoid milk at night.",
+      "H7": "Do not sell milk or water; show deep respect to mother.",
+      "H8": "Keep cremation ground well water stored in a container at home.",
+      "H9": "Perform religious rituals regularly.",
+      "H10": "Offer milk at Lord Bhairava temple; avoid night milk.",
+      "H11": "Offer milk in Bhairava temple.",
+      "H12": "Maintain quiet spiritual contemplation."
+    },
+    "Mars": {
+      "H1": "Do not accept anything free of cost; wear gold; serve Peepal tree.",
+      "H2": "Respect elder brother; offer food to poor people at in-laws' home.",
+      "H3": "Maintain harmony with brothers; keep ivory item at home.",
+      "H4": "Offer sugar or sweets to sparrows; pour honey in an earthen pot at funeral place.",
+      "H5": "Keep a container of water near pillow while sleeping.",
+      "H6": "Children should wear gold; offer sweets to small girls for 6 days.",
+      "H7": "Construct an earthen wall and destroy it repeatedly; give sweets to sister.",
+      "H8": "Feed sweet oven-baked bread to dogs for 43 days; avoid South-facing main gate.",
+      "H9": "Offer water to Neem tree; maintain respect for elder brother.",
+      "H10": "Serve a blind person; wear a ring of 3 strings if Mars is weak.",
+      "H11": "Establish 3 earthen dogs at home; keep honey in glass.",
+      "H12": "Offer sweet water (Arghya) to Sun; wear khaki cap."
+    },
+    "Mercury": {
+      "H1": "Keep aniseed (Saunf) under pillow; avoid alcohol, meat, and green items.",
+      "H2": "Keep a square silver piece; do not keep goat, sheep, or parrot at home.",
+      "H3": "Wear silver and red coral; feed green lentils (Moong) to sparrows.",
+      "H4": "Offer grams & jaggery to monkeys; donate brass/gold utensils to priest.",
+      "H5": "Wear a pierced copper coin around neck; clean teeth with Keekar stick.",
+      "H6": "Bury a pot of milk in a desolated place; wife should wear silver ring.",
+      "H7": "Avoid business partnerships & speculation.",
+      "H8": "Bury green lentils sealed in copper pot in running water; keep Saunf near head.",
+      "H9": "Do not keep Yantras or conches; apply saffron tilak.",
+      "H10": "Offer milk & rice to temple; feed morsels to crows.",
+      "H11": "Keep Ganga water in a brass pot; avoid green clothes.",
+      "H12": "Apply saffron mark; keep a dog if afflicted by Rahu."
+    },
+    "Jupiter": {
+      "H1": "Stay away from shameless company; avoid bad thoughts.",
+      "H2": "Do not sell gold; avoid establishing 3D idols at home.",
+      "H3": "Worship Goddess Durga and girls less than 9 years.",
+      "H4": "Serve elderly people and saints; do not keep goats/sheep.",
+      "H5": "Be honest and philanthropic; do not beg in name of religion.",
+      "H6": "Keep gold or saffron with you; donate gram pulse in temple.",
+      "H7": "Avoid keeping a temple inside home; bathe with rain water.",
+      "H8": "Donate Jupiter/Venus articles in temple; grow Peepal tree.",
+      "H9": "Follow religion strictly; be respectful to elders.",
+      "H10": "Apply saffron Tilak on forehead and wear turban before starting work.",
+      "H11": "Live in joint family; maintain truthfulness.",
+      "H12": "Wear a Rudraksha bead in neck; avoid cutting Peepal trees."
+    },
+    "Venus": {
+      "H1": "Bring silver from in-laws during marriage; take advice before major decisions.",
+      "H2": "Accept advice of wife; avoid gold business & burning ghee lamp.",
+      "H3": "Respect wife to unlock fortune.",
+      "H4": "Store rainwater in a small silver box.",
+      "H5": "Serve cows; keep personal character clean.",
+      "H6": "Donate milk, rice, or sugar at religious places; offer condensed milk to small girls.",
+      "H7": "Avoid business partnerships with wife's relatives.",
+      "H8": "Serve black cows; throw copper coin in gutter.",
+      "H9": "Bury rectangular silver pieces in Neem tree trunk for 43 days.",
+      "H10": "Offer almonds in religious places; serve Kapila cows.",
+      "H11": "Donate mustard oil; offer Mars articles in temple.",
+      "H12": "Bury blue flowers in a desolated place if Rahu afflicts Venus."
+    },
+    "Saturn": {
+      "H1": "Bury a rod of collyrium in earth; donate iron baking plate to poor.",
+      "H2": "Apply curd/milk mark on forehead; visit temple barefoot for 43 days.",
+      "H3": "Keep a dog; construct a dark room in house.",
+      "H4": "Offer food to fish, buffalo, and cows; throw milk in well.",
+      "H5": "Do not construct house till age 48; offer 10 almonds in temple.",
+      "H6": "Bury mustard oil in earthen pot under dripping roof water.",
+      "H7": "Stay away from meat, alcohol, and extramarital relations; keep black dog.",
+      "H8": "Flow 8kg black urad dal in running water every year.",
+      "H9": "Keep roof neat and clean; carry square silver piece.",
+      "H10": "Offer yellow grams in running water for 43 days; feed 10 blind persons.",
+      "H11": "Pour oil on earth at sunrise for 43 days; maintain celibacy.",
+      "H12": "Keep 12 almonds in a tin box in a dark room."
+    },
+    "Rahu": {
+      "H1": "Keep Saunf near pillow; wear silver around neck.",
+      "H2": "Keep a solid silver ball with you; throw coal equivalent to body weight in water if government troubles occur.",
+      "H3": "Keep a small box of rice; keep ivory.",
+      "H4": "Flow 400g barley or coconut in running water.",
+      "H5": "Offer almonds in temple for 43 days; keep silver elephant at home.",
+      "H6": "Keep a black dog; offer blue flowers to Goddess Saraswati for 6 days.",
+      "H7": "Donate silver brick brought from in-laws; flow barley washed in milk.",
+      "H8": "Keep square silver piece; throw copper coins in furnace/fireplace.",
+      "H9": "Keep a dog for children's safety; apply saffron mark on forehead.",
+      "H10": "Wear white turban; feed blind persons; flow Masoor dal in water.",
+      "H11": "Flow 4 coconuts and 4kg coins in quick running water every birthday.",
+      "H12": "Keep sugar and Saunf under pillow; flow 12kg raw coal in river."
+    },
+    "Ketu": {
+      "H1": "Do not give sweets to son in evening; offer coconut in temple.",
+      "H2": "Apply saffron mark; get nose pierced.",
+      "H3": "Flow jaggery, rice, and milk in running water; wear gold in ears.",
+      "H4": "Donate gold in temple; drink milk extinguished with hot gold rod.",
+      "H5": "Donate yellow clothes to Brahmin; perform Pitru Shraadh.",
+      "H6": "Wear gold ring on left hand; offer 3 bananas in temple for 43 days.",
+      "H7": "Do not make false promises; donate Saturn items.",
+      "H8": "Offer black and white blanket in temple; worship Lord Ganesha.",
+      "H9": "Wear gold in ears; keep gold brick at home.",
+      "H10": "Bury honey in a silver pot in a desolated place; keep a dog after 48th year.",
+      "H11": "Wear yellow clothes; drink saffron milk; keep black dog.",
+      "H12": "Keep a dog at home to absorb all family troubles."
+    }
+  },
+  "vratasAndFasts": [
+    {
+      "name": "Raviwar Vrata",
+      "day": "Sunday",
+      "deity": "Lord Sun",
+      "purpose": "Acquiring glow, power, glory, curing skin & eye diseases.",
+      "method": "Start on last Sunday of Ashwin. Offer Arghya (water) with red sandalwood and roses. Eat saltless food once."
+    },
+    {
+      "name": "Somwar Vrata",
+      "day": "Monday",
+      "deity": "Lord Shiva & Moon",
+      "purpose": "Good luck, marital bliss, desired offspring, mental peace.",
+      "method": "Start on 1st Monday of Shravan/Chaitra. Worship Shiva with white flowers and cow milk. Recite Om Namah Shivay."
+    },
+    {
+      "name": "Mangalwar Vrata",
+      "day": "Tuesday",
+      "deity": "Lord Hanuman & Mars",
+      "purpose": "Courage, power, victory over enemies, curing blood pressure.",
+      "method": "Observe 21 or 45 Tuesdays. Offer red flowers, vermillion, and jaggery sweets to Hanuman. Eat saltless fruit."
+    },
+    {
+      "name": "Buddhawar Vrata",
+      "day": "Wednesday",
+      "deity": "Lord Vishnu & Mercury",
+      "purpose": "Intelligence, education, business success, communication skills.",
+      "method": "Observe 17-30 Wednesdays. Wear green clothes, offer green moong pulse to Shiva, eat green dish."
+    },
+    {
+      "name": "Brihaspatiwar Vrata",
+      "day": "Thursday",
+      "deity": "Brihaspateshwar Mahadev & Jupiter",
+      "purpose": "Wealth, high status, education, marital harmony, children.",
+      "method": "Observe 16 or 156 Thursdays. Wear yellow clothes, apply turmeric tilak, offer chana dal and bananas."
+    },
+    {
+      "name": "Shukrawar Vrata",
+      "day": "Friday",
+      "deity": "Goddess Lakshmi & Santoshi Mata",
+      "purpose": "Prosperity, luxury, beauty, attraction, fulfillment of desires.",
+      "method": "Observe 31 Fridays. Wear clean white clothes, offer ghee & sugar to Goddess Lakshmi. Avoid sour foods."
+    },
+    {
+      "name": "Shaniwar Vrata",
+      "day": "Saturday",
+      "deity": "Lord Saturn & Bhairava",
+      "purpose": "Overcoming Sade Sati, Dhaiya, chronic obstacles, legal troubles.",
+      "method": "Observe 19 or 51 Saturdays. Wear black clothes, offer mustard oil lamp to Peepal tree, feed black dog."
+    },
+    {
+      "name": "Ekadashi Vrata (24 Types)",
+      "day": "11th Tithi (Shukla/Krishna)",
+      "deity": "Lord Vishnu",
+      "purpose": "Eradication of all sins, financial prosperity, salvation (Moksha).",
+      "method": "Fast on 11th Tithi, refrain from grains & beans, worship Lord Vishnu with Tulsi leaves, stay awake at night."
+    },
+    {
+      "name": "Pradosh Vrata (7 Types)",
+      "day": "13th Tithi (Trayodashi)",
+      "deity": "Lord Shiva & Parvati",
+      "purpose": "Health, fulfillment of wishes, destruction of enemies, progeny.",
+      "method": "Fast till evening twilight, perform Abhisheka of Shivlinga, chant Om Namah Shivay 108 times."
+    },
+    {
+      "name": "Karwa Chauth",
+      "day": "Kartik Krishna Chaturthi",
+      "deity": "Lord Shiva, Parvati & Moon",
+      "purpose": "Longevity and safety of husband, marital harmony.",
+      "method": "Strict waterless fast by married women, offer Arghya to Moon at night through a sieve."
+    }
+  ],
+  "colorTherapy": {
+    "description": "Colors represent concentrated planetary rays. Using proper color clothes, glass bottles, and rosaries balances depleted body Chakras.",
+    "planetColors": {
+      "Sun": {
+        "color": "Orange / Golden / Pink",
+        "quality": "Ambition, drive, vital energy, gallstones/kidney cure."
+      },
+      "Moon": {
+        "color": "Milky White",
+        "quality": "Calmness, emotional balance, purity, even temper."
+      },
+      "Mars": {
+        "color": "Bright Red",
+        "quality": "Vitality, courage, adrenaline release, curing blood disorders."
+      },
+      "Mercury": {
+        "color": "Emerald Green",
+        "quality": "Harmony, optimism, nerve calming, heart health."
+      },
+      "Jupiter": {
+        "color": "Yellow / Saffron",
+        "quality": "Wisdom, spiritual growth, digestion, skin health."
+      },
+      "Venus": {
+        "color": "Sky Blue / White / Iridescent",
+        "quality": "Tranquility, love, elegance, cooling effect."
+      },
+      "Saturn": {
+        "color": "Deep Blue / Indigo / Black",
+        "quality": "Authority, blood purification, inner calm, endurance."
+      },
+      "Rahu": {
+        "color": "Smoky Blue / Brown",
+        "quality": "Protection, secret knowledge."
+      },
+      "Ketu": {
+        "color": "Grey / Multi-color",
+        "quality": "Spiritual insight, intuition."
+      }
+    },
+    "dailyDressGuide": {
+      "Sunday": "Pink, Orange, or Rose clothes with Ruby or Garnet jewelry.",
+      "Monday": "White clothes with Pearl or Moonstone jewelry.",
+      "Tuesday": "Red clothes or all shades of red with Coral jewelry.",
+      "Wednesday": "Green dress with Emerald, Peridot, or Jade jewelry.",
+      "Thursday": "Yellow clothes with Yellow Sapphire, Topaz, or Gold jewelry.",
+      "Friday": "White, off-white, bright silver, or sky blue dress with Diamond/Zircon.",
+      "Saturday": "Blue, Indigo, or Black dress with Blue Sapphire or Amethyst."
+    }
+  },
+  "meditationAndMantras": {
+    "meditationConcept": {
+      "definition": "Meditation is an intensely personal, joyful, and spiritual experience. Key to success is concentration of mind. To meditate is to turn inwards and channel awareness in a positive direction.",
+      "stages": [
+        {
+          "stage": "Dharana",
+          "meaning": "Concentration - Focusing the mind onto a single object or Mantra."
+        },
+        {
+          "stage": "Dhyaan",
+          "meaning": "Meditation - Sustained intense concentration."
+        },
+        {
+          "stage": "Samadhi",
+          "meaning": "Enlightenment / Super-conscious State - Complete absorption in God."
+        }
+      ],
+      "mantraTantraYantra": "Mantra (sound vibration), Tantra (complete worshipping process), and Yantra (geometric apparatus) when used together yield supreme divine power. Tantra has 5 parts: Patal, Paddhati, Kavach, Sahastranaam, and Stotra."
+    },
+    "chakrasAndSeedMantras": [
+      {
+        "chakra": "Sahasrara (Crown)",
+        "position": "Top of head / Brahmrandhra",
+        "planet": "Sun (Surya)",
+        "deity": "Param Shiva",
+        "seedMantra": "Om"
+      },
+      {
+        "chakra": "Agya (Third Eye)",
+        "position": "Centre of eyebrow",
+        "planet": "Jupiter (Guru)",
+        "deity": "Guru / Shiva",
+        "seedMantra": "Om"
+      },
+      {
+        "chakra": "Visuddhi (Throat)",
+        "position": "Throat",
+        "planet": "Saturn (Shani)",
+        "deity": "Goddess Shakti",
+        "seedMantra": "Hum"
+      },
+      {
+        "chakra": "Anahata (Heart)",
+        "position": "Heart",
+        "planet": "Moon (Chandra)",
+        "deity": "Lord Vishnu",
+        "seedMantra": "Yam"
+      },
+      {
+        "chakra": "Manipura (Solar Plexus)",
+        "position": "Navel",
+        "planet": "Mars (Mangal)",
+        "deity": "Lord Brahma",
+        "seedMantra": "Rum"
+      },
+      {
+        "chakra": "Swadhisthana (Sacral)",
+        "position": "Near private parts",
+        "planet": "Venus (Shukra)",
+        "deity": "Goddess Lakshmi",
+        "seedMantra": "Wam"
+      },
+      {
+        "chakra": "Mooladhara (Root)",
+        "position": "Bottom of spine near anus",
+        "planet": "Mercury (Budh)",
+        "deity": "Lord Ganesha",
+        "seedMantra": "Lam"
+      }
+    ],
+    "japaMethodsAndRules": {
+      "japaMethods": [
+        {
+          "type": "Vaachanik",
+          "description": "Recitation through speech in a loud voice."
+        },
+        {
+          "type": "Upanshu",
+          "description": "Recitation through lips without making sound."
+        },
+        {
+          "type": "Manasik",
+          "description": "Recitation of Mantra purely through mind without moving lips (Best method for Siddhi)."
+        }
+      ],
+      "mantraSiddhiRule": "Purushcharana requires chanting a mantra as many lakhs of times as there are syllables in it. For instance, Shiv Panchakshari Mantra (5 syllables) requires 5 lakh chants (or minimum 1.25 lakh for Ishta Devta grace).",
+      "sadhakaCodes": [
+        "1. Get up early in the morning around 4:00 AM (Brahma Muhurat).",
+        "2. Worship your Guru, Gayatri Mantra, Lord Ganpati, and Ishta Devta.",
+        "3. Sit in a proper Yogic posture (Padmasana, Siddhasana, or Vajrasana) facing East.",
+        "4. Practice Dhyana for at least 15 minutes daily before Japa.",
+        "5. Observe pure vegetarian diet and complete celibacy (Brahmacharya).",
+        "6. Use Japa Mala of 108 beads for counting and maintain clear pronunciation."
+      ]
+    },
+    "keyGayatriMantras": [
+      {
+        "name": "Brahma Gayatri",
+        "purpose": "For divine knowledge",
+        "mantra": "Om Vedatmane Cha Vidmahe Hiranyagarbhaya Dheemahi Tanno Brahma Prachodayaat"
+      },
+      {
+        "name": "Vishnu Gayatri",
+        "purpose": "For cosmic protection",
+        "mantra": "Om Shri Vishnave Cha Vidmahe Vasudevaya Dheemahi Tanno Vishnu Prachodayaat"
+      },
+      {
+        "name": "Shiv Gayatri",
+        "purpose": "For longevity & health",
+        "mantra": "Om Mahadevaya Vidmahe Rudramurtye Dheemahi Tanno Shivah Prachodayaat"
+      },
+      {
+        "name": "Ganesh Gayatri",
+        "purpose": "For obstacle removal",
+        "mantra": "Om Tatpurushaya Vidmahe Vakratundaya Dheemahi Tanno Danti Prachodayaat"
+      },
+      {
+        "name": "Laxmi Gayatri",
+        "purpose": "For wealth & prosperity",
+        "mantra": "Om Mahadevyai Cha Vidmahe Vishnu Patnyai Cha Dheemahi Tanno Lakshmi Prachodayaat"
+      },
+      {
+        "name": "Saraswati Gayatri",
+        "purpose": "For sharp intellect & speech",
+        "mantra": "Om Aing Vaagdevyai Cha Vidmahe Kaamaraajaaya Dheemahi Tanno Devi Prachodayaat"
+      }
+    ],
+    "dashavtarMantras": [
+      {
+        "avatar": "Sri Matsya (Fish)",
+        "planet": "Ketu",
+        "mantra": "Om Matsya Rupay Namah"
+      },
+      {
+        "avatar": "Sri Kurma (Tortoise)",
+        "planet": "Saturn",
+        "mantra": "Om Koorm Rupay Namah"
+      },
+      {
+        "avatar": "Sri Varaha (Boar)",
+        "planet": "Rahu",
+        "mantra": "Om Namo Bhagwate Varah Rupay Bhur Bhuvah Swah Syatpate Bhupatitwam Dehyate Dadapay Swaha"
+      },
+      {
+        "avatar": "Sri Narasimha (Lion-Man)",
+        "planet": "Mars",
+        "mantra": "Om Ugraveeram Maha Vishnum Jwalatam Savato Mukham Nrisingh Bheeshanam Bhadram Mrityu Mritym Namamyaham"
+      },
+      {
+        "avatar": "Sri Vamana (Priest)",
+        "planet": "Jupiter",
+        "mantra": "Om Vaman Rupay Namah"
+      },
+      {
+        "avatar": "Sri Parasurama (Warrior)",
+        "planet": "Venus",
+        "mantra": "Om Parashuramaay Namah"
+      },
+      {
+        "avatar": "Sri Buddha (Student)",
+        "planet": "Mercury",
+        "mantra": "Om Gautambuddhaay Namah"
+      },
+      {
+        "avatar": "Sri Rama (King)",
+        "planet": "Sun",
+        "mantra": "Om Rang Ramay Namah"
+      },
+      {
+        "avatar": "Sri Krishna (Transcendental)",
+        "planet": "Moon",
+        "mantra": "Om Kleeng Krishnaay Namah"
+      },
+      {
+        "avatar": "Sri Kalkin (Divine Protector)",
+        "planet": "Lagna / Ascendant",
+        "mantra": "Om Kalkine Jay Jay Shaalgramnivasine Divysinghay Swayambhuve Purushay Namah Om"
+      }
+    ],
+    "specialPurposeMantras": [
+      {
+        "purpose": "Financial Prosperity & Business Growth",
+        "deity": "Goddess Kamala / Kuber",
+        "mantra": "Om Aing Hreeng Shreeng Kleeng Hasauh Jagatprasutyai Namah"
+      },
+      {
+        "purpose": "Past, Present & Future Knowledge",
+        "deity": "Dhenta Siddhi",
+        "mantra": "Om Dhenta Swaha (Chant 1 Lakh times with red flowers)"
+      },
+      {
+        "purpose": "Tantrik Vartaali Secret Revealer",
+        "deity": "Devi Vartaali",
+        "mantra": "Om Aing Glaung Aing Sarvadushta Pradushtaanaam Sarveshaam... (Chant 17,000 times)"
+      },
+      {
+        "purpose": "Buddhist Universal Law Mantra",
+        "deity": "Lotus Sutra / Lord Buddha",
+        "mantra": "Nam Myoho Renge Kyo"
+      }
+    ]
+  },
+  "fastingPhilosophy": {
+    "etymology": "Sanskrit 'Upa-vaas' means staying close to God. It entails devoting the day to introspection, self-control, and spiritual contemplation rather than mere food restriction.",
+    "greatSayings": [
+      {
+        "quote": "No form of asceticism is superior to fasting.",
+        "source": "Mahabharata"
+      },
+      {
+        "quote": "By doing fasting mind becomes introversive, sight turns clean and body remains light.",
+        "source": "Kaka Kalelkar"
+      },
+      {
+        "quote": "Fasting is the most effective technique of curing all diseases.",
+        "source": "Dr. Adolf Mayer"
+      },
+      {
+        "quote": "Fasting has unlimited power in it because psychological strength works behind it.",
+        "source": "Mahatma Gandhi"
+      },
+      {
+        "quote": "Fasting is the best solution to get rid of sexuality and lust.",
+        "source": "Srimadbhagvadgita"
+      },
+      {
+        "quote": "If one has conquered the sense of taste, he has conquered all senses.",
+        "source": "Bhagavata Purana"
+      }
+    ],
+    "globalTraditions": {
+      "Vedic": "Soul purification, detoxifying gastrointestinal system, consolidating spiritual force.",
+      "Jainism": "Decreases desire & passion (Sallekhana & Santhara rituals for shedding karma).",
+      "Islam": "Ramjan fast from dawn to sunset draws believer closer to Lord by relinquishing physical desires.",
+      "Buddhism": "Regime aiding meditation by refraining from meals after noon.",
+      "Judaism": "Complete abstinence from food, water, and medication on 6 holy days.",
+      "Naturopathy & Medicine": "Restores organ balance, cell detoxification, relieving overloaded food-poisoned system."
+    },
+    "all67VratasDirectory": [
+      {
+        "id": 1,
+        "name": "Raviwar Vrata",
+        "purpose": "Acquiring glow, power, and glory like Sun; curing skin & eye diseases."
+      },
+      {
+        "id": 2,
+        "name": "Somwar Vrata",
+        "purpose": "Observed by ladies for good luck, desired offspring, and long life of husband."
+      },
+      {
+        "id": 3,
+        "name": "Mangalwar Vrata",
+        "purpose": "Acquiring courage, power, and winning over enemies."
+      },
+      {
+        "id": 4,
+        "name": "Buddhawar Vrata",
+        "purpose": "Education, intelligence, health, prosperity, and peace."
+      },
+      {
+        "id": 5,
+        "name": "Brihaspatiwar Vrata",
+        "purpose": "Reputation, wealth, status, and divine grace."
+      },
+      {
+        "id": 6,
+        "name": "Shukrawar Vrata",
+        "purpose": "Propitiation of Venus, luxury, beauty, attraction, and son's longevity."
+      },
+      {
+        "id": 7,
+        "name": "Shaniwar Vrata",
+        "purpose": "Appeasing Saturn, overcoming Sade Sati, Dhaiya, and legal troubles."
+      },
+      {
+        "id": 8,
+        "name": "Nav Samvatsar Pratipada",
+        "purpose": "Making the new year auspicious (Chaitra Shukla Pratipada)."
+      },
+      {
+        "id": 9,
+        "name": "Gangaur / Gauri Tritiya",
+        "purpose": "Ladies fast for marital bliss and husband's longevity."
+      },
+      {
+        "id": 10,
+        "name": "Arundhati Vrata",
+        "purpose": "Observed in South India to prevent early widowhood."
+      },
+      {
+        "id": 11,
+        "name": "Kamada Ekadashi",
+        "purpose": "Fulfillment of all wishes and eradication of sins."
+      },
+      {
+        "id": 12,
+        "name": "Sankasht Sri Ganesh Chaturthi",
+        "purpose": "Overcoming crisis, obstacles, and false accusations."
+      },
+      {
+        "id": 13,
+        "name": "Paapmoachani Ekadashi",
+        "purpose": "Eradication of major accumulated sins."
+      },
+      {
+        "id": 14,
+        "name": "Varuthini Ekadashi",
+        "purpose": "Improving life conditions in this world and after death."
+      },
+      {
+        "id": 15,
+        "name": "Mohini Ekadashi",
+        "purpose": "Attainment of good luck and destruction of sorrows."
+      },
+      {
+        "id": 16,
+        "name": "Akshay Tritiya",
+        "purpose": "Appeasing deceased ancestors and acquiring imperishable wealth."
+      },
+      {
+        "id": 17,
+        "name": "Apara Ekadashi",
+        "purpose": "Getting rid of sins and cowardice."
+      },
+      {
+        "id": 18,
+        "name": "Vata Savitri Vrata",
+        "purpose": "Long life of husband and family happiness."
+      },
+      {
+        "id": 19,
+        "name": "Ganga Dushehra",
+        "purpose": "Purification of mind and remedies for Kaal Sarp Yoga."
+      },
+      {
+        "id": 20,
+        "name": "Bheemsaini Nirjala Ekadashi",
+        "purpose": "Waterless fast yielding benefits of all 24 Ekadashis combined."
+      },
+      {
+        "id": 21,
+        "name": "Yogini Ekadashi",
+        "purpose": "Liberation from birth-death cycle; cures skin ailments/leprosy."
+      },
+      {
+        "id": 22,
+        "name": "Devashayani Ekadashi",
+        "purpose": "Lord Vishnu's cosmic sleep start; fulfillment of wishes & wealth."
+      },
+      {
+        "id": 23,
+        "name": "Gurupurnima / Vyas Purnima",
+        "purpose": "Showing faith, reverence, and devotion to spiritual Guru."
+      },
+      {
+        "id": 24,
+        "name": "Kokila Vrata",
+        "purpose": "Family prosperity, beauty, and capable children."
+      },
+      {
+        "id": 25,
+        "name": "Kamika Ekadashi",
+        "purpose": "Eradicating severe sins and avoiding hell."
+      },
+      {
+        "id": 26,
+        "name": "Naag Panchami",
+        "purpose": "Protection from snake bites for 7 generations."
+      },
+      {
+        "id": 27,
+        "name": "Putrada Ekadashi",
+        "purpose": "Blessings for male offspring and family lineage."
+      },
+      {
+        "id": 28,
+        "name": "Srikrishna Janamashtami",
+        "purpose": "Destruction of sins of 100 births; Lord Krishna's grace."
+      },
+      {
+        "id": 29,
+        "name": "Uja Ekadashi",
+        "purpose": "Getting rid of physical ailments and cycle of rebirth."
+      },
+      {
+        "id": 30,
+        "name": "Haritalika Vrata",
+        "purpose": "Strict waterless fast for suitable husband & marital bliss."
+      },
+      {
+        "id": 31,
+        "name": "Kapardi Vinayak Vrata",
+        "purpose": "One-month fast for fulfillment of all difficult wishes."
+      },
+      {
+        "id": 32,
+        "name": "Rishi Panchami",
+        "purpose": "Absolution of physical, verbal, and mental sins (7 Rishis worship)."
+      },
+      {
+        "id": 33,
+        "name": "Parivartini Ekadashi",
+        "purpose": "Lord Vishnu turning posture; Goddess Lakshmi's special grace."
+      },
+      {
+        "id": 34,
+        "name": "Anant Chaturdashi",
+        "purpose": "Unlimited auspiciousness, financial growth, and protection."
+      },
+      {
+        "id": 35,
+        "name": "Jeevatputrika Vrata",
+        "purpose": "Protection, health, and longevity of children."
+      },
+      {
+        "id": 36,
+        "name": "Indira Ekadashi",
+        "purpose": "Redemption and peace for deceased ancestors in Pitru Paksha."
+      },
+      {
+        "id": 37,
+        "name": "Papankusha Ekadashi",
+        "purpose": "Destruction of all sins like an elephant hook (Ankusha)."
+      },
+      {
+        "id": 38,
+        "name": "Sharad Poornima",
+        "purpose": "Nectar rays of Moon; protection of children & prosperity."
+      },
+      {
+        "id": 39,
+        "name": "Navratri Durga Vrata",
+        "purpose": "9-night worship of Goddess Durga for victory & peace."
+      },
+      {
+        "id": 40,
+        "name": "Karwa Chauth",
+        "purpose": "Husband's safety & longevity observed through Moon sieve Arghya."
+      },
+      {
+        "id": 41,
+        "name": "Ahoi Ashtami",
+        "purpose": "Protection and well-being of children."
+      },
+      {
+        "id": 42,
+        "name": "Rama Ekadashi",
+        "purpose": "Eradication of poverty and attainment of good luck before Diwali."
+      },
+      {
+        "id": 43,
+        "name": "Dhan Teras",
+        "purpose": "Dhanvantari worship for health and longevity."
+      },
+      {
+        "id": 44,
+        "name": "Narak Chaturdashi",
+        "purpose": "Pleasing Yamraj to prevent untimely death."
+      },
+      {
+        "id": 45,
+        "name": "Deepawali Lakshmi Pujan",
+        "purpose": "Attainment of Riddhi, Siddhi, wealth, and prosperity."
+      },
+      {
+        "id": 46,
+        "name": "Govardhan Pujan / Annakoot",
+        "purpose": "Pleasing Lord Krishna & protection of cows."
+      },
+      {
+        "id": 47,
+        "name": "Chhath Parva (Suryopasna)",
+        "purpose": "Sun worship for progeny, health, and prosperity."
+      },
+      {
+        "id": 48,
+        "name": "Bheesham Panchak Vrata",
+        "purpose": "Eradication of sins & lineage growth."
+      },
+      {
+        "id": 49,
+        "name": "Devothani Ekadashi",
+        "purpose": "Awakening of Lord Vishnu; commencement of marriages."
+      },
+      {
+        "id": 50,
+        "name": "Baikunth Chaturdashi",
+        "purpose": "Salvation and entry into Vishnu's realm (Baikunth)."
+      },
+      {
+        "id": 51,
+        "name": "Bhairava Ashtami",
+        "purpose": "Protection from evil spirits, fear, & ancestral grace."
+      },
+      {
+        "id": 52,
+        "name": "Utpanna Ekadashi",
+        "purpose": "Origin of Ekadashi Devi; spiritual purity."
+      },
+      {
+        "id": 53,
+        "name": "Mokshada Ekadashi",
+        "purpose": "Gita Jayanti; liberation from karmic bondages."
+      },
+      {
+        "id": 54,
+        "name": "Safala Ekadashi",
+        "purpose": "Success in all endeavors and fulfillment of desires."
+      },
+      {
+        "id": 55,
+        "name": "Putrada Ekadashi (Paush)",
+        "purpose": "Attainment of capable offspring."
+      },
+      {
+        "id": 56,
+        "name": "Makar Sankranti",
+        "purpose": "Sun's Uttarayana transition; freedom from rebirth."
+      },
+      {
+        "id": 57,
+        "name": "Shadtila Ekadashi",
+        "purpose": "6 uses of sesame (Til) for wealth & poverty eradication."
+      },
+      {
+        "id": 58,
+        "name": "Jaya Ekadashi",
+        "purpose": "Frees soul from ghost/demon Yoni (Pret Yoni)."
+      },
+      {
+        "id": 59,
+        "name": "Achala / Saur Saptami",
+        "purpose": "Sun worship for health and emancipation of souls."
+      },
+      {
+        "id": 60,
+        "name": "Vijaya Ekadashi",
+        "purpose": "Victory over formidable enemies and obstacles."
+      },
+      {
+        "id": 61,
+        "name": "Mahashivaratri Vrata",
+        "purpose": "Cosmic union of Shiva-Parvati; supreme liberation."
+      },
+      {
+        "id": 62,
+        "name": "Aanwal Ekadashi",
+        "purpose": "Amla tree worship for health & victory over sorrows."
+      },
+      {
+        "id": 63,
+        "name": "Parama Ekadashi (Adhik Maas)",
+        "purpose": "Observed in leap month for immense wealth & ancestor peace."
+      },
+      {
+        "id": 64,
+        "name": "Padmini Ekadashi (Adhik Maas)",
+        "purpose": "Eradication of rare accumulated sins in leap month."
+      },
+      {
+        "id": 65,
+        "name": "Pradosh Vrata (13th Tithi)",
+        "purpose": "Shiva twilight worship for wish fulfillment."
+      },
+      {
+        "id": 67,
+        "name": "Sri Satyanarayan Vrata",
+        "purpose": "Mental peace, prosperity, and truth in life."
+      }
+    ]
+  },
+  "lalKitabSystem": {
+    "introduction": "Lal Kitab (The Wonder Book of Astrology) is an ancient Urdu astro-palmistry work connecting 42 divisions of the brain and palm mounts to birth chart houses. Houses are fixed without sign numbers.",
+    "ageMilestones": {
+      "Jupiter": "16 Years",
+      "Mars": "28 Years",
+      "Mercury": "32 Years",
+      "Saturn": "36 Years",
+      "DasaCircle": "35-Year cycle repeated 3 times to cover 105 years"
+    },
+    "remedyRules": {
+      "timing": "Must be performed during daytime between sunrise and sunset.",
+      "duration": "Continuous practice for 21 to 43 days (especially after Varshphal birthday).",
+      "conduct": "Abstain from meat, alcohol, womanising, and lying."
+    },
+    "articlesForDonation": {
+      "Sun": "Wheat, copper, ruby, jaggery, red cloth, red flowers, red sandalwood, brown sugar (khandsari), saffron, brown buffalo.",
+      "Moon": "Rice, milk, silver, pearl, curd, condensed sugar (misri), white cloth, white sandalwood, white flowers, white camphor, white horse.",
+      "Mars": "Red coral, gold, copper, wheat, ghee, red cloth, red flowers, red sandalwood, red copper, masoor dal, saunf.",
+      "Mercury": "Emerald, gold, ivory, sugar, green cloth, flowers, green moong dal, camphor, turpentine oil.",
+      "Jupiter": "Gold, topaz, ruby, horse, chana dal, salt, turmeric, jaggery, brown sugar, yellow cloth, yellow flowers, yellow sweets.",
+      "Venus": "White pearl, ghee, camphor, curd, diamond, silver, rice, sugar, mild scents, white cloth, white cow, white flowers.",
+      "Saturn": "Blue sapphire, iron, gold, black urad dal, musk, black cow/buffalo, black cloth, black flowers, crow, black dog, black horse.",
+      "Rahu": "Blue sapphire, hessonite, ruby, mustard (sarson), gold, sword, horse, blanket, 7-grain mixture (satnaja), lead, saffron.",
+      "Ketu": "Sesame (til), cat's eye, gold, sword, musk, blanket, sugar, 7-grain mixture, lead, saffron, multicolored dog."
+    },
+    "planetaryPowerConsolidation": [
+      "If Sun is strong: Do not give away gold, wheat, or copper as gifts.",
+      "If Moon is strong: Do not donate or gift silver, pearl, or rice.",
+      "If Mars is strong: Do not serve sweets or honey to others.",
+      "If Mercury is strong: Do not present a pen as a gift.",
+      "If Jupiter is strong: Do not donate books to people.",
+      "If Venus is strong: Do not give away beautiful clothes, scents, or ornaments.",
+      "If Saturn is strong: Do not serve alcohol to others.",
+      "For Rahu strength: Keep a small lead ball.",
+      "For Ketu strength: Keep a dog at home."
+    ],
+    "ninePlanetaryDebts": [
+      {
+        "debt": "Self Debt (Sun)",
+        "cause": "Malefic in 5th house; past insult of ancient traditions.",
+        "remedy": "Collect equal money from blood relatives and perform Yagya."
+      },
+      {
+        "debt": "Mother's Debt (Moon)",
+        "cause": "Ketu in 4th house; past humiliation of mother.",
+        "remedy": "Collect equal silver from relatives and flow in running water."
+      },
+      {
+        "debt": "Relatives Debt (Mars)",
+        "cause": "Mercury/Ketu in 1st & 8th; past betrayal of family.",
+        "remedy": "Collect equal money from family members for charitable deeds."
+      },
+      {
+        "debt": "Sister's Debt (Mercury)",
+        "cause": "Mars in 3rd or 6th; past harm to sister/girl.",
+        "remedy": "Collect yellow kauri shells from family, burn them, and throw ash in river."
+      },
+      {
+        "debt": "Father's Debt (Jupiter)",
+        "cause": "Venus/Mercury/Rahu in 2nd/5th/9th/12th; changing family priest/temple.",
+        "remedy": "Collect money from family for temple maintenance & Peepal tree care."
+      },
+      {
+        "debt": "Wife's Debt (Venus)",
+        "cause": "Sun/Rahu/Moon in 2nd/7th; past torture of wife.",
+        "remedy": "Collect equal money from family and feed 100 cows."
+      },
+      {
+        "debt": "Helpless Debt (Saturn)",
+        "cause": "Sun/Moon/Mars in 10th/11th; fraud/harm to helpless.",
+        "remedy": "Collect equal money from family and feed 100 laborers."
+      },
+      {
+        "debt": "Unborn Debt (Rahu)",
+        "cause": "Sun/Venus/Mars in 12th; past betrayal of family.",
+        "remedy": "Collect 1 coconut from each family member and flow in river."
+      },
+      {
+        "debt": "God's Debt (Ketu)",
+        "cause": "Mars & Moon in 6th house; atheism/fraud in past.",
+        "remedy": "Collect money from family members and feed 100 dogs."
+      }
+    ],
+    "strictDonationWarnings": [
+      {
+        "condition": "Moon in 6th House",
+        "warning": "Do NOT donate milk or water; do NOT dig a water well (invites death)."
+      },
+      {
+        "condition": "Saturn in 8th House",
+        "warning": "Do NOT construct an inn, tavern, or guest house (makes native homeless)."
+      },
+      {
+        "condition": "Saturn in 1st & Jupiter in 7th",
+        "warning": "Do NOT donate copper pot to beggars (destroys children)."
+      },
+      {
+        "condition": "Jupiter in 10th & Moon in 4th",
+        "warning": "Do NOT construct a temple (leads to false accusation and prison)."
+      },
+      {
+        "condition": "Venus in 9th House",
+        "warning": "Do NOT adopt an orphan child (causes severe suffering)."
+      },
+      {
+        "condition": "Moon in 12th House",
+        "warning": "Do NOT offer free education or food to saints."
+      },
+      {
+        "condition": "Jupiter in 7th House",
+        "warning": "Do NOT offer clothes to temple priests."
+      },
+      {
+        "condition": "Sun in 7th or 8th House",
+        "warning": "Donations in morning/evening act like poison."
+      }
+    ],
+    "vastuSaturnRules": {
+      "H1": "Weak Saturn destroys native if house is built.",
+      "H4": "Do not build or buy a house in native's own name.",
+      "H5": "Building house before age 48 harms children; release buffalo in jungle if unavoidable.",
+      "H6": "Do not build house before age 36 or 39.",
+      "H7": "Buying a readymade house or staying in ancestral house is best.",
+      "H11": "Construct house only after age 55 for auspicious results."
+    },
+    "miscellaneousProducts": {
+      "description": "Items such as black horse shoe, ekaksheey naariyal, narmada shivlinga, navratna bracelet, special rings, remedial bags etc are highly beneficial and carry great spiritual powers. They are rarely available.",
+      "products": [
+        {
+          "name": "Black Horse Shoe",
+          "purpose": "Protects house from evil spirits, bad luck and disease; auspicious for success in jobs."
+        },
+        {
+          "name": "Ekakshee Naariyal",
+          "purpose": "Symbol of auspiciousness and purity; brings property when worshipped with red sandalwood, Sindoor, Dhoop."
+        },
+        {
+          "name": "Indrajaala",
+          "purpose": "Rare sacred cloth tied after worship; brings peace in house and protects from evil spirits."
+        },
+        {
+          "name": "Narmada Shivlinga",
+          "purpose": "Enhances knowledge and wealth; propitiates Saturn when worshipped with black tiles."
+        },
+        {
+          "name": "Navratna Bracelet",
+          "purpose": "Includes gems of all 9 planets; provides prosperity, health and protection."
+        },
+        {
+          "name": "Shaligram",
+          "purpose": "Propitiates deities; brings prosperity and removes sins."
+        },
+        {
+          "name": "Swetark Ganpati",
+          "purpose": "Brings knowledge, peace and protection; auspicious for children."
+        },
+        {
+          "name": "Gomti Chakra",
+          "purpose": "Protective powers; brings wealth, health and good luck."
+        },
+        {
+          "name": "Haridra Ganpati",
+          "purpose": "Protects children and fulfills desires; aids in legal matters."
+        },
+        {
+          "name": "Kauri Om Namah Shivay",
+          "purpose": "Brings wealth and love; auspicious for marriage attire."
+        },
+        {
+          "name": "Lal Kitab Samagri Elephant",
+          "purpose": "Appeases Mercury and Rahu."
+        },
+        {
+          "name": "Lal Kitab Samagri Fish",
+          "purpose": "Improves love life and appeases Venus."
+        },
+        {
+          "name": "Lal Kitab Samagri Nag Nagin",
+          "purpose": "Overcomes Kalsarp Dosa."
+        },
+        {
+          "name": "Lal Kitab Samagri Ketu",
+          "purpose": "Propitiates Ketu."
+        },
+        {
+          "name": "Lal Kitab Samagri Rahu",
+          "purpose": "Propitiates Rahu; removes obstacles."
+        },
+        {
+          "name": "Laxmi Ganesh in Coral",
+          "purpose": "Financial gains, protective against fire and lightning, cures blood diseases."
+        },
+        {
+          "name": "Metal Tortoise",
+          "purpose": "Longevity, stability, good health; place in North sector."
+        },
+        {
+          "name": "Naag Naagin Pair",
+          "purpose": "Improves emotional relations and removes obstacles."
+        },
+        {
+          "name": "Pendulum",
+          "purpose": "Dowsing tool for finding answers and balancing rational and intuitive."
+        },
+        {
+          "name": "Sangsitara Laxmi Ganesh",
+          "purpose": "Appeases Venus; enhances prosperity."
+        },
+        {
+          "name": "Sangsitara Ganesh",
+          "purpose": "Prosperity and creativity; appeases Mercury."
+        },
+        {
+          "name": "Seep Tortoise",
+          "purpose": "Longevity and stability; improves health when placed East."
+        },
+        {
+          "name": "Black Horse Shoe Ring",
+          "purpose": "Brings success in jobs; mitigates Saturn's malefic effects."
+        },
+        {
+          "name": "Kal Sarp Yog's Ring",
+          "purpose": "Removes Kalsarp Dosa obstacles."
+        },
+        {
+          "name": "Navratna Ring",
+          "purpose": "Protects from planetary malefic effects; enhances wealth and health."
+        },
+        {
+          "name": "Sri Yantra Ring",
+          "purpose": "Increases wealth, success in lottery or gambling."
+        },
+        {
+          "name": "Remedial Bags",
+          "subcategories": [
+            {
+              "name": "Deepawali Pooja Bag",
+              "purpose": "Improves business, wealth and glory."
+            },
+            {
+              "name": "Harmony Bag",
+              "purpose": "Enhances relationships."
+            },
+            {
+              "name": "Health Bag",
+              "purpose": "Improves physical and mental health."
+            },
+            {
+              "name": "Love Bag",
+              "purpose": "Attracts love and happiness."
+            },
+            {
+              "name": "Peace, Power and Prosperity Bag",
+              "purpose": "Financial gains, power, wealth and success."
+            },
+            {
+              "name": "Safe Journey Bag",
+              "purpose": "Protection during travel."
+            },
+            {
+              "name": "Victory Bag",
+              "purpose": "Suppresses opponents and wins favor."
+            },
+            {
+              "name": "Wholesome Bag for Business",
+              "purpose": "Power, money, authority and progress in business."
+            },
+            {
+              "name": "Wholesome Bag for Family",
+              "purpose": "Happiness, health, wealth and peace for family."
+            }
+          ]
+        }
+      ]
+    },
+    "colorTherapyExtended": {
+      "conceptAndVibgyor": {
+        "vibgyor": "Violet, Indigo, Blue, Green, Yellow, Orange, Red (filtered through Sun's rays and prism).",
+        "concentratedColor": "Gemstones are expensive because they contain color in a concentrated state. Using concentrated color, solarized water, or colored glass containers acts with gemstone-like efficacy.",
+        "solarizedWater": "Purified water in a prescribed color container left in the sun for 2 hours gets energized with color vibrations and acts as a healing tonic."
+      },
+      "colorPropertiesAndCures": {
+        "Red (Mars)": {
+          "qualities": "Vitality, energy, creativity, power, rashness, passion, protector of ladies.",
+          "psychology": "Quick to react, overemotional, likes to be in the forefront.",
+          "healthCures": "Stimulates adrenaline, multiplies hemoglobin, treats blood diseases, cures lethargy/depression."
+        },
+        "Orange (Sun)": {
+          "qualities": "High ambitions, dynamic drive, pride, self-contained, adventure, change.",
+          "psychology": "Self-centered, cool-headed, high-minded.",
+          "healthCures": "Treats gallstones, digestive ailments, chest/kidney diseases, and arthritis."
+        },
+        "Yellow (Jupiter)": {
+          "qualities": "Generous, intelligent, gentle, genial, enlightenment, wisdom.",
+          "psychology": "Wise, creative, inventive mind (saints, mystics, artists).",
+          "healthCures": "Facilitates digestive process, cures skin problems."
+        },
+        "Green (Mercury)": {
+          "qualities": "Balance, harmony, hope, fertility, renewal, wealth.",
+          "psychology": "Adaptable, optimistic, opportunist.",
+          "healthCures": "Calms frazzled nerves, treats heart conditions, serene atmosphere for pregnant women."
+        },
+        "Blue (Venus)": {
+          "qualities": "Nobility, tranquility, chastity, loyalty, truth, serenity.",
+          "psychology": "Calms anger and passions, brings emotional stability.",
+          "healthCures": "Stops bleeding, heals burns, treats sore throat, shock, inflammation, and cures nightmares."
+        },
+        "Indigo (Venus & Saturn)": {
+          "qualities": "Artistic talent, general prosperity, intellect, authority, inner calmness, occult power.",
+          "psychology": "Looks beyond surface of things, drawn to higher spiritual realms.",
+          "healthCures": "Purifies blood, treats ear/nose/eye/sinus problems, boils, ulcers, and nervous disorders."
+        },
+        "Violet (Jupiter & Saturn)": {
+          "qualities": "Patience, seriousness, reserved manner, creativity, hard work.",
+          "psychology": "Creative genius (meditated upon by Da Vinci & Beethoven), shy and reserved.",
+          "healthCures": "Treats excessive emotional agitation."
+        }
+      },
+      "coloredRosariesMalaGuide": [
+        {
+          "rosary": "White Rosary",
+          "purpose": "For knowledge, peace of mind, and mental calmness."
+        },
+        {
+          "rosary": "Orange Rosary",
+          "purpose": "For quick results, overcoming enemies, and protection from poisons."
+        },
+        {
+          "rosary": "Green Rosary",
+          "purpose": "For mathematics, commerce, communication, law, and medical professionals."
+        },
+        {
+          "rosary": "Yellow Rosary",
+          "purpose": "For honor, dignity, high morality, and student academic success."
+        },
+        {
+          "rosary": "Crystal (Sphatika) Rosary",
+          "purpose": "For love affairs, married life bliss, opposite sex cooperation, and luxury."
+        },
+        {
+          "rosary": "Light Brown Rosary",
+          "purpose": "For achieving success in foreign country matters and travel."
+        },
+        {
+          "rosary": "Gray Rosary",
+          "purpose": "For overcoming litigation, debts, bone diseases, arthritis, and heavy losses."
+        }
+      ]
+    },
+    "fengshui": {
+      "description": "Fengshui is the Vastu Art of China, derived from Indian Vastu Shastra, using wind and water principles. It offers remedial products to improve love, happiness, wealth, intelligence, health and prosperity.",
+      "products": [
+        {
+          "name": "Bagua Mirror",
+          "purpose": "Ward off wrong vibrations entering a building, mainly through the main door."
+        },
+        {
+          "name": "Education Tower",
+          "purpose": "Nine-level pagoda catching good energy to enhance intelligence and creativity, beneficial for students."
+        },
+        {
+          "name": "Fish",
+          "purpose": "Glass or china jar with gold fish brings luck, success and prosperity; keep in North."
+        },
+        {
+          "name": "Gems Tree",
+          "purpose": "Crystals (clear quartz) energize or expand cramped areas; represents yin (white) and yang (clear) aspects."
+        },
+        {
+          "name": "Laughing Buddha",
+          "purpose": "Wealth god; brings prosperity and money when kept near the main door."
+        },
+        {
+          "name": "Lucky Coins",
+          "purpose": "Three coins tied with red ribbon; attract good luck and increase wealth."
+        },
+        {
+          "name": "Luk Fuk Sau",
+          "purpose": "Statues of three chief Chinese gods; placed on a high side‑table to enhance health, prosperity and happiness."
+        },
+        {
+          "name": "Mendarin Duck",
+          "purpose": "Pair of wooden ducks placed in South‑West bedroom to improve marital harmony and attract a suitable partner."
+        },
+        {
+          "name": "Pakua Mirror",
+          "purpose": "Multiplying wealth; hang in North for business prosperity, East for progress and fame; never in South."
+        },
+        {
+          "name": "Tri Leg Frog",
+          "purpose": "Three‑legged frog with coin in mouth; placed near entrance to attract money."
+        },
+        {
+          "name": "Wind Chimes",
+          "purpose": "Neutralize negative energy and stimulate atmosphere; install where natural air flows."
+        },
+        {
+          "name": "Fengshui Tortoise",
+          "purpose": "Symbol of longevity and stability; place in North for long successful work life, East for health."
+        },
+        {
+          "name": "Love Birds",
+          "purpose": "Pair kept in South‑West corner to enhance love life and marital happiness."
+        }
+      ]
+    },
+    "pyramids": {
+      "description": "Pyramids are energy‑nucleus structures used for Vastu correction, health, prosperity and mental strength. They are non‑religious tools accepted in many cultures and medical science.",
+      "benefits": [
+        "Vastu correction and protection from negative energies",
+        "Improves sleep, reduces fatigue and tension",
+        "Enhances physical, mental and intellectual powers",
+        "Promotes health, peace of mind and prosperity"
+      ],
+      "items": [
+        {
+          "name": "Closed Pyramid Set",
+          "purpose": "Vastu correction tool; converts negative energy to positive, reduces fatigue and improves tolerance and performance.",
+          "mantra": null
+        },
+        {
+          "name": "Nine Pyramids in Eight Metals",
+          "purpose": "Peace of mind and prosperity; can be placed at work, home or vehicle for better sleep, health and immunity.",
+          "mantra": null
+        },
+        {
+          "name": "Pyramid (Brass)",
+          "purpose": "Activates inactive nerves, acts like medicine, stores vast qualities and divine powers for efficiency.",
+          "mantra": null
+        },
+        {
+          "name": "Pyramid Locket",
+          "purpose": "Catches universal energy and provides peace of mind, sound health and wealth; shields wearer from Vastu faults.",
+          "mantra": null
+        },
+        {
+          "name": "Pyramid Sriyantra",
+          "purpose": "Combines pyramid geometry with Sriyantra for Vastu correction, enhances learning, wealth and mitigates Mercury, Rahu, Ketu effects.",
+          "mantra": "Om Hreeng Shreeng Kleeng Mahalaxmyai Namah"
+        },
+        {
+          "name": "Sumeru Pyramid Sriyantra",
+          "purpose": "Wealth, loan, lottery success; Vastu correction across many settings.",
+          "mantra": "Om Hreeng Shreeng Kleeng Mahalaxmyai Namah"
+        },
+        {
+          "name": "Sriyantra in 8 Metals",
+          "purpose": "Embodies Ashta Laxmi; brings wealth, health and protective aura.",
+          "mantra": null
+        },
+        {
+          "name": "Tortoise Pyramid Set",
+          "purpose": "Physical strength, patience, wealth; placed near sick persons or work spaces.",
+          "mantra": null
+        },
+        {
+          "name": "Crystal Sriyantra",
+          "purpose": "Balances cosmic rays, enhances prosperity and mental peace.",
+          "mantra": "Om Shreeng Hreeng Shreeng Kamaley Kamlalaye Praseed Praseed Shreeng Hreeng Shreeng Om Mahalaxmyai Namah"
+        },
+        {
+          "name": "Sangitara Sriyantra",
+          "purpose": "Beauty, knowledge, wealth; counters adverse Venus influences.",
+          "mantra": "Om shreeng Hreeng Kleeng Mahalaxmyai Namah"
+        },
+        {
+          "name": "Swastik Pyramid",
+          "purpose": "Destroys negative energies; combines Ganesha, Sriyantra, Baglamukhi and Mahamrtyunjay yantras, granting fortune and health.",
+          "mantra": "Om Shreeng Hreeng Kleeng Glaung Gang Ganapatye Var Varad Sarvajanmey Vashmanay Tha Tha"
+        }
+      ],
+      "sources": [
+        "www.futurepointindia.com",
+        "www.leogold.com",
+        "www.leopalm.com"
+      ]
+    },
+    "crystals": {
+      "description": "Crystals protect you from negative vibrations and act as a catalyst and conductor of light and energy. They are used for healing, meditation, chakra balancing, protection and converting bad vibrations into positive energy.",
+      "benefits": [
+        "Healing",
+        "Meditation",
+        "Chakra balancing",
+        "Protection",
+        "Changing bad vibrations",
+        "Rebalancing biological systems"
+      ],
+      "items": [
+        { "name": "Crystal Sriyantra", "purpose": "Sriyantra made of crystal for financial success and spiritual enrichment.", "mantra": "Om Shreeng Hreeng Shreeng Kamaley Kamlalaye Praseed Praseed Shreeng Hreeng Shreeng Om Mahalaxmyai Namah" },
+        { "name": "Crystal Ganesha Locket", "purpose": "Locket of Ganesha made of crystal for overcoming obstacles and intellectual work.", "mantra": "Om Gang Ganapatye Namah" },
+        { "name": "Crystal Rosary", "purpose": "Crystal rosary for mental peace and protection from diseases.", "mantra": "Om Namah Shivay" },
+        { "name": "Crystal Ganesha", "purpose": "Crystal idol of Ganesha for success, wealth, intelligence and removing hurdles.", "mantra": "Om shreeng Hreeng Kleeng gloung Gang Ganapatye Var Varad Sarvajana Mey Vashmaanay Thah Thah" },
+        { "name": "Crystal Moon", "purpose": "Crystal moon locket for mental balance, intuition, and overcoming bad dreams.", "mantra": "Om Som Somaya Nahah" },
+        { "name": "Crystal Sun", "purpose": "Crystal sun for eliminating negative energies and health disorders.", "mantra": "Om Hreeng Ghrini Surya Aditya Shreeng" },
+        { "name": "Crystal Shivlinga", "purpose": "Crystal Shivlinga for protection from diseases, mishaps and sudden death.", "mantra": "Om Namah Shivay" },
+        { "name": "Crystal Laxmi", "purpose": "Crystal Laxmi for wealth and prosperity.", "mantra": "Om Mahalaxmyai Namah" },
+        { "name": "Crystal Ball", "purpose": "Crystal ball for replacing negative energies with positive and fortune telling.", "mantra": "Om Brahmne Namah" },
+        { "name": "Crystal Pyramid", "purpose": "Crystal pyramid as a powerful Vastu correction tool.", "mantra": "Om Brahmne Namah" },
+        { "name": "Crystal Tortoise", "purpose": "Crystal tortoise for longevity and Vastu correction.", "mantra": "Om Brahmne Namah" },
+        { "name": "Crystal Shivparivaar", "purpose": "Crystal Shivparivaar for all‑round prosperity and protection.", "mantra": "Om Namah Shivay" }
+      ],
+      "sources": [
+        "www.futurepointindia.com",
+        "www.leogold.com",
+        "www.leopalm.com"
+      ]
+    },
+    "rosaries": {
+        "description": "Rosary is a string of beads used in counting prayers, combining prayer and meditation. It is used to recite mantras and is considered auspicious, especially with 108 beads.",
+        "benefits": [
+            "Reciting mantras of various deities",
+            "Promotes mental peace and virtuous mentality",
+            "Improves health, intellectual work, and spiritual activities",
+            "Aids love, marriage, exams, pregnancy, legal success, and more"
+        ],
+        "items": [
+            { "name": "White Sandalwood Rosary", "purpose": "Made of sandalwood beads; used for reciting Vishnu, Ram, Krishna, Jupiter mantras; provides virtuous mentality, peace of mind, sufficient sleep.", "mantra": "Om Saraswati Namah" },
+            { "name": "Crystal and Rudraksha Mixed Rosary", "purpose": "Crystal and Rudraksha beads (27/54/108); renders prosperity, protects from cough, fever, disorder of wind; aids sleep and eye problems; used for Shiv Panchakshari mantra.", "mantra": "Om Namah Shivay" },
+            { "name": "Crystal Rosary", "purpose": "Crystal rosary for mental peace, protects from diseases; used on Monday for peace, Saturday for blood disorders, navel for fever.", "mantra": "Om Namah Shivay" },
+            { "name": "Turquoise Rosary", "purpose": "Improves love life and marriage prospects; worn on auspicious days; used with Bhuvaneswari Yantra.", "mantra": "Om Bhuvaneswari Namah" },
+            { "name": "Agate Rosary", "purpose": "Blessings of Lord Shiva; mental peace, concentration, courage; helps in exams, menopause, breast tumor; protective during pregnancy.", "mantra": "Om Namah Shivay" },
+            { "name": "Turmeric Bulb Rosary", "purpose": "Purifying; used for victory over enemies, litigation success; recites Bagalamukhi and Jupiter mantras.", "mantra": "Om Bagalamukhi Namah" },
+            { "name": "Lotus Bead Rosary", "purpose": "Recite Goddess Laxmi mantras for wealth.", "mantra": "Om Laxmi Namah" },
+            { "name": "Kaya Kalpa Rosary", "purpose": "Rejuvenates body and mind; enhances love, confidence, spiritual activity; grants fame.", "mantra": "Om Shivparivaar Namah" },
+            { "name": "Coral Rosary", "purpose": "Used for Hanuman and Mars mantras; legal success, debt clearance; protects during sleep.", "mantra": "Om Hanuman Namah" },
+            { "name": "Coral and Pearl Mixed Rosary", "purpose": "Soothing impact; recite Shiva and Shakti mantras; brings Laxmi blessings.", "mantra": "Om Shiva Shakti Namah" },
+            { "name": "Pearl and Rudraksha Mixed Rosary", "purpose": "Beneficial for various purposes.", "mantra": null },
+            { "name": "Navratna Rosary", "purpose": "Recite Shiva mantras; improves peace, health; includes gems of nine planets; grants prosperity, health, protection.", "mantra": "Om Navratna Namah" },
+            { "name": "Tulsi Rosary", "purpose": "Aids digestion, headache, fever; recites Vishnu, Ram, Krishna, Jupiter mantras; helps attain Siddhi.", "mantra": "Om Vishnu Namah" },
+            { "name": "Red Sandalwood Rosary", "purpose": "Recite mantras of Goddesses, Mars, Hanuman.", "mantra": "Om Devi Namah" },
+            { "name": "Rudraksha Rosary", "purpose": "Improves blood pressure, virility, intellect, business; recite Shiva mantras.", "mantra": "Om Shivaya Namah" },
+            { "name": "Pearl Rosary", "purpose": "Refines mind, controls mood swings; recite Shiva and Moon mantras.", "mantra": "Om Shiva Namah" },
+            { "name": "Quicksilver (Parad) Rosary", "purpose": "Made of silver and mercury; removes sins, adds respect, reputation, peace.", "mantra": "Om Mahamrityunjay Namah" },
+            { "name": "Putraprati Rosary", "purpose": "Made with Putrajeeva seeds; bestows a son; recite Jupiter, Sun mantras for offspring.", "mantra": "Om Putra Namah" },
+            { "name": "Vaijanti Rosary", "purpose": "Recite Krishna mantras for attraction; two types (white seeds, black seeds).", "mantra": "Om Krishna Namah" }
+        ],
+        "sources": [
+            "www.futurepointindia.com",
+            "www.leogold.com",
+            "www.leopalm.com"
+        ]
+    },
+    "yantras": {
+      "description": "Yantra is a geometric instrument used for meditation, concentration, and harnessing spiritual energy. It is considered a visual mantra that can bring wealth, health, protection, and spiritual growth.",
+      "benefits": [
+        "Improves concentration and meditation",
+        "Enhances wealth, health, and prosperity",
+        "Protects from negative influences and diseases",
+        "Aids in spiritual growth and fulfillment"
+      ],
+      "items": [
+        { "name": "Sriyantra", "purpose": "Supreme yantra for wealth, spiritual growth, and Vastu correction.", "mantra": "Om Sri Yantra Namah" },
+        { "name": "Mahalaxmi Yantra", "purpose": "Wealth and prosperity.", "mantra": "Om Mahalakshmi Namah" },
+        { "name": "Gayatri Yantra", "purpose": "Energy, intelligence, and removal of negative influences.", "mantra": "Om Bhur Bhuvah Svah..." },
+        { "name": "Kali Yantra", "purpose": "Victory, protection, and overcoming obstacles.", "mantra": "Om Kali Namah" }
+      ],
+      "sources": [
+        "www.futurepointindia.com",
+        "www.leogold.com",
+        "www.leopalm.com"
+      ]
+    },
+    "rudraksha": {
+      "description": "Rudraksha beads are sacred seeds associated with Lord Shiva, believed to balance physical, mental and spiritual health. They are used for meditation, protection, wealth, health and spiritual growth.",
+      "benefits": [
+        "Improves blood pressure, hypertension, and overall health",
+        "Enhances concentration, memory and willpower",
+        "Provides protection from negative influences and enemies",
+        "Promotes wealth, prosperity, and marital harmony"
+      ],
+      "items": [
+        { "name": "One Faced Rudraksha", "purpose": "Health, general happiness, immense power, wealth, confidence and spiritual enhancement.", "mantra": "Om Yem Ham Shroum Ye" },
+        { "name": "Two Faced Rudraksha", "purpose": "Marital happiness, mental peace, prosperity, pleasure, contentment.", "mantra": "Om Hreeng Kshoung Veeng Om" },
+        { "name": "Three Faced Rudraksha", "purpose": "Victory over enemies, eliminates blood related diseases.", "mantra": "Om Rem Hum Hrim Hum" },
+        { "name": "Four Faced Rudraksha", "purpose": "Education, knowledge, intelligence, concentration, sexual powers.", "mantra": "Om Vam Kam Tham Ham" }
+      ],
+      "sources": [
+        "www.futurepointindia.com",
+        "www.leogold.com",
+        "www.leopalm.com"
+      ]
+    },
+    "gems": {
+      "description": "Gems are powerful stones that mitigate the evil effects of planets, act as medicines, and balance cosmic radiation in the body. They are classified into 9 primary Ratna (gemstones) and 75 upratna (semi‑precious stones). Each gem is associated with a planet, prescribed weight, metal, finger, day, and mantra.",
+      "benefits": [
+        "Mitigates malefic planetary influences",
+        "Balances cosmic radiation",
+        "Improves health, wealth, and spiritual growth",
+        "Provides specific planetary remedies"
+      ],
+      "items": [
+        {
+          "name": "Ruby",
+          "planet": "Sun",
+          "purpose": "Overcome evil impact of Sun, promote success, recognition, health, and government favour.",
+          "benefits": [
+            "Glory, success, government favour",
+            "Improves confidence and health"
+          ],
+          "mantra": "Om Hraang Hreeng Hraung Sah Suryay Namah",
+          "weightRange": "5–8 carats",
+          "metal": "Gold",
+          "finger": "Ring",
+          "day": "Sunday",
+          "substitutes": ["Garnet", "Spinel (Suryamani)"]
+        },
+        {
+          "name": "Pearl",
+          "planet": "Moon",
+          "purpose": "Auspicious for mental peace, sleep, memory, heart health, and beauty; especially beneficial for women.",
+          "benefits": [
+            "Mental peace, health",
+            "Improves memory, eye health, skin luster"
+          ],
+          "mantra": "Om Shraang Shreeng Shraung Sah Chandramase Namah",
+          "weightRange": "3–9 carats",
+          "metal": "Silver",
+          "finger": "Little",
+          "day": "Monday",
+          "substitutes": ["Moon Stone"]
+        },
+        {
+          "name": "Coral",
+          "planet": "Mars",
+          "purpose": "Strengthens stamina, controls temper, promotes material happiness and cures fever, cough, skin diseases.",
+          "benefits": [
+            "Increases vitality",
+            "Controls temper"
+          ],
+          "mantra": "Om Kraang Kreeng Kraung Sah Bhoumaye Namah",
+          "weightRange": "4–12 carats",
+          "metal": "Gold/Silver/Copper",
+          "finger": "Ring",
+          "day": "Tuesday",
+          "substitutes": []
+        },
+        {
+          "name": "Emerald",
+          "planet": "Mercury",
+          "purpose": "Improves intellect, communication, removes speech defects, enhances psychic abilities, and balances nervous system.",
+          "benefits": [
+            "Boosts intelligence",
+            "Improves communication"
+          ],
+          "mantra": "Om Braang Breeng Braung Sah Buddhaye Namah",
+          "weightRange": "3–7 carats",
+          "metal": "Gold",
+          "finger": "Little",
+          "day": "Wednesday",
+          "substitutes": ["Peridot", "Green Tourmaline"]
+        },
+        {
+          "name": "Yellow Sapphire",
+          "planet": "Jupiter",
+          "purpose": "Promotes education, wealth, prosperity, marriage harmony, and protects against liver ailments.",
+          "benefits": [
+            "Education and knowledge",
+            "Wealth and prosperity"
+          ],
+          "mantra": "Om Graang Greeng Graung Sah Gurave Namah",
+          "weightRange": "4–8 carats",
+          "metal": "Gold",
+          "finger": "Index",
+          "day": "Thursday",
+          "substitutes": ["Topaz", "Citrine"]
+        },
+        {
+          "name": "Diamond",
+          "planet": "Venus",
+          "purpose": "Brings pleasure, beauty, love, artistic talent, and cures diabetes and genital ailments.",
+          "benefits": [
+            "Creative success",
+            "Health benefits"
+          ],
+          "mantra": "Om Draang Dreeng Draung Sah Shukraay Namah",
+          "weightRange": "¼–1¼ carats",
+          "metal": "Platinum",
+          "finger": "Middle",
+          "day": "Friday",
+          "substitutes": ["White Zircon", "Opal"]
+        },
+        {
+          "name": "Blue Sapphire",
+          "planet": "Saturn",
+          "purpose": "Removes Saturn’s malefic influence, brings wealth, fame, longevity, and protects against accidents.",
+          "benefits": [
+            "Wealth and fame",
+            "Protection from misfortunes"
+          ],
+          "mantra": "Om Praang Preeng Praung Sah Shaneshcharay Namah",
+          "weightRange": "4–7 carats",
+          "metal": "Silver or Panchdhatu (five metals)",
+          "finger": "Middle",
+          "day": "Saturday",
+          "substitutes": ["Turquoise", "Aquamarine", "Neeli (Sodalite)", "Lapis Lazuli"]
+        },
+        {
+          "name": "Gomed (Hessonite)",
+          "planet": "Rahu",
+          "purpose": "Strengthens Rahu, cures related diseases, increases appetite, wealth and political success.",
+          "benefits": [
+            "Wealth and appetite",
+            "Political opportunities"
+          ],
+          "mantra": "Om Bhraang Bhreeng Bhraung Sah Rahve Namah",
+          "weightRange": "6–11 carats",
+          "metal": "Silver",
+          "finger": "Second",
+          "day": "Saturday",
+          "substitutes": ["Agate"]
+        },
+        {
+          "name": "Cat’s Eye",
+          "planet": "Ketu",
+          "purpose": "Eradicates Ketu’s evils, prevents accidents, attracts wealth, and aids speculation.",
+          "benefits": [
+            "Wealth protection",
+            "Prevents accidents"
+          ],
+          "mantra": "Om Shrang Shreeng Shraung Sah Ketve Namah",
+          "weightRange": "3–7 carats",
+          "metal": "Gold or Silver",
+          "finger": "2nd or 3rd",
+          "day": "Saturday",
+          "substitutes": []
+        }
+      ],
+      "sources": [
+        "www.futurepointindia.com",
+        "www.leogold.com",
+        "www.leopalm.com"
+      ]
+    }
+  }
+}

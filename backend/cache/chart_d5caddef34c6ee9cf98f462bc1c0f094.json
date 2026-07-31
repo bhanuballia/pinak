@@ -16111,7 +16111,7 @@
         "Venus": {
             "jagradadi": "Jagrad\n(Wakefulness)",
             "baladi": "Mrita\n(State of death)",
-            "lajjitadi": "Garvit Trushit",
+            "lajjitadi": "Trushit Garvit",
             "deeptadi": "Deepta\n(Luminous)",
             "shyanadi": "Nidra\n(Sleeping)"
         },
@@ -19372,47 +19372,47 @@
     "transits": {
         "Sun": {
             "house": 2,
-            "lon": 99.24,
-            "speed": 0.9551328489315044
+            "lon": 103.31,
+            "speed": 0.9559363753239183
         },
         "Moon": {
-            "house": 7,
-            "lon": 244.15,
-            "speed": 11.884617997845172
+            "house": 8,
+            "lon": 295.62,
+            "speed": 12.376976662460521
         },
         "Mercury": {
             "house": 1,
-            "lon": 82.38,
-            "speed": 0.24187155898817
+            "lon": 84.33,
+            "speed": 0.6716151799468115
         },
         "Venus": {
             "house": 3,
-            "lon": 143.99,
-            "speed": 1.0616186148852889
+            "lon": 148.47,
+            "speed": 1.0438425942517013
         },
         "Mars": {
             "house": 12,
-            "lon": 55.06,
-            "speed": 0.6822350613341881
+            "lon": 57.95,
+            "speed": 0.6771877633027651
         },
         "Jupiter": {
             "house": 2,
-            "lon": 101.5,
-            "speed": 0.22140619195773062
+            "lon": 102.44,
+            "speed": 0.2214374527560514
         },
         "Saturn": {
             "house": 10,
-            "lon": 350.52,
-            "speed": 0.0006032022657430904
+            "lon": 350.51,
+            "speed": -0.0066399883179671685
         },
         "Rahu": {
             "house": 9,
-            "lon": 305.81,
-            "speed": -0.07515617230113614
+            "lon": 305.6,
+            "speed": -0.014369300864832488
         },
         "Ketu": {
             "house": 3,
-            "lon": 125.81,
+            "lon": 125.6,
             "speed": 0
         }
     },
@@ -19421,47 +19421,47 @@
         "current_positions": {
             "Sun": {
                 "house": 2,
-                "lon": 99.24,
-                "speed": 0.9551328489315044
+                "lon": 103.31,
+                "speed": 0.9559363753239183
             },
             "Moon": {
-                "house": 7,
-                "lon": 244.15,
-                "speed": 11.884617997845172
+                "house": 8,
+                "lon": 295.62,
+                "speed": 12.376976662460521
             },
             "Mercury": {
                 "house": 1,
-                "lon": 82.38,
-                "speed": 0.24187155898817
+                "lon": 84.33,
+                "speed": 0.6716151799468115
             },
             "Venus": {
                 "house": 3,
-                "lon": 143.99,
-                "speed": 1.0616186148852889
+                "lon": 148.47,
+                "speed": 1.0438425942517013
             },
             "Mars": {
                 "house": 12,
-                "lon": 55.06,
-                "speed": 0.6822350613341881
+                "lon": 57.95,
+                "speed": 0.6771877633027651
             },
             "Jupiter": {
                 "house": 2,
-                "lon": 101.5,
-                "speed": 0.22140619195773062
+                "lon": 102.44,
+                "speed": 0.2214374527560514
             },
             "Saturn": {
                 "house": 10,
-                "lon": 350.52,
-                "speed": 0.0006032022657430904
+                "lon": 350.51,
+                "speed": -0.0066399883179671685
             },
             "Rahu": {
                 "house": 9,
-                "lon": 305.81,
-                "speed": -0.07515617230113614
+                "lon": 305.6,
+                "speed": -0.014369300864832488
             },
             "Ketu": {
                 "house": 3,
-                "lon": 125.81,
+                "lon": 125.6,
                 "speed": 0
             }
         },

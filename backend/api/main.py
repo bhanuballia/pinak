@@ -90,6 +90,7 @@ from api.routes import jaimini
 from api.routes import btr
 from api.routes import ayurdaya
 from api.routes import biodata
+from api.routes import vakri_routes
 from api.routes import vastu
 from core.database import yantra_collection
 
@@ -133,6 +134,7 @@ app.include_router(websocket_router, tags=["websocket"])
 app.include_router(solar_return.router, prefix="/api/solar_return", tags=["Solar Return"])
 app.include_router(ai_interpretation.router, prefix="/api/ai", tags=["AI"])
 app.include_router(transit.router, prefix="/api/transit", tags=["Transit"])
+app.include_router(vakri_routes.router, tags=["Vakri Explorer"])
 app.include_router(vastu.router)
 @app.get("/api/yantras")
 async def get_yantras():

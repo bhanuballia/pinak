@@ -95,8 +95,11 @@ import AdvancedJaiminiDashboard from './components/AdvancedJaiminiDashboard';
 import AyurdayaViewer from './components/AyurdayaViewer';
 import VastuAnalyzer from './pages/VastuAnalyzer';
 import NumerologyDashboard from './pages/NumerologyDashboard';
+import VimshottariExplanation from './components/VimshottariExplanation';
+
 function App() {
     useWindowNavigation();
+    const [vimshottariRefMode, setVimshottariRefMode] = useState(false);
     const [isWorksheetMode, setIsWorksheetMode] = useState(false);
     const [advancedNakshatraMode, setAdvancedNakshatraMode] = useState(false);
     const [classicLayoutMode, setClassicLayoutMode] = useState(false);
@@ -189,6 +192,7 @@ function App() {
     const [ayurdayaMode, setAyurdayaMode] = useState(false);
     const [vastuMode, setVastuMode] = useState(false);
     const [numerologyMode, setNumerologyMode] = useState(false);
+    const [remedyMode, setRemedyMode] = useState(false);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -199,7 +203,9 @@ function App() {
             'manglik', 'kalsarp', 'pitra', 'sadesati', 'rahu', 'ketu', 'loshu', 'business_naming'
         ];
 
-        if (params.get('worksheet') === 'true') {
+        if (params.get('vimshottari_ref') === 'true') {
+            setVimshottariRefMode(true);
+        } else if (params.get('worksheet') === 'true') {
             setIsWorksheetMode(true);
             const fs = params.get('fullScreen');
             if (fs) setFullScreenParam(fs);
@@ -585,6 +591,8 @@ function App() {
             setVastuMode(true);
         } else if (params.get('numerology') === 'true') {
             setNumerologyMode(true);
+        } else if (params.get('remedy') === 'true') {
+            setRemedyMode(true);
         } else if (params.get('solar_return') === 'true') {
             setSolarReturnMode(true);
         } else if (params.get('daily_solar') === 'true') {
@@ -990,6 +998,16 @@ function App() {
         );
     }
 
+    if (vimshottariRefMode) {
+        return (
+            <div className="min-h-screen bg-slate-50 p-6 md:p-12">
+                <div className="max-w-6xl mx-auto animate-fade-in">
+                    <VimshottariExplanation />
+                </div>
+            </div>
+        );
+    }
+
     if (kurmaChakraMode) {
         return (
             <KurmaChakraViewer />
@@ -1037,6 +1055,12 @@ function App() {
     if (numerologyMode) {
         return (
             <NumerologyDashboard />
+        );
+    }
+
+    if (remedyMode) {
+        return (
+            <Remedy />
         );
     }
 
