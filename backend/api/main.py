@@ -92,6 +92,7 @@ from api.routes import ayurdaya
 from api.routes import biodata
 from api.routes import vakri_routes
 from api.routes import vastu
+from api.routes import remedies_nakshatra
 from core.database import yantra_collection
 
 from api.routes.dasha_report import router as dasha_report_router
@@ -191,6 +192,7 @@ app.include_router(report.router)
 app.include_router(ashtakavarga.router, prefix="/api/ashtakavarga", tags=["Ashtakavarga"])
 app.include_router(solar_return.router, prefix="/api/solar_return", tags=["Solar Return"])
 app.include_router(nakshatra_advanced_live.router, prefix="/api/nakshatra_advanced", tags=["Advanced Nakshatra"])
+app.include_router(remedies_nakshatra.router, prefix="/api/remedies", tags=["Nakshatra Remedies"])
 app.include_router(transit_animated.router, prefix="/api/transit", tags=["Transits"])
 app.include_router(navamsha_ages.router, prefix="/api/navamsha_ages", tags=["Navamsha Ages"])
 app.include_router(kp_chart.router, prefix="/api/kp", tags=["KP Chart"])

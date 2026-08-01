@@ -9,6 +9,16 @@ export default function EncyclopediaRemediesViewer() {
   const [selectedHouse, setSelectedHouse] = useState('H1');
   const [userAscendant, setUserAscendant] = useState(null);
   const [reportFontSize, setReportFontSize] = useState(18);
+  const [transitList, setTransitList] = useState([]);
+  const [transitLoading, setTransitLoading] = useState(false);
+  const [transitError, setTransitError] = useState(null);
+  
+  const [nakshatraRemedies, setNakshatraRemedies] = useState(null);
+  const [nakshatraLoading, setNakshatraLoading] = useState(false);
+  const [nakshatraError, setNakshatraError] = useState(null);
+  
+  const [currentNakshatraRemedies, setCurrentNakshatraRemedies] = useState(null);
+  const [currentNakshatraLoading, setCurrentNakshatraLoading] = useState(false);
 
   useEffect(() => {
     // Try auto-detecting user's Lagna/Ascendant from worksheetData
@@ -25,7 +35,135 @@ export default function EncyclopediaRemediesViewer() {
     } catch (e) {
       console.warn("Could not parse user ascendant:", e);
     }
+
+    const fetchTransitData = async () => {
+      setTransitLoading(true);
+      try {
+        let bDate = '1990-01-01';
+        let bTime = '12:00:00';
+        let lat = 28.6139;
+        let lon = 77.2090;
+        let tz = 5.5;
+
+        const savedData = localStorage.getItem('worksheetData');
+        if (savedData) {
+          const parsed = JSON.parse(savedData);
+          const bd = parsed.basic_details || parsed.basic || {};
+          const meta = parsed.meta || {};
+          bDate = bd.birth_date || meta.date || meta.dob || bDate;
+          bTime = bd.birth_time || meta.time || meta.tob || bTime;
+          if (bTime && bTime.split(':').length === 2) bTime += ':00';
+          lat = Number(bd.lat || parsed.lat || lat);
+          lon = Number(bd.lon || parsed.lon || lon);
+          tz = Number(bd.tz_offset || parsed.tz_offset || tz);
+        }
+
+        const now = new Date();
+        const transitDateStr = now.toISOString().split('T')[0];
+        const transitTimeStr = now.toTimeString().split(' ')[0];
+
+        const response = await fetch('/api/transit/animated', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            birth_date: bDate,
+            birth_time: bTime,
+            lat: lat,
+            lon: lon,
+            tz_offset: tz,
+            transit_date: transitDateStr,
+            transit_time: transitTimeStr,
+            transit_tz_offset: tz
+          })
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch transit data");
+        const resJson = await response.json();
+        if (resJson.transit_chart) {
+          setTransitList(resJson.transit_chart);
+        }
+      } catch (err) {
+        console.error("Error fetching transit data:", err);
+        setTransitError(err.message);
+      } finally {
+        setTransitLoading(false);
+      }
+    };
+
+    const fetchNakshatraRemedies = async () => {
+      setNakshatraLoading(true);
+      try {
+        const savedData = localStorage.getItem('worksheetData');
+        let nakName = null;
+        let payload = {};
+        if (savedData) {
+          const parsed = JSON.parse(savedData);
+          nakName = parsed.nakshatra?.nakshatra || parsed.basic?.nakshatra || parsed.basic_details?.nakshatra || parsed.meta?.nakshatra;
+          if (nakName) {
+            payload.nakshatra_name = nakName;
+          } else {
+            const bd = parsed.basic_details || parsed.basic || {};
+            const meta = parsed.meta || {};
+            payload.birth_date = bd.birth_date || meta.date || meta.dob;
+            payload.birth_time = bd.birth_time || meta.time || meta.tob;
+            if (payload.birth_time && payload.birth_time.split(':').length === 2) payload.birth_time += ':00';
+            payload.lat = Number(bd.lat || parsed.lat || 28.6139);
+            payload.lon = Number(bd.lon || parsed.lon || 77.2090);
+            payload.tz_offset = Number(bd.tz_offset || parsed.tz_offset || 5.5);
+          }
+        }
+        
+        if (!payload.nakshatra_name && !payload.birth_date) {
+          payload.nakshatra_name = "Ashwini";
+        }
+
+        const response = await fetch('/api/remedies/nakshatra', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch Nakshatra remedies");
+        const resJson = await response.json();
+        setNakshatraRemedies(resJson);
+      } catch (err) {
+        console.error("Error fetching Nakshatra remedies:", err);
+        setNakshatraError(err.message);
+      } finally {
+        setNakshatraLoading(false);
+      }
+    };
+
+    fetchTransitData();
+    fetchNakshatraRemedies();
   }, []);
+
+  useEffect(() => {
+    if (transitList && transitList.length > 0) {
+      const moonTransit = transitList.find(p => p.planet === 'Mo' || p.planet === 'Moon');
+      if (moonTransit && moonTransit.nakshatra) {
+        const fetchCurrentNakshatraRemedies = async () => {
+          setCurrentNakshatraLoading(true);
+          try {
+            const response = await fetch('/api/remedies/nakshatra', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ nakshatra_name: moonTransit.nakshatra })
+            });
+            if (response.ok) {
+              const resJson = await response.json();
+              setCurrentNakshatraRemedies(resJson);
+            }
+          } catch (err) {
+            console.error("Error fetching current transit Nakshatra remedies:", err);
+          } finally {
+            setCurrentNakshatraLoading(false);
+          }
+        };
+        fetchCurrentNakshatraRemedies();
+      }
+    }
+  }, [transitList]);
 
   const lagnaInfo = remediesData.lagnaGemMatrix[selectedLagna] || remediesData.lagnaGemMatrix['Aries'];
   const deityInfo = remediesData.presidingDeities[selectedPlanet] || remediesData.presidingDeities['Sun'];
@@ -792,6 +930,825 @@ export default function EncyclopediaRemediesViewer() {
                   </div>
                 </div>
               </div>
+
+              {/* 13. Real-Time Transit-Based Remedies (Gochar Remedial Guide) */}
+              <div className="space-y-4 pt-2">
+                <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <Sparkles className="w-5 h-5 text-amber-400" /> 13. Real-Time Transit-Based Remedies (Gochar Remedial Guide)
+                </h3>
+                <p className="text-[18px] text-slate-300">
+                  Planetary transits (Gochar) represent the current movement of planets and how they affect your natal houses. Below is your live remedial guidelines:
+                </p>
+
+                {/* Birth Nakshatra Remedies Card */}
+                {nakshatraLoading && (
+                  <div className="text-[18px] text-amber-400 font-mono animate-pulse py-2">
+                    Calculating Birth Nakshatra Remedies...
+                  </div>
+                )}
+                {nakshatraError && (
+                  <div className="text-[18px] text-rose-400 bg-rose-950/20 p-4 rounded-xl border border-rose-500/20">
+                    Failed to load Birth Nakshatra remedies: {nakshatraError}
+                  </div>
+                )}
+                {nakshatraRemedies && (
+                  <div className="bg-gradient-to-r from-slate-900 to-amber-950/40 border border-amber-500/30 p-6 rounded-3xl space-y-4 shadow-xl">
+                    <div className="flex justify-between items-center border-b border-amber-500/20 pb-3">
+                      <h4 className="text-[20px] font-bold text-amber-300 flex items-center gap-2">
+                        🌟 Birth Nakshatra Remedies (जन्म नक्षत्र उपाय): <span className="text-white font-extrabold">{nakshatraRemedies.nakshatra}</span>
+                      </h4>
+                      <span className="bg-amber-500/10 text-amber-400 px-3 py-1 rounded-full border border-amber-500/30 font-mono text-[14px]">
+                        Ruling Lord: {nakshatraRemedies.lord}
+                      </span>
+                    </div>
+                    
+                    <p className="text-[16px] text-slate-300 leading-relaxed italic">
+                      <strong>Stellar Profile:</strong> {nakshatraRemedies.profile}
+                    </p>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-[16px]">
+                      <div className="bg-slate-950/80 p-4 rounded-2xl border border-slate-850">
+                        <strong className="text-amber-400 block mb-1">🕉️ Presiding Deity</strong>
+                        <span className="text-slate-200">{nakshatraRemedies.deity}</span>
+                      </div>
+                      
+                      <div className="bg-slate-950/80 p-4 rounded-2xl border border-slate-855">
+                        <strong className="text-amber-400 block mb-1">📿 Seeding Beej Mantra</strong>
+                        <span className="text-emerald-300 font-mono">{nakshatraRemedies.seeding_mantra}</span>
+                      </div>
+                      
+                      <div className="bg-slate-950/80 p-4 rounded-2xl border border-slate-855">
+                        <strong className="text-amber-400 block mb-1">🌿 Sacred Tree / Plant</strong>
+                        <span className="text-slate-200">{nakshatraRemedies.sacred_tree}</span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[16px] border-t border-amber-500/10 pt-3">
+                      <div className="bg-slate-950/80 p-4 rounded-2xl border border-slate-855">
+                        <strong className="text-amber-400 block mb-1">🎁 Recommended Donations (दान)</strong>
+                        <span className="text-slate-300 leading-relaxed">{nakshatraRemedies.donation}</span>
+                      </div>
+                      
+                      <div className="bg-slate-950/80 p-4 rounded-2xl border border-slate-855">
+                        <strong className="text-amber-400 block mb-1">⚡ Primary Ritual Remedy</strong>
+                        <span className="text-slate-300 leading-relaxed">{nakshatraRemedies.remedy}</span>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {transitLoading && (
+                  <div className="text-[18px] text-amber-400 font-mono animate-pulse py-4">
+                    Fetching current cosmic transits...
+                  </div>
+                )}
+
+                {transitError && (
+                  <div className="text-[18px] text-rose-400 bg-rose-950/20 p-4 rounded-xl border border-rose-500/20">
+                    Failed to load real-time transits: {transitError}. Showing general guidelines.
+                  </div>
+                )}
+
+                {!transitLoading && !transitError && transitList.length > 0 && (() => {
+                  const planetMapping = {
+                    'Su': 'Sun',
+                    'Mo': 'Moon',
+                    'Ma': 'Mars',
+                    'Me': 'Mercury',
+                    'Ju': 'Jupiter',
+                    'Ve': 'Venus',
+                    'Sa': 'Saturn',
+                    'Ra': 'Rahu',
+                    'Ke': 'Ketu'
+                  };
+
+                  const zodiacFullNames = {
+                    'Ari': 'Aries',
+                    'Tau': 'Taurus',
+                    'Gem': 'Gemini',
+                    'Can': 'Cancer',
+                    'Leo': 'Leo',
+                    'Vir': 'Virgo',
+                    'Lib': 'Libra',
+                    'Sco': 'Scorpio',
+                    'Sag': 'Sagittarius',
+                    'Cap': 'Capricorn',
+                    'Aqu': 'Aquarius',
+                    'Pis': 'Pisces'
+                  };
+
+                  const zodiacOrder = ['Aries', 'Taurus', 'Gemini', 'Cancer', 'Leo', 'Virgo', 'Libra', 'Scorpio', 'Sagittarius', 'Capricorn', 'Aquarius', 'Pisces'];
+                  const lagnaIdx = zodiacOrder.indexOf(selectedLagna);
+
+                  // Helper function to resolve transit remedy
+                  const getTransitRemedy = (planet, house, rashi) => {
+                    const p = planetMapping[planet] || planet;
+
+                    if (p === 'Saturn') {
+                      if (house === 12 || house === 1 || house === 2) {
+                        return {
+                          type: 'Afflicted (Sade Sati Phase)',
+                          severity: 'High',
+                          severityScore: 3,
+                          color: 'text-rose-400 border-rose-500/20 bg-rose-950/10',
+                          remedy: 'Donate black sesame seeds or black gram (urad dal) on Saturdays. Light a mustard oil lamp under a Peepal tree in the evening. Chant Saturn Gayatri or Beej Mantra: "Om Pram Preem Prom Sah Shaneshcharaay Namah" 108 times daily.'
+                        };
+                      }
+                      if (house === 4 || house === 8) {
+                        return {
+                          type: 'Afflicted (Shani Dhaiya Phase)',
+                          severity: 'Medium',
+                          severityScore: 2,
+                          color: 'text-amber-400 border-amber-500/20 bg-amber-950/10',
+                          remedy: 'Avoid risky property deals and investments. Read Hanuman Chalisa daily. Chant the Mahamrityunjay Mantra to protect health and peace of mind.'
+                        };
+                      }
+                    }
+
+                    if (p === 'Rahu') {
+                      if (house === 1 || house === 5 || house === 9) {
+                        return {
+                          type: 'Afflicted (Mental/Spiritual Illusion)',
+                          severity: 'Medium',
+                          severityScore: 2,
+                          color: 'text-amber-400 border-amber-500/20 bg-amber-950/10',
+                          remedy: 'Worship Goddess Durga. Feed birds with mixed grains (Saptadhanya) in the morning. Avoid making quick, impulsive life choices under current transit.'
+                        };
+                      }
+                    }
+
+                    if (p === 'Ketu') {
+                      if (house === 1 || house === 8 || house === 12) {
+                        return {
+                          type: 'Afflicted (Spiritual Purge / Anxiety)',
+                          severity: 'Medium',
+                          severityScore: 2,
+                          color: 'text-amber-400 border-amber-500/20 bg-amber-950/10',
+                          remedy: 'Worship Lord Ganesha regularly. Feed stray dogs with bread/roti. Wear or carry a silver object to ground your thoughts.'
+                        };
+                      }
+                    }
+
+                    if (p === 'Mars' && (house === 8 || house === 12)) {
+                      return {
+                        type: 'Afflicted (High Expense & Injury Risk)',
+                        severity: 'Medium',
+                        severityScore: 2,
+                        color: 'text-amber-400 border-amber-500/20 bg-amber-950/10',
+                        remedy: 'Chant Hanuman Chalisa or Mangal Beej Mantra. Donate red lentils (masoor dal) or copper on Tuesdays. Practice patience and avoid driving fast.'
+                      };
+                    }
+
+                    if (p === 'Sun' && house === 12) {
+                      return {
+                        type: 'Weakened (Energy Drain & Eye Strain)',
+                        severity: 'Low',
+                        severityScore: 1,
+                        color: 'text-blue-300 border-slate-800 bg-slate-900/40',
+                        remedy: 'Offer Arghya (water) to the Sun in a copper vessel at sunrise. Chant the Aditya Hridaya Stotra on Sundays.'
+                      };
+                    }
+
+                    if (p === 'Jupiter' && (rashi === 'Cap' || house === 6 || house === 8 || house === 12)) {
+                      return {
+                        type: 'Weakened (Expansion Blocks)',
+                        severity: 'Low',
+                        severityScore: 1,
+                        color: 'text-blue-300 border-slate-800 bg-slate-900/40',
+                        remedy: 'Apply yellow sandalwood or saffron tilak on the forehead. Worship the Banana tree on Thursdays. Donate yellow garments or chickpeas to elders.'
+                      };
+                    }
+
+                    if (p === 'Mercury' && (house === 6 || house === 8 || house === 12)) {
+                      return {
+                        type: 'Weakened (Communication hurdles)',
+                        severity: 'Low',
+                        severityScore: 1,
+                        color: 'text-blue-300 border-slate-800 bg-slate-900/40',
+                        remedy: 'Feed green grass or green leafy vegetables to cows on Wednesdays. Worship Goddess Saraswati or Lord Ganesha.'
+                      };
+                    }
+
+                    if (p === 'Venus' && (rashi === 'Vir' || house === 6 || house === 8)) {
+                      return {
+                        type: 'Weakened (Relationship/Luxury hurdles)',
+                        severity: 'Low',
+                        severityScore: 1,
+                        color: 'text-blue-300 border-slate-800 bg-slate-900/40',
+                        remedy: 'Donate white sweets or milk to girls on Fridays. Wear light-colored clean clothes. Chant Venus Beej Mantra.'
+                      };
+                    }
+
+                    // Favorable combinations
+                    if (p === 'Jupiter' && (house === 1 || house === 5 || house === 9 || house === 11)) {
+                      return {
+                        type: 'Highly Auspicious (Divine Grace)',
+                        severity: 'None',
+                        severityScore: 0,
+                        isFavorable: true,
+                        color: 'text-emerald-400 border-emerald-500/20 bg-emerald-950/10',
+                        remedy: 'This is an excellent transit for wealth, wisdom, and career. Chant Guru Stotra and participate in spiritual learning to amplify benefits.'
+                      };
+                    }
+
+                    if (p === 'Sun' && (house === 3 || house === 6 || house === 10 || house === 11)) {
+                      return {
+                        type: 'Highly Auspicious (Power & Recognition)',
+                        severity: 'None',
+                        severityScore: 0,
+                        isFavorable: true,
+                        color: 'text-emerald-400 border-emerald-500/20 bg-emerald-950/10',
+                        remedy: 'Excellent for success in exams, job promotions, and health recovery. Chant Gayatri Mantra daily.'
+                      };
+                    }
+
+                    return {
+                      type: 'Neutral / Favorable Transit',
+                      severity: 'None',
+                      severityScore: 0,
+                      color: 'text-slate-300 border-slate-800 bg-slate-955',
+                      remedy: 'Planetary alignment is stable. Continue daily meditation and maintain positive lifestyle habits.'
+                    };
+                  };
+
+                  // Map each planet to its transit details and severity
+                  const mappedPlanets = transitList
+                    .filter(item => item.planet !== 'Asc')
+                    .map(item => {
+                      const fullName = planetMapping[item.planet] || item.planet;
+                      const rashiFull = zodiacFullNames[item.rashi] || item.rashi;
+                      const transitSignIdx = zodiacOrder.indexOf(rashiFull);
+                      const house = lagnaIdx !== -1 && transitSignIdx !== -1
+                        ? ((transitSignIdx - lagnaIdx + 12) % 12) + 1
+                        : 1;
+
+                      const details = getTransitRemedy(item.planet, house, item.rashi);
+                      return {
+                        ...item,
+                        fullName,
+                        rashiFull,
+                        house,
+                        details
+                      };
+                    });
+
+                  // Sort planets by severity score descending or putting favorable ones next
+                  mappedPlanets.sort((a, b) => b.details.severityScore - a.details.severityScore);
+
+                  const highAfflicted = mappedPlanets.filter(p => p.details.severity === 'High');
+                  const mediumAfflicted = mappedPlanets.filter(p => p.details.severity === 'Medium');
+                  const lowAfflicted = mappedPlanets.filter(p => p.details.severity === 'Low');
+                  const favorablePlanets = mappedPlanets.filter(p => p.details.isFavorable);
+
+                  return (
+                    <div className="space-y-6">
+                      {/* Transit Summary Banner */}
+                      {(highAfflicted.length > 0 || mediumAfflicted.length > 0 || lowAfflicted.length > 0 || favorablePlanets.length > 0) && (
+                        <div className="bg-slate-900 border border-amber-500/20 p-5 rounded-2xl space-y-3">
+                          <h4 className="text-[18px] font-bold text-amber-400 uppercase tracking-widest flex items-center gap-2">
+                            <ShieldAlert className="w-5 h-5 text-amber-400" /> Cosmic Transit & Affliction Analysis
+                          </h4>
+                          <p className="text-[16px] text-slate-300">
+                            Based on your {selectedLagna} Lagna chart, the planets are classified by current transit status:
+                          </p>
+                          <div className="flex flex-wrap gap-4 text-[16px] font-medium">
+                            {(() => {
+                              if (favorablePlanets.length > 0) {
+                                return (
+                                  <div className="bg-emerald-950/20 border border-emerald-500/30 px-3 py-1.5 rounded-xl text-emerald-300">
+                                    🌟 <strong>Highly Favorable ({favorablePlanets.length}):</strong> {favorablePlanets.map(p => p.fullName).join(', ')}
+                                  </div>
+                                );
+                              }
+
+                              const lagnaLord = lagnaInfo ? getPlanetFromGem(lagnaInfo.lifeStone) : null;
+                              const luckyLord = lagnaInfo ? getPlanetFromGem(lagnaInfo.luckyStone) : null;
+
+                              const lagnaLordTransit = mappedPlanets.find(p => p.fullName === lagnaLord);
+                              const luckyLordTransit = mappedPlanets.find(p => p.fullName === luckyLord);
+
+                              let text = "No Highly Favorable Planets for Current";
+                              let supportivePlanet = null;
+                              let activeHouse = 1;
+
+                              if (lagnaLordTransit && lagnaLordTransit.details.severityScore === 0) {
+                                text = `No Highly Favorable transits. Most Supportive: ${lagnaLordTransit.fullName} (Lagna Lord transiting House ${lagnaLordTransit.house} affliction-free)`;
+                                supportivePlanet = lagnaLordTransit.fullName;
+                                activeHouse = lagnaLordTransit.house;
+                              } else if (luckyLordTransit && luckyLordTransit.details.severityScore === 0) {
+                                text = `No Highly Favorable transits. Most Supportive: ${luckyLordTransit.fullName} (Lucky Lord transiting House ${luckyLordTransit.house} affliction-free)`;
+                                supportivePlanet = luckyLordTransit.fullName;
+                                activeHouse = luckyLordTransit.house;
+                              } else {
+                                const anyNonAfflicted = mappedPlanets.find(p => p.details.severityScore === 0 && p.fullName !== 'Moon');
+                                if (anyNonAfflicted) {
+                                  text = `No Highly Favorable transits. Most Supportive: ${anyNonAfflicted.fullName} (Transiting House ${anyNonAfflicted.house} affliction-free)`;
+                                  supportivePlanet = anyNonAfflicted.fullName;
+                                  activeHouse = anyNonAfflicted.house;
+                                }
+                              }
+
+                              const deity = supportivePlanet ? remediesData.presidingDeities?.[supportivePlanet] : null;
+                              const mantra = deity?.vedicMantra;
+                              const lalKitabRemedy = (supportivePlanet && activeHouse)
+                                ? remediesData.lalKitabHouseRemedies?.[supportivePlanet]?.[`H${activeHouse}`]
+                                : null;
+                              const relief = supportivePlanet ? remediesData.planetaryReliefRemedies?.[supportivePlanet] : null;
+                              const planetaryRemedy = relief && relief.fastingDuration
+                                ? `Fasting: ${relief.fastingDuration} (${relief.fastingProtocol}). Donations: ${relief.donationItems}.`
+                                : null;
+
+                              const gayatriTargetMap = {
+                                'Sun': 'Brahma',
+                                'Moon': 'Shiv',
+                                'Mars': 'Ganesh',
+                                'Mercury': 'Saraswati',
+                                'Jupiter': 'Brahma',
+                                'Venus': 'Laxmi',
+                                'Saturn': 'Shiv',
+                                'Rahu': 'Laxmi',
+                                'Ketu': 'Ganesh'
+                              };
+                              const targetName = gayatriTargetMap[supportivePlanet] || supportivePlanet;
+                              const gayatris = supportivePlanet
+                                ? remediesData.meditationAndMantras?.keyGayatriMantras?.filter(g =>
+                                  g.name.toLowerCase().includes(targetName.toLowerCase()) || g.name.toLowerCase().includes(supportivePlanet.toLowerCase())
+                                ) || []
+                                : [];
+                              const gayatriText = gayatris.map(g => `${g.name}: ${g.mantra}`).join(' | ');
+
+                              const deityDetails = deity
+                                ? `Presiding: ${deity.presidingDeity || 'N/A'}, Vishnu Avatar: ${deity.vishnuAvatar || 'N/A'}, Jaimini: ${deity.jaiminiDeity || 'N/A'}, Tantrik: ${deity.tantrikDeity || 'N/A'}`
+                                : null;
+
+                              return (
+                                <div className="bg-slate-800/40 border border-slate-750 px-4 py-3 rounded-xl text-[20px] text-orange-400 space-y-2 w-full animate-fade-in">
+                                  <div>🌟 <strong>Highly Favorable Status:</strong> {text}</div>
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-800/60 pt-2 mt-2 text-[18px]">
+                                    {mantra && (
+                                      <div className="text-amber-300 font-mono">
+                                        <strong>Activation Mantra:</strong> "{mantra}" (Chant daily to empower {supportivePlanet}).
+                                      </div>
+                                    )}
+                                    {lalKitabRemedy && (
+                                      <div className="text-blue-300">
+                                        <strong>Lal Kitab House Remedy:</strong> {lalKitabRemedy} (Practiced to capture transit benefits).
+                                      </div>
+                                    )}
+                                    {planetaryRemedy && (
+                                      <div className="text-emerald-300">
+                                        <strong>Planetary Relief:</strong> {planetaryRemedy}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-800/40 pt-2 mt-2 text-[18px]">
+                                    {deityDetails && (
+                                      <div className="text-pink-300">
+                                        <strong>Beneficial Deities & Vedic Invocation:</strong> {deityDetails}
+                                      </div>
+                                    )}
+                                    <div className="text-orange-300 font-mono">
+                                      <strong>Sacred Mantra Sadhana & Code of Conduct:</strong> {gayatriText ? `Gayatri: ${gayatriText}. ` : ''}Rule: Practice with clean attire, face East, maintain constant daily Japa counts.
+                                    </div>
+                                  </div>
+                                </div>
+                              );
+                            })()}
+                            {highAfflicted.length > 0 && (
+                              <div className="bg-rose-950/20 border border-rose-500/30 px-3 py-1.5 rounded-xl text-rose-300">
+                                🚨 <strong>Highest Afflicted ({highAfflicted.length}):</strong> {highAfflicted.map(p => p.fullName).join(', ')}
+                              </div>
+                            )}
+                            {mediumAfflicted.length > 0 && (
+                              <div className="bg-amber-950/20 border border-amber-500/30 px-3 py-1.5 rounded-xl text-amber-300">
+                                ⚠️ <strong>Medium Afflicted ({mediumAfflicted.length}):</strong> {mediumAfflicted.map(p => p.fullName).join(', ')}
+                              </div>
+                            )}
+                            {lowAfflicted.length > 0 && (
+                              <div className="bg-blue-950/20 border border-blue-500/30 px-3 py-1.5 rounded-xl text-blue-300">
+                                📉 <strong>Low Afflicted ({lowAfflicted.length}):</strong> {lowAfflicted.map(p => p.fullName).join(', ')}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Current Transiting Nakshatra Remedies */}
+                          {currentNakshatraRemedies && (
+                            <div className="mt-4 pt-4 border-t border-amber-500/20 space-y-2 text-[16px]">
+                              <div className="flex items-center gap-2 text-amber-300 font-extrabold uppercase tracking-wide">
+                                🌙 Today's Transiting Moon Nakshatra (वर्तमान नक्षत्र उपाय): {currentNakshatraRemedies.nakshatra}
+                              </div>
+                              <p className="text-slate-300 leading-relaxed text-[15px]">
+                                <strong>Stellar Profile:</strong> {currentNakshatraRemedies.profile}
+                              </p>
+                              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[14px] pt-1">
+                                <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                                  <strong className="text-amber-400 block mb-0.5">🕉️ Deity</strong>
+                                  <span className="text-slate-200">{currentNakshatraRemedies.deity}</span>
+                                </div>
+                                <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                                  <strong className="text-amber-400 block mb-0.5">📿 Seeding Mantra</strong>
+                                  <span className="text-emerald-300 font-mono">{currentNakshatraRemedies.seeding_mantra}</span>
+                                </div>
+                                <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                                  <strong className="text-amber-400 block mb-0.5">🌿 Sacred Tree</strong>
+                                  <span className="text-slate-200">{currentNakshatraRemedies.sacred_tree}</span>
+                                </div>
+                              </div>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[14px] pt-1">
+                                <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                                  <strong className="text-amber-400 block mb-0.5">🎁 Today's Donation (दान)</strong>
+                                  <span className="text-slate-300">{currentNakshatraRemedies.donation}</span>
+                                </div>
+                                <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                                  <strong className="text-amber-400 block mb-0.5">⚡ Daily Ritual Remedy</strong>
+                                  <span className="text-slate-300">{currentNakshatraRemedies.remedy}</span>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Grid of planets */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {mappedPlanets.map(item => {
+                          let badgeText = '';
+                          let badgeClass = '';
+
+                          if (item.details.severity === 'High') {
+                            badgeText = '🚨 Highest Affliction';
+                            badgeClass = 'bg-rose-500/20 text-rose-300 border border-rose-500/30';
+                          } else if (item.details.severity === 'Medium') {
+                            badgeText = '⚠️ Moderate Affliction';
+                            badgeClass = 'bg-amber-500/20 text-amber-300 border border-amber-500/30';
+                          } else if (item.details.severity === 'Low') {
+                            badgeText = '📉 Low Affliction';
+                            badgeClass = 'bg-blue-500/20 text-blue-300 border border-blue-500/30';
+                          } else if (item.details.isFavorable) {
+                            badgeText = '🌟 Highly Favorable';
+                            badgeClass = 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+                          }
+
+                          const getDetailedTransitRemedies = (planetName, house) => {
+                            const p = planetName;
+                            const details = {};
+
+                            // 1. Recommended Rudraksha Beads
+                            const rudrakshas = remediesData.rudrakshaDetails?.filter(r =>
+                              r.planet && r.planet.toLowerCase().includes(p.toLowerCase())
+                            ) || [];
+                            details.rudraksha = rudrakshas.map(r => `${r.mukhi} (Deity: ${r.deity}, Mantra: ${r.mantra}) - Benefit: ${r.benefits}`).join('\n') || 'No specific bead listed.';
+
+                            // 2. Navgrah Plant Remedies
+                            const plant = remediesData.navagrahaPlantRemedies?.[p];
+                            details.plant = plant
+                              ? `Sacred Plant: ${plant.sacredPlant} (${plant.physicalGovernance})\nMedicinal Components: ${plant.medicinalComponents}\nTherapeutic Profile: ${plant.therapeuticProfile}\nPractical Remedy: ${plant.practicalRemedies ? Object.values(plant.practicalRemedies)[0] : 'Worship tree daily'}`
+                              : 'No specific plant remedy.';
+
+                            // 3. Planetary Relief Remedies
+                            const relief = remediesData.planetaryReliefRemedies?.[p];
+                            details.relief = relief
+                              ? `Fasting Protocol: ${relief.fastingDuration} (${relief.fastingProtocol})\nDonation Items: ${relief.donationItems}\nAmulet: ${relief.amuletRemedy} (Timing: ${relief.amuletRitualTiming})\nInvocation Count: ${relief.invocationCount}`
+                              : 'No specific planetary relief fasts listed.';
+
+                            // 4. Color Therapy & Life Cycle Guide
+                            const color = remediesData.colorTherapy?.planetColors?.[p];
+                            details.colorTherapy = color
+                              ? `Recommended Color: ${color.color} (Quality: ${color.quality})`
+                              : 'No specific color therapy details.';
+
+                            // 5. Lal Kitab House Remedies
+                            const lkHouse = remediesData.lalKitabHouseRemedies?.[p]?.[`H${house}`];
+                            details.lalKitab = lkHouse || 'No specific Lal Kitab remedy for this house placement.';
+
+                            // 6. Prescribed Crystal, Lockets & Rosaries
+                            const crystals = remediesData.lalKitabSystem?.crystals?.items?.filter(c =>
+                              c.name.toLowerCase().includes(p.toLowerCase())
+                            ) || [];
+                            const rosaries = remediesData.lalKitabSystem?.rosaries?.items?.filter(r =>
+                              r.name.toLowerCase().includes(p.toLowerCase())
+                            ) || [];
+
+                            const crystalList = crystals.map(c => `${c.name} (${c.purpose})`).join(', ');
+                            const rosaryList = rosaries.map(r => `${r.name} (${r.purpose})`).join(', ');
+                            details.crystalsRosaries = `Crystals: ${crystalList || 'None'}\nRosaries: ${rosaryList || 'None'}`;
+
+                            // 7. Sacred Mantra
+                            const deity = remediesData.presidingDeities?.[p];
+                            const gayatris = remediesData.meditationAndMantras?.keyGayatriMantras?.filter(g =>
+                              g.name.toLowerCase().includes(p.toLowerCase()) || g.purpose.toLowerCase().includes(p.toLowerCase())
+                            ) || [];
+                            const gayatriList = gayatris.map(g => `${g.name}: ${g.mantra}`).join('\n');
+
+                            details.mantra = `Vedic Mantra: ${deity?.vedicMantra || 'Om Namo Narayanaya'}\nGayatri Mantra:\n${gayatriList || 'None'}`;
+
+                            return details;
+                          };
+
+                          return (
+                            <div key={item.planet} className={`p-6 rounded-3xl border ${item.details.color} flex flex-col justify-between space-y-4 ${item.details.severity === 'High' ? 'col-span-full' : (item.details.severity === 'Medium' || item.details.severity === 'Low') ? 'col-span-1 md:col-span-2' : ''}`}>
+                              <div>
+                                <div className="flex justify-between items-center border-b border-slate-850 pb-2 mb-2">
+                                  <span className="text-[20px] font-extrabold uppercase tracking-wider">{item.fullName}</span>
+                                  <span className="text-[14px] bg-slate-800/60 px-2.5 py-0.5 rounded font-mono text-slate-300">
+                                    {item.rashiFull} ({item.degree.toFixed(1)}°)
+                                  </span>
+                                </div>
+                                {badgeText && (
+                                  <div className="mb-2">
+                                    <span className={`text-[12px] font-bold px-2 py-0.5 rounded-full ${badgeClass}`}>
+                                      {badgeText}
+                                    </span>
+                                  </div>
+                                )}
+                                <div className="text-[16px] space-y-1">
+                                  <p><strong>Transit Status:</strong> {item.details.type}</p>
+                                  <p><strong>Transit House:</strong> House {item.house} (Gochar)</p>
+                                </div>
+                                <p className="text-[16px] text-slate-300 leading-relaxed mt-2">
+                                  <strong>Primary Remedy:</strong> {item.details.remedy}
+                                </p>
+
+                                {item.details.severity === 'High' && (() => {
+                                  const detailedRemedies = getDetailedTransitRemedies(item.fullName, item.house);
+                                  return (
+                                    <div className="mt-4 pt-4 border-t border-slate-800/80 space-y-4 text-[16px]">
+                                      <h4 className="text-[16px] font-bold text-amber-300 uppercase tracking-widest">
+                                        Comprehensive Scriptural Remedial Protocol
+                                      </h4>
+                                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-400 block mb-1">📿 Recommended Rudraksha Beads</strong>
+                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.rudraksha}</p>
+                                        </div>
+                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-400 block mb-1">🌿 Navgrah Plant Remedies</strong>
+                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.plant}</p>
+                                        </div>
+                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-400 block mb-1">🚩 Planetary Relief Remedies</strong>
+                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.relief}</p>
+                                        </div>
+                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-400 block mb-1">🎨 Color Therapy & Life Cycle Guide</strong>
+                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.colorTherapy}</p>
+                                        </div>
+                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-400 block mb-1">📜 Lal Kitab House Remedies</strong>
+                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.lalKitab}</p>
+                                        </div>
+                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-400 block mb-1">💎 Prescribed Crystal, Lockets & Rosaries</strong>
+                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.crystalsRosaries}</p>
+                                        </div>
+                                      </div>
+                                      <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                        <strong className="text-amber-400 block mb-1">🕉️ Sacred Mantra</strong>
+                                        <p className="text-slate-300 font-mono whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.mantra}</p>
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
+
+                                {item.details.severity === 'Medium' && (() => {
+                                  const detailedRemedies = getDetailedTransitRemedies(item.fullName, item.house);
+                                  return (
+                                    <div className="mt-4 pt-4 border-t border-slate-800/80 space-y-4 text-[16px]">
+                                      <h4 className="text-[16px] font-bold text-amber-300 uppercase tracking-widest">
+                                        Moderate Scriptural Remedial Protocol
+                                      </h4>
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-400 block mb-1">🌿 Navgrah Plant Remedies</strong>
+                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.plant}</p>
+                                        </div>
+                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-400 block mb-1">🚩 Planetary Relief Remedies</strong>
+                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.relief}</p>
+                                        </div>
+                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-400 block mb-1">🎨 Color Therapy & Life Cycle Guide</strong>
+                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.colorTherapy}</p>
+                                        </div>
+                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-400 block mb-1">📜 Lal Kitab House Remedies</strong>
+                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.lalKitab}</p>
+                                        </div>
+                                      </div>
+                                      <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                        <strong className="text-amber-400 block mb-1">🕉️ Sacred Mantra</strong>
+                                        <p className="text-slate-300 font-mono whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.mantra}</p>
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
+
+                                {item.details.severity === 'Low' && (() => {
+                                  const detailedRemedies = getDetailedTransitRemedies(item.fullName, item.house);
+                                  return (
+                                    <div className="mt-4 pt-4 border-t border-slate-800/80 space-y-4 text-[16px]">
+                                      <h4 className="text-[16px] font-bold text-amber-300 uppercase tracking-widest">
+                                        Minor Scriptural Remedial Protocol
+                                      </h4>
+                                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-400 block mb-1">🌿 Navgrah Plant Remedies</strong>
+                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.plant}</p>
+                                        </div>
+                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-400 block mb-1">🚩 Planetary Relief Remedies</strong>
+                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.relief}</p>
+                                        </div>
+                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-400 block mb-1">📜 Lal Kitab House Remedies</strong>
+                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.lalKitab}</p>
+                                        </div>
+                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-400 block mb-1">🕉️ Sacred Mantra</strong>
+                                          <p className="text-slate-300 font-mono whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.mantra}</p>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  );
+                                })()}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+
+              {/* 14. Kundali Dosha Remedies (कुण्डली दोष निवारण उपाय) */}
+              {(() => {
+                const detectDoshas = () => {
+                  const saved = localStorage.getItem('worksheetData');
+                  if (!saved) return [];
+                  try {
+                    const parsed = JSON.parse(saved);
+                    const active = [];
+
+                    const isPresent = (val) => {
+                      if (val === true) return true;
+                      if (val && typeof val === 'object') {
+                        return val.present === true || val.is_present === true || val.active === true || val.status === 'Active' || val.is_manglik === true;
+                      }
+                      if (typeof val === 'string') {
+                        const lower = val.toLowerCase();
+                        return lower.includes('present') || lower.includes('active') || lower.includes('yes') || lower.includes('detected') || lower.includes('manglik');
+                      }
+                      return false;
+                    };
+
+                    // 1. Kalsarp
+                    const kalsarpVal = parsed.kalsarp || parsed.kalsarpa || parsed.doshas?.kalsarp || parsed.doshas?.kalsarpa || parsed.dosha?.kalsarp || parsed.dosha?.kalsarpa;
+                    if (isPresent(kalsarpVal)) {
+                      active.push({ id: 'kalsarp', label: 'Kaal Sarp Dosha (कालसर्प दोष)', key: 'kalsarpRemedies' });
+                    }
+
+                    // 2. Pitra
+                    const pitraVal = parsed.pitra || parsed.pitru || parsed.doshas?.pitra || parsed.doshas?.pitru || parsed.dosha?.pitra || parsed.dosha?.pitru;
+                    if (isPresent(pitraVal)) {
+                      active.push({ id: 'pitra', label: 'Pitra Dosha (पितृ दोष)', key: 'pitruDoshRemedies' });
+                    }
+
+                    // 3. Sadesati
+                    const sadesatiVal = parsed.sadesati || parsed.sade_sati || parsed.doshas?.sadesati || parsed.dosha?.sadesati;
+                    if (isPresent(sadesatiVal)) {
+                      active.push({ id: 'sadesati', label: 'Sade Sati (साढ़ेसाती)', key: 'sadeSatiRemedies' });
+                    }
+
+                    // 4. Rahu
+                    const rahuVal = parsed.rahu || parsed.doshas?.rahu || parsed.dosha?.rahu;
+                    if (isPresent(rahuVal)) {
+                      active.push({ id: 'rahu', label: 'Rahu Dosha (राहू दोष)', key: 'rahuDoshaRemedies' });
+                    }
+
+                    // 5. Ketu
+                    const ketuVal = parsed.ketu || parsed.doshas?.ketu || parsed.dosha?.ketu;
+                    if (isPresent(ketuVal)) {
+                      active.push({ id: 'ketu', label: 'Ketu Dosha (केतु दोष)', key: 'ketuDoshaRemedies' });
+                    }
+
+                    // 6. Manglik
+                    const manglikVal = parsed.manglik || parsed.mangalik || parsed.doshas?.manglik || parsed.dosha?.manglik;
+                    if (isPresent(manglikVal)) {
+                      active.push({ id: 'manglik', label: 'Manglik Dosha (मांगलिक दोष)', key: 'manglikDoshaRemedies' });
+                    }
+
+                    return active;
+                  } catch (e) {
+                    console.error("Error parsing worksheetData for doshas:", e);
+                    return [];
+                  }
+                };
+
+                const activeDoshas = detectDoshas();
+                if (activeDoshas.length === 0) return null;
+
+                return (
+                  <div className="space-y-6 pt-4 border-t border-slate-800">
+                    <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
+                      <ShieldAlert className="w-5 h-5 text-amber-400" /> 14. Kundali Dosha Remedies (कुण्डली दोष निवारण उपाय)
+                    </h3>
+                    <p className="text-[18px] text-slate-300">
+                      Astrological analysis of your Lagna Kundali reveals the presence of specific doshas. Below are the scriptural and modern remedies from the Vedic Encyclopedia to neutralize their adverse effects:
+                    </p>
+
+                    <div className="space-y-6">
+                      {activeDoshas.map(dosha => {
+                        const data = remediesData[dosha.key];
+                        if (!data) return null;
+
+                        return (
+                          <div key={dosha.id} className="bg-gradient-to-b from-slate-900 to-red-950/20 border border-red-500/20 p-6 rounded-3xl space-y-4 shadow-xl">
+                            <div className="flex justify-between items-center border-b border-red-500/20 pb-3">
+                              <h4 className="text-[20px] font-bold text-red-400 flex items-center gap-2">
+                                🧿 {dosha.label} Detected
+                              </h4>
+                            </div>
+
+                            {data.title && (
+                              <p className="text-[18px] text-amber-300 font-bold leading-relaxed">
+                                {data.title}
+                              </p>
+                            )}
+
+                            {data.description && (
+                              <p className="text-[16px] text-slate-300 leading-relaxed italic">
+                                {data.description}
+                              </p>
+                            )}
+
+                            {/* If it's a simple list like generalRemedies or remedies array */}
+                            {data.generalRemedies && (
+                              <div className="space-y-2">
+                                <strong className="text-[16px] text-amber-400 block">Main Scriptural Remedies (मुख्य उपाय):</strong>
+                                <ul className="list-disc list-inside space-y-1.5 text-[15px] text-slate-300 leading-relaxed pl-2">
+                                  {data.generalRemedies.map((rem, i) => (
+                                    <li key={i}>{rem}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
+                            {data.remedies && Array.isArray(data.remedies) && typeof data.remedies[0] === 'string' && (
+                              <div className="space-y-2">
+                                <strong className="text-[16px] text-amber-400 block">Main Scriptural Remedies (मुख्य उपाय):</strong>
+                                <ul className="list-disc list-inside space-y-1.5 text-[15px] text-slate-300 leading-relaxed pl-2">
+                                  {data.remedies.map((rem, i) => (
+                                    <li key={i}>{rem}</li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+
+                            {/* If it has structured remedies array (for Rahu, Ketu, Manglik, Sade Sati) */}
+                            {data.remedies && Array.isArray(data.remedies) && typeof data.remedies[0] === 'object' && (
+                              <div className="space-y-4">
+                                <strong className="text-[16px] text-amber-400 block">Structured Planetary Alignments & Remedies:</strong>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                  {data.remedies.map((rem, i) => (
+                                    <div key={i} className="bg-slate-950/80 p-4 rounded-2xl border border-slate-850 space-y-2">
+                                      <strong className="text-amber-300 block text-[16px]">✨ {rem.name}</strong>
+                                      {rem.mantra && (
+                                        <p className="text-emerald-300 font-mono text-[14px]">
+                                          <strong>Mantra:</strong> "{rem.mantra}"
+                                        </p>
+                                      )}
+                                      <p className="text-slate-300 text-[14px] leading-relaxed">
+                                        <strong>Practice:</strong> {rem.practice}
+                                      </p>
+                                      <p className="text-slate-400 text-[13px] leading-relaxed italic border-t border-slate-800/40 pt-1.5 mt-1.5">
+                                        <strong>Spiritual Science:</strong> {rem.spiritualScience}
+                                      </p>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {data.mantra && typeof data.mantra === 'string' && (
+                              <div className="bg-slate-950/60 p-4 rounded-2xl border border-slate-800">
+                                <strong className="text-emerald-400 block mb-1 text-[16px]">📿 Potent Nivaran Mantra</strong>
+                                <p className="text-emerald-300 font-mono text-[16px]">{data.mantra}</p>
+                              </div>
+                            )}
+
+                            {data.notes && (
+                              <p className="text-[14px] text-slate-400 leading-relaxed border-t border-slate-800/60 pt-3 mt-2">
+                                <strong>Important Note:</strong> {data.notes}
+                              </p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })()}
 
               {/* Footer inside report */}
               <div className="text-center pt-8 border-t border-slate-800 text-[18px] text-orange-400 space-y-1">

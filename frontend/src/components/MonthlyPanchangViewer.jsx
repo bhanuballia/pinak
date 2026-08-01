@@ -1,5 +1,151 @@
 import React, { useState, useEffect } from 'react';
-import { fetchMonthlyPanchang, fetchNextAdhikMaas } from '../services/api';
+import { fetchMonthlyPanchang, fetchNextAdhikMaas, fetchAnimatedTransits } from '../services/api';
+
+const detectTransitYogas = (planets) => {
+    if (!planets) return [];
+    const zodiacOrder = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+    const planetSigns = {};
+    planets.forEach(p => {
+        const sIdx = zodiacOrder.findIndex(z => z.toLowerCase().startsWith(p.zodiac.toLowerCase().slice(0, 3)));
+        if (sIdx !== -1) {
+            planetSigns[p.name] = sIdx;
+        }
+    });
+
+    const activeYogas = [];
+    const planetsList = ["Sun", "Mars", "Mercury", "Venus", "Jupiter", "Saturn", "Rahu", "Ketu", "Moon"];
+
+    for (let i = 0; i < planetsList.length; i++) {
+        for (let j = i + 1; j < planetsList.length; j++) {
+            const p1 = planetsList[i];
+            const p2 = planetsList[j];
+            if (planetSigns[p1] === undefined || planetSigns[p2] === undefined) continue;
+
+            const s1 = planetSigns[p1];
+            const s2 = planetSigns[p2];
+
+            const diff = (s2 - s1 + 12) % 12;
+
+            // 1. Shadashtak Yoga (6/8)
+            if ((diff === 5 || diff === 7) && p1 !== "Moon" && p2 !== "Moon") {
+                activeYogas.push({
+                    name: `षडाष्टक योग / Shadashtak Yoga (${p1}-${p2})`,
+                    desc: `${p1} and ${p2} are in a 6/8 relationship, suggesting potential tension and friction.`,
+                    isBenefic: false
+                });
+            }
+            // 2. Dwishwirdhan (2/12)
+            else if ((diff === 1 || diff === 11) && p1 !== "Moon" && p2 !== "Moon") {
+                activeYogas.push({
+                    name: `द्विद्वादश योग / Dwishwirdhan Yoga (${p1}-${p2})`,
+                    desc: `${p1} and ${p2} are in a 2/12 relationship, indicating rising expenses or minor shifts.`,
+                    isBenefic: false
+                });
+            }
+            // 3. Conjunction (Yuti)
+            else if (diff === 0) {
+                if ((p1 === "Jupiter" && p2 === "Rahu") || (p1 === "Rahu" && p2 === "Jupiter")) {
+                    activeYogas.push({
+                        name: "गुरु चांडाल योग / Guru Chandal Yoga",
+                        desc: "Jupiter and Rahu are conjoined, indicating ethical tests and spiritual realignment.",
+                        isBenefic: false
+                    });
+                } else if ((p1 === "Mars" && p2 === "Rahu") || (p1 === "Rahu" && p2 === "Mars") || (p1 === "Mars" && p2 === "Ketu") || (p1 === "Ketu" && p2 === "Mars")) {
+                    activeYogas.push({
+                        name: "अंगारक योग / Angarak Yoga",
+                        desc: "Mars and Node (Rahu/Ketu) are conjoined, indicating highly impulsive or aggressive energy.",
+                        isBenefic: false
+                    });
+                } else if ((p1 === "Mercury" && p2 === "Venus") || (p1 === "Venus" && p2 === "Mercury")) {
+                    activeYogas.push({
+                        name: "लक्ष्मी नारायण योग / Laxmi Narayan Yoga",
+                        desc: "Mercury and Venus are conjoined, bringing creativity, intelligence, and fortune.",
+                        isBenefic: true
+                    });
+                } else if ((p1 === "Sun" && p2 === "Mercury") || (p1 === "Mercury" && p2 === "Sun")) {
+                    activeYogas.push({
+                        name: "बुधादित्य योग / Budhaditya Yoga",
+                        desc: "Sun and Mercury are conjoined, boosting career growth, communication, and intellect.",
+                        isBenefic: true
+                    });
+                }
+            }
+
+            // 4. Gaja Kesari (Jupiter - Moon Kendra)
+            if ((p1 === "Moon" && p2 === "Jupiter") || (p1 === "Jupiter" && p2 === "Moon")) {
+                if (diff === 0 || diff === 3 || diff === 6 || diff === 9) {
+                    activeYogas.push({
+                        name: "गज केसरी योग / Gaja Kesari Yoga",
+                        desc: "Jupiter and Moon are in Kendra (1/4/7/10), indicating wisdom, mental peace, and prosperity.",
+                        isBenefic: true
+                    });
+                }
+            }
+        }
+    }
+    return activeYogas;
+};
+
+const checkAuspiciousCeremonies = (dayData, dateStr) => {
+    if (!dayData) return [];
+    
+    const nakName = dayData.nakshatra?.nakshatra_name || "";
+    const tithiVal = dayData.tithi ? (dayData.tithi.tithi_index % 15) + 1 : 0;
+    const dateObj = new Date(dateStr);
+    const jsDay = dateObj.getDay();
+
+    const ceremonies = [
+        {
+            name: "विवाह संस्कार / Marriage (Vivah)",
+            nakshatras: ["Rohini", "Mrigashira", "Magha", "Hasta", "Swati", "Anuradha", "Mool", "Moola", "Uttara Phalguni", "Uttara Ashadha", "Uttarashada", "Uttara Bhadrapada", "Revati"],
+            tithis: [2, 3, 5, 7, 11, 13],
+            days: [1, 3, 4, 5] // Mon, Wed, Thu, Fri
+        },
+        {
+            name: "गृह प्रवेश / House Warming (Grih Pravesh)",
+            nakshatras: ["Rohini", "Uttara Phalguni", "Uttara Ashadha", "Uttarashada", "Uttara Bhadrapada", "Dhanishta"],
+            tithis: [2, 3, 5, 7, 10, 11, 12, 13],
+            days: [1, 3, 4, 5] // Mon, Wed, Thu, Fri
+        },
+        {
+            name: "सगाई, रोका और तिलक / Engagement, Sagai, Roka & Tilak",
+            nakshatras: ["Ashwini", "Rohini", "Mrigashira", "Uttara Phalguni", "Hasta", "Swati", "Anuradha", "Mool", "Moola", "Uttara Ashadha", "Uttarashada", "Uttara Bhadrapada", "Revati", "Pushya", "Shravana"],
+            tithis: [2, 3, 5, 7, 10, 11, 12, 13, 15],
+            days: [1, 3, 4, 5]
+        },
+        {
+            name: "मुंडन संस्कार / Tonsure (Mundan)",
+            nakshatras: ["Ashwini", "Mrigashira", "Pushya", "Hasta", "Punarvasu"],
+            tithis: [2, 3, 5, 7, 10, 11, 13],
+            days: [1, 3, 4, 5]
+        },
+        {
+            name: "उपनयन संस्कार / Sacred Thread (Up Nayan)",
+            nakshatras: ["Hasta", "Chitra", "Swati", "Anuradha", "Shravana", "Dhanishta", "Revati"],
+            tithis: [2, 3, 5, 10, 11, 12],
+            days: [0, 1, 3, 4, 5] // Sun, Mon, Wed, Thu, Fri
+        },
+        {
+            name: "नया वाहन खरीद / New Vehicle Purchase",
+            nakshatras: ["Pushya", "Punarvasu", "Swati", "Shravana", "Ashwini", "Revati"],
+            tithis: [2, 3, 5, 7, 8, 10, 11, 12, 13],
+            days: [1, 3, 4, 5]
+        }
+    ];
+
+    const results = [];
+    ceremonies.forEach(c => {
+        const hasNak = c.nakshatras.some(n => nakName.toLowerCase().includes(n.toLowerCase()));
+        const hasTithi = c.tithis.includes(tithiVal);
+        const hasDay = c.days.includes(jsDay);
+        
+        if (hasNak && hasTithi && hasDay) {
+            results.push(c.name);
+        }
+    });
+
+    return results;
+};
 
 const DAYS_OF_WEEK = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -38,8 +184,8 @@ const getHinduMonthFromNakshatra = (nakshatraName) => {
     if (name.includes("vishakha") || name.includes("anuradha")) return "Vaishakha";
     if (name.includes("jyeshtha") || name.includes("mula")) return "Jyeshtha";
     if (name.includes("ashadha")) return "Ashadha"; // Purva/Uttara Ashadha
-    if (name.includes("shravana") || name.includes("dhanishta")) return "Shravana";
-    if (name.includes("shatabhisha") || name.includes("bhadrapada")) return "Bhadrapada"; // Purva/Uttara Bhadrapada
+    if (name.includes("shravana") || name.includes("dhanishta") || name.includes("shatabhisha")) return "Shravana";
+    if (name.includes("bhadrapada")) return "Bhadrapada"; // Purva/Uttara Bhadrapada
     if (name.includes("revati") || name.includes("ashwini") || name.includes("bharani")) return "Ashvina";
     if (name.includes("krittika") || name.includes("rohini")) return "Kartika";
     if (name.includes("mrigashira") || name.includes("ardra")) return "Margashirsha";
@@ -506,6 +652,9 @@ export default function MonthlyPanchangViewer() {
     const [currentDate, setCurrentDate] = useState(new Date());
     const [nextAdhik, setNextAdhik] = useState(null);
     const [selectedFestival, setSelectedFestival] = useState("");
+    const [selectedDayTransit, setSelectedDayTransit] = useState(null);
+    const [transitLoading, setTransitLoading] = useState(false);
+    const [transitError, setTransitError] = useState(null);
 
     useEffect(() => {
         const loadPanchang = async () => {
@@ -581,7 +730,8 @@ export default function MonthlyPanchangViewer() {
             shakaSamvat,
             hinduMonth,
             amavasyaDate: amavasyaDay ? `${amavasyaDay.day_number} ${MONTHS[currentDate.getMonth()]}` : 'N/A',
-            purnimaDate: purnimaDay ? `${purnimaDay.day_number} ${MONTHS[currentDate.getMonth()]}` : 'N/A'
+            purnimaDate: purnimaDay ? `${purnimaDay.day_number} ${MONTHS[currentDate.getMonth()]}` : 'N/A',
+            boundaries: data.boundaries
         };
     }, [data, currentDate]);
 
@@ -626,6 +776,114 @@ export default function MonthlyPanchangViewer() {
         });
         return list;
     }, [data, monthInfo]);
+
+    const handleDayClick = async (dayNumber) => {
+        const dateStr = `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}-${String(dayNumber).padStart(2, '0')}`;
+        const dayData = data?.data?.find(d => d.day_number === dayNumber);
+        setSelectedDayTransit({ dayNumber, dateStr, planets: null, dayData });
+        setTransitLoading(true);
+        setTransitError(null);
+
+        try {
+            let bDate = "1990-01-01";
+            let bTime = "12:00:00";
+            let lat = 19.0760;
+            let lon = 72.8777;
+            let tz = 5.5;
+
+            const savedData = localStorage.getItem('worksheetData');
+            if (savedData) {
+                const parsed = JSON.parse(savedData);
+                const basic = parsed.basic_details || parsed.basic || {};
+                bDate = basic.date || basic.birth_date || bDate;
+                bTime = basic.time || basic.birth_time || bTime;
+                lat = basic.lat || lat;
+                lon = basic.lon || lon;
+                tz = basic.tz_offset !== undefined ? basic.tz_offset : tz;
+            }
+
+            if (bTime && bTime.split(':').length === 2) {
+                bTime = `${bTime}:00`;
+            }
+
+            const payload = {
+                birth_date: bDate,
+                birth_time: bTime,
+                lat: parseFloat(lat),
+                lon: parseFloat(lon),
+                tz_offset: parseFloat(tz),
+                transit_date: dateStr,
+                transit_time: "12:00:00",
+                transit_tz_offset: parseFloat(tz)
+            };
+
+            const res = await fetchAnimatedTransits(payload);
+
+            let lagnaName = "Aries";
+            if (savedData) {
+                const parsed = JSON.parse(savedData);
+                lagnaName = parsed.chart?.ascendant_sign || parsed.basic?.ascendant || parsed.ascendant || "Aries";
+            }
+
+            const zodiacOrder = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+            const lagnaIndex = zodiacOrder.findIndex(z => z.toLowerCase().startsWith(lagnaName.toLowerCase().slice(0, 3))) !== -1
+                ? zodiacOrder.findIndex(z => z.toLowerCase().startsWith(lagnaName.toLowerCase().slice(0, 3)))
+                : 0;
+
+            const sunData = res.transit_chart?.find(p => p.planet === "Su");
+            const sunLon = sunData ? sunData.absolute_degree : 0;
+
+            const planetFullNames = {
+                "Su": "Sun", "Mo": "Moon", "Ma": "Mars", "Me": "Mercury",
+                "Ju": "Jupiter", "Ve": "Venus", "Sa": "Saturn", "Ra": "Rahu", "Ke": "Ketu", "Asc": "Ascendant"
+            };
+
+            const mappedPlanets = (res.transit_chart || []).map(p => {
+                const planetName = planetFullNames[p.planet] || p.planet;
+
+                const planetSignIndex = zodiacOrder.findIndex(z => z.toLowerCase().startsWith(p.rashi.toLowerCase().slice(0, 3)));
+                const transitHouse = planetSignIndex !== -1
+                    ? ((planetSignIndex - lagnaIndex + 12) % 12) + 1
+                    : "N/A";
+
+                const isRahuKetu = p.planet === "Ra" || p.planet === "Ke";
+                const motion = isRahuKetu ? "Vakri" : (p.rc === "R" ? "Vakri" : "Margi");
+
+                let combustionState = "Uday";
+                if (p.planet !== "Su" && p.planet !== "Asc" && !isRahuKetu) {
+                    const limits = { "Mo": 12, "Ma": 17, "Me": 14, "Ju": 11, "Ve": 10, "Sa": 15 };
+                    const limit = limits[p.planet] || 15;
+                    let diff = Math.abs(p.absolute_degree - sunLon) % 360;
+                    if (diff > 180) diff = 360 - diff;
+                    if (diff <= limit) {
+                        combustionState = "Asth";
+                    }
+                } else if (p.planet === "Su") {
+                    combustionState = "Self";
+                } else if (isRahuKetu) {
+                    combustionState = "N/A";
+                }
+
+                return {
+                    code: p.planet,
+                    name: planetName,
+                    house: transitHouse,
+                    zodiac: p.rashi,
+                    nakshatra: p.nakshatra,
+                    pada: p.pada,
+                    degree: parseFloat(p.degree).toFixed(2),
+                    motion,
+                    combustion: combustionState
+                };
+            });
+
+            setSelectedDayTransit(prev => ({ ...prev, planets: mappedPlanets }));
+        } catch (err) {
+            setTransitError(err.message);
+        } finally {
+            setTransitLoading(false);
+        }
+    };
 
     const handlePrevMonth = () => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
@@ -741,7 +999,7 @@ export default function MonthlyPanchangViewer() {
                 (selectedFestival === "Shardiya Navratri" && navratriDayInfo && navratriDayInfo.includes("Shardiya Navratri"));
 
             gridCells.push(
-                <div key={day} style={{
+                <div key={day} onClick={() => handleDayClick(day)} style={{
                     border: isSelectedFestival ? '3px solid #fbbf24' : isToday ? '3px solid #22c55e' : '1px solid #fcf1faff',
                     background: isSelectedFestival ? '#fffbeb' : isToday ? 'hsla(142, 18%, 88%, 1.00)' : 'hsla(311, 52%, 94%, 1.00)',
                     padding: '10px',
@@ -750,7 +1008,8 @@ export default function MonthlyPanchangViewer() {
                     position: 'relative',
                     minHeight: '180px',
                     boxShadow: isSelectedFestival ? '0 0 15px rgba(251,191,36,0.3) inset' : isToday ? '0 0 15px rgba(34,197,94,0.3) inset' : 'inset 0 0 10px hsla(0, 29%, 93%, 0.99)',
-                    transition: 'all 0.3s'
+                    transition: 'all 0.3s',
+                    cursor: 'pointer'
                 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
                         <div style={{ color: '#740518ff', fontSize: '13px', display: 'flex', gap: '5px' }}>
@@ -907,6 +1166,40 @@ export default function MonthlyPanchangViewer() {
                 </div>
             )}
 
+            {/* Month boundaries start / end dates */}
+            {monthInfo && monthInfo.boundaries && (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px', padding: '0 40px 30px 40px', maxWidth: '1600px', margin: '0 auto', width: '100%' }}>
+                    <div style={{ background: 'rgba(212,175,55,0.05)', border: '1px solid rgba(212,175,55,0.3)', borderRadius: '12px', padding: '20px 30px', width: '100%', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px', textAlign: 'left' }}>
+                        {monthInfo.boundaries.purnimanta && (
+                            <div style={{ borderRight: '1px solid rgba(212,175,55,0.1)', paddingRight: '20px' }}>
+                                <h4 style={{ color: '#d4af37', margin: '0 0 10px 0', fontSize: '16px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                                    🌙 {monthInfo.hinduMonth} Month Duration (Purnimanta / North India)
+                                </h4>
+                                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '15px', margin: '4px 0' }}>
+                                    <strong style={{ color: '#fbbf24' }}>Starts:</strong> {monthInfo.boundaries.purnimanta.start}
+                                </p>
+                                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '15px', margin: '4px 0' }}>
+                                    <strong style={{ color: '#fca5a5' }}>Ends:</strong> {monthInfo.boundaries.purnimanta.end}
+                                </p>
+                            </div>
+                        )}
+                        {monthInfo.boundaries.amavasyanta && (
+                            <div style={{ paddingLeft: '10px' }}>
+                                <h4 style={{ color: '#d4af37', margin: '0 0 10px 0', fontSize: '16px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                                    🌑 {monthInfo.hinduMonth} Month Duration (Amavasyanta / South & West India)
+                                </h4>
+                                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '15px', margin: '4px 0' }}>
+                                    <strong style={{ color: '#fbbf24' }}>Starts:</strong> {monthInfo.boundaries.amavasyanta.start}
+                                </p>
+                                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '15px', margin: '4px 0' }}>
+                                    <strong style={{ color: '#fca5a5' }}>Ends:</strong> {monthInfo.boundaries.amavasyanta.end}
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+
             {/* Ekadashi Summary */}
             {ekadashisList.length > 0 && (
                 <div style={{ padding: '0 40px 20px 40px', maxWidth: '1600px', margin: '0 auto', width: '100%' }}>
@@ -938,6 +1231,259 @@ export default function MonthlyPanchangViewer() {
                     renderGrid()
                 )}
             </div>
+
+            {selectedDayTransit && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0,
+                    left: 0,
+                    width: '100vw',
+                    height: '100vh',
+                    backgroundColor: 'rgba(0,0,0,0.85)',
+                    backdropFilter: 'blur(8px)',
+                    zIndex: 9999,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: '20px'
+                }}>
+                    <div style={{
+                        width: '100%',
+                        maxWidth: '900px',
+                        backgroundColor: '#0f172a',
+                        border: '1px solid rgba(212,175,55,0.4)',
+                        borderRadius: '16px',
+                        boxShadow: '0 10px 30px rgba(0,0,0,0.5), 0 0 40px rgba(212,175,55,0.15)',
+                        overflow: 'hidden',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        maxHeight: '90vh'
+                    }}>
+                        <div style={{
+                            padding: '20px 30px',
+                            borderBottom: '1px solid rgba(212,175,55,0.2)',
+                            background: 'linear-gradient(to right, rgba(246, 249, 255, 1), hsla(40, 33%, 98%, 1.00))',
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center'
+                        }}>
+                            <div>
+                                <h2 style={{ color: '#d4af37', margin: 0, fontSize: '20px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                                    📅 Transit Details for Day {selectedDayTransit.dayNumber}
+                                </h2>
+                                <p style={{ color: '#970707ff', margin: '4px 0 0 0', fontWeight: "bold", fontSize: '18px' }}>
+                                    Target Date: {selectedDayTransit.dateStr}
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setSelectedDayTransit(null)}
+                                style={{
+                                    background: 'transparent',
+                                    color: '#d4af37',
+                                    border: '1px solid rgba(212,175,55,0.3)',
+                                    borderRadius: '50%',
+                                    width: '36px',
+                                    height: '36px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    cursor: 'pointer',
+                                    fontSize: '22px',
+                                    transition: 'all 0.2s'
+                                }}
+                                onMouseOver={e => e.currentTarget.style.background = 'rgba(212,175,55,0.1)'}
+                                onMouseOut={e => e.currentTarget.style.background = 'transparent'}
+                            >
+                                &times;
+                            </button>
+                        </div>
+
+                        <div style={{ padding: '30px', overflowY: 'auto', flex: 1 }}>
+                            {transitLoading ? (
+                                <div style={{ textAlign: 'center', color: '#d4af37', padding: '60px 0', fontSize: '16px' }}>
+                                    <div style={{ width: '30px', height: '30px', border: '3px solid rgba(212,175,55,0.2)', borderTopColor: '#d4af37', borderRadius: '50%', animation: 'spin 1s linear infinite', margin: '0 auto 15px auto' }}></div>
+                                    Fetching Planetary Positions...
+                                </div>
+                            ) : transitError ? (
+                                <div style={{ color: '#ef4444', textAlign: 'center', padding: '40px 0' }}>
+                                    Error loading transits: {transitError}
+                                </div>
+                            ) : selectedDayTransit.planets ? (
+                                <div>
+                                    {/* Active Yogas formed on this day */}
+                                    {(() => {
+                                        const yogas = detectTransitYogas(selectedDayTransit.planets);
+                                        if (yogas.length === 0) return null;
+                                        return (
+                                            <div style={{ marginBottom: '30px', background: 'rgba(228, 225, 216, 1)', border: '1px solid rgba(212,175,55,0.2)', padding: '20px', borderRadius: '12px' }}>
+                                                <h3 style={{ color: '#cc130dff', margin: '0 0 15px 0', fontSize: '18px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    <span>🪐</span> Transit Yogas Formed (गोचर योग)
+                                                </h3>
+                                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '15px' }}>
+                                                    {yogas.map((y, yidx) => (
+                                                        <div key={yidx} style={{ background: 'hsla(225, 33%, 95%, 1.00)', padding: '15px', borderRadius: '8px', border: `1px solid ${y.isBenefic ? 'rgba(52,211,153,0.3)' : 'rgba(248,113,113,0.3)'}` }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+                                                                <span style={{
+                                                                    display: 'inline-block',
+                                                                    width: '8px',
+                                                                    height: '8px',
+                                                                    borderRadius: '50%',
+                                                                    backgroundColor: y.isBenefic ? 'rgba(6, 156, 101, 1)' : '#f87171'
+                                                                }}></span>
+                                                                <strong style={{ color: y.isBenefic ? 'rgba(4, 122, 79, 1)' : '#d30404ff', fontWeight: "bold", fontSize: '18px' }}>{y.name}</strong>
+                                                            </div>
+                                                            <p style={{ color: 'rgba(33, 8, 177, 1)', fontSize: '16px', margin: 0, lineHeight: '1.4' }}>{y.desc}</p>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        );
+                                    })()}
+
+                                    {/* Auspicious Muhuratas / शुभ मुहूर्त */}
+                                    {(() => {
+                                        const auspiciousList = checkAuspiciousCeremonies(selectedDayTransit.dayData, selectedDayTransit.dateStr);
+                                        return (
+                                            <div style={{ marginBottom: '30px', background: 'rgba(212, 175, 55, 0.08)', border: '1px solid rgba(212,175,55,0.3)', padding: '20px', borderRadius: '12px' }}>
+                                                <h3 style={{ color: '#d4af37', margin: '0 0 15px 0', fontSize: '18px', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '1px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                                    <span>✨</span> Favorable Ceremonies / शुभ मुहूर्त
+                                                </h3>
+                                                {auspiciousList.length === 0 ? (
+                                                    <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '15px', margin: 0 }}>
+                                                        No standard auspicious timings matching general rules for major ceremonies on this date.
+                                                    </p>
+                                                ) : (
+                                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                                        {auspiciousList.map((cName, idx) => (
+                                                            <div key={idx} style={{ padding: '8px 16px', background: 'rgba(212, 175, 55, 0.15)', border: '1px solid rgba(212, 175, 55, 0.4)', borderRadius: '30px', color: '#fcd34d', fontWeight: 'bold', fontSize: '15px' }}>
+                                                                ✓ {cName}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })()}
+
+                                    <div style={{ overflowX: 'auto' }}>
+                                        {(() => {
+                                            const PLANET_HI = {
+                                                "Sun": "सूर्य (Sun)", "Moon": "चन्द्र (Moon)", "Mars": "मंगल (Mars)", "Mercury": "बुध (Mercury)",
+                                                "Jupiter": "बृहस्पति (Jupiter)", "Venus": "शुक्र (Venus)", "Saturn": "शनि (Saturn)", "Rahu": "राहु (Rahu)",
+                                                "Ketu": "केतु (Ketu)", "Ascendant": "लग्न (Ascendant)"
+                                            };
+
+                                            const ZODIAC_HI = {
+                                                "Aries": "मेष (Aries)", "Taurus": "वृषभ (Taurus)", "Gemini": "मिथुन (Gemini)", "Cancer": "कर्क (Cancer)",
+                                                "Leo": "सिंह (Leo)", "Virgo": "कन्या (Virgo)", "Libra": "तुला (Libra)", "Scorpio": "वृश्चिक (Scorpio)",
+                                                "Sagittarius": "धनु (Sagittarius)", "Capricorn": "मकर (Capricorn)", "Aquarius": "कुंभ (Aquarius)", "Pisces": "मीन (Pisces)",
+                                                "Ari": "मेष (Aries)", "Tau": "वृषभ (Taurus)", "Gem": "मिथुन (Gemini)", "Can": "कर्क (Cancer)",
+                                                "Leo": "सिंह (Leo)", "Vir": "कन्या (Virgo)", "Lib": "तुला (Libra)", "Sco": "वृश्चिक (Scorpio)",
+                                                "Sag": "धनु (Sagittarius)", "Cap": "मकर (Capricorn)", "Aqu": "कुंभ (Aquarius)", "Pis": "मीन (Pisces)"
+                                            };
+
+                                            const NAKSHATRA_HI = {
+                                                "Ashwini": "अश्विनी (Ashwini)", "Bharani": "भरणी (Bharani)", "Krittika": "कृत्तिका (Krittika)",
+                                                "Rohini": "रोहिणी (Rohini)", "Mrigashira": "मृगशिरा (Mrigashira)", "Ardra": "आर्द्रा (Ardra)",
+                                                "Punarvasu": "पुनर्वसु (Punarvasu)", "Pushya": "पुष्य (Pushya)", "Ashlesha": "आश्लेषा (Ashlesha)",
+                                                "Magha": "मघा (Magha)", "Purva Phalguni": "पूर्वा फाल्गुनी (Purva Phalguni)", "Uttara Phalguni": "उत्तरा फाल्गुनी (Uttara Phalguni)",
+                                                "Hasta": "हस्त (Hasta)", "Chitra": "चित्रा (Chitra)", "Swati": "स्वाती (Swati)",
+                                                "Vishakha": "विशाखा (Vishakha)", "Anuradha": "अनुराधा (Anuradha)", "Jyeshtha": "ज्येष्ठा (Jyeshtha)",
+                                                "Mula": "मूल (Mula)", "Purva Ashadha": "पूर्वाषाढ़ा (Purva Ashadha)", "Uttara Ashadha": "उत्तराषाढ़ा (Uttara Ashadha)",
+                                                "Shravana": "श्रवण (Shravana)", "Dhanishta": "धनिष्ठा (Dhanishta)", "Shatabhisha": "शतभिषा (Shatabhisha)",
+                                                "Purva Bhadrapada": "पूर्वभाद्रपद (Purva Bhadrapada)", "Uttara Bhadrapada": "उत्तरभाद्रपद (Uttara Bhadrapada)", "Revati": "रेवती (Revati)"
+                                            };
+
+                                            const MOTION_HI = {
+                                                "Vakri": "वक्री (Retrograde)",
+                                                "Margi": "मार्गी (Direct)"
+                                            };
+
+                                            const COMBUSTION_HI = {
+                                                "Asth": "अस्त (Combust)",
+                                                "Uday": "उदय (Rising)",
+                                                "Self": "स्व (Own)",
+                                                "N/A": "N/A"
+                                            };
+
+                                            return (
+                                                <table style={{ width: '100%', borderCollapse: 'collapse', color: 'white', fontSize: '18px' }}>
+                                                    <thead>
+                                                        <tr style={{ borderBottom: '2px solid rgba(212,175,55,0.3)', background: 'rgba(212,175,55,0.05)' }}>
+                                                            <th style={{ padding: '12px 16px', textAlign: 'left', color: '#d4af37', fontWeight: 'bold' }}>ग्रह (Planet)</th>
+                                                            <th style={{ padding: '12px 16px', textAlign: 'left', color: '#d4af37', fontWeight: 'bold' }}>भाव (House Placed)</th>
+                                                            <th style={{ padding: '12px 16px', textAlign: 'left', color: '#d4af37', fontWeight: 'bold' }}>राशि (Zodiac Sign)</th>
+                                                            <th style={{ padding: '12px 16px', textAlign: 'left', color: '#d4af37', fontWeight: 'bold' }}>नक्षत्र (Nakshatra - Pada)</th>
+                                                            <th style={{ padding: '12px 16px', textAlign: 'left', color: '#d4af37', fontWeight: 'bold' }}>गति (Motion)</th>
+                                                            <th style={{ padding: '12px 16px', textAlign: 'left', color: '#d4af37', fontWeight: 'bold' }}>अवस्था (State)</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {selectedDayTransit.planets.map((p, idx) => {
+                                                            const planetDisp = PLANET_HI[p.name] || p.name;
+                                                            const zodiacDisp = ZODIAC_HI[p.zodiac] || p.zodiac;
+                                                            const nakshatraNameOnly = p.nakshatra ? p.nakshatra.split(' ')[0] : '';
+                                                            const nakshatraDisp = NAKSHATRA_HI[nakshatraNameOnly] || p.nakshatra || '';
+                                                            const motionDisp = MOTION_HI[p.motion] || p.motion;
+                                                            const combustionDisp = COMBUSTION_HI[p.combustion] || p.combustion;
+
+                                                            return (
+                                                                <tr key={idx} style={{
+                                                                    borderBottom: '1px solid rgba(255,255,255,0.05)',
+                                                                    background: idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent',
+                                                                    transition: 'background 0.2s'
+                                                                }} onMouseOver={e => e.currentTarget.style.background = 'rgba(212,175,55,0.03)'} onMouseOut={e => e.currentTarget.style.background = idx % 2 === 0 ? 'rgba(255,255,255,0.02)' : 'transparent'}>
+                                                                    <td style={{ padding: '14px 16px', fontWeight: 'bold', color: '#fbbf24' }}>
+                                                                        {planetDisp}
+                                                                    </td>
+                                                                    <td style={{ padding: '14px 16px', fontWeight: 'bold' }}>
+                                                                        भाव {p.house} (House {p.house})
+                                                                    </td>
+                                                                    <td style={{ padding: '14px 16px', color: '#60a5fa' }}>
+                                                                        {zodiacDisp} ({p.degree}°)
+                                                                    </td>
+                                                                    <td style={{ padding: '14px 16px', color: '#c084fc' }}>
+                                                                        {nakshatraDisp} (Pada {p.pada})
+                                                                    </td>
+                                                                    <td style={{ padding: '14px 16px' }}>
+                                                                        <span style={{
+                                                                            padding: '3px 8px',
+                                                                            borderRadius: '4px',
+                                                                            fontSize: '16px',
+                                                                            fontWeight: 'bold',
+                                                                            background: p.motion === 'Vakri' ? 'hsla(0, 23%, 91%, 1.00)' : 'hsla(147, 47%, 96%, 1.00)',
+                                                                            color: p.motion === 'Vakri' ? '#b10808ff' : 'rgba(4, 184, 19, 1)'
+                                                                        }}>
+                                                                            {motionDisp}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td style={{ padding: '14px 16px' }}>
+                                                                        <span style={{
+                                                                            padding: '3px 8px',
+                                                                            borderRadius: '4px',
+                                                                            fontSize: '16px',
+                                                                            fontWeight: 'bold',
+                                                                            background: p.combustion === 'Asth' ? 'hsla(26, 54%, 98%, 1.00)' : p.combustion === 'Self' ? 'hsla(210, 18%, 93%, 1.00)' : p.combustion === 'N/A' ? 'hsla(0, 0%, 100%, 1.00)' : 'hsla(142, 100%, 98%, 1.00)',
+                                                                            color: p.combustion === 'Asth' ? 'hsla(27, 96%, 35%, 0.81)' : p.combustion === 'Self' ? 'rgba(11, 87, 179, 1)' : p.combustion === 'N/A' ? '#94a3b8' : 'rgba(21, 196, 5, 1)'
+                                                                        }}>
+                                                                            {combustionDisp}
+                                                                        </span>
+                                                                    </td>
+                                                                </tr>
+                                                            );
+                                                        })}
+                                                    </tbody>
+                                                </table>
+                                            );
+                                        })()}
+                                    </div>
+                                </div>
+                            ) : null}
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <style>{`
                 @keyframes spin {
                     from { transform: rotate(0deg); }

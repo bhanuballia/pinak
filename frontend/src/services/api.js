@@ -381,3 +381,17 @@ export async function fetchWeeklyRelationshipHoroscope(payload) {
   }
   return res.json();
 }
+
+export async function fetchAnimatedTransits(payload) {
+  const url = `${BASE}/api/transit/animated`;
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to fetch animated transits");
+  }
+  return res.json();
+}

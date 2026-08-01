@@ -161,6 +161,25 @@ async def get_daily_panchang(
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+def find_tithi_boundaries_near_jd(target_tithi, approx_jd, tz):
+    search_jd = approx_jd
+    found = False
+    for offset in range(-15, 16):
+        test_jd = approx_jd + offset
+        if compute_tithi(test_jd)["tithi_index"] == target_tithi:
+            search_jd = test_jd
+            found = True
+            break
+    if not found:
+        return {"start": "N/A", "end": "N/A"}
+    st_jd, en_jd = get_tithi_boundaries(search_jd)
+    st_dt = julian_to_datetime(st_jd) + datetime.timedelta(hours=tz)
+    en_dt = julian_to_datetime(en_jd) + datetime.timedelta(hours=tz)
+    return {
+        "start": st_dt.strftime("%d %b %Y, %I:%M %p"),
+        "end": en_dt.strftime("%d %b %Y, %I:%M %p")
+    }
+
 @router.get("/monthly")
 async def get_monthly_panchang(
     lat: float = Query(..., description="Latitude"),
@@ -252,6 +271,7 @@ async def get_monthly_panchang(
 
             monthly_data.append({
                 "day_number": day,
+                "jd_ut": jd_ut_sunrise,
                 "date": dt_local.strftime("%Y-%m-%d"),
                 "day": day_name,
                 "tithi": tithi,
@@ -270,7 +290,31 @@ async def get_monthly_panchang(
                 "nakshatra_end": nakshatra_end
             })
 
-        return {"year": year, "month": month, "data": monthly_data}
+        purnima_day = next((d for d in monthly_data if d["tithi"]["tithi_index"] == 14), None)
+        amavasya_day = next((d for d in monthly_data if d["tithi"]["tithi_index"] == 29), None)
+        
+        boundaries = {}
+        if purnima_day:
+            curr_purnima_jd = purnima_day["jd_ut"]
+            curr_purnima_bounds = find_tithi_boundaries_near_jd(14, curr_purnima_jd, tz)
+            prev_purnima_bounds = find_tithi_boundaries_near_jd(14, curr_purnima_jd - 29.53, tz)
+            
+            boundaries["purnimanta"] = {
+                "start": prev_purnima_bounds["end"],
+                "end": curr_purnima_bounds["end"]
+            }
+            
+        if amavasya_day:
+            curr_amavasya_jd = amavasya_day["jd_ut"]
+            curr_amavasya_bounds = find_tithi_boundaries_near_jd(29, curr_amavasya_jd, tz)
+            prev_amavasya_bounds = find_tithi_boundaries_near_jd(29, curr_amavasya_jd - 29.53, tz)
+            
+            boundaries["amavasyanta"] = {
+                "start": prev_amavasya_bounds["end"],
+                "end": curr_amavasya_bounds["end"]
+            }
+
+        return {"year": year, "month": month, "data": monthly_data, "boundaries": boundaries}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 

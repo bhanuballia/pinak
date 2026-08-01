@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FINANCE_HOUSE_INTERPRETATIONS, FINANCE_YOGAS, SIGN_LORDS } from '../data/financeData';
+import { BPHS_BHAVA_LORDS_RULES } from '../data/bphsBhavaLords';
+
 
 export default function FinanceAnalysis() {
     const [isLightMode, setIsLightMode] = useState(false);
@@ -22,6 +24,12 @@ export default function FinanceAnalysis() {
     const planets = data.planet_positions || [];
 
     const getPlanetHouse = (p) => planets.find(item => item.planet === p)?.house;
+
+    // Calculate 2nd Lord Placement
+    const h2Sign = houses["2"]?.sign_name;
+    const lord2 = SIGN_LORDS[h2Sign];
+    const pos2 = getPlanetHouse(lord2) || null;
+
 
     // Simple Yoga Checkers
     const hasYoga = (yogaId) => {
@@ -153,6 +161,31 @@ export default function FinanceAnalysis() {
                         <h1 className="text-5xl font-black text-white italic tracking-tighter">Finance & Prosperity Analysis</h1>
                         <p className="text-[#d4af37] uppercase tracking-[0.4em] text-sm font-black">Lagna Chart Diagnostic • Wealth Potential</p>
                     </div>
+
+                    {/* 2nd Lord Placement Section */}
+                    {pos2 && BPHS_BHAVA_LORDS_RULES.SecondLord[pos2] && (
+                        <div className="bg-[#0f172a] rounded-[3rem] border border-[#d4af37]/20 p-8 md:p-10 shadow-2xl relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 p-8 opacity-5 text-8xl text-white">💰</div>
+                            <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
+                                <div className="text-5xl text-[#d4af37]">🏛️</div>
+                                <div className="flex-1 space-y-2">
+                                    <span className="px-3 py-1 bg-[#d4af37]/10 text-[#d4af37] text-[9px] font-black uppercase tracking-widest rounded-full border border-[#d4af37]/20">
+                                        Second Lord House Placement (BPHS Ch. 24)
+                                    </span>
+                                    <h4 className="text-2xl font-black text-white italic">
+                                        Wealth Lord ({lord2}) in the {pos2 === 1 ? "1st" : pos2 === 2 ? "2nd" : pos2 === 3 ? "3rd" : pos2 + "th"} House
+                                    </h4>
+                                    <p className="text-sm text-stone-300 leading-relaxed italic">
+                                        "{BPHS_BHAVA_LORDS_RULES.SecondLord[pos2].result}"
+                                    </p>
+                                    <div className="text-xs text-stone-400 font-serif border-t border-[#d4af37]/10 pt-2 italic">
+                                        <span className="font-bold block text-white not-italic mb-1">Sastra Notes:</span>
+                                        {BPHS_BHAVA_LORDS_RULES.SecondLord[pos2].notes}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* House Analysis Section */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

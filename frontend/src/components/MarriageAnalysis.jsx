@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MARRIAGE_HOUSE_INTERPRETATIONS, MARRIAGE_YOGAS, MARRIAGE_CONJUNCTIONS, SIGN_LORDS, predictMarriageYears } from '../data/marriageData';
+import { BPHS_BHAVA_LORDS_RULES } from '../data/bphsBhavaLords';
 
 export default function MarriageAnalysis() {
     const [isLightMode, setIsLightMode] = useState(false);
@@ -21,6 +22,19 @@ export default function MarriageAnalysis() {
 
     const houses = data.charts?.houses || {};
     const basic = data.basic_details || {};
+
+    const getPlanetHouse = (pName) => {
+        const hNum = Object.keys(houses).find(h =>
+            houses[h].planets?.some(p => (typeof p === 'object' ? p.name : p) === pName)
+        );
+        return hNum ? parseInt(hNum) : null;
+    };
+
+    // Calculate 7th Lord and its placement
+    const h7Sign = houses["7"]?.sign_name;
+    const lord7 = h7Sign ? SIGN_LORDS[h7Sign] : null;
+    const pos7 = lord7 ? getPlanetHouse(lord7) : null;
+
 
     // Ultra-robust date extraction
     let day = basic.day || basic.date;
@@ -47,12 +61,6 @@ export default function MarriageAnalysis() {
     const numerology = predictMarriageYears(dobStr);
     console.log("Numerology Debug - Result:", numerology);
 
-    const getPlanetHouse = (pName) => {
-        const hNum = Object.keys(houses).find(h =>
-            houses[h].planets?.some(p => (typeof p === 'object' ? p.name : p) === pName)
-        );
-        return hNum ? parseInt(hNum) : null;
-    };
 
     const hasYoga = (yogaId) => {
         const yoga = MARRIAGE_YOGAS.find(y => y.id === yogaId);
@@ -156,6 +164,31 @@ export default function MarriageAnalysis() {
                     <h1 className="text-5xl font-black text-white italic tracking-tighter">Marriage & Relationship Analysis</h1>
                     <p className="text-[#fb7185] uppercase tracking-[0.4em] text-sm font-black">Lagna Chart Diagnostic • Marital Harmony</p>
                 </div>
+
+                {/* 7th Lord Placement Scroll (BPHS Ch. 24) */}
+                {pos7 && BPHS_BHAVA_LORDS_RULES.SeventhLord[pos7] && (
+                    <div className="bg-[#0f172a] rounded-[3rem] border border-[#fb7185]/20 p-8 md:p-10 shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-8 opacity-5 text-8xl text-white">💍</div>
+                        <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
+                            <div className="text-5xl text-[#fb7185]">🏛️</div>
+                            <div className="flex-1 space-y-2">
+                                <span className="px-3 py-1 bg-[#fb7185]/10 text-[#fb7185] text-[9px] font-black uppercase tracking-widest rounded-full border border-[#fb7185]/20">
+                                    Seventh Lord House Placement (BPHS Ch. 24)
+                                </span>
+                                <h4 className="text-2xl font-black text-white italic">
+                                    Marriage Lord ({lord7}) in the {pos7 === 1 ? "1st" : pos7 === 2 ? "2nd" : pos7 === 3 ? "3rd" : pos7 + "th"} House
+                                </h4>
+                                <p className="text-sm text-stone-300 leading-relaxed italic">
+                                    "{BPHS_BHAVA_LORDS_RULES.SeventhLord[pos7].result}"
+                                </p>
+                                <div className="text-xs text-stone-400 font-serif border-t border-[#fb7185]/10 pt-2 italic">
+                                    <span className="font-bold block text-white not-italic mb-1">Sastra Notes:</span>
+                                    {BPHS_BHAVA_LORDS_RULES.SeventhLord[pos7].notes}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Numerology Timeline Section */}
                 {numerology && (

@@ -3,6 +3,75 @@ import ZodiacChart from "../ZodiacChart";
 import { PLANET_COLORS, SIGNS, getDignityStatus } from "./WorksheetUtils";
 import { PLANET_IN_SIGN_EFFECTS } from "../../data/planetInSign";
 
+const LAGNA_ROLES = {
+  0: { name: "Aries", benefics: ["Sun", "Jupiter", "Mars"], malefics: ["Mercury", "Venus", "Saturn"], yogakaraka: [] },
+  1: { name: "Taurus", benefics: ["Saturn", "Mercury", "Sun"], malefics: ["Jupiter", "Venus", "Moon"], yogakaraka: ["Saturn"] },
+  2: { name: "Gemini", benefics: ["Venus", "Mercury"], malefics: ["Mars", "Jupiter", "Sun"], yogakaraka: [] },
+  3: { name: "Cancer", benefics: ["Mars", "Jupiter", "Moon"], malefics: ["Venus", "Mercury", "Saturn"], yogakaraka: ["Mars"] },
+  4: { name: "Leo", benefics: ["Mars", "Sun", "Jupiter"], malefics: ["Mercury", "Venus", "Saturn"], yogakaraka: ["Mars"] },
+  5: { name: "Virgo", benefics: ["Mercury", "Venus"], malefics: ["Mars", "Jupiter", "Moon"], yogakaraka: [] },
+  6: { name: "Libra", benefics: ["Saturn", "Mercury", "Venus"], malefics: ["Sun", "Jupiter", "Mars"], yogakaraka: ["Saturn"] },
+  7: { name: "Scorpio", benefics: ["Moon", "Sun", "Jupiter", "Mars"], malefics: ["Mercury", "Venus"], yogakaraka: [] },
+  8: { name: "Sagittarius", benefics: ["Mars", "Sun", "Jupiter"], malefics: ["Venus", "Mercury", "Saturn"], yogakaraka: [] },
+  9: { name: "Capricorn", benefics: ["Venus", "Mercury", "Saturn"], malefics: ["Mars", "Jupiter", "Moon"], yogakaraka: ["Venus"] },
+  10: { name: "Aquarius", benefics: ["Venus", "Saturn"], malefics: ["Jupiter", "Moon", "Mars"], yogakaraka: ["Venus"] },
+  11: { name: "Pisces", benefics: ["Moon", "Mars", "Jupiter"], malefics: ["Sun", "Venus", "Mercury", "Saturn"], yogakaraka: [] }
+};
+
+const getTransitImpact = (planet, isRetro, lagnaSignIndex) => {
+  const role = LAGNA_ROLES[lagnaSignIndex];
+  if (!role) return null;
+
+  if (isRetro) {
+    if (role.yogakaraka.includes(planet)) {
+      return {
+        status: "highly_positive",
+        badge: "Highly Positive (Yogakaraka Vakri)",
+        text: `As your Yogakaraka, ${planet} in retrograde (Vakri) status is exceptionally strong. It triggers major internal growth, and paves the way for stable, long-lasting rewards.`
+      };
+    }
+    if (role.benefics.includes(planet)) {
+      return {
+        status: "positive",
+        badge: "Positive (Benefic Vakri)",
+        text: `${planet} is a functional benefic for your Lagna. Its retrograde motion (Vakri) intensifies its strength, prompting introspective adjustments that lead to success.`
+      };
+    }
+    if (role.malefics.includes(planet)) {
+      return {
+        status: "negative",
+        badge: "Caution (Malefic Vakri)",
+        text: `${planet} is a functional malefic for your Lagna. Its retrograde state (Vakri) increases its capacity to create hurdles, suggesting extra caution and patient timing.`
+      };
+    }
+    return {
+      status: "neutral",
+      badge: "Neutral (Vakri)",
+      text: `${planet} is neutral for you. Its retrograde motion suggests a time to review plans, review paperwork, and proceed patiently.`
+    };
+  } else {
+    if (role.yogakaraka.includes(planet) || role.benefics.includes(planet)) {
+      return {
+        status: "positive",
+        badge: "Positive (Margi)",
+        text: `${planet} is a benefic in direct motion (Margi), facilitating smooth, forward-moving progress in its related spheres.`
+      };
+    }
+    if (role.malefics.includes(planet)) {
+      return {
+        status: "neutral",
+        badge: "Neutral (Margi)",
+        text: `${planet} is in direct motion (Margi). Even as a malefic, its forward motion limits sudden chaos, keeping obstacles standard and manageable.`
+      };
+    }
+    return {
+      status: "neutral",
+      badge: "Neutral (Margi)",
+      text: `${planet} is transiting in direct motion (Margi), expressing its standard, natural energies.`
+    };
+  }
+};
+
 const TransitPanel = ({ data, transitPositions }) => {
   const lagnaHouse = data.charts?.houses?.[1] || data.charts?.houses?.["1"] || {};
   let lagnaSignIndex = lagnaHouse.sign_index;
@@ -107,6 +176,7 @@ const TransitPanel = ({ data, transitPositions }) => {
                   'border-l-indigo-300';
 
               const dignity = getDignityStatus(planet, signName);
+              const impact = getTransitImpact(planet, isRetro, lagnaSignIndex);
 
               return (
                 <section key={planet} className={`bg-white rounded-xl border border-indigo-100 shadow-sm border-l-4 ${houseBorderColor} overflow-hidden relative`}>
@@ -149,6 +219,23 @@ const TransitPanel = ({ data, transitPositions }) => {
                         <p className="text-[14px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {houseLabel} House (Transiting)</p>
                         <p className="text-[14px] leading-relaxed text-slate-700 font-serif">
                           {houseEffect}
+                        </p>
+                      </div>
+                    )}
+                    {impact && (
+                      <div className="pt-3 border-t border-indigo-50">
+                        <div className="flex items-center gap-1.5 mb-1 flex-wrap">
+                          <span className="text-[10px] font-black uppercase tracking-widest text-indigo-800">Lagna Impact:</span>
+                          <span className={`text-[8px] px-1.5 py-0.5 rounded font-black uppercase border ${impact.status === "highly_positive" ? "bg-emerald-50 text-emerald-700 border-emerald-200" :
+                              impact.status === "positive" ? "bg-green-50 text-green-700 border-green-200" :
+                                impact.status === "negative" ? "bg-red-50 text-red-700 border-red-200" :
+                                  "bg-slate-50 text-slate-700 border-slate-200"
+                            }`}>
+                            {impact.badge}
+                          </span>
+                        </div>
+                        <p className="text-[12px] leading-relaxed text-slate-600 italic font-sans">
+                          {impact.text}
                         </p>
                       </div>
                     )}

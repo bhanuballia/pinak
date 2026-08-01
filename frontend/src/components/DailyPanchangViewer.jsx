@@ -195,6 +195,8 @@ export default function DailyPanchangViewer() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedDate, setSelectedDate] = useState("");
+    const [transitForecast, setTransitForecast] = useState([]);
+    const [forecastLoading, setForecastLoading] = useState(false);
 
     // Oracle State
     const [oracleQuestion, setOracleQuestion] = useState("");
@@ -248,6 +250,22 @@ export default function DailyPanchangViewer() {
         }
     };
 
+    const loadTransitForecast = async (dateVal) => {
+        setForecastLoading(true);
+        try {
+            const queryParam = dateVal ? `?date=${dateVal}` : '';
+            const response = await fetch(`/api/transit/predictions_advanced${queryParam}`);
+            const json = await response.json();
+            if (json.success) {
+                setTransitForecast(json.forecast);
+            }
+        } catch (err) {
+            console.error("Failed to load transit forecast:", err);
+        } finally {
+            setForecastLoading(false);
+        }
+    };
+
     useEffect(() => {
         const loadPanchang = async () => {
             try {
@@ -272,6 +290,7 @@ export default function DailyPanchangViewer() {
 
         setLoading(true);
         loadPanchang();
+        loadTransitForecast(selectedDate);
 
         let interval;
         // Only auto-refresh if looking at today's panchang
@@ -393,6 +412,8 @@ export default function DailyPanchangViewer() {
                                 <div style={{ fontSize: '16px', color: 'rgba(212, 203, 73, 1)', lineHeight: '1.5' }}>A 'Ghati' is 24 minutes. The clock tracks 60 Ghatis per day. 'Progress' shows how far we have traveled since the last Sunrise—the ultimate anchor of Vedic time.</div>
                             </div>
                         </div>
+
+
 
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '40px', paddingTop: '40px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
                             <div>
@@ -753,7 +774,99 @@ export default function DailyPanchangViewer() {
                                     </div>
                                 </div>
                             </div>
-                            {/*  */}
+
+                            {/* Advanced Transit Forecast Section */}
+                            <div style={{ marginTop: '50px', padding: '30px', background: 'linear-gradient(135deg, rgba(30,41,59,0.5) 0%, rgba(15,23,42,0.8) 100%)', borderRadius: '30px', border: '1px solid rgba(212,175,55,0.2)', textAlign: 'left', boxShadow: '0 20px 50px rgba(0,0,0,0.3)', width: '100%', maxWidth: '1200px', margin: '30px auto 0 auto' }}>
+                                <div style={{ color: '#d4af37', fontSize: '24px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                    <span>🪐</span> Advanced Transit Forecast (पारगमन गोचर)
+                                </div>
+                                <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '15px', marginBottom: '20px', lineHeight: '1.4' }}>
+                                    Upcoming astrological transits, alignments, and their direct impact on zodiac signs.
+                                </p>
+
+                                {forecastLoading ? (
+                                    <p style={{ color: '#d4af37', fontSize: '16px', fontStyle: 'italic' }}>Calculating alignments...</p>
+                                ) : transitForecast.length === 0 ? (
+                                    <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '16px' }}>No major transit alignments active in the near future.</p>
+                                ) : (
+                                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '20px' }}>
+                                        {transitForecast.map((ev, idx) => {
+                                            const cautions = Object.values(ev.rashi_impacts).filter(r => r.status === 'Caution');
+                                            const favorables = Object.values(ev.rashi_impacts).filter(r => r.status === 'Favorable');
+
+                                            return (
+                                                <div key={idx} style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '25px', borderRadius: '25px', border: '1px solid rgba(255, 255, 255, 0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                                                    <div>
+                                                        <span style={{
+                                                            display: 'inline-block',
+                                                            padding: '4px 10px',
+                                                            borderRadius: '10px',
+                                                            fontSize: '11px',
+                                                            fontWeight: '900',
+                                                            textTransform: 'uppercase',
+                                                            backgroundColor: ev.is_benefic ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+                                                            color: ev.is_benefic ? '#10b981' : '#ef4444',
+                                                            border: ev.is_benefic ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(239, 68, 68, 0.4)',
+                                                            marginBottom: '8px'
+                                                        }}>
+                                                            {ev.is_benefic ? 'Auspicious (शुभ)' : 'Cautionary (सतर्कता)'}
+                                                        </span>
+                                                        <h3 style={{ fontSize: '22px', fontWeight: 'bold', color: '#fff', margin: '0 0 4px 0' }}>
+                                                            {ev.name_hi} / {ev.name_en}
+                                                        </h3>
+                                                        <p style={{ fontSize: '14px', color: '#d4af37', fontWeight: 'bold', margin: '0 0 12px 0' }}>
+                                                            📅 {new Date(ev.start_date).toLocaleDateString('hi-IN', { month: 'long', day: 'numeric' })} से {new Date(ev.end_date).toLocaleDateString('hi-IN', { month: 'long', day: 'numeric', year: 'numeric' })}
+                                                        </p>
+                                                        <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.85)', lineHeight: '1.6', margin: '0 0 20px 0' }}>
+                                                            {ev.desc_hi} <br />
+                                                            <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.5)' }}>{ev.desc_en}</span>
+                                                        </p>
+                                                    </div>
+
+                                                    {/* Impacted Signs */}
+                                                    <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '15px' }}>
+                                                        {cautions.length > 0 && (
+                                                            <div style={{ marginBottom: '15px' }}>
+                                                                <span style={{ fontSize: '14px', color: '#f87171', fontWeight: '900', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
+                                                                    ⚠️ Warning / सावधान रहें:
+                                                                </span>
+                                                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                                                                    {cautions.map(c => (
+                                                                        <div key={c.rashi_name_en} style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '12px' }}>
+                                                                            <span style={{ color: '#fca5a5', fontWeight: 'bold', fontSize: '15px' }}>{c.rashi_name_hi} ({c.rashi_name_en})</span>
+                                                                            <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)', marginTop: '2px' }}>
+                                                                                {c.areas.map(a => a.hi).join(', ')} मामले
+                                                                            </div>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+                                                        {favorables.length > 0 && (
+                                                            <div>
+                                                                <span style={{ fontSize: '14px', color: '#34d399', fontWeight: '900', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
+                                                                    🌟 Auspicious / शुभ परिणाम:
+                                                                </span>
+                                                                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                                                                    {favorables.map(f => (
+                                                                        <div key={f.rashi_name_en} style={{ padding: '6px 12px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '12px' }}>
+                                                                            <span style={{ color: '#a7f3d0', fontWeight: 'bold', fontSize: '15px' }}>{f.rashi_name_hi} ({f.rashi_name_en})</span>
+                                                                            <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)', marginTop: '2px' }}>
+                                                                                {f.areas.map(a => a.hi).join(', ')} लाभ
+                                                                            </div>
+                                                                        </div>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
 
                             <div style={{ textAlign: 'center', padding: '40px 0 20px 0' }}>
 

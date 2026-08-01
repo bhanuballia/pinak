@@ -649,7 +649,7 @@
       "benefits": "Overall planetary harmony, nullifies Dasa afflictions, brings prosperity."
     }
   ],
-    "navagrahaPlantRemedies": {
+  "navagrahaPlantRemedies": {
     "Sun": {
       "physicalGovernance": "Rules the skeletal system, skin, stomach, skull, and the right eye.",
       "sacredPlant": "Arka (Milkweed)",
@@ -751,7 +751,7 @@
       }
     }
   },
-    "planetaryReliefRemedies": {
+  "planetaryReliefRemedies": {
     "Sun": {
       "malaType": "Ruby (Manikya), Red Sandalwood (Lal Chandan), or Rudraksha Mala",
       "fastingDuration": "12 consecutive Sundays",
@@ -861,7 +861,7 @@
       "invocationCount": 10000
     }
   },
-    "zodiacSignRemedies": {
+  "zodiacSignRemedies": {
     "Aries": {
       "rulingPlanet": "Mars (Mangal)",
       "sacredRootTree": "Red Sandalwood (Rakta Chandana) Root",
@@ -2388,18 +2388,66 @@
         "Rebalancing biological systems"
       ],
       "items": [
-        { "name": "Crystal Sriyantra", "purpose": "Sriyantra made of crystal for financial success and spiritual enrichment.", "mantra": "Om Shreeng Hreeng Shreeng Kamaley Kamlalaye Praseed Praseed Shreeng Hreeng Shreeng Om Mahalaxmyai Namah" },
-        { "name": "Crystal Ganesha Locket", "purpose": "Locket of Ganesha made of crystal for overcoming obstacles and intellectual work.", "mantra": "Om Gang Ganapatye Namah" },
-        { "name": "Crystal Rosary", "purpose": "Crystal rosary for mental peace and protection from diseases.", "mantra": "Om Namah Shivay" },
-        { "name": "Crystal Ganesha", "purpose": "Crystal idol of Ganesha for success, wealth, intelligence and removing hurdles.", "mantra": "Om shreeng Hreeng Kleeng gloung Gang Ganapatye Var Varad Sarvajana Mey Vashmaanay Thah Thah" },
-        { "name": "Crystal Moon", "purpose": "Crystal moon locket for mental balance, intuition, and overcoming bad dreams.", "mantra": "Om Som Somaya Nahah" },
-        { "name": "Crystal Sun", "purpose": "Crystal sun for eliminating negative energies and health disorders.", "mantra": "Om Hreeng Ghrini Surya Aditya Shreeng" },
-        { "name": "Crystal Shivlinga", "purpose": "Crystal Shivlinga for protection from diseases, mishaps and sudden death.", "mantra": "Om Namah Shivay" },
-        { "name": "Crystal Laxmi", "purpose": "Crystal Laxmi for wealth and prosperity.", "mantra": "Om Mahalaxmyai Namah" },
-        { "name": "Crystal Ball", "purpose": "Crystal ball for replacing negative energies with positive and fortune telling.", "mantra": "Om Brahmne Namah" },
-        { "name": "Crystal Pyramid", "purpose": "Crystal pyramid as a powerful Vastu correction tool.", "mantra": "Om Brahmne Namah" },
-        { "name": "Crystal Tortoise", "purpose": "Crystal tortoise for longevity and Vastu correction.", "mantra": "Om Brahmne Namah" },
-        { "name": "Crystal Shivparivaar", "purpose": "Crystal Shivparivaar for all‑round prosperity and protection.", "mantra": "Om Namah Shivay" }
+        {
+          "name": "Crystal Sriyantra",
+          "purpose": "Sriyantra made of crystal for financial success and spiritual enrichment.",
+          "mantra": "Om Shreeng Hreeng Shreeng Kamaley Kamlalaye Praseed Praseed Shreeng Hreeng Shreeng Om Mahalaxmyai Namah"
+        },
+        {
+          "name": "Crystal Ganesha Locket",
+          "purpose": "Locket of Ganesha made of crystal for overcoming obstacles and intellectual work.",
+          "mantra": "Om Gang Ganapatye Namah"
+        },
+        {
+          "name": "Crystal Rosary",
+          "purpose": "Crystal rosary for mental peace and protection from diseases.",
+          "mantra": "Om Namah Shivay"
+        },
+        {
+          "name": "Crystal Ganesha",
+          "purpose": "Crystal idol of Ganesha for success, wealth, intelligence and removing hurdles.",
+          "mantra": "Om shreeng Hreeng Kleeng gloung Gang Ganapatye Var Varad Sarvajana Mey Vashmaanay Thah Thah"
+        },
+        {
+          "name": "Crystal Moon",
+          "purpose": "Crystal moon locket for mental balance, intuition, and overcoming bad dreams.",
+          "mantra": "Om Som Somaya Nahah"
+        },
+        {
+          "name": "Crystal Sun",
+          "purpose": "Crystal sun for eliminating negative energies and health disorders.",
+          "mantra": "Om Hreeng Ghrini Surya Aditya Shreeng"
+        },
+        {
+          "name": "Crystal Shivlinga",
+          "purpose": "Crystal Shivlinga for protection from diseases, mishaps and sudden death.",
+          "mantra": "Om Namah Shivay"
+        },
+        {
+          "name": "Crystal Laxmi",
+          "purpose": "Crystal Laxmi for wealth and prosperity.",
+          "mantra": "Om Mahalaxmyai Namah"
+        },
+        {
+          "name": "Crystal Ball",
+          "purpose": "Crystal ball for replacing negative energies with positive and fortune telling.",
+          "mantra": "Om Brahmne Namah"
+        },
+        {
+          "name": "Crystal Pyramid",
+          "purpose": "Crystal pyramid as a powerful Vastu correction tool.",
+          "mantra": "Om Brahmne Namah"
+        },
+        {
+          "name": "Crystal Tortoise",
+          "purpose": "Crystal tortoise for longevity and Vastu correction.",
+          "mantra": "Om Brahmne Namah"
+        },
+        {
+          "name": "Crystal Shivparivaar",
+          "purpose": "Crystal Shivparivaar for all‑round prosperity and protection.",
+          "mantra": "Om Namah Shivay"
+        }
       ],
       "sources": [
         "www.futurepointindia.com",
@@ -2408,39 +2456,115 @@
       ]
     },
     "rosaries": {
-        "description": "Rosary is a string of beads used in counting prayers, combining prayer and meditation. It is used to recite mantras and is considered auspicious, especially with 108 beads.",
-        "benefits": [
-            "Reciting mantras of various deities",
-            "Promotes mental peace and virtuous mentality",
-            "Improves health, intellectual work, and spiritual activities",
-            "Aids love, marriage, exams, pregnancy, legal success, and more"
-        ],
-        "items": [
-            { "name": "White Sandalwood Rosary", "purpose": "Made of sandalwood beads; used for reciting Vishnu, Ram, Krishna, Jupiter mantras; provides virtuous mentality, peace of mind, sufficient sleep.", "mantra": "Om Saraswati Namah" },
-            { "name": "Crystal and Rudraksha Mixed Rosary", "purpose": "Crystal and Rudraksha beads (27/54/108); renders prosperity, protects from cough, fever, disorder of wind; aids sleep and eye problems; used for Shiv Panchakshari mantra.", "mantra": "Om Namah Shivay" },
-            { "name": "Crystal Rosary", "purpose": "Crystal rosary for mental peace, protects from diseases; used on Monday for peace, Saturday for blood disorders, navel for fever.", "mantra": "Om Namah Shivay" },
-            { "name": "Turquoise Rosary", "purpose": "Improves love life and marriage prospects; worn on auspicious days; used with Bhuvaneswari Yantra.", "mantra": "Om Bhuvaneswari Namah" },
-            { "name": "Agate Rosary", "purpose": "Blessings of Lord Shiva; mental peace, concentration, courage; helps in exams, menopause, breast tumor; protective during pregnancy.", "mantra": "Om Namah Shivay" },
-            { "name": "Turmeric Bulb Rosary", "purpose": "Purifying; used for victory over enemies, litigation success; recites Bagalamukhi and Jupiter mantras.", "mantra": "Om Bagalamukhi Namah" },
-            { "name": "Lotus Bead Rosary", "purpose": "Recite Goddess Laxmi mantras for wealth.", "mantra": "Om Laxmi Namah" },
-            { "name": "Kaya Kalpa Rosary", "purpose": "Rejuvenates body and mind; enhances love, confidence, spiritual activity; grants fame.", "mantra": "Om Shivparivaar Namah" },
-            { "name": "Coral Rosary", "purpose": "Used for Hanuman and Mars mantras; legal success, debt clearance; protects during sleep.", "mantra": "Om Hanuman Namah" },
-            { "name": "Coral and Pearl Mixed Rosary", "purpose": "Soothing impact; recite Shiva and Shakti mantras; brings Laxmi blessings.", "mantra": "Om Shiva Shakti Namah" },
-            { "name": "Pearl and Rudraksha Mixed Rosary", "purpose": "Beneficial for various purposes.", "mantra": null },
-            { "name": "Navratna Rosary", "purpose": "Recite Shiva mantras; improves peace, health; includes gems of nine planets; grants prosperity, health, protection.", "mantra": "Om Navratna Namah" },
-            { "name": "Tulsi Rosary", "purpose": "Aids digestion, headache, fever; recites Vishnu, Ram, Krishna, Jupiter mantras; helps attain Siddhi.", "mantra": "Om Vishnu Namah" },
-            { "name": "Red Sandalwood Rosary", "purpose": "Recite mantras of Goddesses, Mars, Hanuman.", "mantra": "Om Devi Namah" },
-            { "name": "Rudraksha Rosary", "purpose": "Improves blood pressure, virility, intellect, business; recite Shiva mantras.", "mantra": "Om Shivaya Namah" },
-            { "name": "Pearl Rosary", "purpose": "Refines mind, controls mood swings; recite Shiva and Moon mantras.", "mantra": "Om Shiva Namah" },
-            { "name": "Quicksilver (Parad) Rosary", "purpose": "Made of silver and mercury; removes sins, adds respect, reputation, peace.", "mantra": "Om Mahamrityunjay Namah" },
-            { "name": "Putraprati Rosary", "purpose": "Made with Putrajeeva seeds; bestows a son; recite Jupiter, Sun mantras for offspring.", "mantra": "Om Putra Namah" },
-            { "name": "Vaijanti Rosary", "purpose": "Recite Krishna mantras for attraction; two types (white seeds, black seeds).", "mantra": "Om Krishna Namah" }
-        ],
-        "sources": [
-            "www.futurepointindia.com",
-            "www.leogold.com",
-            "www.leopalm.com"
-        ]
+      "description": "Rosary is a string of beads used in counting prayers, combining prayer and meditation. It is used to recite mantras and is considered auspicious, especially with 108 beads.",
+      "benefits": [
+        "Reciting mantras of various deities",
+        "Promotes mental peace and virtuous mentality",
+        "Improves health, intellectual work, and spiritual activities",
+        "Aids love, marriage, exams, pregnancy, legal success, and more"
+      ],
+      "items": [
+        {
+          "name": "White Sandalwood Rosary",
+          "purpose": "Made of sandalwood beads; used for reciting Vishnu, Ram, Krishna, Jupiter mantras; provides virtuous mentality, peace of mind, sufficient sleep.",
+          "mantra": "Om Saraswati Namah"
+        },
+        {
+          "name": "Crystal and Rudraksha Mixed Rosary",
+          "purpose": "Crystal and Rudraksha beads (27/54/108); renders prosperity, protects from cough, fever, disorder of wind; aids sleep and eye problems; used for Shiv Panchakshari mantra.",
+          "mantra": "Om Namah Shivay"
+        },
+        {
+          "name": "Crystal Rosary",
+          "purpose": "Crystal rosary for mental peace, protects from diseases; used on Monday for peace, Saturday for blood disorders, navel for fever.",
+          "mantra": "Om Namah Shivay"
+        },
+        {
+          "name": "Turquoise Rosary",
+          "purpose": "Improves love life and marriage prospects; worn on auspicious days; used with Bhuvaneswari Yantra.",
+          "mantra": "Om Bhuvaneswari Namah"
+        },
+        {
+          "name": "Agate Rosary",
+          "purpose": "Blessings of Lord Shiva; mental peace, concentration, courage; helps in exams, menopause, breast tumor; protective during pregnancy.",
+          "mantra": "Om Namah Shivay"
+        },
+        {
+          "name": "Turmeric Bulb Rosary",
+          "purpose": "Purifying; used for victory over enemies, litigation success; recites Bagalamukhi and Jupiter mantras.",
+          "mantra": "Om Bagalamukhi Namah"
+        },
+        {
+          "name": "Lotus Bead Rosary",
+          "purpose": "Recite Goddess Laxmi mantras for wealth.",
+          "mantra": "Om Laxmi Namah"
+        },
+        {
+          "name": "Kaya Kalpa Rosary",
+          "purpose": "Rejuvenates body and mind; enhances love, confidence, spiritual activity; grants fame.",
+          "mantra": "Om Shivparivaar Namah"
+        },
+        {
+          "name": "Coral Rosary",
+          "purpose": "Used for Hanuman and Mars mantras; legal success, debt clearance; protects during sleep.",
+          "mantra": "Om Hanuman Namah"
+        },
+        {
+          "name": "Coral and Pearl Mixed Rosary",
+          "purpose": "Soothing impact; recite Shiva and Shakti mantras; brings Laxmi blessings.",
+          "mantra": "Om Shiva Shakti Namah"
+        },
+        {
+          "name": "Pearl and Rudraksha Mixed Rosary",
+          "purpose": "Beneficial for various purposes.",
+          "mantra": null
+        },
+        {
+          "name": "Navratna Rosary",
+          "purpose": "Recite Shiva mantras; improves peace, health; includes gems of nine planets; grants prosperity, health, protection.",
+          "mantra": "Om Navratna Namah"
+        },
+        {
+          "name": "Tulsi Rosary",
+          "purpose": "Aids digestion, headache, fever; recites Vishnu, Ram, Krishna, Jupiter mantras; helps attain Siddhi.",
+          "mantra": "Om Vishnu Namah"
+        },
+        {
+          "name": "Red Sandalwood Rosary",
+          "purpose": "Recite mantras of Goddesses, Mars, Hanuman.",
+          "mantra": "Om Devi Namah"
+        },
+        {
+          "name": "Rudraksha Rosary",
+          "purpose": "Improves blood pressure, virility, intellect, business; recite Shiva mantras.",
+          "mantra": "Om Shivaya Namah"
+        },
+        {
+          "name": "Pearl Rosary",
+          "purpose": "Refines mind, controls mood swings; recite Shiva and Moon mantras.",
+          "mantra": "Om Shiva Namah"
+        },
+        {
+          "name": "Quicksilver (Parad) Rosary",
+          "purpose": "Made of silver and mercury; removes sins, adds respect, reputation, peace.",
+          "mantra": "Om Mahamrityunjay Namah"
+        },
+        {
+          "name": "Putraprati Rosary",
+          "purpose": "Made with Putrajeeva seeds; bestows a son; recite Jupiter, Sun mantras for offspring.",
+          "mantra": "Om Putra Namah"
+        },
+        {
+          "name": "Vaijanti Rosary",
+          "purpose": "Recite Krishna mantras for attraction; two types (white seeds, black seeds).",
+          "mantra": "Om Krishna Namah"
+        }
+      ],
+      "sources": [
+        "www.futurepointindia.com",
+        "www.leogold.com",
+        "www.leopalm.com"
+      ]
     },
     "yantras": {
       "description": "Yantra is a geometric instrument used for meditation, concentration, and harnessing spiritual energy. It is considered a visual mantra that can bring wealth, health, protection, and spiritual growth.",
@@ -2451,10 +2575,26 @@
         "Aids in spiritual growth and fulfillment"
       ],
       "items": [
-        { "name": "Sriyantra", "purpose": "Supreme yantra for wealth, spiritual growth, and Vastu correction.", "mantra": "Om Sri Yantra Namah" },
-        { "name": "Mahalaxmi Yantra", "purpose": "Wealth and prosperity.", "mantra": "Om Mahalakshmi Namah" },
-        { "name": "Gayatri Yantra", "purpose": "Energy, intelligence, and removal of negative influences.", "mantra": "Om Bhur Bhuvah Svah..." },
-        { "name": "Kali Yantra", "purpose": "Victory, protection, and overcoming obstacles.", "mantra": "Om Kali Namah" }
+        {
+          "name": "Sriyantra",
+          "purpose": "Supreme yantra for wealth, spiritual growth, and Vastu correction.",
+          "mantra": "Om Sri Yantra Namah"
+        },
+        {
+          "name": "Mahalaxmi Yantra",
+          "purpose": "Wealth and prosperity.",
+          "mantra": "Om Mahalakshmi Namah"
+        },
+        {
+          "name": "Gayatri Yantra",
+          "purpose": "Energy, intelligence, and removal of negative influences.",
+          "mantra": "Om Bhur Bhuvah Svah..."
+        },
+        {
+          "name": "Kali Yantra",
+          "purpose": "Victory, protection, and overcoming obstacles.",
+          "mantra": "Om Kali Namah"
+        }
       ],
       "sources": [
         "www.futurepointindia.com",
@@ -2471,10 +2611,26 @@
         "Promotes wealth, prosperity, and marital harmony"
       ],
       "items": [
-        { "name": "One Faced Rudraksha", "purpose": "Health, general happiness, immense power, wealth, confidence and spiritual enhancement.", "mantra": "Om Yem Ham Shroum Ye" },
-        { "name": "Two Faced Rudraksha", "purpose": "Marital happiness, mental peace, prosperity, pleasure, contentment.", "mantra": "Om Hreeng Kshoung Veeng Om" },
-        { "name": "Three Faced Rudraksha", "purpose": "Victory over enemies, eliminates blood related diseases.", "mantra": "Om Rem Hum Hrim Hum" },
-        { "name": "Four Faced Rudraksha", "purpose": "Education, knowledge, intelligence, concentration, sexual powers.", "mantra": "Om Vam Kam Tham Ham" }
+        {
+          "name": "One Faced Rudraksha",
+          "purpose": "Health, general happiness, immense power, wealth, confidence and spiritual enhancement.",
+          "mantra": "Om Yem Ham Shroum Ye"
+        },
+        {
+          "name": "Two Faced Rudraksha",
+          "purpose": "Marital happiness, mental peace, prosperity, pleasure, contentment.",
+          "mantra": "Om Hreeng Kshoung Veeng Om"
+        },
+        {
+          "name": "Three Faced Rudraksha",
+          "purpose": "Victory over enemies, eliminates blood related diseases.",
+          "mantra": "Om Rem Hum Hrim Hum"
+        },
+        {
+          "name": "Four Faced Rudraksha",
+          "purpose": "Education, knowledge, intelligence, concentration, sexual powers.",
+          "mantra": "Om Vam Kam Tham Ham"
+        }
       ],
       "sources": [
         "www.futurepointindia.com",
@@ -2504,7 +2660,10 @@
           "metal": "Gold",
           "finger": "Ring",
           "day": "Sunday",
-          "substitutes": ["Garnet", "Spinel (Suryamani)"]
+          "substitutes": [
+            "Garnet",
+            "Spinel (Suryamani)"
+          ]
         },
         {
           "name": "Pearl",
@@ -2519,7 +2678,9 @@
           "metal": "Silver",
           "finger": "Little",
           "day": "Monday",
-          "substitutes": ["Moon Stone"]
+          "substitutes": [
+            "Moon Stone"
+          ]
         },
         {
           "name": "Coral",
@@ -2549,7 +2710,10 @@
           "metal": "Gold",
           "finger": "Little",
           "day": "Wednesday",
-          "substitutes": ["Peridot", "Green Tourmaline"]
+          "substitutes": [
+            "Peridot",
+            "Green Tourmaline"
+          ]
         },
         {
           "name": "Yellow Sapphire",
@@ -2564,7 +2728,10 @@
           "metal": "Gold",
           "finger": "Index",
           "day": "Thursday",
-          "substitutes": ["Topaz", "Citrine"]
+          "substitutes": [
+            "Topaz",
+            "Citrine"
+          ]
         },
         {
           "name": "Diamond",
@@ -2579,7 +2746,10 @@
           "metal": "Platinum",
           "finger": "Middle",
           "day": "Friday",
-          "substitutes": ["White Zircon", "Opal"]
+          "substitutes": [
+            "White Zircon",
+            "Opal"
+          ]
         },
         {
           "name": "Blue Sapphire",
@@ -2594,7 +2764,12 @@
           "metal": "Silver or Panchdhatu (five metals)",
           "finger": "Middle",
           "day": "Saturday",
-          "substitutes": ["Turquoise", "Aquamarine", "Neeli (Sodalite)", "Lapis Lazuli"]
+          "substitutes": [
+            "Turquoise",
+            "Aquamarine",
+            "Neeli (Sodalite)",
+            "Lapis Lazuli"
+          ]
         },
         {
           "name": "Gomed (Hessonite)",
@@ -2609,7 +2784,9 @@
           "metal": "Silver",
           "finger": "Second",
           "day": "Saturday",
-          "substitutes": ["Agate"]
+          "substitutes": [
+            "Agate"
+          ]
         },
         {
           "name": "Cat’s Eye",
@@ -2633,5 +2810,333 @@
         "www.leopalm.com"
       ]
     }
+  },
+  "kalsarpRemedies": {
+    "generalRemedies": [
+      "Chanting the Panchakshari Mantra or “Om Namah Shivay” at least 108 times a day.",
+      "Chanting the Maha Mrityunjaya mantra Jaap at least 108 times a day.",
+      "Chanting the Beeja mantra of Rahu 108 times while keeping a string of Agate in the hand.",
+      "Watering the Peepal tree every Saturday.",
+      "Offering prayers to Nagaraja and other Snake Gods every Sunday, especially on Panchami Tithi.",
+      "Worshipping Lord Shiva by performing Shiva puja and offering milk, flowers, Bilva Patra, fruits and plums and Abhisheka every Monday as well as on Maha Shivaratri, and thereafter donating food and clothes to the needy.",
+      "Worshipping Lord Nataraja, the dancing avatar of Lord Shiva, and performing Shanti Puja on Sashti Tithi.",
+      "Observing a rigorous fast on Nag Panchami and worshipping the Nag Devta on this day.",
+      "Praying to Lord Krishna and offering 11 coconuts in the river on a Saturday or a Panchami Tithi.",
+      "Offering 108 pairs of Nag and Nagin made of metal in the river and offering Rudra Abhishek on a Monday.",
+      "Chanting the Kaal Sarp Gayatri Mantra.",
+      "Ensure to not hurt snakes or any other reptile. Chanting the names of the nine snake dynastical heads at least 21 times on every Sashti Tithi is also considered effective.",
+      "Performing the Kaal Sarpa Dosha Nivarana Puja.",
+      "Keeping a pet dog at home is said to please Lord Batuk Bhairav to gain blessings as an effective cure for Kaal Sarp Dosha.",
+      "Chanting Vishnu Sahasranama.",
+      "Worshipping Manasa Devi.",
+      "Worshipping a five-hooded idol of Nag Raj, preferably made in silver and kept in Lord Subramanya Swamy temple. Worshipping the idol daily with rice mixed with turmeric (Haldi) is considered auspicious."
+    ],
+    "types": {
+      "Anant Kaal Sarp Dosh": {
+        "symptoms": "Exaggerated troubles in life, career delays, family issues, or persistent fear.",
+        "remedies": [
+          "Regularly offering milk to the shivling.",
+          "Worshipping lord Vishnu by chanting lord Shiva.",
+          "Chanting the Maha Mrityunjaya Mantra every day.",
+          "Performing the Anant Kaal Sarp Dosh puja."
+        ]
+      },
+      "Kulik Kaal Sarp Dosh": {
+        "symptoms": "Effects mostly on education and career.",
+        "remedies": [
+          "Reciting of the Nag Gayatri Mantra.",
+          "Praying and offerings to Lord Shiva.",
+          "Performing puja at Trimbakeshwar Temple (strong spiritual energy center providing faster results)."
+        ]
+      },
+      "Vasuki Kaal Sarp Dosh": {
+        "symptoms": "Fear, anxiety, and misunderstanding among family members.",
+        "remedies": [
+          "Chanting of the Rahu mantra daily for guaranteed results.",
+          "Worshipping Vasuki Nag Devta.",
+          "Conducting pooja at Trimbakeshwar Temple."
+        ]
+      },
+      "Shankhpal Kaal Sarp Dosh": {
+        "symptoms": "Lack of support or protection in life.",
+        "remedies": [
+          "Offering water to Lord Shiva.",
+          "Performing a specific Shankhpal Kaal Sarp Dosh puja in the Trimbakeshwar Temple.",
+          "Regular chanting of the Shiva Panchakshari Mantra."
+        ]
+      },
+      "Padma Kala Sarpa Dosha": {
+        "symptoms": "Disturbs spiritual growth.",
+        "remedies": [
+          "Lighting a diya near the Tulsi plant.",
+          "Indulging in Shiva Abhishek.",
+          "Performing the Padma Kala Sarpa Dosha pooja under the guidance of Guruji at Trimbakeshwar."
+        ]
+      },
+      "Mahapadam Kaal Sarp Dosh": {
+        "symptoms": "Affects finances, stability, and interrupts flow of money.",
+        "remedies": [
+          "Worshipping Lord Ganesha.",
+          "Chanting Mahamrityunjay Mantra."
+        ]
+      },
+      "Takshak Kaal Sarp Dosh": {
+        "symptoms": "Unexpected losses in terms of money, relationships, or any other valuable things.",
+        "remedies": [
+          "Kaal Bhairav Stotra.",
+          "Offering oil to Lord Shani.",
+          "Performing Puja at Trimbakeshwar Temple."
+        ]
+      },
+      "Karkotak Kaal Sarp Dosh": {
+        "symptoms": "Emotional imbalance.",
+        "remedies": [
+          "Consistent worship of Lord Hanuman.",
+          "Performing the special Kaal Sarp Puja at Trimbakeshwar Temple by an expert pandit.",
+          "Chanting of the Rahu mantra."
+        ]
+      },
+      "Shankhachur Kaal Sarp Dosh": {
+        "symptoms": "Consistent obstacles, affects stability in relationships, obstacles in forming new ones.",
+        "remedies": [
+          "Donation of black tils.",
+          "Doing abhishek.",
+          "Performing Kaal Sarp Nivaran puja."
+        ]
+      },
+      "Ghatak Kaal Sarp Dosh": {
+        "symptoms": "Ruins relationships, directly affects stability in relationships.",
+        "remedies": [
+          "Lighting a lamp at home daily.",
+          "Performing puja in the Trimbakeshwar Temple.",
+          "Chanting of the Mahamrityunjaya mantra."
+        ]
+      },
+      "Vishdhar Kaal Sarp Dosh": {
+        "symptoms": "Consistent stress and sleeplessness.",
+        "remedies": [
+          "Worshipping lord Shiva and doing Rudraabhishek.",
+          "Performing Rudraabhishek or puja at Trimbakeshwar Temple."
+        ]
+      },
+      "Sheshnag Kaal Dosh": {
+        "symptoms": "Life imbalance.",
+        "remedies": [
+          "Shiva Puja.",
+          "Mantra Jaap.",
+          "Trimbakeshwar Kaal Sarp Puja."
+        ]
+      },
+      "Partial Kaal Sarp Dosh": {
+        "symptoms": "Half dosh.",
+        "remedies": [
+          "Chanting hymns.",
+          "Offering water to the shivling.",
+          "Performing pooja on the holy land of Trimbakeshwar."
+        ]
+      },
+      "Ardh Kaal Sarp Dosh": {
+        "symptoms": "Slow progress in life.",
+        "remedies": [
+          "Performing Rudraabhishek.",
+          "Chanting mantras daily.",
+          "Doing the puja at Trimbakeshwar for full relief."
+        ]
+      }
+    }
+  },
+  "pitruDoshRemedies": {
+    "mantra": "Om Pitrabhyah devatabhyah mahayogibhyech cha, Namah sawaha swadhyaye cha nityamev namah.",
+    "remedies": [
+      "Complete Tripindi Shradha organized Pooja or mantra Jaap to nullify the effects of past sinful activities done by ancestors.",
+      "Give food to brahmins on every Amavasya.",
+      "Donate food, clothes, Blankets on the day of Ardh - Kumbh - Snan.",
+      "Offer water to the Banyan tree regularly.",
+      "Give food and milk to cow's Street dogs and animals.",
+      "Give help to needy poor and older people as much as possible.",
+      "Chant the mantras of Devi Kalika stotram. Especially on Navratri.",
+      "Do snan at various religious places like Haridwar, Ujjain, Nashik, Gangasagar, etc.",
+      "Offer water mixed sesame seeds to the rising Sun regularly and chant Gayatri Mantra.",
+      "Worship the Peepal tree.",
+      "Offer food and clothes to Brahmins on every Amavasya.",
+      "Always give love and respect to elders in the family and take their blessings to strengthen the position of Sun.",
+      "Offer water to the Sun and chant Gayatri Mantra to strengthen the position of the Sun in your horoscope.",
+      "In case of unnatural or early death of any ancestor, perform Narayan Bali rite at holy places like Trimbhakeshwar, Haridwar, Badrinath, and Gaya.",
+      "Feed crows and fishes with small balls of cooked rice every Saturday. Offer food to crows, street dogs & sweepers during the Pitra paksha.",
+      "Perform Rudra Abhishek in the name of your ancestors.",
+      "Worshipping Lord Vishnu, especially in the form of Sri Ram, and giving unconditional love and services to parents is the easiest way to come out from the adverse effects of pitra dosha."
+    ]
+  },
+  "rahuDoshaRemedies": {
+    "title": "Shifting the Energy: Modern Spiritual Remedies for Rahu Dosha",
+    "description": "Rahu Dosha is not a permanent curse; it is a cosmic transition. Think of it as a heavy weather system in your energetic blueprint. Like any planetary frequency, Rahu’s chaotic, illusionary energy can be consciously intercepted, recalibrated, and integrated by upgrading your daily habits and shifting your internal vibration.",
+    "remedies": [
+      {
+        "name": "Activate the Sound Frequency: Daily Rahu Beej Mantra Chanting",
+        "mantra": "Om Raam Rahave Namah",
+        "practice": "Commit to a daily meditation where you repeat this mantra 108 times (one full mala), paying special attention to Saturdays when Saturnian and Rahu energies are most receptive to grounding.",
+        "spiritualScience": "Rahu’s main weapon is creating mental static, paranoia, and a sense of perpetual restlessness. This mantra acts as a stabilizing anchor, clearing your auric field of dark clouds and anxious loops. If you are currently navigating a major 18-year Rahu Mahadasha cycle, a deep-dive spiritual practice of 18,000 cumulative chants is highly recommended."
+      },
+      {
+        "name": "Sacred Ecology: Nourishing Crows and Dark-Hued Animals",
+        "practice": "Every Saturday morning, establish a ritual of offering black sesame seeds, split urad dal, or simple dark grain-based foods to wild crows, ants, or stray animals.",
+        "spiritualScience": "In the Vedic tradition, animals are biological conductors for specific planetary energies. Crows and dark-furred animals vibrate on the same wavelength as Rahu's karmic shadow. Feeding them serves as a 'karmic tax' to Rahu's emissaries, transforming heavy, stagnant energy into gratitude and neutralizing harsh karmic debts."
+      },
+      {
+        "name": "Quantum Chromotherapy: Integrating Midnight Blue and Black",
+        "practice": "On Saturdays, consciously dress in deep hues like midnight blue, jet black, and charcoal grey. To take it further, gather dark-colored blankets, clothes, or essential goods and donate them to people who are struggling or unhoused.",
+        "spiritualScience": "Rahu governs the deep, mysterious, smoky frequencies of the universe. Wearing these colors allows you to adapt to Rahu's energy rather than resisting it. Donating these items to the less fortunate transforms a heavy planetary vibration into high-frequency compassion."
+      },
+      {
+        "name": "Sacred Geometry: Anchoring a Rahu Yantra in Your Space",
+        "practice": "Acquire a copper or silver Rahu Yantra and have it spiritually activated and blessed by a qualified priest or pandit. Place it in a clean, quiet area of your home, such as your meditation corner or a dedicated altar space.",
+        "spiritualScience": "Your home is a mirror of your psyche. A Rahu Yantra acts like an energetic lightning rod, pulling chaotic, erratic frequencies of Rahu out of your living space and locking them into a harmonious geometric matrix, keeping the household atmosphere peaceful and protected."
+      },
+      {
+        "name": "Crystal Resonance: Working with Hessonite (Gomed)",
+        "practice": "Wearing a high-quality Gomed stone can dramatically shield your aura. Seek a detailed, expert consultation from a trusted intuitive astrologer before introducing it to ensure it acts as a shield rather than an amplifier of chaos.",
+        "spiritualScience": "Gemstones are nature's amplifiers. For Rahu, the crystal ally is Hessonite (Gomed). If your birth chart (Kundli) isn't aligned with it, it can amplify the wrong traits, leading to increased illusion or erratic behavior."
+      },
+      {
+        "name": "Alchemical Cleansing: Saturday Fasts and Temple Rituals",
+        "practice": "Dedicate Saturdays to a clean fast (consuming only water, juices, or light fruits) and visit a Shiva temple or shrine. Bring a whole coconut and a handful of black sesame seeds as an offering.",
+        "spiritualScience": "Lord Shiva holds the supreme power to dissolve Rahu's chaotic grip. Fasting clears physical and emotional toxicity. Placing a coconut at Shiva's feet symbolizes surrendering your ego and overactive mind, replacing fear with a deep sense of cosmic protection."
+      },
+      {
+        "name": "Soul Grounding: Mindfulness, Breathwork, and Breaking Illusions",
+        "practice": "Build a daily routine focused entirely on grounding your energy. Practice Pranayama (breath control), alternate-nostril breathing, and barefoot walks on the earth. Consciously pause, breathe, and remind yourself that the fear is merely an illusion.",
+        "spiritualScience": "Rahu feeds on mental fragmentation. The moment you step into the present moment through mindfulness, you cut off Rahu's power supply, completely disarming the shadow planet."
+      }
+    ],
+    "notes": "While these daily spiritual upgrades work wonders for lifestyle maintenance, a highly afflicted natal chart or an intense Mahadasha period might require a deeper cosmic reset, such as initiating a formal Rahu Dosha Nivaran Puja to systematically dissolve heavy karmic knots."
+  },
+  "sadeSatiRemedies": {
+    "title": "Shifting the Energy: Modern Spiritual Remedies for Sade Sati",
+    "description": "Sade Sati is often misunderstood as a period of cosmic punishment, but in modern spirituality, it is recognized as a profound period of soul-level detoxification. Saturn (Shani) is the cosmic architect of karma, discipline, and structural alignment. When he transits your natal Moon during Sade Sati, his energy acts like a cosmic mirror—forcing you to face reality and build unshakeable inner strength.",
+    "remedies": [
+      {
+        "name": "Activate the Grounding Frequency: Daily Shani Mantra Meditation",
+        "mantra": "Om Sham Shanaishcharaya Namah",
+        "practice": "Commit to a quiet daily meditation where you repeat this mantra 108 times (one full mala), preferably facing West, especially on Saturday evenings at twilight.",
+        "spiritualScience": "Sade Sati primarily targets the emotional mind, triggering deep-seated fears, feelings of isolation, and mental fatigue. This mantra acts as an energetic stabilizer, calming the central nervous system, clearing karmic static, and instilling patience."
+      },
+      {
+        "name": "Karmic Reciprocity: Serving the Elderly, Workers, and the Underprivileged",
+        "practice": "Regularly dedicate time or resources to help the elderly, laborers, or those facing severe hardships, such as donating comfortable footwear, iron tools, black blankets, or meals on Saturdays.",
+        "spiritualScience": "Saturn is the cosmic champion of the working class and marginalized. When you selflessly alleviate others' burdens, you alter your own karmic ledger and demonstrate humility, which automatically softens your personal trials."
+      },
+      {
+        "name": "Sacred Ecology: Nourishing Crows, Ants, and Planting Mustard",
+        "practice": "Every Saturday, feed wild crows or stray black dogs with simple grain-based foods or items cooked in mustard oil, or offer sugar mixed with wheat flour to black ant colonies near trees.",
+        "spiritualScience": "Crows, black ants, and stray dark-furred dogs are earthly channels for Shani's energy. Feeding them serves as a symbolic 'karmic repayment' that disperses heavy energy and transforms it into blessings."
+      },
+      {
+        "name": "Elemental Therapy: Lighting the Saturday Mustard Oil Diya",
+        "practice": "Every Saturday evening after sunset, light a clay lamp (Diya) filled with mustard oil beneath a Peepal (Sacred Fig) tree or in a clean corner of your home facing West.",
+        "spiritualScience": "Lighting the flame symbolizes bringing the light of awareness into dark, hidden fears. The Peepal tree holds immense cosmic energy that naturally absorbs and neutralizes heavy Saturnian pressure."
+      },
+      {
+        "name": "Spiritual Sovereignty: Devotion to Lord Shiva and Lord Hanuman",
+        "practice": "Dedicate Saturdays to reading the Hanuman Chalisa or chanting the Mahamrityunjaya Mantra. Visit a Hanuman or Shiva temple to offer black sesame seeds or oil.",
+        "spiritualScience": "Both archetypes transcend planetary limits. Saturn promised Hanuman never to trouble his devotees. Aligning with Hanuman's courage and devotion builds a spiritual shield against heavy karmic lessons."
+      },
+      {
+        "name": "Physical and Energetic Detox: Saturday Fasting and Clean Living",
+        "practice": "Observe a partial or complete fast on Saturdays, avoiding processed foods, alcohol, and toxins. Eat a simple plant-based diet like khichdi cooked with black gram.",
+        "spiritualScience": "Fasting redirects vital lifeforce to heal your subtle energetic field. This conscious self-restraint aligns perfectly with Saturn's austere energy, mitigating external restrictions."
+      },
+      {
+        "name": "Emotional Realignment: Radical Accountability and Stoic Patience",
+        "practice": "Cultivate radical self-honesty, replace victim mindsets with inquiry, and practice grounding routines like breathwork or bare-foot walks.",
+        "spiritualScience": "Saturn only creates friction where there is resistance to reality. By taking total responsibility and committing to hard work, Saturn's energy shifts from a restrictive force to a powerful ally."
+      }
+    ],
+    "notes": "While these daily spiritual upgrades create a beautiful energetic buffer, a highly afflicted natal chart or an intense phase of Sade Sati might require a deeper reset. A formal Shani Shanti Puja or a Maha Rudrabhishek acts as a deep spiritual cleanse to systematically untie heavy karmic knots."
+  },
+  "ketuDoshaRemedies": {
+    "title": "Shifting the Energy: Modern Spiritual Remedies for Ketu Dosha",
+    "description": "Ketu is famously known as the shadow planet of liberation, spirituality, and sudden detachment. In modern spirituality, Ketu is not seen as a malicious force, but rather as a cosmic vacuum cleaner. It dissolves material illusions, severs toxic attachments, and forces you inward to discover your true, immortal self. When Ketu is misaligned or running an intense Mahadasha, it can manifest as sudden isolation, deep existential confusion, mysterious ailments, or a feeling of being completely disconnected from the material world.",
+    "remedies": [
+      {
+        "name": "Activate the Awakening Frequency: Daily Ketu Beej Mantra Meditation",
+        "mantra": "Om Kem Ketave Namah",
+        "practice": "Commit to a daily meditation where you repeat this mantra 108 times (one full mala), preferably at dawn or late at night when the veil between the physical and spiritual worlds is thinnest.",
+        "spiritualScience": "Ketu represents the body without a head, which means it governs instincts, intuition, and silent awareness. When you chant this mantra, you clear the energetic fog from your third eye and crown chakras. It transforms feelings of aimlessness into deep intuitive flashes, helping you perceive the divine truth behind your physical challenges."
+      },
+      {
+        "name": "Karmic Reciprocity: Nourishing Stray Dogs and Multi-Colored Animals",
+        "practice": "Establish a regular rhythm of feeding stray dogs in your neighborhood. Offering them fresh food, milk, or multigrain bread (roti) with a tiny dab of mustard oil or clarified butter (ghee) is a potent traditional remedy.",
+        "spiritualScience": "Ketu represents the outcast, the lonely, and the wandering soul. When you selflessly take care of stray, vulnerable animals, you are directly honoring Ketu’s energy in the physical world. This act of unconditional love pays off heavy, unspoken karmic debts, shifting Ketu's influence from chaotic disruption to protective, loyal guardianship."
+      },
+      {
+        "name": "Quantum Chromotherapy: Embracing Earth Tones, Light Greys, and Multi-Colored Patterns",
+        "practice": "Integrate soft greys, earth tones, and multi-colored elements into your daily wardrobe. To elevate the remedy, donate warm multi-colored blankets, grey sweaters, or patterned clothing to monks, ascetics, or those living in cold conditions.",
+        "spiritualScience": "Wearing loud, overly bright colors when Ketu is heavy can create a violent energetic friction in your aura. By wearing smoky and earth-toned shades, you align your personal energy field with Ketu’s quiet frequency. Donating these items to spiritual seekers or the less fortunate transforms Ketu’s energy of 'forced lack' into a beautiful cycle of voluntary charity."
+      },
+      {
+        "name": "Sacred Geometry & Symbols: Embracing the Matsya (Fish) Avatar or Ketu Yantra",
+        "practice": "Keep an energized copper Ketu Yantra or a beautiful depiction of the Matsya Avatar in your meditation space. Meditating upon the sacred geometry of the Yantra helps anchor your wandering thoughts.",
+        "spiritualScience": "Just as a fish navigates the deep, dark, and currents of the ocean without losing its way, the Matsya energy helps you navigate the turbulent emotional and psychological waters of Ketu Dosha. The Yantra acts as a focal point, absorbing the chaotic, scatterbrained energy from your home environment and grounding it into a geometric pattern of peace."
+      },
+      {
+        "name": "Spiritual Sovereignty: Devotion to Lord Ganesha, the Master of Ketu",
+        "practice": "Begin every single day by chanting the Ganesha mantra ('Om Gam Ganapataye Namah') or reciting the Ganesha Atharvashirsha. Offering fresh green grass (Durva) to a Ganesha idol on Wednesdays is also incredibly powerful.",
+        "spiritualScience": "Lord Ganesha is the ultimate cosmic ruler of Ketu. Just as Ketu is a body without a head, Ganesha is a divine being whose original human head was replaced, symbolizing the total transcendence of the human ego. Ganesha is also the remover of all material and spiritual obstacles. By surrendering to Ganesha, you gain the wisdom to see why an obstacle has appeared, allowing you to bypass the frustration and step directly into your spiritual evolution."
+      },
+      {
+        "name": "Energy Transmutation: Donating Sesame Seeds, Iron, and Flag-Hosting",
+        "practice": "Donate black and white sesame seeds (til), iron kitchen utensils, or sharp tools to a temple or a community kitchen. Another highly effective, classical Ketu remedy is hosting a triangular, saffron-colored or yellow flag on top of a local temple.",
+        "spiritualScience": "The flag represents the sky, victory, and the spiritual height that Ketu strives to reach. Raising a flag symbolizes elevating your consciousness above your current earthly problems. Donating sesame seeds and iron helps draw out the dense, heavy, and toxic 'subtle heat' from your physical body, relieving unexplained physical aches or skin irritations often caused by Ketu."
+      },
+      {
+        "name": "Soul Grounding: Daily Meditation, Silence (Mauna), and Radical Detachment",
+        "practice": "Incorporate Mauna (intentional noble silence) into your life for at least 15 to 30 minutes every day. Practice deep, transcendental meditation where you simply observe your thoughts without judging or reacting to them. Learn the art of radical detachment—letting go of things that are naturally flowing out of your life.",
+        "spiritualScience": "Ketu thrives in silence. When you consciously choose to sit in silence and let go of control, you are doing exactly what Ketu wants you to do. The planet stops creating chaotic external disruptions because you have already voluntarily achieved the internal state of detachment it was trying to force upon you."
+      }
+    ],
+    "notes": "While these daily lifestyle upgrades act as an incredible spiritual anchor, an intensely afflicted Ketu in your birth chart or the peak of a 7-year Ketu Mahadasha can sometimes feel like walking through a dark night of the soul. In these intense phases, organizing a formal Ketu Grah Shanti Puja or a Maha Mrityunjaya Homa can act as a profound cosmic reset, clearing away the dense karmic smoke and revealing the bright path of your true spiritual awakening."
+  },
+  "manglikDoshaRemedies": {
+    "title": "Shifting the Energy: Modern Spiritual Remedies for Manglik Dosha",
+    "description": "Manglik Dosha occurs when Mars (Mangal) occupies the 1st, 4th, 7th, 8th, or 12th house of your birth chart. In modern spirituality, Mars is recognized as the cosmic warrior—the planet of raw life-force, passion, ambition, and boundary-setting. When this fiery energy is misaligned, it manifests as a 'Dosha,' which simply means an excess of ungrounded volcanic energy. This can show up as intense anger, relationship friction, passive-aggression, impulsive decisions, or sudden burnouts.",
+    "remedies": [
+      {
+        "name": "Activate the Warrior’s Balance: Daily Mangal Beej Mantra Meditation",
+        "mantra": "Om Kram Kreem Kroum Sah Bhaumaya Namah",
+        "practice": "Commit to a daily morning meditation where you repeat this mantra 108 times (one full mala), preferably seated on a red mat or cushion, keeping your spine straight.",
+        "spiritualScience": "Mars governs the blood, muscles, and the root chakra (Muladhara). When Mars energy is chaotic, it triggers a constant 'fight-or-flight' response. Chanting this frequency grounds your electrical system, reduces irritability, and teaches your subconscious to respond with strategic calm."
+      },
+      {
+        "name": "Karmic Reciprocity: Blood Donation and Supporting Brothers or Veterans",
+        "practice": "Make a regular habit of donating blood to local blood banks or hospitals, and support, resource, or mentor veterans, physical laborers, or younger siblings on Tuesdays.",
+        "spiritualScience": "A heavy Mars often demands a physical toll or an expression of 'blood and sweat.' Voluntarily donating blood or helping Mars-ruled individuals acts as a karmic substitution, completely appeasing Mars' aggressive demands."
+      },
+      {
+        "name": "Quantum Chromotherapy: Harmonizing the Bright Reds and Earthy Corals",
+        "practice": "Avoid wearing bright red when stressed or during crucial relationship conversations; opt for earth tones, creams, or soft corals instead. On Tuesdays, donate sweet red foods (pomegranates, apples, red sweets) or red lentils (masoor dal).",
+        "spiritualScience": "Donating red items draws out the excess, volatile 'subtle heat' from your personal energy field, cooling your auric field and transforming an argumentative edge into magnetic warmth and generosity."
+      },
+      {
+        "name": "Sacred Ecology: Planting Red Flowers and Nourishing Earthly Creatures",
+        "practice": "Plant and care for bright red flowers (hibiscus, roses) in your living space. Feed sweet wheat rotis sweetened with jaggery to monkeys or stray dogs on Tuesday mornings.",
+        "spiritualScience": "Nurturing red flora redirects fiery Mars energy into peace and growth. Feeding monkeys, who possess hyperactive Mars energy, symbolically honors and calms the wild, untamed aspects of Mars."
+      },
+      {
+        "name": "Spiritual Sovereignty: Total Alignment with Lord Hanuman and Kartikeya",
+        "practice": "Dedicate Tuesdays to reading the Hanuman Chalisa or chanting Subrahmanya Bhujangam. Visit a Hanuman temple to apply orange-red sindoor and offer jaggery and roasted grams.",
+        "spiritualScience": "Hanuman represents perfect integration of physical power with humility. Kartikeya is the divine commander. Surrendering to Hanuman allows him to absorb your anger, granting you a spiritual shield."
+      },
+      {
+        "name": "Physical Alchemy: High-Intensity Movement and Voluntary Fasting",
+        "practice": "Engage in regular, high-intensity physical movement (martial arts, weights, cardio, power yoga) and observe a salt-free fast on Tuesdays (consuming only milk, fruits, or jaggery-wheat meals).",
+        "spiritualScience": "Intense physical movement allows you to sweat out stress hormones and frustration. Fasting without salt calms digestive fires, cooling your temper and stabilizing emotional responses."
+      },
+      {
+        "name": "Emotional Realignment: Radical Emotional Intelligence and Pause-Practices",
+        "practice": "Practice the 'Three-Breath Rule' (taking three deep breaths before reacting to irritation) and channel your intense drive into career goals, creative passions, or athletic milestones.",
+        "spiritualScience": "Mars only creates destruction when acting blindly. Introducing a deliberate pause strips the Dosha of its chaotic power, transforming Mars from a disruptive force into an engine for success."
+      }
+    ],
+    "notes": "While daily habits create a beautiful buffer, an intensely placed Mars in the 7th or 8th house can create severe, repetitive bottlenecks. If you experience explosive conflicts or constant burnout, it is a sign that your matrix requires a deeper reset, such as a formal Mangal Grah Shanti Puja, a Kumbh Vivah, or a Navgraha Homa."
   }
 }

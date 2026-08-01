@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { HEALTH_HOUSE_INTERPRETATIONS, HEALTH_TIPS, DOSHA_TYPES, HEALTH_CONJUNCTIONS, HEALTH_INSIGHTS } from '../data/healthData';
+import { BPHS_BHAVA_LORDS_RULES } from '../data/bphsBhavaLords';
+
+const SIGN_LORDS = {
+    "Aries": "Mars", "Taurus": "Venus", "Gemini": "Mercury", "Cancer": "Moon",
+    "Leo": "Sun", "Virgo": "Mercury", "Libra": "Venus", "Scorpio": "Mars",
+    "Sagittarius": "Jupiter", "Capricorn": "Saturn", "Aquarius": "Saturn", "Pisces": "Jupiter"
+};
 
 export default function HealthAnalysis() {
     const [isLightMode, setIsLightMode] = useState(false);
@@ -20,6 +27,20 @@ export default function HealthAnalysis() {
 
     const houses = data.charts?.houses || {};
     const ascendantSign = houses[1]?.sign_name || "Aries";
+
+    // Calculate 6th Lord and its placement
+    const planetPlacements = {};
+    Object.keys(houses).forEach(hNum => {
+        const planetsInH = houses[hNum]?.planets?.map(p => typeof p === 'object' ? p.name : p) || [];
+        planetsInH.forEach(p => {
+            planetPlacements[p] = Number(hNum);
+        });
+    });
+
+    const h6Sign = houses["6"]?.sign_name;
+    const lord6 = h6Sign ? SIGN_LORDS[h6Sign] : null;
+    const pos6 = lord6 ? planetPlacements[lord6] : null;
+
 
     const getDosha = (sign) => {
         if (DOSHA_TYPES.Vata.signs.includes(sign)) return { type: "Vata", ...DOSHA_TYPES.Vata };
@@ -145,6 +166,31 @@ export default function HealthAnalysis() {
                         </div>
                     </div>
                 </div>
+
+                {/* 6th Lord Placement Scroll (BPHS Ch. 24) */}
+                {pos6 && BPHS_BHAVA_LORDS_RULES.SixthLord[pos6] && (
+                    <div className="bg-white border-2 border-emerald-100 p-8 md:p-10 rounded-[3rem] shadow-xl relative overflow-hidden group hover:shadow-2xl transition-all">
+                        <div className="absolute top-0 right-0 p-8 opacity-5 text-8xl text-emerald-900">🏥</div>
+                        <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
+                            <div className="text-5xl text-emerald-600">🏛️</div>
+                            <div className="flex-1 space-y-2">
+                                <span className="px-3 py-1 bg-emerald-100 text-emerald-800 text-[9px] font-black uppercase tracking-widest rounded-full border border-emerald-200">
+                                    Sixth Lord House Placement (BPHS Ch. 24)
+                                </span>
+                                <h4 className="text-2xl font-black text-emerald-950 italic">
+                                    Disease Lord ({lord6}) in the {pos6 === 1 ? "1st" : pos6 === 2 ? "2nd" : pos6 === 3 ? "3rd" : pos6 + "th"} House
+                                </h4>
+                                <p className="text-sm text-slate-700 leading-relaxed italic">
+                                    "{BPHS_BHAVA_LORDS_RULES.SixthLord[pos6].result}"
+                                </p>
+                                <div className="text-xs text-slate-500 font-serif border-t border-emerald-100 pt-2 italic">
+                                    <span className="font-bold block text-emerald-900 not-italic mb-1">Sastra Notes:</span>
+                                    {BPHS_BHAVA_LORDS_RULES.SixthLord[pos6].notes}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Conjunctions Section */}
                 {activeConjunctions.length > 0 && (
