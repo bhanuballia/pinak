@@ -1,0 +1,843 @@
+{
+  "jataka_rules": {
+    "j1": "Moon and Venus occupy fruitful signs (like Taurus/Vrishabha) or if the 7th Cusp falls in any of these",
+    "j2": "Jupiter (Guru) or Venus (Sukra) occupy the houses 2, 7, or 11",
+    "j3": "Jupiter is conjoined with Moon in houses 1, 5, or 9",
+    "j4": "Venus is conjoined with Moon in houses 1, 5, 10, or 11, but is stronger than Saturn",
+    "j5": "The lord of Lagna is conjoined with the lord of the 7th and occupies a favorable house",
+    "j6": "Benefics occupy 2, 7, or 11 counted from Lagna and the Moon sign",
+    "j7": "The houses 2, 7, or 11 have a favorable connection with benefics",
+    "j8": "A benefic is in the 7th, and both the lord of Lagna and the lord of the 7th are strong and well-posited",
+    "j9": "Venus is in his own or exalted sign, and the lord of the 7th is in a beneficial house",
+    "j10": "Mercury is in the 7th, and Venus is conjoined with the lord of the 7th",
+    "j11": "The lord of the 7th is in the 11th, and Venus is in the 2nd",
+    "j12": "Venus is in Lagna, and the lord of Lagna is in the 7th",
+    "j13": "There is a mutual exchange between the lords of the 1st and 7th (termed as Parivartana / Lagnadhipati Yoga)",
+    "j14": "Jupiter is exalted in the 7th house conjoined with benefics",
+    "j15": "The lord of the 7th or Venus occupies the 2nd house",
+    "j16": "The lord of Lagna is in the 10th, and the lord of the 2nd is in the 11th",
+    "j17": "Benefics are in houses 1, 2, or 7",
+    "j18": "Lords of the 2nd and 11th are in mutual exchange",
+    "j19": "Lords of the 2nd and 7th are in the 11th"
+  },
+  "western_rules": {
+    "w1": "Moon and Venus occupy beneficial houses and receive harmonious aspects (in male's map)",
+    "w2": "Sun and Mars occupy favorable houses and receive good aspects (in female's map)",
+    "w3": "A benefic is transiting very close to the Ascendant or 7th Cusp at birth, or sits in the 12th or 6th house"
+  },
+  "delay_rules": {
+    "d1": "Saturn is in house 1, 3, 5, 7, or 10 counted from Lagna/Moon",
+    "d2": "Malefics are in the 7th Bhava (house) receiving adverse aspects",
+    "d3": "Mars is in the 8th house (indicating obstacles / Manglik issues)",
+    "d4": "Moon and Saturn conjoin together, especially in houses 1, 2, or 7 (Punarphoo)",
+    "d5": "Mars and Venus are conjoined in 5, 7, or 9 and both receive evil aspects",
+    "d6": "The lord of the 7th and Venus are afflicted by Saturn",
+    "d7": "Moon and Venus are squared by Jupiter or Uranus"
+  },
+  "happy_rules": {
+    "h1": "Jupiter or Venus being the lord of the sub of 7th cusp or significator of 2, 7, 11",
+    "h2": "Mercury, Moon, or Sun being the significator of 7 receiving beneficial aspect from 11th house",
+    "h3": "Sun or Moon in 7th with mutual aspect from the other",
+    "h4": "Either luminary in 7 aspected by Jupiter or Venus favourably",
+    "h5": "Venus, Mars, and Uranus in good aspect (not significators of 6, 10, or 12)",
+    "h6": "Moon receiving good aspect from Saturn, Venus, and Jupiter",
+    "h7": "7th house occupied or aspected by benefics by lordship",
+    "h8": "Venus receiving good aspect (not in sub of 6, 10, or 12)"
+  },
+  "unhappy_rules": {
+    "u1": "Sun forms evil aspect with Moon and either is significator of 2, 7, or 11",
+    "u2": "Malefics in 7 receiving bad aspect from significators of 6, 10, or 12",
+    "u3": "Mars in 7 receiving bad aspect from Uranus (violence danger)",
+    "u4": "Moon, Saturn, Uranus, or Mars as significator of 7 having mutual adverse aspect",
+    "u5": "Saturn in 7 preventing pleasant union",
+    "u6": "Moon forming disharmonious aspect with Jupiter showing dissatisfaction",
+    "u7": "Mars forming evil aspect with Venus (financial trouble followed by domestic trouble)",
+    "u8": "Mars in Moon sub (short-tempered, violent, drunkard risk in watery signs)",
+    "u9": "7th and 11th cusps afflicted showing permanent domestic friction"
+  },
+  "partner_traits": {
+    "t1": "Venus and Uranus forming evil aspect",
+    "t2": "Moon forming bad aspect with Venus",
+    "t3": "Moon, Venus, Uranus, Neptune in 1, 2, 5, 7, or 11 (sensory pleasure seek)",
+    "t4": "Mars and Venus conjoined or aspecting (vulnerability to mean action/low born connections)",
+    "t5": "Venus and Mercury in 7 or 8 or 10",
+    "t6": "Mars and Venus in 7 or 10",
+    "t7": "Saturn in 7 and Venus in 10 counted from Moon",
+    "t8": "Lord of 6 in 6 or 8 or 12",
+    "t9": "Lords of 2, 7 and 10 conjoined in the 10th house",
+    "t10": "Mars, Venus, and Saturn conjoined/connected in any sign",
+    "t11": "Lord of 2 in 3 or 4",
+    "t12": "Lord of 7 in 1 or 7 (limited circles)",
+    "t13": "Lord of 7 in 8 or 12 (unlimited circles / high socializing)",
+    "t14": "Lords of 1 and 7 in Parivarthana Yoga",
+    "t15": "Saturn, Mars and Moon conjoined in the 7th house",
+    "t16": "Sun in 7th (partner may be barren / low vitality)",
+    "t17": "Mars in 7th (fiery, bold, impatient partner)",
+    "t18": "Mercury in 7th (enjoys with intelligent, career-oriented partner)",
+    "t19": "Jupiter in 7th (good-natured, wise, stable partner)",
+    "t20": "Venus or Rahu in 7th (desire-driven or unconventional partner)",
+    "t21": "Saturn in 7th (old, elderly, serious or humpbacked partner)",
+    "t22": "Moon in 7 or 9 (emotional or aged partner traits)"
+  },
+  "plurality_rules": {
+    "p1": "Lord of 1 or 7 weak (more than one partner/wife signature)",
+    "p2": "Second marriage indicated by Lord of 2 in the 8th house",
+    "p3": "Lord of 8 in 1 or 7",
+    "p4": "3 or 4 malefics in 7 (high instability / multiple unions)",
+    "p5": "Many planets in 7 un-aspected by Lord of 2",
+    "p6": "Exalted planets in Lagna, Lagna Lord exalted, and malefic in 7",
+    "p7": "Lords of 1, 2 and 6 conjoined and malefic in 7",
+    "p8": "Venus strong in Lagna or sublord of 7th in dual sign (indicates plurality)"
+  },
+  "cusp_pleasure": {
+    "Mercury": "Expresses desires freely, talks a lot, and enjoys multiple attempts due to minor disturbances.",
+    "Jupiter": "Normal, pleasant, stable, and dutiful physical union.",
+    "Venus": "64 varieties of Leela. Extreme pleasure, deep romantic playfulness, dance, and shared bliss.",
+    "Saturn": "Post-union dissatisfaction, displeasure, and disharmony. Short duration.",
+    "Mars": "Highly passionate, impulsive, and intense physical connection.",
+    "Sun": "Dignified, ego-conscious, stable but moderate physical connection.",
+    "Moon": "Deeply emotional, moody, and highly sensitive connection.",
+    "default": "Union tendencies are balanced by general planetary aspects."
+  },
+  "partner_age_diff": {
+    "Saturn": "Partner is an aged person / senior. The age difference will be significant.",
+    "Rahu": "Partner is an aged person / senior. The age difference will be significant.",
+    "Jupiter": "Standard and proper age difference between partners.",
+    "Venus": "Standard and proper age difference between partners.",
+    "Sun": "Standard and proper age difference between partners.",
+    "Mars": "Age difference is very little. Partner is young and youthful.",
+    "Mercury": "Age difference is very little. Partner is young and youthful.",
+    "Moon": "Age difference is very little. Partner is young and youthful.",
+    "Ketu": "Age difference is very little. Partner is young and youthful.",
+    "default": "Moderate age difference, matching standard conventional standards."
+  },
+  "partner_locality": {
+    "house_4_10": "If the sub lord or the sub occupied by the significator owns house 4 or 10, the partner may be a co-tenant, or live in the same street, town, or district. Marriage does not involve a long journey to reach the partner's place.",
+    "house_3": "If the lord owns the 3rd house, the partner may be a cousin, a neighbor, or one living at a short distance, reached by a short land travel, or fixed by correspondence/advertisement.",
+    "house_11": "If the lord owns the 11th house, he or she comes from a friend's family.",
+    "house_5_9": "If the lord owns the 5th or 9th house, it indicates a stranger, love marriage, foreigner, or long distance."
+  },
+  "partner_profession": {
+    "general": "Profession is judged from houses 4, 8, and 12. Check: (a) Planets in the constellation of the occupants of houses 4, 8, and 12; (b) Occupants of 4, 8, and 12; (c) Planets in the constellation of the lords of 4, 8, and 12; (d) Lords of 4, 8, and 12.",
+    "career_wife": "In a male's horoscope, if Mars is a significator of houses 4, 8, or 12, he will have a career woman as a wife."
+  },
+  "characteristics_judgement": {
+    "partner_1": "Characteristics of the first partner are indicated by the lords of the sign, star, and sub where the 7th cusp has fallen.",
+    "partner_2": "Characteristics of the second partner (if two marriages) are indicated by the lords of the sign, star, and sub where the cusp of the 2nd house falls.",
+    "physical_features": "Ascertain physical features from the lord of the sign, constellation, and sub of the cusp of 7 (first marriage) or cusp of 2 (second marriage)."
+  },
+  "survival_rules": {
+    "malefic_8": "Malefics in the 8th house are evil. If there is a malefic in the 8th and no benefic aspect to it, the native survives the partner.",
+    "benefic_2": "A benefic in the 2nd house wards off the evil of malefics in the 8th.",
+    "earlier_passing": "If the sublord of the 7th cusp occupies a dual sign and is a significator of Marakasthana and Bhadhakasthana, the partner/wife passes away earlier. Apply to 2nd cusp sublord for the 2nd wife."
+  },
+  "seventh_cusp_sublord_features": {
+    "Sun": {
+      "Aries": "Middle stature, strong and well-made, complexion good, full eyes, bold, noble, will assert his right, comes out victorious, proud, social success.",
+      "Taurus": "Short and well set, not very fair, broad mouth, broad face, strong, sportsman or athletic, overconfident, not proud, good debater, argues well and wins.",
+      "Gemini": "Above average in height, well-proportioned body, moderate complexion, long nose, piercing eye, most courteous, tactful, accommodative, can be influenced by others, pleasing manners.",
+      "Cancer": "Short stature, repulsive face, not beautiful. (Avoid consulting between 16th July and 16th August when Sun is transitting in Cancer). Temperament good, harmless, cheerful, fond of other sex (within himself), admires music, dance, sports, lazy, does not like to work.",
+      "Leo": "Strong, well-built, moderate complexion, big eyes, round and big face, most faithful and reliable, very punctual, always fair and just in his actions, ambitious and successful.",
+      "Virgo": "Tall person with slender stature and good complexion, very dark hair, fond of music and ever singing, always smiling and never provoking, cheerful, pleasant, spends much time on recreations.",
+      "Libra": "Tall, straight, upright body, big eyes, thin hair, beautiful, never bold but ever talking about war, riot, etc., not much reliable, weak in his attachments and will find it difficult to speak truth. Reject such a partner!",
+      "Scorpio": "Square-built, fleshy, full growth, broad face, moderate complexion, ingenious, very clever, discoverer, very brisk, ambitious, never accepts defeat, nor considers anybody as his or her equal, fortunate.",
+      "Sagittarius": "Tall, beautiful body, well-proportioned, face oval, ever-estimates one's ability, austere, severe plans for big things.",
+      "Capricorn": "Thin built, lean, wiry, tall, long nose, soft hair, sickly appearance, pleasing manners, nasty occasionally, makes many friends, commands others, good will.",
+      "Aquarius": "Tall, well-made, round face, good complexion, tolerably good disposition, never deceitful, proud, ostentatious.",
+      "Pisces": "Short, stout, protruded eyes, plumpy body, round face, unjust, partial, fond of pleasures, sex, extravagant, hence spoils himself, unfit to be a referee in the sports and games."
+    },
+    "Moon": {
+      "Aries": "Fleshy and plumpy, round face, fair complexion, adamant, aggressive, argumentative, avaricious, atrocious, aspiring, authoritative, etc.",
+      "Taurus": "Strong, well-built body, just below average in height, good-looking, fair complexion, polite, modest, moderate, fair, honest, helpful, pleasing.",
+      "Gemini": "Tall, well built, upright, good complexion, ingenious, unsteady, lacks decision, not fortunate in profession.",
+      "Cancer": "Average height, well built, little fleshy person, rounded face, moderate complexion, can be easily influenced, changeable, pleasant manners, harmless, cares more for peace, fond of company, fortunate, fond of traveling.",
+      "Leo": "Well built, average height, moderate complexion, big eyes, proud, ambitious, never desires to be submissive and serve as a subordinate, independent and unfortunate.",
+      "Virgo": "Tall, face oval, good complexion, very clever, reserved, gloomy, unlucky, depressed, dejection.",
+      "Libra": "Tall, good personality, beautiful, good complexion, humorous, witty, pleasant, ever-smiling, fond of amusements, cares more for the appreciation from the other sex and be happy over it, not always fortunate.",
+      "Scorpio": "Below average in height, stout, complexion not good, most impulsive and irregular, not a desirable partner always (and these will be found in the partner).",
+      "Sagittarius": "Beautiful, honest, true person with well-built body and oval face, generous, hasty and passionate, lucky.",
+      "Capricorn": "Thin weak body, complexion not good, health poor, tall, bushy hair growth, most dull, inactive, pessimistic, selfish, idiot, even friends and youngsters ignore him.",
+      "Aquarius": "Moderate in height, well made, round face, good complexion, very intelligent, fit to carry on research, most courteous and never offensive, studious, never guilty of any crime.",
+      "Pisces": "Below average, plumpy, fleshy, fat bloated face like a pumpkin, pot-bellied, mostly eyes closed by the flesh and appearing like sleeping person, most inactive, active only for pleasure, unsteady, inconstant and unfortunate."
+    },
+    "Mars": {
+      "Aries": "Moderate height, well-built, large bones, curly hair, dark complexion, very bold, rash, undaunted, overconfident, very proud, quarrelsome, heavy gains.",
+      "Taurus": "Moderate height, strong and well-built, rough and coarse hair, moderate complexion, broad mouth and face, self-indulgence, arrogant, speculative, unfortunate.",
+      "Gemini": "Very tall, complexion not good, well-proportioned body, always active, mischievous, restless, clever, cunning, changes residence often, never repays loan.",
+      "Cancer": "Short, dusky complexion, less hair, crooked body, unreliable, unfortunate, unhealthy practices, menial, incapable of doing honorable work.",
+      "Leo": "Fleshy and well-built, oval face, dark complexion, stout hands and legs, very brave and active, fond of firing, shooting sports, riding, quarrelsome, likes to be in Police or military, dresses nicely.",
+      "Virgo": "Moderate height, well-built body, thick nose, dark complexion, hasty, impulsive, proud, passionate, vindictive, retaliates, ruthless, malevolent.",
+      "Libra": "Small, beautiful, oval face, red complexion, active, alert, hopeful and cheerful, self-boasting, lofty, haughty, vain, glorious, dresses well, attached to other sex.",
+      "Scorpio": "Stout, bulky, dark complexion, curling hair, broad face, rash, not sociable, vindictive, revengeful, fond of disputes and quarrel, proud, haughty, very intelligent.",
+      "Sagittarius": "Tall, well-proportioned body, red complexion, oval face, piercing eyes, hopeful, jovial, jubilant, cheerful, quick, speedy, bold, talkative.",
+      "Capricorn": "Short, lean, thin face, dark complexion, witty, humorous, intelligent, lucky, pushful and successful.",
+      "Aquarius": "Well built body, good complexion, fair and buoyant, a good debater, argues, fortune average only.",
+      "Pisces": "Below average height, dark complexion, not beautiful, dirty look, dull, idiot, self-indulgent, idle, careless, unfortunate."
+    },
+    "Mercury": {
+      "Aries": "Moderate height, stature, thin body, face not round but oval, hair not black but brown, complexion not fair but dull, very quick in thinking and also while speaking, expressive, liberal, inventive, impulsive, clever, studious, writer, not methodical, nor orderly.",
+      "Taurus": "Stout body, strong, good health, black complexion, short and thick hair, a little lazy, happy disposition, fond of opposite sex, recreation, artist, determined, perseverance, diplomatic, likes and dislikes, efforts to accumulate wealth.",
+      "Gemini": "Tall, well-built, brown hair, complexion good, intelligent, orator, clever lawyer or agent, inventive, resourceful, generous, good humored, changeable, speculative, studious, versatile.",
+      "Cancer": "Short, stout, complexion not good, eyes small, nose sharp, hair dark, ever variable, never steady, a little lazy, tactful, faithful, much retentive power, reasonable opinion, sociable disposition, cares for pleasure, parties, picnics.",
+      "Leo": "Robust health, weak body, good stature, dark complexion, brown hair, round face, broad eyes, persistent, quick tempered, kind-hearted, ambitious, intuition, organizing capacity, music, drama, arts. Do not take such drugs which would affect the heart.",
+      "Virgo": "Tall, lean, brown hair, complexion not attractive, very intelligent, cautious, practical, prudent, intuitive, scholar, good writer, well informed and wide awake worker, investigation in occult.",
+      "Libra": "Tall, strong but thin, brown hair, moderate complexion, broad outlook, dispassionate. For any matter computes and contrasts, good judge, artist, invention, good in mathematics, social life.",
+      "Scorpio": "Short, not good to look at, broad shoulder, dark complexion, brown hair, stubborn, obstinate, positive, reckless, friends are troublesome so also relatives, fond of opposite sex, ever for pleasure, disappointments, critical, suspicious, develops mesmerism.",
+      "Sagittarius": "Tall, well-built, large thick bones, face oval, dark complexion, long nose, sincere, just, independent, rebellious, prophetic mind, active mentally, changeable, enjoying nature, authoritative.",
+      "Capricorn": "Thin, not well-built, face also thin, dark complexion, hair brown and thin, irritable, dissatisfied, disappointed, discontented, unfortunate, suspicious nature, painstaking, studious, perseverance, science, occult, contemplative.",
+      "Aquarius": "Moderate stature, good health, attractive appearance, dark hair, fair, original thoughts, penetrative, comprehensive, humanitarian, can concentrate, fond of occult subjects and research, capable for discovery, ever reading, expounders of theories.",
+      "Pisces": "Short, stout, pale hair, brownish hair throughout the body, intuitive, understands matters quickly, versatile, good memory, psychic qualities, recreation, boating, analytical mind, dexterous, finds pleasure in nursing."
+    },
+    "Jupiter": {
+      "Aries": "Not plumpy, but stature is middle, expressive eyes, high nose, pimples in the face, progressive, generous, ardent, philosophical, good relationship, social, noble, polite, studious, fond of traveling, sports, races and fortunate.",
+      "Taurus": "Moderate height, stout, good health, affectionate, reserved, steady, cannot be influenced, rarely travels, religious, gains through opposite sex, receives gift, legacy, gains by investment, speculation, early marriage, dutiful partner.",
+      "Gemini": "Well built, little stout, good complexion, dark hair, penetrating eyes, sympathetic, benevolent, friendly, trustworthy, travels, broad outlook, restless, studious, some difficulty in wedding, can discover, follow novel methods.",
+      "Cancer": "Stout, short, pale and anaemic, complexion not good, face not round, hair not black, plumpy, disproportionate, charitable, enterprising, sympathetic, popular, intuitive, imaginative, artist, patriot, interest in the occult sciences, loves home and also travels.",
+      "Leo": "Strong, well built, tall, round face, curling dark hair, big eyes, beautiful, broad outlook, noble, prudent, loyal, generous, prestige, intuitive, diplomatic, permanency, fixed deposit, sports.",
+      "Virgo": "Good height, well built, beautiful, black hair, above average in height, fair complexion, intelligent, cautious, prudent, philosophy, scientific, analytic, wise, honest, chooses friends, popular, deals in speculation.",
+      "Libra": "Good growth, robust health, handsome, tall, good complexion, oval face, dark hair, pimples or rash in the face, moderate, earnest, obliging, imaginative, peaceful, charitable, fond of travel, artist, gains through the opposite sex, happy marriage, good children.",
+      "Scorpio": "Good health, well built, beautiful, strong will, deep emotion, ambitious, perseverance, self confidence, analytic, psychic research mind, permanency, professional secret, litigation, arbitration.",
+      "Sagittarius": "Tall and upright, stout, good stature, oval face, brown hair, grows beard, becomes bald, courteous, generous, tolerant, loyal, merciful, humanitarian, successful, sports, horse race, gains.",
+      "Capricorn": "Thin, below average, head also little small, little beard, dark brown thin hair, constructive, capable, irritable, dissatisfied, disappointed, discontented, unfortunate, suspicious nature, painstaking, studious, perseverance, science, occult, contemplative.",
+      "Aquarius": "Moderate stature, good health, attractive appearance, dark hair, fair, original thoughts, penetrative, comprehensive, humanitarian, can concentrate, fond of occult subjects and research, capable for discovery, ever reading, expounders of theories.",
+      "Pisces": "Short, stout, pale hair, brownish hair throughout the body, intuitive, understands matters quickly, versatile, good memory, psychic qualities, recreation, boating, analytical mind, dexterous, finds pleasure in nursing."
+    },
+    "Venus": {
+      "Aries": "Average height, thin body, thin hair, good appearance, scar in face, may be poxed face, artist, fond of music, sculpture, internal recreation, travels, affectionate, fond of love, attracted to opposite sex, popular.",
+      "Taurus": "Very good health, attractive face, proportionate body, little stout, emotional, affectionate, faithful, careful, precise, determined, saves money, enjoys life.",
+      "Gemini": "Middle stature, good in appearance, fair complexion, dark hair, good humored, traverse, plurality of interests, several occupations, good writer, speaker, musician, intuitive, original, inventive, sociable, more than one love affair, unsteady.",
+      "Cancer": "Short person, stout, round face at the same time sickly, thin hair, idle, loves home, attracted by family, fond of mother, kind heart, imaginative, several love affairs, secret activities, marriage not very fortunate, psychic powers, can mesmerise, gains by permanent positions.",
+      "Leo": "Tall, well built, clear eyes, round face, fair skin, sympathetic, kind-hearted, charitable, sincere, attractive, social, good in music or acting or any art, gains by speculation, shares, stock exchange, etc.",
+      "Virgo": "Tall, well built, oval face, dark hair, intelligent, sympathetic, not fully satisfied in love affairs, secret attachment even with employees or employers, gains through medicine, gardening, nursery and speculation.",
+      "Libra": "Erect, straight, tall, beautiful person, well built, oval face, pleasing manners, ever smiling, brown hair, very long hair, kind, sympathetic, affectionate, good companion, inseparable temperament, pleasant partner, artist, social, broad outlook.",
+      "Scorpio": "Short, stout, robust, broad face, black complexion, black hair, extravagant, lavish, impulsive, gains by gift or partnership or dowry, very passionate, emotional, troubles through opposite sex, disappointments, survives partner.",
+      "Sagittarius": "Tall, well built, good complexion, fair, long face, brown hair, refined nature, light hearted, impressionable, imaginative, intuitive, fond of journey, beauty, nature's romance, outdoor games, gains through many sources, horse racing, shipping, boating, takes friends of opposite sex, etc.",
+      "Capricorn": "Not well built, moderate height, pale figure, thin, looks sickly, dark hair, trustworthy, responsible, authoritative, businesslike, banking, invests, deals in speculative shares, social life, ambitious, delayed marriage, loss due to treachery in business.",
+      "Aquarius": "Beautiful, robust health, well built, fair complexion, big body, sympathetic, humanitarian, social, always fond of romance, sudden expenses in love, gains through friends, most of the hopes fulfilled.",
+      "Pisces": "Moderate height, stout, muscular, round face, very fair, charitable, can be influenced, sympathetic, compassionate, emotional, inspirational, fond of painting, music, society."
+    },
+    "Saturn": {
+      "Aries": "Black complexion, bony person, thin build, dull face, less of hair, self boasting, determined, very ambitious, good analytical brain, obstacles and troubles.",
+      "Taurus": "Ugly appearance, stout, dark hair, profuse growth, fat, steady in mind, loses temper quickly, resentful, cannot be satisfied, very economical, reserved, fond of horticulture, poultry, enjoys nature, loss through close relative, domestic life not very fortunate.",
+      "Gemini": "Tall, black face, not round, hair also black, intelligent, concentrates, can meditate, fond of science, mathematics, statistics, literature, trouble through cousins, litigations, false complaints, being blackmailed, danger to reputation.",
+      "Cancer": "Thin, not tall, weak health, sickly appearance, hair dark, deep set eyes, dissatisfaction, ever changes house, always changeable, depressed, no contentment at all, psychic powers, economical, at home most industrious.",
+      "Leo": "Tall, good health, broad face, big shoulders, dark hair, sunken eyes, generous, short beard, stubborn, God-fearing, spiritual uplift, trouble through servants, meets with accidents, painstaking, overworks, feels sex exhausted, in love affairs not happy.",
+      "Virgo": "Tall, thin build, black hair, long forehead, cautious, frugal, intuitive, reserved, much worried, not faithful, depressed, good for spiritual life, unfortunate in domestic affairs, disharmony, obstacles, labour problems.",
+      "Libra": "Tall, long face, dark hair, long nose, broad forehead, commands respect, scientific minded, inimical with opposite sex, disappointment in love affairs, separation, heavy hearted, disgrace, delayed marriage, dejected.",
+      "Scorpio": "Moderate height, stout, big shoulder, dark hair, violent type, very passionate, self determined, jealous, disappointment in love affairs or secret activities, not happy with domestic life, drunkard, bad habits.",
+      "Sagittarius": "Huge body, moderate complexion, obliging, helpful, fearless, humanitarian, occult science, philosophy, intuitive, detached nature, many obstacles, more than one occupation, should take care of nervous weakness, do not mix with frauds and cheat.",
+      "Capricorn": "Lean, bony, black hair, average height, sunken cheeks and eyes, hunchback, always thinking, serious, cautious, reasonable, reserved, peevish, attachment with inferior friends, not reliable, unhappy marriage, dissatisfied, needs recreation.",
+      "Aquarius": "Tall, big head and sunken eyes, brown hair, thoughtful, reserved, serious, intellectual, deep thinker, sociable, gains, determined, faithful, romantic life.",
+      "Pisces": "Moderate height, average complexion, neither fair nor dirty, big head, protruding eyes, teeth not well arranged, unfaithful friends, loss, deception, being blackmailed, danger to reputation, many disappointments, secret activities, unfortunate calamities, worry due to romance, feels tired, exhausted easily, cannot concentrate, psychic conditions affect the native, persistent effort, deep intuition."
+    }
+  },
+  "rahu_ketu_sublord_rule": "If the sublord of the 7th cusp is either Rahu or Ketu, and if it is deposited in (or if the lord of the constellation is Rahu or Ketu in which the sublord of 7 is in), the results should be referred to that planet with which Rahu or Ketu is conjoined. If no planet is conjoined with Rahu or Ketu, then read the result of the planet which aspects Rahu or Ketu. If no planet is conjoined with and no planet aspects, then take the lord of the star in which Rahu or Ketu was.",
+  "career_partner_rules": {
+    "will_i_marry_a_career_girl": "One will marry a career girl if the sublord of the 7th Cusp is the significator of 2 or 7 or 11. It means when you take the sublord of the 7th Cusp and judge, it will be the significator of the 2nd, 7th, or 11th house counted from the 7th house (which are houses 8, 1, and 5). Then the partner will serve, work, or do business. Husband and wife may both be teachers, doctors, lawyers, or shareholders of business."
+  },
+  "chastity_rules": {
+    "chaste_wife": "A partner/wife will be chaste if the sublord of the 7th Cusp is neither Mars nor Venus nor Saturn, and if the sublord is not deposited in the constellation of Mars, Venus, or Saturn occupying one of the signs belonging to Mars, Venus, or Saturn. (Furthermore, neither the 7th Cusp nor Mars, Venus, and Saturn are connected with either the Lagna or the 7th house, and these three planets have no connection whatsoever with one another)."
+  },
+  "denial_of_marriage_rules": {
+    "case_study_1": "According to Krishnamurti Padhdhati, a person is denied of marriage when the 7th Cusp sublord is deposited in the constellation of the significators of 1, 6, and 10. The houses 1, 6, and 10 show the denial of marriage. The 11th house indicates failure in love affairs and also denial of children or separation from them. The simple rule is: Note the sublord of the 7th Cusp. If the sublord is connected with 1, 6, and 10 houses, one will be denied of marriage."
+  },
+  "marriage_bells_case_study": {
+    "case_study_2": "According to Krishnamurti Padhdhati, the planet ruling the sub-division of the constellation on the cusp of the 7th house is the guide. If the sublord is a significator of houses 2, 7, and 11, marriage will certainly take place. The 2nd house governs family and acquisition by marriage, the 7th represents the partner, and the 11th represents pleasure and lasting friendship. Whenever Saturn is a significator, it will not deny but cause delay in fixation and celebration of marriage, unless it has no connection to 2, 7, and 11, which then portends denial."
+  },
+  "will_i_marry_case_study": {
+    "case_study_3": "According to Krishnamurti Padhdhati, the planet ruling the sublord of the 7th Cusp determines the possibility of marriage. If the sublord is in the constellation of a planet in the 2nd house, it promises marriage (as the 2nd house denotes addition of a family member). Generally, Sani (Saturn) placed in the 7th house causes abnormal delay, but it will not deny marriage as long as it has connection to houses 2, 7, and 11. Timing is determined by Vimshottari Dasa/Bhukti of strong significators aligned with ruling planets at the moment of judgment."
+  },
+  "timing_and_delay_case_study": {
+    "case_study_4": "According to Krishnamurti Padhdhati, the nodes (Rahu and Ketu) have no signs allotted to them. They act as chaya grahas (shadowy planets) and reflect the results of planets they conjoin or aspect. Otherwise, they offer the effects of the sign lord they reside in. Sani (Saturn) in the 8th house causes undue delay by aspecting the 7th, 10th, and 2nd houses (by 3rd, 7th, and 10th aspects). If Moon is opposed by Saturn, delay is further expected. If Saturn is a benefic by lordship (e.g., owning Lagna and 2nd), it will cause delay but not deny marriage."
+  },
+  "marriage_bells_case_study_extended": {
+    "case_study_5": "According to Krishnamurti Padhdhati, when a planet is in the sub of another planet, it gives results of that sub lord. For marriage to take place, the sublord of the 7th Cusp should be related to the 2nd, 7th, or 11th houses. If the lord of the constellation in which the sublord is deposited is also related to these houses, marriage is promised. For example, if the sublord of the 7th Cusp is Jupiter, and Jupiter is in the constellation of Venus, and Venus is connected to the 2nd, 7th, or 11th house, then marriage is assured. If the sublord is connected to houses 1, 6, or 10, marriage will be denied or there will be serious obstacles. The 11th house represents fulfillment of desires; hence its connection is very important."
+  },
+  "transits_case_study_timing": {
+    "case_study_6": "According to transits for timing marriage, the transiting positions of the Dasa, Bhukti, and Anthra lords must cooperate. In this case, the Sun transited Venus star (Poorvaphalguni), Rahu (Dasa/Bhukti lord) transited the 9th house conjoining natal Mars (a strong significator) and was in the sub of Venus, Saturn transited the star and sub of Venus, Mars (Anthra lord) transited the 7th house in its own sign and sub of Rahu, and Venus transited the 7th house in the star and sub of Ketu. This conjoined transit triggered the marriage at the very end of August (celebrated on a Saturday, 30/08/1969, ruled by Saturn)."
+  },
+  "second_marriage_case_study": {
+    "case_study_7": "According to Krishnamurti Padhdhati, for determining second marriage, the 9th house is taken as the 2nd from the 8th (which represents partner/marriage in a broader sense, including remarriage or marriage after separation). If the sublord of the 9th Cusp is connected to 7th (Partner) and 11th (Gain), second marriage is promised. In the example provided, the 9th Cusp sublord is Moon, which is in the sign Leo, star Sun, and sub of Ketu. Moon is related to 7th (as 9th lord) and 11th (as 11th sublord). Sun, in whose star Moon is, relates to 7th and 11th. Ketu in 5th relates to 7th and 11th. This linkage strongly suggests the second marriage."
+  },
+  "timing_and_husband_traits_case_study": {
+    "case_study_8": "According to Krishnamurti Padhdhati, Venus in a fruitful sign and in the 11th house from Moon indicates that marriage is promised. Saturn forming an aspect with Venus shows delays, impediments, and disappointments, but not a total denial if Saturn-Venus quintile aspect is good and Venus in Vargothamsa is stronger than Saturn in debility. Strong significators of houses 2, 7, and 11 ruling Dasa, Bhukti, and Anthra timing can determine the marriage month. If significators own houses 1, 7, 9, 10, 2, and 11, it indicates the husband will be a distant friend, and the marriage will involve a long journey from the birthplace. He will be well-versed in arts holding an independent position, and the native will remain financially independent."
+  },
+  "separation_and_divorce_rules": {
+    "sixth_house_rule": "If a planet is a significator of houses 2, 7, or 11, and it itself happens to be the strong and single significator of the 6th house (12th to the 7th), it will NOT give marriage even though it is a significator of 2, 7, or 11, because the 6th house indicates separation from partner/wife if already married.",
+    "separation_houses_rule": "To analyze separation from partner, judge houses 1, 6, 10, and 12. If the majority of planets are connected with houses 1, 6, 10, or 12, marital discord and separation are indicated. Selection of active separating periods is refined using Ruling Planets (RP) at the moment of query.",
+    "plurality_and_divorce_rule": "If the 7th Cusp sublord occupies a dual sign and is posited in the constellation of a planet situated in another dual sign, plurality of marriage is promised with certainty. If legal statutes prohibit concurrent polygamy while the first partner is alive, plurality operates either through demise of the first spouse followed by remarriage, or through divorce followed by remarriage after a lapse of time.",
+    "second_cusp_sublord_linkage": "If the sublord of the 2nd cusp is connected with the 7th house, second marriage is promised legally (the 7th house shows legal bondage). If the 2nd cusp sublord is connected with the 11th house, the native will maintain a partner/keep or companion without legal marriage, as the 11th denotes friendship, attachment, and basic sustenance."
+  },
+  "separation_from_partner_case_study": {
+    "case_study_9": "According to Krishnamurti Padhdhati, marriage union and subsequent separation are evaluated in stages. For union, judge houses 2, 7, and 11; if nodes (Rahu/Ketu) occupy signs owned by these lords, preference is given to the nodes. If the 7th cusp sublord is in a dual sign and in a star whose lord is situated in another dual sign (such as Ketu in Gemini in Rahu star in Sagittarius), marrying more than once (plurality) is a certainty, not merely a tendency. For separation, judge houses 1, 6, 10, and 12: any planet that is a strong and single significator of the 6th house cannot facilitate marriage and will cause separation from the spouse. Ruling Planets at the moment of query identify active significators (e.g. Venus in Mercury star/own sub and Jupiter in Moola star/Venus sub causing separation in Jupiter Bhukti Venus Anthra). For subsequent events, connection of the 2nd cusp sublord to the 7th house promises a legal second marriage after divorce is sanctioned (e.g. in Moon-Mars-Jupiter period following divorce in Moon-Rahu)."
+  },
+  "life_with_wife_horary_rules": {
+    "marital_harmony_rule": "To ascertain whether married life will be pleasurable or painful, judge the sublord of the 7th cusp. While 7th house denotes the partner, 11th indicates marital harmony and pleasure. If 7th cusp sublord is deposited in 8th from 7th (2nd house) and in star of a planet 12th to Venus or in retrograde sub, the marriage will be painful and devoid of harmony.",
+    "divorce_houses_rule": "Divorce and legal separation are judged from houses 1, 6, and 10 (which are 12th to 2nd, 12th to 7th, and 12th to 11th). When planets connected with Mars (bold action/quarrels) and Jupiter (court of law/litigation) activate houses 1, 6, 10, or 12, divorce is awarded in the appropriate Dasa/Bhukti.",
+    "dual_sign_second_marriage_rule": "If the sublord of the 7th Cusp is in any manner connected with a dual sign (Gemini, Virgo, Sagittarius, Pisces) or a dual planet (Mercury), a second marriage is promised after legal separation/divorce from the first spouse."
+  },
+  "life_with_wife_case_study": {
+    "case_study_10": "According to Krishnamurti Padhdhati Horary astrology (Horary No. 71, Cancer Lagna 04° 22' 10\"): To ascertain whether married life will be pleasurable or painful, examine the 7th Cusp sublord (Ketu). Ketu in 2nd (8th to 7th) in star of a planet 12th to Venus and in sub of retrograde Saturn negates pleasant married life. For divorce, examine houses 1, 6, and 10 (negating 2, 7, 11): Moon in Mercury star (lord of 12th to 7th) and Mars in 6th (ruling 10th) with Jupiter in Mars star cause litigation and court proceedings, culminating in a divorce decree during Mercury Dasa Ketu Bhukti. For remarriage, the 7th cusp sublord (Venus) conjoined with Mercury in Mercury's sign (dual planet and dual sign) guarantees a successful second marriage during Mercury Dasa Venus Bhukti / Ketu Bhukti Mercury Anthra."
+  },
+  "love_and_life_seventh_cusp_sublord": {
+    "title": "LOVE AND LIFE: IF THE SUB LORD OF THE 7th CUSP IS IN...",
+    "Aries": {
+      "sign": "Aries",
+      "male": "You are extremely frank and enthusiastic in love affairs. Your good nature and charm will attract the opposite sex. You will take practical steps. You desire to have freedom and in love affairs and everlasting affection. You can be happy if your dominant nature is softened. Generally you are impatient and emotional. Your love is very deep but if it is not reciprocated you are broken; that is why many of you choose a wrong woman who will squander your money and also arouse your suspicion. Since you are also extremely bold and independent, you care for nothing; you do not hesitate to pick up a quarrel; you are not afraid of bloodshed. Your temper will be both short and hot. You can talk, you can try to convince the other party. You will continue your efforts till you succeed or you fail miserably. You do not give up till you see the finish. Even during the time of misunderstanding you will start having an eye upon another girl. No doubt if the wife proves to be faithful you will allow her to have her way in many matters. At the same time there will be limitations so that break up of marriage will not come. Thus you will prove to be a very strict as well as desirable partner. To please your wife you will make impulsive purchases even on credit. Bad Arians will make mistake in love affairs though basically honest. If such an action indicates that you have broken your partner's heart you will feel miserable and be unhappy. You will keep up the love affairs alive as long as your mate is willing to sustain interest in sex. If you find that she does not respond you will satisfy your sexual pleasure elsewhere. You need flattery anyhow. You should cultivate tact; you should understand the psychology of your mate. Generally you marry in haste and repent in the leisure.",
+      "female": "Like the male, you also will have desire to dominate. You will be independent and act forcibly even directing the husband. You cannot relish subordination. You have your own principles and you act according to your conscience. You are thoroughly upset if you find that the partner is not honest but cunning and evasive. You will have the same sexual inclination. You will be very passionate periodically. You expect mainly this from your husband, so it is advisable to have control over your emotions. Normally it tempts you to have many affairs even before marriage. This you are aware even from your teenage. It is advisable to have control over your emotion, anger and independence. Cultivate to give up pride and avoid speaking high of your own family. Do not expect so much that your husband should always attend on YOU, speak high of you alone and never speak well of any other lady especially in your presence. If by chance you are lucky and you marry a simple man, you will overpower and subdue him in all the activities. As the husband may be a spendthrift and he is the only earning member, you must save a portion of what he gives to you."
+    },
+    "Taurus": {
+      "sign": "Taurus",
+      "male": "You are not generally impulsive. You take long time to decide and select a partner in life. You will stick on to one after having made such a selection. And you will also leave no stone unturned till you come out successful. You try to lead a peaceful harmonious happy life. Yet there can be romance also in spite of yourself being faithful to your mate. Your emotions will be deep. You hate quarrel and confusion. You will be blessed with a loving wife much devoted to you. You will have affectionate and warm partner responding to your kind treatment. You enjoy company of only the pleasing member of the opposite sex. You are motivated by the thought of an honourable marriage, limited number of children, gracious domestic environments and enough money. You are sensitive. You cherish your wife as the prized possession and in the privacy you are very amorous and extremely sensual. You will embrace her hungrily and satisfy her in full.",
+      "female": "Your sex life is closely indicated with your need for security. You will always be gracious in your approach to sex and love. You are sincere and emotional. Generally early marriages meet with disappointment; divorce will be that last resort. You dislike to change anything. You try to have property and save. You cultivate that habit to be economical and increase the wealth. You do not mind about the blackmailing of other people but you try to keep the home in apple-pie order, neat. Some of you will marry for material gain rather than romance because finance is of major interest to you. You are always mindful of making money and maintaining a pleasant home with necessary accoutrements / equipments. Even if time passes you do not mind to wait till you find a man who will offer you enough financial security to ensure the fulfilment of your desires and dreams. You may also try to have business on your name or you may have partnership. You will be very attractive so you can make such a selection while finding out a husband for you."
+    },
+    "Gemini": {
+      "sign": "Gemini",
+      "male": "You are capable of making friends very quickly and also equally you will find fault with friends; that is why you take a long time to find out a suitable partner in your life. You will consider that marriage involves responsibility and you may not be able to undertake such an entanglement at an early age. Since you know that you are fickle minded, changeable and ambitious, you think that even though there is a proposal for marriage, you think why you should not wait for tomorrow, expecting that there may be something better. You consider sex as something to be enjoyed for the moment but throughout life it is a great burden. You also wish not to get yourself tied up to one; you prefer variety in life. The more the romances, the more happy you will be, so you will baffle your associates. Naturally, the friendship gets broken. You care more to have an intellectual companion who will be steady and accommodative. You are fond of proceeding always with wife during short journeys. You expect your wife to agree with you whenever you want to change the surrounding and environment. You are also so clever that you will end any romance if you feel that that person is a source of only expenses, causing loss. You will desert over-bearing wife. You cannot tolerate constant pressure from her. As regards love affairs, you are like a child. You are at best when your wife understands you and behaves intelligently. You do not want to be a hen-pecked husband.",
+      "female": "You are generally intelligent. Your strongest appeal is mental companionship; you do not relish to be only a housekeeper. Even though you get married, if you would have been already in service or well equipped in any service, you will not give up your outside activities. You feel miserable if your husband resents. You have to be more tactful if you want to lead a happy and harmonious life. As years pass on, occasions may arise when you have to choose either of the two, that is, to live along with the husband or to stick on with the job. If you give up the job then you take to domestic life with utmost sincerity and devotion; you will be highly refined."
+    },
+    "Cancer": {
+      "sign": "Cancer",
+      "male": "You will find that the life is not worth living without romance. You will sacrifice your comforts and remain loyal and affectionate. There is one defect in you: you cannot impress on the mind of the partner that you love her though you are sincere, honest and true. Your partner will consider you as feeble minded and changeable, even though you may be stubborn and determined. You enjoy your life in full. Marriage alone brings you a well settled life. You will be adjusting and accommodative, though occasionally exciting and fussy. Your wife will have the way for domestic comforts and prosperity. So you try to keep her cheerful and jubilant. You should try to please her in all ways. Though you are devoted to your wife, your interference in household routine will spoil your good intentions. The main defect in you is that you feel dissatisfied and so you indulge in criticism of some thing or the other. You are detached from reality. You prefer to remain at home and look after your aged parents with full devotion. To you sex is incidental to your happiness and so you do not take up your sexual side even when there is the opportunity. You are less moody but a little shy. Your wife may leave the children under your care and go to any entertainment and you are a good husband to oblige her and a good father to attend upon them. You avoid divorce because you desire to maintain family life, putting up with all horrors of life if you are unlucky.",
+      "female": "You are genuine in your life and sincere in your devotion to your husband. You can be a little moody; yet you feel satisfied with anything offered by your husband. You prove to be a good mother but you share the responsibility of bringing up the children with your husband. You are adaptable, affectionate, beautiful, passionate, pleasing, sincere and sympathetic. You will never spare any pains to attend to the necessity of your husband. In youth you will immerse yourself in romance reading love stories which will stimulate and such poetry. You dress well, make up well and love a person as you consider love is sex. You may criticise your husband for his financial instability; if he does not provide properly you accuse him. You can be easily pleased by your husband if he daily offers flowers and other small materials for your make up etc. and also by celebrating your birthday etc. If he does not do, you consider that he no longer loves you. So you retaliate and you do not allow your husband to satisfy himself sexually. If you think that he is using you for animal lusts you never yield but take bed in the next room. If you have to survive your husband you do not mind taking a second person as you want to lead a family life. You prefer to live with your children; you cannot be away from them. You are erratic in sex and thereby bewilder your husband. If you have lost two husbands you never hesitate to marry a third not for sexual pleasure but for wealth. You make friends of your own sex. You find pleasure in keeping company with them just like one needs air, water and food. You need pleasure company. You are loyal and also emotional."
+    },
+    "Leo": {
+      "sign": "Leo",
+      "male": "You are romantic. You love deeply and you will be carried away by love. You cheer up your wife most skillfully like an actor in a comedy scene. You are an ideal lover as you will be fiery and passionate. You do not like any demonstration of love in public. You consider it below your dignity. You have abundant charm and you are attractive to the opposite sex. It is likely that your wife is jealous as you will be found in the midst of a crowd of ladies. Unless you make a proper choice of your wife there cannot be proper understanding. She should be able to share your pleasure when you give parties to others and you are excited in their midst. If your wife understands you and agrees with you then you like her, love her and admire her. You will fit in domestic routine admirably. You will not allow anybody to disregard your wife. You are very proud of your family. You cannot tolerate any ill repute. You are always conscious of your social understanding and care for prestige. Understanding of each other is necessary to avoid any trouble in married life. Even though you may not like to be the master of your household, yet you keep control of all bedrooms. Sexually you are demanding but always gracious. Your life will be sustained and marriage also will be happy if your wife returns your passion and shows equal affection. You generally overdo. You should make attempts to right your wrongs. You will be an extremist; therefore you should cultivate such good habits to lead a harmonious life, otherwise your disappointment will be great and you may become embittered. Do not try to be too domineering.",
+      "female": "You are ambitious and ideal; you will manage your home admirably. You are a successful social worker. You can make favorable impression on all. Your devotion both to your house and also to the general public is supreme. You will be offered prominent position. You are a self-sacrificing lady with everlasting love. You cannot expect any good return from those to whom you lend your assistance at the risk of your own interest. You should not exceed your authority or spend lavishly. You must be kept under control. You will slowly appreciate your husband's good nature, affection, kindness and real love to lead a pleasant, progressive, prosperous and peaceful life. You may have pretty fixed ideas. And you may feel that your world is love and you will expect others to do only those which you desire and consider right. You should also know that your husband is your senior but not your servant. No doubt you are loyal in marriage. Better you cultivate a good habit of proclaiming your husband's fine qualities to his and your friends in order to make him happy. You should also learn to forgive and forget as your husband cannot harbor any ill feeling or hatred. Your love for money is as large as the skill to spend it. You cannot save. You have a big heart, cheerful face and a spirit full of confidence. You will be upright, modest and chaste."
+    },
+    "Virgo": {
+      "sign": "Virgo",
+      "male": "You have your own ideals. It is always difficult to find one suiting to your taste. Therefore there is long delay in selecting one to measure up to your ideals. You want everything to be perfect as far as you are concerned. Therefore it is always possible that in the first few cases you will be disappointed. Whenever you desire to make a selection, you give more value to the intelligence of the person than to the sexual side and romance. You are a little shy and so you do not give expression to your affection. Do not be touchy; cultivate to give expression to your love. You will not stand any criticism. You demand good understanding but your temperament is to find fault with others. This must be given up. Just like you want others to appreciate your assistance and also intelligence, so also whomsoever you love, whether intelligent or not, you have to admire her beauty, whether handsome or not, etc. and also give expression to your pleasure in her company. One step more you can go: you can make her feel that you are depressed and inactive in her absence. You are rarely passionate. You should keep your partner cheerful by your talk at the least and also fetch her such books to satisfy herself by reading. Your married life will be more on partnership basis. That is why many postpone their time of marriage and prefer to be a bachelor for a long period. Another reason is that you want to be very studious and do research work in a peaceful atmosphere, but when once you get married you provide everything for the wife and to other members of the family.",
+      "female": "You will be able to understand your husband properly and conduct yourself wisely giving every encouragement to him whenever he needs it. You are very adjusting. You will be a dutiful wife making the family life happy. You may be peevish and occasionally mean. You preach thrifty (sparing) to your husband and gradually he becomes economical within the few years after marriage. Your idea of marriage is legal partnership, that you should live in a business-like way. You will run the home in a very regular routine manner without yourself wasting anything nor allowing others to waste. You do your duties quickly and most satisfactorily. You will not be able to please your husband in spiritual life and also in keeping pleasant company. You consider that sex is mean, base and one day or the other troublesome. Therefore this frame of mind is to be modified. You must fall in love with a person of your own choice; then sex is one of the obligations. You do with no emotion; there can be no exciting romance. You rarely relish him to touch you even casually. You are generally much regarded than liked."
+    },
+    "Libra": {
+      "sign": "Libra",
+      "male": "You are the most lovable person in sex life. You are an expert in all love affairs. By your sincere love and beauty to capture your partner beside your dress, passion, pleasant perfumery and sweet smile, it is your beauty which entices. Your passion grows strongly and also dies quickly. You enjoy immensely in the company of opposite sex. You find pleasure in good discussion. You can put forth your argument with clear vision and you are a pleasant conversationalist. You are cheerful, happy, passionate and adjusting. You accommodate to a good extent. You provide the family with all necessities, comforts, luxuries and conveniences. You are very passionate and while expressing your love you reach the greatest height. You will feel very much disappointed if by chance response is not to that extent you expect. Whatever disagreement or dissatisfaction may be, you do not seek for divorce but somehow you try to adjust.",
+      "female": "You marry early in your life. You try to prefer the tradition. You are happy both at home and also in social life. Your standard of living will be high but you may not have a partner who can satisfy you. You are tactful and wise; you avoid hot discussion, you do not rub on the wrong side. You love and adore your partner and try to lead a luxurious life maintaining peace. You are ready to let the male do all the uncommon and disagreeable ones. You like to do such act and will never fail to thank him with a flush and smile. You are broadminded and cooperative. Your senses are always alert, energetic and understand your husband's needs. You can be pleased by flattery which is your weakness. You feel very happy when you are assured that you are the most beautiful. If your husband can understand you and keep you cheerful, you will richly reward him by intimacy."
+    },
+    "Scorpio": {
+      "sign": "Scorpio",
+      "male": "You have complex moods; yet you are dynamic and energetic in romance and love affairs. You cannot have a pleasant and smooth life with the opposite sex, unless you are sympathetic and your affection is steady. If your partner appreciates you and speaks high of you, you consider that this world is really a Heaven to you; but if she passes any criticism and disapproves your action you are depressed, disgusted, dejected, down-cast and broken down. Generally you give all comforts to your partner and try to keep her in good spirits. You expect demonstrations of affection from your wife. This is a bit too much as after all, she is a lady. Mostly you are highly sexed than people born in other sign. So you desire to have and satisfy yourself with the meanest type of all activities towards sexual side. There is one great good quality in you: you do not see any other girl except your wife. You are either a gentleman or a demon to your wife; this depends upon her response and reciprocal action. You can indulge in prolonged periods of sexual excess which would tell upon your health physically, mentally and emotionally. You should not be arrogant and also violent. You generally hit back hard and sting virulently when provoked. You will prove to be an opportunist sexually and romantically so before marriage you make some enemies.",
+      "female": "You enjoy your life if your partner shows equally genuine affection and deep love. If you have a Scorpio born as your husband you will be fully satisfied; then both of you know how to dance and adjust. If there is any disharmony among you it will not be made known to outsiders. You care more for honour and family prestige. You no doubt work very hard. You are really true. But you suddenly lose your temper and loudly retort without any consideration for the position of the husband. Love for you is your life force. You think that you live only for that. You despise a man who is unmasculine. You fade away if your husband is not loyal and you feel that you are leading a life in the hell. You are rarely dominated by your husband. You make all efforts to further your personal ambition and try to improve yourself in every way. You take interest in the success of your partner."
+    },
+    "Sagittarius": {
+      "sign": "Sagittarius",
+      "male": "Generally you lose your temper quickly and you repent for it immediately. There can be now and then some rupture between you and your wife. If your wife is wise, she can understand you properly, conduct herself tactfully so that both of you can lead a pleasant married life. As you are very much interested in games, sports, societies and clubs, and you spend much time in such activities, it is likely that your wife mistakes you and concludes that the family life is not so important to you as the entertainments. Unless your wife is broadminded, adjusting and accommodative, there can be misunderstanding, though you are a person of integrity and morals. Love is also a pleasant game to you. You consider the sex as a very small matter. You will never utter a lie in love affairs. If by chance you develop some fancy towards another girl you will straightaway inform. Anyhow you will look after your wife with care. You do not prevent her from taking part in any social activity. You will treat your wife as a good sport and you expect her to be reasonable and understand you properly. Whenever you are seen with other girls she should take that it is nothing but friendship and that there is no physical involvement. You are frank and honest. You are not capable of flattering your wife and thereby cheering her up. But you are dutiful and sex becomes a part of your routine as a husband.",
+      "female": "You are deep and passionate. You have very much in common with the male counterpart. You do not demand anything in love or sex. So also you expect that the husband should not demand anything. You take part in women's club. You are devoted to your pets at home. You have the courage and ambition so you prefer to drive the car and to dominate. You can have early marriage. You are fond of real work and outdoor activities. You prefer to be a career woman. You are humorous and versatile. Main defect in you is that you are always curious about others' affairs. You never suggest anything to your husband unless you are asked for, but you try to help him in all matters. You will be calm, competent and considerate whenever your husband is wrong. You politely bring the mistake to his notice and do it with all humility. You offer him advice in the last. Your husband will consider that he is very lucky to have married you. So you are happy. You are warm and you give much freedom to your husband. You also expect the same from him. You cannot tolerate anyone restricting your activity; then you will rebel. If you feel that you are not getting that treatment which you deserve you lose your temper; even though you do not break with your husband you just continue to live with him dissatisfied."
+    },
+    "Capricorn": {
+      "sign": "Capricorn",
+      "male": "You may have affection but you do not give expression to it. You are not fit for romance, dance etc. You are never emotional. You are very slow and cautious whenever you approach the other sex. You are never bold or rash. Further in love affairs you never take the initiative. You always ask the other party tactfully, attain her consent, then only you will start proceeding further. You will also realise that the other sex gets worried because of your hesitancy; therefore you take a long time to choose a partner. Your sense of duty exceeds your ability to express real love. You cannot be regarded as a warm affectionate person. You will have opportunity to enjoy voluptuous females. You are fond of the most erotic forms of love making. Generally you become enchanted with much younger girls. You are delighted to have such a young wife; you will promise anything to her. You may have occasionally love affairs. You expect affection and approbation from your wife. You remain loyal if you understand that she is very much devoted to you. If she fails to satisfy you and there is another girl tempting you then you will err. You have strong appetite towards other sex. It is only she who can put you at ease by making you slowly understand that after all sex activities are natural ones. If you do not find satisfaction with anybody you satisfy yourself.",
+      "female": "You are of totally different type. You remain to be devoted housekeeper. You dedicate yourself to the comfort of your husband and children. You can be a demonstrator for dance, yoga, love etc. You are ambitious and clever, so you restrict the number of members of the family by birth of children. You adopt family planning. You know the difficulty of finance. You never gamble nor you take any risk. You can cut down the expenses to the bare minimum. You enjoy harmonious and contented life; unless you marry a Scorpion born you cannot fulfill your high sexual need. The next best would be Pisces born. You are deeply interested in all aspects of sex but you try to put on a show that you are indifferent. You do not give expression to it nor make anyone understand that you are interested in sexual pleasure. If one understands you and satisfies you in love affairs you will depend completely upon that person. He will win you outright. Never you are in haste, but slowly and steadily you make the friendship. You will appear to be reserved, but it is only due to the fear of ridicule. You never entertain hopes as you are not optimistic. Unless things happen you never believe and have faith in anything. You have that patience and tolerance needed to come out successful as there may be delay and also obstacles."
+    },
+    "Aquarius": {
+      "sign": "Aquarius",
+      "male": "You are intelligent and you prefer educated and equally intelligent partner. You are unassuming. You have strong attachment and a permanent one. You move with everybody very freely and you always prefer such a girl who is equally social, shrewd and studious. If you find that she does not come up to the standard you expect, then without even informing the party you will try to make another choice. You never give expression to your love nor can you satisfy one whom you love as the partner will be more passionate. You will be law abiding, true and honest. You are noble and magnanimous. If you realise that your partner expects something more from you, you simply sympathise with her. Nobody can fool you by flattery because you can find the motive of such people. You have your own individuality and mannerism. You follow your own principles. You will go ahead to do anything for your partner if it is within your bounds. You have to avoid solitude and never be worried or gloomy; also do not be a pessimist. Enter into marriage with full understanding and commitment. As there are chances for being misunderstood, it is likely that your partner may let you down. Do not give room for such undesirable event. You need every encouragement. If she does encourage you then you are the best husband. You will take up any responsibility boldly, but yet you do not want to have a big family. You are more attached to your children than any other rasi (sign) born. You never hesitate but straightaway accept that girl the moment you find her suitable. You will straightaway tell her because you do not observe decency or sentiments.",
+      "female": "We find two extremes in the girls born in Aquarius: one will be very kind, modest and polite. The other is nothing but a devil in sexual experience. If you get a proper person you feel extremely happy. You need such. You are adaptable and affectionate. You love people. If by chance anybody tries to have you, you cannot exercise your willpower, but due to your weakness you yield. If you find that any injustice is done to you, you rebel. You can have very happy married life, if your husband is equally learned and intelligent. If you by chance have a wrong mate, it will create a vital problem which you have to endure for your lifetime. You never rush to divorce or any other undesirable complications. You try to maintain the prestige of the family by your patience and make efforts to improve the existing condition."
+    },
+    "Pisces": {
+      "sign": "Pisces",
+      "male": "You are very emotional and also sentimental. You try to have a beautiful and intelligent wife who develops taste in fine arts. You want only broad-minded partners and you hate if your wife is niggardly (puny / mean); you always entertain some suspicion about your partner and occasionally you are jealous of her. It is the duty of your wife to understand your nature and try to give expression to her sincere love to you. She should flatter you to your satisfaction. It is always advisable that you select your wife who is not free with everybody. Otherwise, you keep your love in suspense due to suspicion. Your temperament is also dull; during some moments you are warm; in some moments you are reluctant. Some days, you admire and adore her. You are amorous and affectionate. Generally you are kind, sympathetic and loyal. You are normally good; but occasionally moody. Throughout your life you will be attracted by the romantic side. If your wife is in any trouble, at a moment's call you lend your assistance. You do not think of doing harm, not that you are incapable but you consider it to be a sin. It is a problem to your wife to judge you as she will find contradictions in your nature. You have to avoid contemplating and dreaming always. You should avoid developing likes and dislikes. You will do all you can to maintain your family in a high standard to give absolute satisfaction to your mate and children.",
+      "female": "There are a few varieties of ladies born in this sign. You prefer to live in simplicity. You take no pleasure in anybody's company, but you prefer to have a pet like a cat. You are philosophical. Somehow inferiority complex develops in you. Therefore you select a husband who will be of great assistance to fight against your inferiority complex. He should bring out your best qualities and also express his love to you. Some of Pisces born will play dual part. If the sexual urge is not satisfied by your husband you will find someone who is compatible to the physical need. For some of you there will be lot of troubles. You will have trials and tribulations and you become depressed and pessimistic. A few of you will try to have a new life with foreigners in another country and they will be happy through some mysterious ways as you are very passionate. A few of you will conduct like a rat in the sinking ship. If you find that the partner is not up to the mark you will desert him especially when he is in difficulty. Some of you are prepared to sacrifice and forget your personal comforts if you find that the partner is devoted to you and completely depends upon you for peace and pleasure. You should cultivate the habit of keeping many matters within yourself. You should not confide anything with anybody. There is every likelihood of yourself being betrayed. Do not suspect your husband."
+    }
+  },
+  "can_i_marry_one_whom_i_love": {
+    "title": "CAN I MARRY ONE WHOM I LOVE?",
+    "description": "Love before marriage is likely Heavenly Bliss. Why? The hopes, the dreams, the imagination, the pleasant feeling, the company before marriage, with in mind either to marry or to satisfy one self for a short period may be classified as love. Always the expectation gives greater satisfaction than the actual attainment of one's aim. Love is to be judged from the sub lord of the 5th house and the significators of the 5th, 7th, 11th house. There may be say half a dozen girls whom a person may love. Yet that particular person who is born with such ruling planets which are the significators of the houses 2, 7 and 11 of the other will marry her or him. But if the ruling planets at the moment of the birth of the person whom one loves happen to be the significators of the houses (6, 12) she or he will disappoint her or him. Therefore you have to judge your horoscope and find out the other's birth time tactfully. One can get such information from the other only after having moved for some period. It does not matter. Before one gets spoiled, if one gets the horoscope and the Astrologer following KP judges and predicts that the person whom one loves will be true, one can continue go ahead till the date of marriage. But if the KP follower were to say that marriage will not take place but from a particular time the gap will widen day by day, after a particular day it will surely happen in the same manner and better to remain unspoiled after having understood the other. Nobody can change the fate. Even after being spoiled one may consult; at that time the Astrologer's prediction must be given weight.",
+    "rules": [
+      "Love is to be judged from the sub lord of the 5th house and significators of the 5th, 7th, 11th houses.",
+      "Marriage with the loved one fructifies if the ruling planets at birth are significators of houses 2, 7, and 11 of the partner.",
+      "Disappointment or separation occurs if the partner's ruling planets signify detrimental houses (6th and 12th houses)."
+    ]
+  },
+  "will_my_love_affairs_materialise_case_study": {
+    "title": "WILL MY LOVE AFFAIRS MATERIALISE?",
+    "query": "A handsome young man in love with a girl desires to know if his romantic ventures would lead him to the aromatic atmosphere of a marriage pandal. He furnishes Horary No. 56 for analysis by Krishnamurti Padhdhati.",
+    "horary_details": {
+      "number": 56,
+      "ayanamsa": "Krishnamurti Ayanamsa",
+      "balance_of_dasa": "Moon Dasa: 1 year, 2 months, 16 days",
+      "planetary_positions": [
+        {
+          "planet": "Sun",
+          "bhava": 1,
+          "star_lord": "Kethu",
+          "sub_lord": "Venus"
+        },
+        {
+          "planet": "Moon",
+          "bhava": 6,
+          "star_lord": "Moon",
+          "sub_lord": "Venus"
+        },
+        {
+          "planet": "Mars",
+          "bhava": 7,
+          "star_lord": "Mercury",
+          "sub_lord": "Mercury"
+        },
+        {
+          "planet": "Mercury",
+          "bhava": 5,
+          "star_lord": "Venus",
+          "sub_lord": "Saturn"
+        },
+        {
+          "planet": "Jupiter",
+          "bhava": 5,
+          "star_lord": "Moon",
+          "sub_lord": "Rahu"
+        },
+        {
+          "planet": "Venus",
+          "bhava": 10,
+          "star_lord": "Jupiter",
+          "sub_lord": "Saturn"
+        },
+        {
+          "planet": "Saturn",
+          "bhava": 7,
+          "star_lord": "Venus",
+          "sub_lord": "Sun"
+        },
+        {
+          "planet": "Rahu",
+          "bhava": 11,
+          "star_lord": "Jupiter",
+          "sub_lord": "Sun"
+        },
+        {
+          "planet": "Kethu",
+          "bhava": 5,
+          "star_lord": "Sun",
+          "sub_lord": "Mars"
+        }
+      ],
+      "conjunctions": [
+        "Mercury + Kethu",
+        "Jupiter + Uranus"
+      ],
+      "representations": {
+        "Rahu": "Saturn",
+        "Kethu": "Mercury"
+      }
+    },
+    "analysis": {
+      "nature_of_query": "Moon in 6th in his own star and in the sub of Venus (who is a significator for houses 5, 7 and 11) confirms that the query relates to marriage. Sub lord being Venus specifically signifies a love affair.",
+      "seventh_sublord_assessment": "Examining the sub lord of the 7th cusp, Venus is the sub lord of the 7th house. Venus is posited in the 10th house in the star of Jupiter (in 5th) and sub of Saturn (in 7th). Jupiter owns houses 2 and 9; Saturn rules houses 7 and 8. According to Krishnamurti Padhdhati, we should not hastily declare that Venus in 10th is bad. Actually, Venus signifies houses 5, 7, 2, 9, 8 in order of strength. Also, Venus owns house 11 and is posited in 10. Hence, even though matters appear unfavourable at first sight, Venus will bring out success.",
+      "significators_for_marriage": {
+        "houses": [
+          2,
+          7,
+          11
+        ],
+        "details": [
+          "Mercury, Kethu and Jupiter are in the 5th house; Mars is in the star and sub of Mercury; Sun is in the star of Kethu; Venus and Rahu are in the star of Jupiter. Hence Mars, Sun, Venus and Rahu signify 5th house.",
+          "7th house is vacant, ruled by Saturn. Mercury and Venus are in Saturn sub.",
+          "11th house is vacant, lord is Venus. Mercury and Saturn are in Venus star; Sun and Moon are in Venus sub."
+        ]
+      },
+      "ruling_planets_at_judgement": {
+        "day_lord": "Sun (Sunday)",
+        "star_lord": "Moon",
+        "moon_sign_lord": "Mercury (Virgo)",
+        "ascendant_lord": "Saturn (Aquarius)",
+        "joint_significators": "Sun, Moon, Mercury, Saturn. Since Rahu is in Saturn's sign and Kethu is conjoined with Mercury, Rahu and Kethu also become strong significators."
+      },
+      "timing_and_fructification": "At present Moon Dasa, Venus Bhukti is running. Sun Bhukti follows. Rahu Anthra runs in conjunction with Sun transiting Kethu star in December, bringing about the fruition and solemnization of the love marriage."
+    }
+  },
+  "if_brings_luck_case_study": {
+    "title": "DOES WIFE BRING LUCK / MISFORTUNE? (SIMULTANEOUS MARRIAGE & PROMOTION CASE STUDY)",
+    "query": "'Sir, my wife has brought me luck. The moment the betrothal took place, I was promoted on... and my wedding came off on...'",
+    "preface_and_philosophy": "As I always try to see that the couple lead a happy and harmonious life, if anyone were to say that his wife brought him luck, I used to say: 'True.' But if anybody were to pass a remark: 'Sir, I got married and in a few days I lost my job; my wife brought me misfortune', then I used to contradict and convince him by saying: 'Hello! Before you got into service, the date of entry into service, the duration of your service in that department, the day of resignation or retrenchment, then the day of getting into second service are all predicted. The date of betrothal, the date of marriage, etc. also was mentioned. In some cases the time of marriage agrees with the time of losing a job. So it is not wise to attribute success or failure in one's life to the fortune or misfortune of one's wife. Both have to happen according to one's own karma which can be read by an astrologer.' The person is happy since betrothal itself brought him promotion. His horoscope is analyzed as follows.",
+    "horary_details": {
+      "balance_of_dasa": "Mercury Dasa balance: 11 Years, 9 Months, 16 Days",
+      "running_period_at_event": "Venus Dasa, Rahu Bhukti, Saturn Anthra"
+    },
+    "rules_of_kp": {
+      "marriage": "For marriage, judge houses 2, 7 and 11.",
+      "promotion": "For promotion/service advancement, consider houses 2, 6, 10 and 11."
+    },
+    "significator_analysis": {
+      "second_house": "Second house is vacant; owner is Mars. Mrigasira, Chitra and Dhanishta are governed by Mars. No planet is deposited in any of the three constellations. So Mars is the strongest significator of the 2nd house. Rahu, which is in Scorpio, represents Mars (owner of Scorpio). So Rahu acts as a representative of Mars; the node Rahu is stronger than Mars. No planet is in Rahu's constellations.",
+      "seventh_house": "Seventh house is vacant; owner is Mercury. Rahu and Moon are in the constellations of Mercury (owner of 7th).",
+      "tenth_house": "Tenth house is owned and occupied by Jupiter. Mars alone is in Jupiter star. Rahu represents Mars.",
+      "eleventh_house": "Eleventh house is vacant; owner is Saturn. Sun and Mercury are in Saturn's star.",
+      "joint_significators_marriage": "For houses 2, 7 and 11: Mars, Rahu, Moon, Mercury, Saturn and Sun are the significators.",
+      "joint_significators_promotion": "For houses 2, 6, 10 and 11: Mars, Rahu, Jupiter and Saturn are the significators.",
+      "role_of_dasa_lord_venus": "Venus receives aspect from not only lord of 2 and significator of 10 (Mars), but also lord of 11 (Saturn). Hence Venus is connected with houses 2, 10 and 11. Therefore, Venus Dasa, Rahu Bhukti, Saturn Anthra gave both the results simultaneously (Marriage and Promotion)."
+    },
+    "transits_at_marriage": {
+      "western_system": "By transit on the day of marriage, Mars squared Sun.",
+      "kp_system": [
+        "Sun was transiting in Mercury sign, Mars star, Mercury sub (one is lord of 7, the other lord of 2).",
+        "Rahu was transiting in Mercury sign, Rahu star, Jupiter sub.",
+        "Venus was in Mercury sign, Rahu star, Jupiter sub (Venus and Rahu conjoin: Dasa-natha and Bhukti-natha).",
+        "Saturn was in Jupiter sign, Saturn star, Venus sub."
+      ],
+      "conclusion": "Krishnamurti Padhdhati agrees in all details. Post-mortem astrological analysis confirms that individual karma governs life events, and simultaneous events reflect common planetary significations."
+    }
+  },
+  "divorce_and_separation_principles": {
+    "title": "DIVORCE & SEPARATION PRINCIPLES IN KP ASTROLOGY",
+    "overview": "Divorce is a question which arises after one's marriage with the other legally. The cause may be any or many. Anyhow unless there is disagreement, disharmony and dissatisfaction among the couple, divorce will not come up. Just like opinions differ, so also husband and wife born in different families of different parents may not agree. The traditional method of finding out Dasa Porutham will in no way help the parents or the couple. Actually, if we note down the percentage of people leading a happy, pleasant, smooth life with wife with inseparable temperament, there are many who never consulted any astrologer. It may be an arranged marriage or a love marriage. Consulting an astrologer following traditional system does not guarantee smooth, pleasant, united life with wife. To my knowledge at least 80% to 90% of couples who got married after consulting astrologers who follow only traditional astrology are fully dissatisfied and do not find pleasure in the company of each other. In a few percentage there is repulsion also. When adverse time starts, both of them disagree. This disagreement may end in separation (quiet separation, violence, or separation due to disease). Therefore as regards divorce is concerned, one should know why they are destined to marry each other and then why they are destined to get a divorce. KP explains these facts crystal clear.",
+    "core_astrological_rules": {
+      "marriage_union_houses": "Houses 2, 7 and 11 are judged for union (marriage), expansion of family, and permanent tie of friendship with partner in life.",
+      "divorce_and_detrimental_houses": "Divorce is caused when the significators of 2, 7 and 11 are also the significators of houses 1, 6 and 10 (or 6 and 12). Houses 1, 6 and 10 are the 12th houses (Vyaya / negation) to 2, 7 and 11 respectively: - 1st house is 12th to 2nd (loss of family harmony and united family) - 6th house is 12th to 7th (separation/opposition from spouse) - 10th house is 12th to 11th (loss of marital bond and pleasure). Hence, if the significators of 2, 7 or 11 happen to be the significators of 1, 6 and 10, separation will surely happen and lead to divorce.",
+      "separation_modes": {
+        "wife_leaves_or_runs_away": "If separation is caused by the wife leaving/running away, the significator of 7th house will also be the significator of 6th and 12th (or 1st and 6th).",
+        "husband_leaves_or_goes_away": "If the native does not like the wife and moves away, judge houses 3 and 12 (since 4th house is residence, 3rd is 12th/vyaya to 4th indicating leaving residence for a journey/separation)."
+      },
+      "reunion_rules": "For reconciliation and reunion of separated couples, judge the sublord and significators of houses 2, 7 and 11 (favourable Dasa-Bhukti of 2, 7, 11 brings reunion)."
+    }
+  },
+  "family_life_or_sannyas_case_study": {
+    "title": "FAMILY LIFE OR SANNYAS (DOMESTIC LIFE VS ASCETICISM CASE STUDY)",
+    "query": "What do you think of this boy? Will he have domestic life? He has joined a Mutt (temple/ashram).",
+    "horary_details": {
+      "lagna": "Mesha (Aries)",
+      "planetary_positions_and_influence": [
+        "Aries Lagna is occupied by debilitated Saturn and Gnanakaraka Kethu with intelligent planet Uranus.",
+        "Lagna Lord, the independent and fiery Mars, is exalted in Capricorn.",
+        "Uranus and Mars are in the constellation of the fiery planet Sun.",
+        "Moon, which governs the mind, is also in Mars constellation Mrigasira.",
+        "Therefore, he is a pucca Martian (active, ambitious, bold, impulsive; acts first, speaks next, thinks last)."
+      ],
+      "dasa_balance_at_birth": "Mars Dasa balance: 2 years, 16 days"
+    },
+    "ascetic_tendencies_and_sannyas_factors": {
+      "influence_of_saturn_and_kethu": "As immediately after his birth Saturn and Kethu rose in the East, they modify Martian tendencies. Both Saturn and Kethu are in Aswini constellation governed by Kethu. Therefore, he prefers solitude, shuns society, and has the desire to study philosophy, meditate, concentrate, and aim for the upliftment of the soul.",
+      "houses_10_and_11_lord_saturn": "As lord of 10th he does Karma yoga. As lord of 11th Saturn blesses him so that he can have his desires fulfilled. Only Jupiter is in Uttarabhadrapada ruled by Saturn.",
+      "renunciation_timing": "During Jupiter Dasa, Saturn Bhukti, Moon Anthra, he became detached from family ties, took the divine path, and left home towards the North-East direction (Jupiter denotes NE; leaving the house indicated by 3rd and 12th houses)."
+    },
+    "marriage_and_return_to_domestic_life": {
+      "marriage_houses": "Houses 2, 7 and 11 indicate marriage.",
+      "significator_analysis": [
+        "7th house is occupied by Rahu; Rahu alone is in its own constellation (Swati).",
+        "2nd and 7th houses are owned by Venus. Sun and Venus are in Pubba (Poorvapalguni) ruled by Venus.",
+        "11th house is owned by Saturn; Jupiter alone is in the constellation of Saturn (Uttarabhadrapada).",
+        "Therefore, the significators for marriage are Jupiter, Sun, Venus and Rahu."
+      ],
+      "timing_and_location_of_marriage": "During Jupiter Dasa, Venus Bhukti, Moon Anthra, he returns home from the Mutt (Moon in 4th house of home/domestic sphere). During Rahu Anthra, marriage negotiations and celebration are promised. The marriage fructifies in Jupiter Dasa, Venus Bhukti, Rahu Anthra, Sun Sookshma when Sun transits in Swati star (ruled by Rahu) in Libra sign (governed by Venus)."
+    }
+  },
+  "who_survives_whom": {
+    "title": "WHO SURVIVES WHOM (LONGEVITY OF SPOUSE)",
+    "methods": {
+      "first_method": "Calculate the longevity of each individual separately. Add the longevity period to the date of birth to ascertain who passes away earlier.",
+      "second_method": "If the sub-lord of the 7th cusp happens to be the significator of houses 2, 7 and 8 (maraka and badhaka houses to partner) and the conjoined period operates in the lifetime of the native, the partner passes away. Mere placement of benefics or malefics in the 2nd or 7th house is unreliable; KP emphasizes sub-lord significations and calculating individual longevity independently."
+    }
+  },
+  "progeny_and_children_principles": {
+    "title": "PROSPECTS OF PROGENY (CHILDREN IN KP ASTROLOGY)",
+    "rules_and_houses": {
+      "progeny_houses": {
+        "2nd_house": "Increase in family members by birth of children.",
+        "5th_house": "Chief house for offspring, conception, and pregnancy.",
+        "11th_house": "Desire fulfillment and 5th house to the partner (7th house)."
+      },
+      "cuspal_sublord_rule": "Birth of children is promised if the sub-lord of the 11th cusp (for males) or 5th cusp (for females) is a significator of houses 2, 5 or 11.",
+      "order_of_significators": [
+        "Planets in the constellation of occupants of houses 2, 5, or 11.",
+        "Occupants of houses 2, 5, or 11.",
+        "Planets in the constellation of lords of houses 2, 5, 11 or Jupiter (Karaka for children).",
+        "Lords of houses 2, 5, 11 and Jupiter.",
+        "Planets conjoined with or aspected by the above significators."
+      ]
+    },
+    "beejam_and_kshethram_fertility_points": {
+      "beejam_male_seed": {
+        "formula": "Longitude of Jupiter + Longitude of Sun + Longitude of Venus (counted from Aries 0°).",
+        "interpretation": "If Beejam falls in an odd/masculine sign in both Rasi and Navamsa and is associated with benefics, the male has virility and promises children."
+      },
+      "kshethram_female_fertility": {
+        "formula": "Longitude of Jupiter + Longitude of Moon + Longitude of Mars (counted from Aries 0°).",
+        "interpretation": "If Kshethram falls in an even/female sign in both Rasi and Navamsa, the female generative system is healthy and fertile."
+      }
+    },
+    "birth_of_children_case_study": {
+      "title": "CASE STUDY: TIMING OF CHILDBIRTH (SCORPIO LAGNA)",
+      "planetary_positions": {
+        "lagna": "Scorpio (Vrischika)",
+        "houses": {
+          "1st": "Scorpio Lagna",
+          "2nd": "Sagittarius (Dhanus)",
+          "3rd": "Saturn and Rahu (Capricorn)",
+          "9th": "Mercury (Cancer)",
+          "10th": "Sun and Venus (Leo)",
+          "11th": "Ketu and Mars (Virgo)",
+          "8th": "Jupiter and Moon (Gemini)"
+        }
+      },
+      "analysis_and_significators": "Houses 2, 5 and 11 indicate childbirth. Rahu in 3rd in Saturn's sign is aspected by Jupiter (lord of 2 and 5) and Moon (lord of 9), becoming a supreme benefic significator. Saturn (occupant/lord) is next in strength. Mercury in Revathi star is lord of 11th. Therefore, Rahu, Saturn, and Mercury are primary significators.",
+      "timing_and_transit": {
+        "dasa_period": "Rahu Dasa, Saturn (Sani) Bhukti, Mercury (Budha) Anthra.",
+        "transit_trigger": "Mercury transiting in Gemini (Mithuna) in Arudra star (ruled by Rahu) and sub of Saturn pinpointed the exact date of birth of the child."
+      }
+    }
+  },
+  "progeny_case_study_at_least_one_child": {
+    "title": "CASE STUDY: IS THERE AT LEAST ONE CHILD?",
+    "query": "Will the native have at least one child? If so, when will conception and childbirth take place?",
+    "planetary_positions_and_dasa": {
+      "dasa_balance_at_birth": "Saturn Dasa: 7 years, 5 months, 14 days",
+      "house_occupations_and_lords": [
+        "2nd house is occupied by Saturn (lord of 2 in own sign) and Venus (lord of 5 in friendly sign).",
+        "5th house is owned by Mars (Vargottama and strong).",
+        "11th house is owned by Venus.",
+        "5th and 11th houses are vacant.",
+        "Stars of Saturn (Pushya, Anuradha, Uttarabhadrapada): Moon is in Anuradha, Rahu is in Uttarabhadrapada -> Moon and Rahu are strong significators.",
+        "Stars of Venus (Bharani, Poorvaphalguni, Poorvashada): Sun alone is in Poorvashada -> Sun is a strong significator.",
+        "Therefore, the primary significators for childbirth are Venus, Sun, Mars, and Rahu."
+      ]
+    },
+    "timing_of_events": {
+      "conception": "During Venus Dasa, Moon Bhukti, Venus Anthra, when Sun transits Rohini 2nd pada (Venus sign, Moon star, Venus sub), conception occurs (~5th June 1969).",
+      "childbirth": "During Venus Dasa, Mars Bhukti, Saturn Anthra, the child is born (middle of March 1970)."
+    }
+  },
+  "adoption_rules": {
+    "title": "ADOPTION RULES & INDICATORS (CHILDLESSNESS & ADOPTION)",
+    "rules": [
+      "If Jupiter and lord of 5th are ill-placed and the 5th house from their occupied signs is occupied by malefics, the native adopts a child.",
+      "If the 5th cusp falls in Saturn's sign in Rasi or Navamsa and Moon occupies or aspects the 5th house, adoption takes place.",
+      "If Saturn is conjoined with the lord of the sign occupied by Moon, adoption is indicated.",
+      "Saturn, Moon, and Mercury in 5th house indicates adoption.",
+      "Saturn and Mars in 5th house indicates adoption.",
+      "Saturn conjoined with Moon in the 11th house indicates adoption.",
+      "If 5th house is occupied or aspected by Saturn or Mercury, and Gulika is in the 5th house, adoption occurs.",
+      "The 7th house (secondary partner/legal agreement) is also judged for adoption."
+    ]
+  },
+  "santana_thithi_system": {
+    "title": "SANTANA THITHI & KERALA TRADITIONAL METHOD FOR PROGENY",
+    "formula": {
+      "santana_chandra": "Moon Longitude × 5",
+      "santana_ravi": "Lagna Longitude × 5",
+      "santana_thithi": "Santana Chandra - Santana Ravi (normalized to 0° - 360°)"
+    },
+    "interpretation_by_thithi": {
+      "sukla_paksha (0° to 180°)": "Birth of children is assured and smoothly attained.",
+      "krishna_paksha (180° to 360°)": "Difficulties in progeny; specific remedial worship is prescribed depending on the degree difference:",
+      "degree_ranges_and_remedies": {
+        "180° - 192° (Krishna Prathama)": "Propitiate Lord Muruga and Lord Ganesha; perform charity.",
+        "192° - 204° (Krishna Dwitiya/Tritiya)": "Worship Lord Muruga (son of Shiva).",
+        "204° - 216° (Krishna Chaturthi)": "Propitiate Lord Ganesha.",
+        "216° - 228° (Krishna Sashti/Saptami)": "Pray to Goddess Durga and appease Sarpa devatas (Naga worship).",
+        "228° - 240° (Krishna Ashtami/Navami)": "Pray to Goddess Durga and perform Pithru Tarpanam / Ashtaka / Parvana Sraddha to appease Manes (ancestors).",
+        "240° - 252° (Krishna Dwadasi)": "Worship the Sun God (Surya).",
+        "252° - 264°": "False pregnancy or medical delays; requires planetary propitiation.",
+        "264° - 276°": "Adoption of a child is indicated.",
+        "276° - 360°": "Progeny denied and adoption unlikely unless strong benefic Dasa intervenes."
+      }
+    }
+  },
+  "pregnancy_months_development": {
+    "title": "MONTHLY PLANETARY RULERS OF PREGNANCY & EMBRYO DEVELOPMENT",
+    "monthly_rulers": {
+      "1st_month": "Venus - Semen and ovum in fluid state.",
+      "2nd_month": "Mars - Embryo solidifies into flesh.",
+      "3rd_month": "Jupiter - Limbs, organs, and sprouts of body form.",
+      "4th_month": "Sun - Bone structure and skeleton develop.",
+      "5th_month": "Moon - Skin and external covering form.",
+      "6th_month": "Saturn - Hair, nails, and bodily fibres grow.",
+      "7th_month": "Mercury - Nervous system, intellect, and senses develop.",
+      "8th_month": "Lord of Adhana Lagna - Umbilical cord channels nourishment from mother.",
+      "9th_month": "Sun - Foetus feels hunger, thirst, and movement.",
+      "10th_month": "Moon - Full maturation and readiness for delivery."
+    },
+    "abortion_and_miscarriage_rule": "Abortion or miscarriage occurs in the month ruled by a planet that is ill-posited, debilitated, or severely afflicted by malefics in the transit and natal chart."
+  },
+  "balarishta_rules": {
+    "title": "BALARISHTA & SHORT-LIVED CHILDREN RULES",
+    "combinations": [
+      "If in the child's chart malefics occupy Lagna and 7th house conjoined with Moon and devoid of benefic aspects, the infant passes away immediately after delivery.",
+      "Waning Moon with malefics in Kendra and no benefic in Kendra indicates short life.",
+      "Moon conjoined with malefics in 5th, 8th, or 12th house indicates short life."
+    ]
+  },
+  "impotency_and_eunuch_principles": {
+    "title": "IMPOTENCY, EUNUCHS & DEFECTIVE GENERATIVE ORGANS",
+    "traditional_rules": "Sun in masculine sign and Moon in feminine sign in opposition (180°), or Mercury and Saturn in close aspect, or Lagna and Moon in masculine signs aspected by Mars indicates lack of sexual virility.",
+    "kp_exact_rule": "According to KP, the lord of the constellation and the lord of the sub are governed by Saturn, Rahu, or Ketu, and all of them are significators of barren/negating houses (6, 8, 12).",
+    "case_study_bhagyam_and_madhana_gopala_krishnan": "Case where traditional matching failed to reveal physical defectiveness of both partners, yet their mutual karma united them harmoniously in lifelong platonic companionship, proving destiny's precision."
+  },
+  "remedial_idols_and_shanthi": {
+    "title": "REMEDIAL MEASURES, SHANTHI & IDOL MATERIALS",
+    "progeny_remedy": "Lord Ganesha idol made of copper and nocturnal prayer/Shanthi during calm night hours bestows enthusiasm, removes obstacles of 5th/8th house, and blesses the native with a child.",
+    "idol_materials_and_effects": {
+      "wood_or_clay": "Longevity and long life.",
+      "sandalwood_or_shwetha_arka": "Prosperity and victory over enemies.",
+      "coral": "Authority, power, competition success, and health.",
+      "gold": "Restores good health and protects against chronic illnesses.",
+      "silver": "Name, fame, reputation, and public honour.",
+      "copper": "Progeny, children, and vitality.",
+      "stone": "Landed property, real estate, and permanent wealth.",
+      "panchaloka (5 metals)": "All-round fruits and desires of life."
+    }
+  },
+  "case_study_no_child_horary_270": {
+    "title": "CASE STUDY 1: ANY CHILD AT ALL? (DENIAL OF PROGENY - HORARY NO. 270)",
+    "query": "A gentleman married on 30th May 1947 consulted with Horary No. 270 on Sunday, 31st August 1969 at 6:28 AM at Delhi: Will I have any child at all?",
+    "astrological_analysis": {
+      "moon_signification": "Moon in a barren sign in the constellation of abortive node Ketu (significator of houses 5 and 6), indicating query regarding childbirth.",
+      "11th_cusp_denial": "11th cusp at 16°16' Capricorn in Saturn sign, Moon star, and sub of a planet in the 12th house, denying birth of children.",
+      "5th_cusp_denial": "5th cusp at 16°16' Leo in barren sign of Sun, star of planet in 12th to 5th (4th house), and sub of planet in 12th to 5th, confirming denial.",
+      "houses_2_5_11_lords": [
+        "2nd house is vacant; lord Mars is in the 6th house in a strong barren sign in the sub of Rahu in 12th -> heavily afflicted.",
+        "5th house is occupied by Sun in the constellation of Venus in 4th house -> denies.",
+        "11th house is unoccupied; lord Saturn is retrograde in the 12th house from 2nd.",
+        "Dasa Lord Saturn is in the sub of Mercury (in 4th); subsequent Mercury Dasa is in a barren sign and sub of an abortive node."
+      ]
+    },
+    "conclusion": "Progeny is completely denied for the native throughout life."
+  },
+  "case_study_no_child_horary_217_and_natal": {
+    "title": "CASE STUDY 2: ANY CHILD AT ALL? (HORARY NO. 217 & NATAL CHART VERIFICATION)",
+    "query": "A gentleman married on 14th November 1960 with no issue consulted with Horary No. 217 on Friday, 24th December 1969 at 3:00 PM IST at Jorhat (26°46' N, 94°9' E).",
+    "planetary_table": {
+      "Sun": {
+        "star_lord": "Kethu",
+        "sub_lord": "Mercury"
+      },
+      "Moon": {
+        "star_lord": "Saturn",
+        "sub_lord": "Mars"
+      },
+      "Mars": {
+        "star_lord": "Rahu",
+        "sub_lord": "Kethu"
+      },
+      "Mercury": {
+        "star_lord": "Sun",
+        "sub_lord": "Rahu"
+      },
+      "Jupiter": {
+        "star_lord": "Rahu",
+        "sub_lord": "Rahu"
+      },
+      "Venus": {
+        "star_lord": "Kethu",
+        "sub_lord": "Moon"
+      },
+      "Saturn (R)": {
+        "star_lord": "Kethu",
+        "sub_lord": "Jupiter"
+      },
+      "Rahu": {
+        "star_lord": "Jupiter",
+        "sub_lord": "Saturn"
+      },
+      "Kethu": {
+        "star_lord": "Venus",
+        "sub_lord": "Saturn"
+      }
+    },
+    "horary_chart_findings": {
+      "11th_cusp": "16° Capricorn (Saturn sign, Sun star, Jupiter sub). Sun in Ketu star in barren sign Leo in 8th (12th to 9th). Jupiter in Rahu star and sub in 12th -> Denies.",
+      "2nd_house": "Vacant; lord Mars conjoined with Rahu in 12th in star of Rahu and sub of Ketu -> Mars is spoiled.",
+      "5th_house": "Occupied by Moon (lord of 5) in star of retrograde Saturn and sub of Mars in 12th.",
+      "11th_house": "Vacant; lord Saturn is retrograde."
+    },
+    "natal_chart_findings": {
+      "birth_details": "Balance of Mars Dasa at birth: 1 year, 7 months, 21 days.",
+      "11th_cusp": "Aries 9°31' in Mars sign, Ketu star, Rahu sub. Mars in barren sign Virgo in 4th (12th to 5th). Ketu in barren sign. Rahu is agent of retrograde Saturn -> 11th cusp denies in natal chart as well.",
+      "dasa_agreement": "Saturn Dasa operates in both Natal and Horary charts, confirming complete denial of children."
+    }
+  },
+  "who_is_sterile_principles": {
+    "title": "WHO IS STERILE? (DIAGNOSING MALE VS FEMALE STERILITY IN KP ASTROLOGY)",
+    "methodology": {
+      "sublord_analysis": "Examine the sub-lord of the Ascendant (representing native/male) and the sub-lord of the 5th cusp (or 7th/11th representing wife). If the sub-lord representing the partner is in a barren sign (Aries, Gemini, Leo, Virgo) and afflicted by abortive nodes/retrograde lords, it indicates that the partner is sterile.",
+      "ruling_planets_confirmation": "1. Note the Ruling Planets of the native (Ascendant Lord, Moon Sign Lord, Moon Star Lord, Day Lord). 2. Note the significators of 5th/7th representing the female partner (e.g., Venus, Moon, Jupiter, Mars). 3. Note the Ruling Planets at the moment of judgment in Horary Astrology. 4. If the Ruling Planets at judgment predominantly reflect the female significators in barren configurations, it provides divine confirmation that the female partner is sterile."
+    }
+  },
+  "case_study_when_will_have_child_female_horary_natal": {
+    "title": "CASE STUDY: WHEN WILL I HAVE A CHILD? (FEMALE QUERIST - HORARY & NATAL DENIAL/ABORTION)",
+    "query": "A lady married in 1965 from Welimada, Ceylon consulted with a Horary number on 11-12-1969 at 8:40 AM IST at Mandandawela, Matale: When will I have a child?",
+    "astrological_analysis": {
+      "moon_signification": "Moon in Ketu constellation signifies matters ruled by Ketu (owner of 5th house). Sub-lord Jupiter is the chief Karaka for children and significator of 5th -> Confirms query on childbirth.",
+      "promise_of_progeny_female": {
+        "5th_cusp": "5th cusp falls in a barren sign, star of Venus (3rd from 5th), and sub of a node in the 6th from Lagna -> Denies fruitfulness.",
+        "11th_cusp": "11th cusp is in star of Rahu in 11th and sub of Mars (12th to 5th) -> Deciding factor denying childbirth.",
+        "abortion_indication": "Even if conception occurs, it will result in miscarriage or abortion due to aspects of malefics to houses 5 and 11, and the presence of abortive planet Ketu in the 5th house."
+      },
+      "houses_2_5_11_analysis": [
+        "2nd house is vacant; lord Mars is in own constellation and sub of a planet in 12th to 5th.",
+        "5th house is occupied by abortive planet Ketu in Venus star (3rd from 5th) and sub of retrograde Saturn (6th to 5th) -> Denies.",
+        "11th house is occupied by Rahu in star of Jupiter (6th to 11th) and sub of a retrograde planet in 12th to Lagna -> Complete denial."
+      ],
+      "natal_chart_verification": {
+        "dasa_balance": "Mercury Dasa at birth: 9 years, 11 months, 17 days.",
+        "cuspal_points": "5th cusp in star of Sun (significator of 12th to 5th) and sub of retrograde planet. 11th cusp in star of Jupiter (12th to 11th) and sub-lord is debilitated (Neecha).",
+        "house_occupations": "2nd house occupied by abortive Ketu in star/sub of Rahu (6th from Lagna). 5th house lord Mercury is in 12th to 5th in Ketu star and node's sub in 6th. 11th occupied by Moon in star of a mute planet (6th from 11th).",
+        "running_dasa": "Venus Dasa in star of abortive Ketu (6th to Lagna, 12th to 5th) and sub of barren planet -> Denies progeny completely."
+      }
+    },
+    "conclusion": "The native is permanently denied children; any pregnancy will abort."
+  },
+  "case_study_when_will_have_child_male_horary_220": {
+    "title": "CASE STUDY: WHEN WILL I HAVE A CHILD? (MALE QUERIST - HORARY NO. 220, MATALE)",
+    "query": "A male querist gave Horary No. 220 at 6:40 AM on 7-12-1969 at Matale to ask about childbirth.",
+    "horary_chart_details": {
+      "ascendant": "16°43'20\" Kumbha (Aquarius Lagna).",
+      "moon_position": "Moon in mute sign Cancer in own star in 6th house (12th to partner's 7th) and sub of Saturn in 2nd house (family/finance and significator of 5th) -> Reflects addition to family through wife.",
+      "male_signification_11th_and_5th": {
+        "11th_cusp": "In Jupiter sign, Venus star, Rahu sub. Sub-lord Rahu is in 8th from 11th (3rd house) -> Denies.",
+        "5th_cusp": "In mute sign, lord Mercury in 6th to 5th. Cusp in Rahu star, Moon sub. Sub-lord Moon is in 8th from 5th -> Denies."
+      },
+      "houses_2_5_11_analysis": [
+        "2nd cusp is in Mercury star, sub of planet in 6th. 2nd house occupied by retrograde Saturn on abortive node in 6th to 2nd.",
+        "5th house is vacant; lord in 6th from 5th in own star and sub of a retrograde planet.",
+        "11th house is vacant; lord Jupiter is in 6th from Lagna in star of Mars (12th to Lagna) and sub of a planet in 4th."
+      ]
+    },
+    "conclusion": "All significators negate houses 2, 5, and 11, confirming that the native will never have a child."
+  },
+  "case_study_when_delivery_sivapatham": {
+    "title": "CASE STUDY: WHEN DELIVERY? (PINPOINTING EXACT DATE AND HOUR OF CHILDBIRTH IN KP)",
+    "astrologer_and_context": "Expounded by Shri Sivapatham of Ceylon, illustrating how Krishnamurti Padhdhati pinpoints the exact date and time of childbirth when medical forecasts fail.",
+    "methodology_and_ruling_planets": {
+      "houses_for_delivery": "Houses 2 (family addition), 5 (offspring), and 11 (desire fulfillment). Sub-lords of 2nd, 5th, and 11th cusps must signify 2, 5, 11 for safe delivery.",
+      "significators_identification": [
+        "2nd house: Lord Mars, Jupiter in Mars star -> Jupiter and Mars.",
+        "5th house: Occupied by Rahu, Venus in Rahu star, Saturn lord of 5, Sun & Mercury in Saturn star -> Venus, Rahu, Sun, Mercury, Saturn.",
+        "11th house: Occupied by Ketu, Saturn in Ketu star, Sun lord of 11 -> Saturn, Ketu, Sun.",
+        "Nodes representation: Rahu represents Saturn & Jupiter; Ketu represents Sun & Venus.",
+        "Final prime significators: Ketu, Rahu, Mercury, Mars."
+      ],
+      "ruling_planets_at_judgment": {
+        "ascendant": "Venus sign, Rahu star, Venus sub",
+        "moon": "Jupiter sign, Mercury star, Rahu sub",
+        "day_lord": "Mercury (Wednesday), placed in Mars sign, Saturn star, Mercury sub",
+        "common_strongest_planets": "Ketu, Rahu, and Mercury"
+      }
+    },
+    "exact_transit_pinpoint": {
+      "rule": "For a minor event materializing within days, track the Moon's transit through the sign, star, sub, and sub-sub ruled by the strongest significators.",
+      "pinpointed_transit": "Moon in Venus sign (Taurus), Sun star (Krittika), Mercury sub, Jupiter sub-sub (at 1°50' Taurus) at exactly 2:00 AM on Monday, 27/28th November 1969.",
+      "outcome": "Baby boy was born exactly on the predicted date and time at 2:00 AM on 27/28th November 1969."
+    }
+  },
+  "progeny_conception_and_mortality_rules": {
+    "title": "RULES FOR FIRST VS SECOND CONCEPTION & TIMING OF INFANT MORTALITY",
+    "intra_uterine_mortality_timing": {
+      "principle": "Presence of Saturn, Rahu, or Ketu in the Ascendant or 5th house does not automatically deny the first child. Examine the sub-lord of the node or Saturn in the Ascendant: if it is occupant or owner of 4th, 8th, or 12th house (negating houses to 5th), the first issue is abortive or short-lived.",
+      "timing_categories": {
+        "abortion_miscarriage": "Operates when the conjoined period (Dasa-Bhukti-Anthra) of 4th, 8th, 12th, or Badhakasthana runs during the intra-uterine gestation period.",
+        "stillborn": "Operates when the adverse conjoined period coincides immediately prior to or at the moment of delivery.",
+        "infantile_mortality": "Operates when the adverse conjoined period starts immediately after delivery."
+      }
+    },
+    "second_conception_judgment": {
+      "rule": "To judge the second child (next conception), analyze the 3rd house from the 5th house = 7th house (along with houses 2 and 11).",
+      "case_study_second_child": {
+        "mother_chart": "Sagittarius Lagna; Saturn in Ascendant in Sun star, Moon sub. Moon in 4th (12th to 5th) caused the first conception to fail.",
+        "second_child_analysis": "7th house (representing 2nd child) ruled by Mercury; fruitful significators Moon, Jupiter, Mercury, Venus.",
+        "delivery_period": "Second child born successfully in Moon Dasa, Venus Bhukti, Jupiter Anthra, Mars Sookshma with transits perfectly aligned to sub-lords."
+      }
+    }
+  }
+}

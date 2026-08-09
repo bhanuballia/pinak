@@ -36,11 +36,64 @@ const ShadbalaRatioChart = ({ title, data }) => {
     );
 };
 
-const DegreeTable = ({ pPos }) => {
+const NAKSHATRA_NAMES = [
+    "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra",
+    "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni",
+    "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshta",
+    "Moola", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha",
+    "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"
+];
+
+const NAKSHATRA_LORDS_ORDER = ["Ketu", "Venus", "Sun", "Moon", "Mars", "Rahu", "Jupiter", "Saturn", "Mercury"];
+
+const NAKSHATRA_NAMA_AKSHARAS = [
+    ["Chu", "Che", "Cho", "La"],      // Ashwini
+    ["Lee", "Loo", "Lay", "Lo"],      // Bharani
+    ["A", "Ee", "Oo", "Ea"],          // Krittika
+    ["O", "Va", "Vi", "Vu"],          // Rohini
+    ["Ve", "Vo", "Ka", "Ki"],         // Mrigashira
+    ["Ku", "Gha", "Ng", "Chha"],      // Ardra
+    ["Ke", "Ko", "Ha", "Hi"],         // Punarvasu
+    ["Hu", "He", "Ho", "Da"],         // Pushya
+    ["De", "Do", "De", "Do"],         // Ashlesha
+    ["Ma", "Mi", "Mu", "Me"],         // Magha
+    ["Mo", "Ta", "Ti", "Tu"],         // Purva Phalguni
+    ["Te", "To", "Pa", "Pee"],        // Uttara Phalguni
+    ["Pu", "Sha", "Na", "Tha"],       // Hasta
+    ["Pe", "Po", "Ra", "Re"],         // Chitra
+    ["Ru", "Re", "Ro", "Ta"],         // Swati
+    ["Ti", "Tu", "Te", "To"],         // Vishakha
+    ["Na", "Ni", "Nu", "Ne"],         // Anuradha
+    ["No", "Ya", "Yi", "Yu"],         // Jyeshta
+    ["Ye", "Yo", "Bha", "Bhi"],       // Moola
+    ["Bhu", "Dha", "Pha", "Dha"],     // Purva Ashadha
+    ["Bhe", "Bho", "Ja", "Ji"],       // Uttara Ashadha
+    ["Ju", "Khe", "Kho", "Ga"],       // Shravana
+    ["Ga", "Gi", "Gu", "Ge"],         // Dhanishta
+    ["Go", "Sa", "Si", "Su"],         // Shatabhisha
+    ["Se", "So", "Da", "Di"],         // Purva Bhadrapada
+    ["Du", "Tha", "Jha", "Da"],       // Uttara Bhadrapada
+    ["De", "Do", "Cha", "Chi"]        // Revati
+];
+
+const formatDegInSign = (absDeg) => {
+    if (typeof absDeg !== 'number') return '00°00\'00"';
+    const degInSign = (absDeg % 30 + 30) % 30;
+    const d = Math.floor(degInSign);
+    const m = Math.floor((degInSign - d) * 60);
+    const s = Math.floor(((degInSign - d) * 60 - m) * 60);
+    return `${d.toString().padStart(2, '0')}°${m.toString().padStart(2, '0')}'${s.toString().padStart(2, '0')}"`;
+};
+
+const DegreeTable = ({ pPos, worksheetData }) => {
+    const lagnaSignIndex = getLagnaSignIndex(worksheetData || {});
+    const ascendantDeg = worksheetData?.charts?.houses?.[1]?.cusp_deg ?? worksheetData?.charts?.houses?.["1"]?.cusp_deg ?? pPos.find(x => x.is_ascendant || x.planet === "Ascendant" || x.name === "Ascendant")?.degree ?? 0;
+
     const rows = [
         { id: "As", name: "Ascendant", isLagna: true, color: "#ff8c00" },
         ...PLANETS.map(p => ({ id: p, name: p, color: PLANET_COLORS_CLASSIC[p] }))
     ];
+
     return (
         <div className="flex-1 overflow-auto custom-scrollbar bg-[#ffffe0]">
             <table className="w-full text-[11px] font-serif text-left border-collapse">
@@ -57,27 +110,54 @@ const DegreeTable = ({ pPos }) => {
                 </thead>
                 <tbody>
                     {rows.map(r => {
-                        let pos = { degree: 0, rc: "", nakshatra: "Unknown", p_lrd: "", func: "" };
+                        let absDeg = 0;
+                        let found = null;
+                        let isRetro = false;
+                        let isCombust = false;
+
                         if (r.isLagna) {
-                            pos = { degree: pPos.find(x => x.is_ascendant)?.degree || 0, rc: "", nakshatra: "U.Phalg.", p_lrd: "1,Su/Mo/Mo", func: "Benefic" };
+                            absDeg = ascendantDeg;
                         } else {
-                            const found = pPos.find(x => x.name === r.id || x.planet === r.id);
-                            pos = {
-                                degree: found?.degree || found?.normDegree || 0,
-                                rc: found?.is_retrograde ? "R" : "",
-                                nakshatra: found?.nakshatra || "Moola",
-                                p_lrd: "1,Ke/Su/Sa", func: "Benefic"
-                            };
+                            found = pPos.find(x => x.name === r.id || x.planet === r.id);
+                            absDeg = found?.degree ?? found?.normDegree ?? 0;
+                            isRetro = !!(found?.is_retrograde || found?.retrograde);
+                            isCombust = !!(found?.is_combust || found?.combust);
                         }
+
+                        let rc = "";
+                        if (isRetro && isCombust) rc = "RC";
+                        else if (isRetro) rc = "R";
+                        else if (isCombust) rc = "C";
+
+                        const nakIdx = Math.floor(((absDeg % 360 + 360) % 360) / (360 / 27));
+                        const degInNak = ((absDeg % 360 + 360) % 360) % (360 / 27);
+                        const pada = Math.floor(degInNak / ((360 / 27) / 4)) + 1;
+
+                        const nakName = found?.nakshatra || NAKSHATRA_NAMES[nakIdx] || "Ashwini";
+                        const namaAkshara = found?.nama_akshara || found?.nama || NAKSHATRA_NAMA_AKSHARAS[nakIdx]?.[pada - 1] || "-";
+
+                        const starLord = found?.nakshatra_lord || found?.star_lord || NAKSHATRA_LORDS_ORDER[nakIdx % 9];
+                        const starLordAbbrev = ABBREV[starLord] || starLord.substring(0, 2);
+
+                        const subLord = found?.sub_lord || found?.sub || NAKSHATRA_LORDS_ORDER[(nakIdx + pada) % 9];
+                        const subLordAbbrev = ABBREV[subLord] || subLord.substring(0, 2);
+
+                        const ssb = found?.sub_sub_lord || found?.ssb || NAKSHATRA_LORDS_ORDER[(nakIdx + pada + 1) % 9];
+                        const ssbAbbrev = ABBREV[ssb] || ssb.substring(0, 2);
+
+                        const pLrdStr = `${pada},${starLordAbbrev}/${subLordAbbrev}/${ssbAbbrev}`;
+                        const funcStr = getFunctionalNature(lagnaSignIndex, r.id);
+                        const funcColor = funcStr === "Benefic" ? "text-emerald-700 font-semibold" : funcStr === "Malefic" ? "text-red-700 font-semibold" : "text-amber-700 font-semibold";
+
                         return (
                             <tr key={r.id} className="border-b border-[#eeeeee] last:border-0 hover:bg-[#fffacd] transition-colors">
                                 <td className="px-2 py-1 font-bold border-r border-[#eeeeee]" style={{ color: r.color }}>{r.name}</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">{pos.degree.toFixed(4)}</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">{pos.rc}</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">{pos.nakshatra}</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">Tay</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">{pos.p_lrd}</td>
-                                <td className="px-2 py-1 text-black">{pos.func}</td>
+                                <td className="px-2 py-1 text-black border-r border-[#eeeeee] font-mono">{formatDegInSign(absDeg)}</td>
+                                <td className="px-2 py-1 text-red-700 font-bold border-r border-[#eeeeee]">{rc}</td>
+                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">{nakName}</td>
+                                <td className="px-2 py-1 text-indigo-900 font-bold border-r border-[#eeeeee]">{namaAkshara}</td>
+                                <td className="px-2 py-1 text-black border-r border-[#eeeeee] font-mono">{pLrdStr}</td>
+                                <td className={`px-2 py-1 ${funcColor}`}>{funcStr}</td>
                             </tr>
                         );
                     })}
@@ -87,8 +167,93 @@ const DegreeTable = ({ pPos }) => {
     );
 };
 
-const DignityTable = ({ shadbalaData }) => {
+const getLagnaSignIndex = (data) => {
+    const lagnaHouse = data?.charts?.houses?.[1] || data?.charts?.houses?.["1"] || {};
+    let idx = lagnaHouse.sign_index;
+    if (idx === undefined && lagnaHouse.cusp_deg !== undefined) {
+        idx = Math.floor(lagnaHouse.cusp_deg / 30);
+    }
+    if (idx === undefined) {
+        idx = data?.charts?.ascendant_sign_index || 0;
+    }
+    return idx;
+};
+
+const getFunctionalNature = (lagnaIdx, planetName) => {
+    const lagnaMap = {
+        0: { benefic: ["Sun", "Moon", "Mars", "Jupiter"], malefic: ["Mercury", "Venus", "Saturn"] },
+        1: { benefic: ["Sun", "Mercury", "Saturn", "Mars"], malefic: ["Moon", "Jupiter", "Venus"] },
+        2: { benefic: ["Venus"], malefic: ["Sun", "Mars", "Jupiter"] },
+        3: { benefic: ["Moon", "Mars", "Jupiter"], malefic: ["Mercury", "Venus", "Saturn"] },
+        4: { benefic: ["Sun", "Mars", "Jupiter"], malefic: ["Moon", "Mercury", "Venus", "Saturn"] },
+        5: { benefic: ["Venus"], malefic: ["Moon", "Mars", "Jupiter"] },
+        6: { benefic: ["Mercury", "Saturn", "Venus"], malefic: ["Sun", "Moon", "Mars", "Jupiter"] },
+        7: { benefic: ["Moon", "Sun", "Jupiter"], malefic: ["Mercury", "Venus", "Saturn"] },
+        8: { benefic: ["Sun", "Mars"], malefic: ["Venus", "Saturn", "Mercury"] },
+        9: { benefic: ["Mercury", "Venus", "Saturn"], malefic: ["Moon", "Mars", "Jupiter"] },
+        10: { benefic: ["Venus", "Saturn", "Mars"], malefic: ["Moon", "Jupiter"] },
+        11: { benefic: ["Moon", "Mars", "Jupiter"], malefic: ["Sun", "Venus", "Saturn"] }
+    };
+    const lagnaData = lagnaMap[lagnaIdx] || { benefic: [], malefic: [] };
+    if (planetName === "Rahu" || planetName === "Ketu") return "Malefic";
+    if (lagnaData.benefic.includes(planetName)) return "Benefic";
+    if (lagnaData.malefic.includes(planetName)) return "Malefic";
+    return "Neutral";
+};
+
+const calculateJaiminiKarakas = (planetPositions) => {
+    if (!planetPositions || !Array.isArray(planetPositions)) return {};
+    const planetsFor7 = planetPositions.filter(p => !["Rahu", "Ketu", "Ascendant", "Lagna", "Uranus", "Neptune", "Pluto"].includes(p.planet || p.name));
+    const sorted7 = [...planetsFor7].sort((a, b) => ((b.degree || b.normDegree || 0) % 30) - ((a.degree || a.normDegree || 0) % 30));
+    const k7Names = ["AK", "AmK", "BK", "MK", "PiK", "GK", "DK"];
+    const k7 = {};
+    sorted7.forEach((p, idx) => {
+        if (idx < 7) k7[p.planet || p.name] = k7Names[idx];
+    });
+    return k7;
+};
+
+const getSBRanks = (strengthPlanets) => {
+    if (!strengthPlanets) return {};
+    const validPlanets = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn"];
+    const sbList = validPlanets.map(p => ({
+        planet: p,
+        sb: strengthPlanets[p]?.total || strengthPlanets[p]?.ratio_data?.ratio || 0
+    }));
+    sbList.sort((a, b) => b.sb - a.sb);
+    const ranks = {};
+    sbList.forEach((item, idx) => {
+        if (item.sb > 0) ranks[item.planet] = idx + 1;
+    });
+    return ranks;
+};
+
+const getBaladiAge = (deg, signIdx) => {
+    const degInSign = (deg || 0) % 30;
+    const isOddSign = (signIdx || 0) % 2 === 0;
+    if (isOddSign) {
+        if (degInSign < 6) return "Infant";
+        if (degInSign < 12) return "Youth";
+        if (degInSign < 18) return "Adult";
+        if (degInSign < 24) return "Old";
+        return "Dead";
+    } else {
+        if (degInSign < 6) return "Dead";
+        if (degInSign < 12) return "Old";
+        if (degInSign < 18) return "Adult";
+        if (degInSign < 24) return "Youth";
+        return "Infant";
+    }
+};
+
+const DignityTable = ({ shadbalaData, worksheetData }) => {
     const rows = PLANETS.map(p => ({ id: p, name: p, color: PLANET_COLORS_CLASSIC[p] }));
+    const positionArray = Array.isArray(worksheetData?.planet_positions) ? worksheetData.planet_positions : Object.values(worksheetData?.planet_positions || {});
+    const lagnaSignIndex = getLagnaSignIndex(worksheetData || {});
+    const k7 = calculateJaiminiKarakas(positionArray);
+    const sbRanks = getSBRanks(worksheetData?.strength?.planets);
+    const avasthas = worksheetData?.planetary_avasthas || {};
+
     return (
         <div className="flex-1 overflow-auto custom-scrollbar bg-[#ffffe0]">
             <table className="w-full text-[11px] font-serif text-left border-collapse">
@@ -108,19 +273,50 @@ const DignityTable = ({ shadbalaData }) => {
                 </thead>
                 <tbody>
                     {rows.map(r => {
-                        const sb = shadbalaData.find(x => x.name === r.id);
+                        const pName = r.id;
+                        const p = positionArray.find(pos => pos.planet === pName || pos.name === pName) || {};
+                        const pStrength = worksheetData?.strength?.planets?.[pName];
+                        let dignity = p.dignity || pStrength?.dignity || "Neutral";
+                        if (["Rahu", "Ketu"].includes(pName) && (dignity === "Unknown" || !dignity)) {
+                            dignity = "Neutral";
+                        }
+                        dignity = dignity.replace(/[★↓◆♥✕]/g, '').trim();
+
+                        const sbTotal = pStrength?.total || pStrength?.ratio_data?.ratio || p.shadbala_pct || p.shadbala || 1.0;
+                        const sbPct = typeof sbTotal === 'number' ? sbTotal.toFixed(2) : "1.00";
+                        const sbRank = ["Rahu", "Ketu"].includes(pName) ? "-" : (sbRanks[pName] || "-");
+
+                        const vbScore = worksheetData?.vimsopaka_bala?.shodashvarga?.[pName] ??
+                            worksheetData?.vimsopaka_assessment?.vimsopaka_bala?.dasavarga?.[pName] ??
+                            worksheetData?.vimsopaka_assessment?.vimsopaka_bala?.shodashvarga?.[pName] ??
+                            (worksheetData?.vimsopaka?.[pName] !== undefined ? worksheetData.vimsopaka[pName] : 15);
+                        const vbDisplay = typeof vbScore === 'number' ? vbScore.toFixed(1) : (vbScore || "15");
+
+                        const av = p.ashtakavarga || worksheetData?.ashtakavarga?.binnashtakavarga?.[pName]?.total || worksheetData?.ashtakavarga?.[pName] || "4";
+
+                        const pAv = avasthas[pName] || {};
+                        const shyanadiParts = pAv.shyanadi ? pAv.shyanadi.split('\n') : [];
+                        const avasthaStr = shyanadiParts[1] ? shyanadiParts[1].replace(/[()]/g, '').trim() : (shyanadiParts[0] || p.avastha || "Awake");
+
+                        const baladiParts = pAv.baladi ? pAv.baladi.split('\n') : [];
+                        const ageStr = baladiParts[1] ? baladiParts[1].replace(/[()]/g, '').trim() : (baladiParts[0] || getBaladiAge(p.degree || p.normDegree, Math.floor((p.degree || p.normDegree || 0) / 30)));
+
+                        const karakStr = ["Rahu", "Ketu"].includes(pName) ? "-" : (k7[pName] || "-");
+                        const natureStr = getFunctionalNature(lagnaSignIndex, pName);
+                        const natureColor = natureStr === "Benefic" ? "text-emerald-700 font-semibold" : natureStr === "Malefic" ? "text-red-700 font-semibold" : "text-amber-700 font-semibold";
+
                         return (
                             <tr key={r.id} className="border-b border-[#eeeeee] last:border-0 hover:bg-[#fffacd] transition-colors">
                                 <td className="px-2 py-1 font-bold border-r border-[#eeeeee]" style={{ color: r.color }}>{r.name}</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">Neutr.</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">{sb?.shadbala?.toFixed(2) || "1.00"}</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">1</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">{sb?.vimshopaka || 10}</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">4</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">Drm.</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">Infant</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">GK</td>
-                                <td className="px-2 py-1 text-black">Benefic</td>
+                                <td className="px-2 py-1 text-black border-r border-[#eeeeee] truncate max-w-[55px]">{dignity}</td>
+                                <td className="px-2 py-1 text-black border-r border-[#eeeeee] font-mono">{sbPct}</td>
+                                <td className="px-2 py-1 text-black border-r border-[#eeeeee] font-mono">{sbRank}</td>
+                                <td className="px-2 py-1 text-black border-r border-[#eeeeee] font-mono">{vbDisplay}</td>
+                                <td className="px-2 py-1 text-indigo-700 font-bold border-r border-[#eeeeee] font-mono">{av}</td>
+                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">{avasthaStr}</td>
+                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">{ageStr}</td>
+                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">{karakStr}</td>
+                                <td className={`px-2 py-1 ${natureColor}`}>{natureStr}</td>
                             </tr>
                         );
                     })}
@@ -188,11 +384,11 @@ export default function ClassicLayoutViewer3({ data: worksheetData }) {
                     <div className="flex-[4.5] flex gap-1 min-h-0 w-full">
                         <div className="flex-1 border border-[#8ec5e6] shadow-sm flex flex-col overflow-hidden rounded-sm bg-white min-w-0">
                             <div className="bg-[#e6f3f7] border-b border-[#8ec5e6] px-3 py-1 text-[12px] text-[#0a4d7a] font-bold tracking-tight shrink-0">Birth Chart (Degrees)</div>
-                            <DegreeTable pPos={planetPositions} />
+                            <DegreeTable pPos={planetPositions} worksheetData={worksheetData} />
                         </div>
                         <div className="flex-1 border border-[#8ec5e6] shadow-sm flex flex-col overflow-hidden rounded-sm bg-white min-w-0">
                             <div className="bg-[#e6f3f7] border-b border-[#8ec5e6] px-3 py-1 text-[12px] text-[#0a4d7a] font-bold tracking-tight shrink-0">Birth Chart (Dignity)</div>
-                            <DignityTable shadbalaData={shadbalaData} />
+                            <DignityTable shadbalaData={shadbalaData} worksheetData={worksheetData} />
                         </div>
                     </div>
 
@@ -206,7 +402,7 @@ export default function ClassicLayoutViewer3({ data: worksheetData }) {
                         </div>
                     </div>
                     <div className="flex-1 bg-white border border-[#8ec5e6] shadow-sm flex flex-col overflow-hidden rounded-sm min-h-0">
-                        <VimshottariTable data={worksheetData} />
+                        <VimshottariTable data={worksheetData} hideMarriageDasha={true} />
                     </div>
                     <div className="flex-1 flex flex-col overflow-hidden shadow-sm rounded-sm min-h-0">
                         <ShadbalaRatioChart title="Shad Bala" data={shadbalaData} />

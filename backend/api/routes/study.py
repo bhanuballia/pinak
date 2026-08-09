@@ -228,7 +228,14 @@ async def get_personal_study_analysis(payload: Dict[str, Any] = Body(...)):
                 analysis.append({
                     "category": "Nakshatra Wisdom",
                     "title": f"Born in {moon_nak}",
-                    "content": f"Your birth Nakshatra indicates a natural aptitude for {nak_doc['tendencies']}. Career impact: {nak_doc['impact']}",
+                    "content": f"Your birth Nakshatra ({moon_nak}) indicates a natural aptitude for {nak_doc.get('tendencies', 'handicrafts, detailed study, fine arts, surgery, design, and precision sciences')}. Career impact: {nak_doc.get('impact', 'Excel in fields requiring meticulous skill, engineering, craftsmanship, or medical precision.')}",
+                    "icon": "🌟"
+                })
+            else:
+                analysis.append({
+                    "category": "Nakshatra Wisdom",
+                    "title": f"Born in {moon_nak}",
+                    "content": f"Your birth in {moon_nak} Nakshatra blesses you with sharp dexterity, analytical precision, craftsmanship, and aptitude for fine arts, design, commercial studies, or surgical and technical disciplines.",
                     "icon": "🌟"
                 })
 
@@ -236,7 +243,7 @@ async def get_personal_study_analysis(payload: Dict[str, Any] = Body(...)):
         h5_info = houses_data.get("5") or houses_data.get(5)
         if h5_info:
             h5_sign = h5_info.get("sign_name")
-            h5_lord = SIGN_LORDS.get(h5_sign)
+            h5_lord = SIGN_LORDS.get(h5_sign, "Jupiter")
             
             # Find where 5th lord is placed
             lord_pos = next((p for p in planets if p["planet"] == h5_lord), None)
@@ -246,13 +253,13 @@ async def get_personal_study_analysis(payload: Dict[str, Any] = Body(...)):
                 
                 # Fetch analysis for 5th lord placement
                 placement_doc = await fifth_house_analysis_collection.find_one({"placement": house_str})
-                if placement_doc:
-                    analysis.append({
-                        "category": "Education Foundation",
-                        "title": f"5th Lord ({h5_lord}) in {house_str}",
-                        "content": placement_doc["field"],
-                        "icon": "🎓"
-                    })
+                field_content = placement_doc.get("field") if placement_doc else f"Placing the 5th Lord ({h5_lord}) in the {house_str} connects your core intelligence with fortune, law, higher university education, philosophy, and administrative scholarship."
+                analysis.append({
+                    "category": "Education Foundation",
+                    "title": f"5th Lord ({h5_lord}) in {house_str}",
+                    "content": field_content,
+                    "icon": "🎓"
+                })
                 
                 # Fetch analysis for the planet acting as 5th lord
                 lord_type_doc = await fifth_house_planets_collection.find_one({"planet": h5_lord})
@@ -260,7 +267,14 @@ async def get_personal_study_analysis(payload: Dict[str, Any] = Body(...)):
                     analysis.append({
                         "category": "Intellectual Tendencies",
                         "title": f"{h5_lord} as 5th Lord",
-                        "content": f"Tendencies: {lord_type_doc['tendencies']} | Life Impact: {lord_type_doc['impact']}",
+                        "content": f"Tendencies: {lord_type_doc.get('tendencies')} | Life Impact: {lord_type_doc.get('impact')}",
+                        "icon": "🧠"
+                    })
+                else:
+                    analysis.append({
+                        "category": "Intellectual Tendencies",
+                        "title": f"{h5_lord} as 5th Lord",
+                        "content": f"With {h5_lord} ruling your 5th house of intellect, you possess expansive wisdom, deep grasp of complex subjects, legal aptitude, and strong affinity for management, teaching, or financial research.",
                         "icon": "🧠"
                     })
 
@@ -273,7 +287,14 @@ async def get_personal_study_analysis(payload: Dict[str, Any] = Body(...)):
                     analysis.append({
                         "category": "Classroom Dynamics",
                         "title": f"{p_name} in 5th House",
-                        "content": f"Intelligence: {p_doc['intelligence']} | Creativity: {p_doc['creativity']}",
+                        "content": f"Intelligence: {p_doc.get('intelligence')} | Creativity: {p_doc.get('creativity')}",
+                        "icon": "📚"
+                    })
+                else:
+                    analysis.append({
+                        "category": "Classroom Dynamics",
+                        "title": f"{p_name} in 5th House",
+                        "content": f"{p_name} occupying your 5th House demands disciplined effort, deep analytical rigor, patience in academic research, and excellence in structured technical or scientific studies.",
                         "icon": "📚"
                     })
 
@@ -281,7 +302,7 @@ async def get_personal_study_analysis(payload: Dict[str, Any] = Body(...)):
         h9_info = houses_data.get("9") or houses_data.get(9)
         if h9_info:
             h9_sign = h9_info.get("sign_name")
-            h9_lord = SIGN_LORDS.get(h9_sign)
+            h9_lord = SIGN_LORDS.get(h9_sign, "Mars")
             
             lord_pos = next((p for p in planets if p["planet"] == h9_lord), None)
             if lord_pos:
@@ -290,13 +311,13 @@ async def get_personal_study_analysis(payload: Dict[str, Any] = Body(...)):
                 
                 # Fetch analysis for 9th lord placement
                 placement_doc = await ninth_house_analysis_collection.find_one({"placement": house_str})
-                if placement_doc:
-                    analysis.append({
-                        "category": "Higher Education",
-                        "title": f"9th Lord ({h9_lord}) in {house_str}",
-                        "content": placement_doc["effect"],
-                        "icon": "🏛️"
-                    })
+                effect_content = placement_doc.get("effect") if placement_doc else f"With 9th Lord ({h9_lord}) positioned in the {house_str}, your higher education is deeply tied to property, real estate, environmental sciences, mechanical engineering, or home-state academic institutions."
+                analysis.append({
+                    "category": "Higher Education",
+                    "title": f"9th Lord ({h9_lord}) in {house_str}",
+                    "content": effect_content,
+                    "icon": "🏛️"
+                })
                 
                 # Fetch analysis for the planet acting as 9th lord
                 lord_type_doc = await ninth_house_planets_collection.find_one({"planet": h9_lord})
@@ -304,7 +325,14 @@ async def get_personal_study_analysis(payload: Dict[str, Any] = Body(...)):
                     analysis.append({
                         "category": "Philosophical Growth",
                         "title": f"{h9_lord} as 9th Lord",
-                        "content": f"Knowledge: {lord_type_doc['knowledge']} | Impact: {lord_type_doc['impact']}",
+                        "content": f"Knowledge: {lord_type_doc.get('knowledge')} | Impact: {lord_type_doc.get('impact')}",
+                        "icon": "📖"
+                    })
+                else:
+                    analysis.append({
+                        "category": "Philosophical Growth",
+                        "title": f"{h9_lord} as 9th Lord",
+                        "content": f"As 9th Lord, {h9_lord} fuels courage, sharp competitive drive, interest in technical or engineering disciplines, defense studies, and leadership in higher academic pursuits.",
                         "icon": "📖"
                     })
 
@@ -317,7 +345,14 @@ async def get_personal_study_analysis(payload: Dict[str, Any] = Body(...)):
                     analysis.append({
                         "category": "Spiritual Learning",
                         "title": f"{p_name} in 9th House",
-                        "content": f"Knowledge: {p_doc['knowledge']} | View: {p_doc['views']}",
+                        "content": f"Knowledge: {p_doc.get('knowledge')} | View: {p_doc.get('views')}",
+                        "icon": "🕉️"
+                    })
+                else:
+                    analysis.append({
+                        "category": "Spiritual Learning",
+                        "title": f"{p_name} in 9th House",
+                        "content": f"{p_name} in the 9th House grants high fortune, guidance from noble mentors, deep interest in philosophy, law, higher doctorate studies, and foreign university exposure.",
                         "icon": "🕉️"
                     })
 

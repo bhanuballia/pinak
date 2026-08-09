@@ -103,7 +103,7 @@ export default function TithiDashboard({ data: inputData }) {
             </div>
 
             <div className="p-8 pt-4">
-              <div className="space-y-0 divide-y divide-orange-500">
+              <div className="space-y-0 divide-y  divide-orange-500">
 
                 <DetailRow
                   label="Nakshatra"
@@ -150,7 +150,7 @@ function DetailRow({ label, value, subtext, highlight = false }) {
     <div className={`py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors ${highlight ? 'bg-indigo-50/30 rounded-lg -mx-4 px-4' : ''}`}>
       <div className="flex-1">
         <h3 className="text-[15px] font-semibold text-orange-500 uppercase tracking-wider">{label}</h3>
-        {subtext && <p className="text-[12px] text-black mt-1">{subtext}</p>}
+        {subtext && <p className="text-[16px] text-black mt-1">{subtext}</p>}
       </div>
       <div className="text-lg font-bold text-slate-800 bg-slate-50 px-4 py-2 rounded-lg border border-slate-100 min-w-[120px] text-center shadow-sm">
         {value}

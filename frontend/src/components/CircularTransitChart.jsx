@@ -4,13 +4,13 @@ const CircularTransitChart = ({ birthPlanets, transitPlanets, ascendantSignIndex
   const size = 500;
   const cx = size / 2;
   const cy = size / 2;
-  
+
   // Radii for the different rings
   const rOuterText = 230;
   const rOuter = 210; // Outer edge of transit ring
   const rMiddle = 150; // Boundary between transit and birth rings
   const rInner = 90; // Boundary of center text area
-  
+
   // We place the Ascendant sign at the top (90 degrees / 12 o'clock in SVG is -90)
   // Let's rotate so that Ascendant's sign is at top.
   // The signs are drawn counter-clockwise.
@@ -18,15 +18,15 @@ const CircularTransitChart = ({ birthPlanets, transitPlanets, ascendantSignIndex
   // Top is -PI/2.
   // If Ascendant sign is at top, its slice goes from -PI/2 - (PI/12) to -PI/2 + (PI/12) ?
   // Actually, standard is 12 slices of 30 degrees (PI/6 radians).
-  
+
   const signs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
-  
+
   // Group planets by sign
   const getPlanetsBySign = (planets) => {
     const map = {};
-    for (let i=1; i<=12; i++) map[i] = [];
+    for (let i = 1; i <= 12; i++) map[i] = [];
     if (!planets) return map;
-    
+
     planets.forEach(p => {
       // Find sign index based on degree or rashi string
       // For simplicity, we assume 'degree' passed is absolute (0-360)
@@ -70,30 +70,30 @@ const CircularTransitChart = ({ birthPlanets, transitPlanets, ascendantSignIndex
     if (!planets || planets.length === 0) return null;
     const angleDeg = getSliceRotation(signNum);
     const angleRad = (angleDeg * Math.PI) / 180;
-    
+
     // Position text
     const textX = cx + radius * Math.cos(angleRad);
     const textY = cy + radius * Math.sin(angleRad);
-    
+
     // Format planets string, e.g., "Su Me" or "Su(R)"
     const colors = {
-      "Su": "#ff9900", "Mo": "#cccccc", "Ma": "#ff3333", "Me": "#33cc33",
-      "Ju": "#ffcc00", "Ve": "#ff66ff", "Sa": "#6666ff", "Ra": "#999999", "Ke": "#999999", "As": "#ffffff"
+      "Su": "#ff9900", "Mo": "#ad0909ff", "Ma": "rgba(173, 5, 145, 1)", "Me": "#33cc33",
+      "Ju": "hsla(39, 93%, 17%, 1.00)", "Ve": "#ff66ff", "Sa": "rgba(1, 1, 5, 1)", "Ra": "rgba(6, 4, 92, 1)", "Ke": "rgba(3, 51, 5, 1)", "As": "#ffffff"
     };
 
     return (
       <g key={`p-${isInner}-${signNum}`} transform={`translate(${textX}, ${textY})`}>
         {planets.map((p, i) => {
           // Stagger if many planets
-          const yOff = (i - (planets.length-1)/2) * 12;
+          const yOff = (i - (planets.length - 1) / 2) * 12;
           return (
-            <text 
-              key={i} 
-              x={0} 
-              y={yOff} 
-              textAnchor="middle" 
-              dominantBaseline="middle" 
-              fontSize="11" 
+            <text
+              key={i}
+              x={0}
+              y={yOff}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fontSize="14"
               fontWeight="bold"
               fill={colors[p.planet] || "#fff"}
             >
@@ -110,10 +110,10 @@ const CircularTransitChart = ({ birthPlanets, transitPlanets, ascendantSignIndex
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         {/* Background circle */}
         <circle cx={cx} cy={cy} r={rOuter} fill="#ffffe0" stroke="#0000aa" strokeWidth="2" />
-        
+
         {/* Middle divider */}
         <circle cx={cx} cy={cy} r={rMiddle} fill="none" stroke="#0000aa" strokeWidth="1" />
-        
+
         {/* Inner circle (date/time) */}
         <circle cx={cx} cy={cy} r={rInner} fill="#ffffff" stroke="#0000aa" strokeWidth="2" />
 

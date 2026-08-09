@@ -527,6 +527,40 @@ export default function GenerateReport() {
     if (win) win.focus();
   };
 
+  const handleOpenMentalPeace = () => {
+    if (reportData) {
+      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch (e) { }
+    }
+    const params = new URLSearchParams({
+      mental_peace: 'true',
+      name: name || '',
+      date: date || '',
+      time: time || '',
+      lat: latLon?.lat || '',
+      lon: latLon?.lon || '',
+      tz: tzOffset || '0'
+    });
+    const win = window.open(`/?${params.toString()}`, 'MentalPeaceViewer', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenHomePeace = () => {
+    if (reportData) {
+      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch (e) { }
+    }
+    const params = new URLSearchParams({
+      home_peace: 'true',
+      name: name || '',
+      date: date || '',
+      time: time || '',
+      lat: latLon?.lat || '',
+      lon: latLon?.lon || '',
+      tz: tzOffset || '0'
+    });
+    const win = window.open(`/?${params.toString()}`, 'HomePeaceViewer', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
   const handleOpenVastu = () => {
     const params = new URLSearchParams({
       vastu: 'true',
@@ -1007,6 +1041,26 @@ export default function GenerateReport() {
                 className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-50 text-black shadow hover:bg-rose-600 flex items-center gap-2"
               >
                 <span>🔮</span> Numerology
+              </button>
+              <button
+                onClick={() => {
+                  const params = new URLSearchParams({
+                    numerology: 'true',
+                    tab: 'quantum',
+                    name: name || '',
+                    date: date || '',
+                    time: time || '',
+                    lat: latLon?.lat || '',
+                    lon: latLon?.lon || '',
+                    tz: tzOffset || '5.5',
+                    loc: latLon?.display_name || ''
+                  });
+                  const win = window.open(`/?${params.toString()}`, 'QuantumNumerologyDashboard', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+                  if (win) win.focus();
+                }}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-purple-100 text-purple-950 shadow hover:bg-purple-600 hover:text-white flex items-center gap-2 border border-purple-300"
+              >
+                <span>⚛️</span> Quantum Numerology
               </button>
 
             </div>

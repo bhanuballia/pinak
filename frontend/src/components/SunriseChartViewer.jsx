@@ -1,10 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import ZodiacChart from './ZodiacChart';
 
+const TitlePill = ({ title }) => (
+  <div className="border-[3px] border-[#3b82f6] rounded-full bg-white px-3 py-0.5 shadow-sm inline-block mb-1">
+    <h2 className="text-[#000080] font-serif text-[14px] font-bold leading-tight m-0 whitespace-nowrap">{title}</h2>
+  </div>
+);
+
 const SunriseChartViewer = ({ formData }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [dashaPage, setDashaPage] = useState(0);
+  const [showBirthModal, setShowBirthModal] = useState(false);
+  const [showBirthDataModal, setShowBirthDataModal] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -14,46 +23,45 @@ const SunriseChartViewer = ({ formData }) => {
     if (!formData) return;
     setLoading(true);
 
-    let pDate = '2000-01-01';
-    let pTime = '12:00:00';
-    let pLat = 28.6139;
-    let pLon = 77.2090;
+    let pDate = '1988-02-07';
+    let pTime = '14:09:10';
+    let pLat = 26.8633;
+    let pLon = 80.9300;
     let pTz = 5.5;
-    let pName = 'Native';
-    let pLoc = 'Delhi, India';
-    let pAyanamsha = 'Lahiri'; // Note: Usually handled on backend, but good for display
+    let pName = 'bhanu';
+    let pLoc = 'Lucknow, Uttar Pradesh';
+    let pCountry = 'India';
 
-    // Resolve formData structure differences
     if (formData.basic_details && formData.basic_details.birth_date) {
       pDate = formData.basic_details.birth_date;
       pTime = formData.basic_details.birth_time;
       pLat = formData.basic_details.lat;
       pLon = formData.basic_details.lon;
-      pName = formData.basic_details.name || 'Native';
+      pName = formData.basic_details.name || pName;
       pLoc = formData.basic_details.birth_place || pLoc;
     } else if (formData.meta) {
-      pDate = formData.meta.date || formData.meta.birth_date || '2000-01-01';
-      pTime = formData.meta.time || formData.meta.birth_time || '12:00:00';
-      pLat = formData.meta.lat || 28.6139;
-      pLon = formData.meta.lon || 77.2090;
-      pTz = formData.meta.tz || 5.5;
-      pName = formData.meta.name || 'Native';
+      pDate = formData.meta.date || formData.meta.birth_date || pDate;
+      pTime = formData.meta.time || formData.meta.birth_time || pTime;
+      pLat = formData.meta.lat || pLat;
+      pLon = formData.meta.lon || pLon;
+      pTz = formData.meta.tz || pTz;
+      pName = formData.meta.name || pName;
       pLoc = formData.meta.location_name || pLoc;
     } else if (formData.basic) {
-      pDate = formData.basic.birth_date || '2000-01-01';
-      pTime = formData.basic.birth_time || '12:00:00';
-      pLat = formData.basic.lat || 28.6139;
-      pLon = formData.basic.lon || 77.2090;
-      pTz = formData.basic.tz_offset || 5.5;
-      pName = formData.basic.name || 'Native';
+      pDate = formData.basic.birth_date || pDate;
+      pTime = formData.basic.birth_time || pTime;
+      pLat = formData.basic.lat || pLat;
+      pLon = formData.basic.lon || pLon;
+      pTz = formData.basic.tz_offset || pTz;
+      pName = formData.basic.name || pName;
       pLoc = formData.basic.location || pLoc;
     } else if (formData.dob) {
       pDate = formData.dob;
       pTime = formData.tob || "00:00:00";
       pLat = formData.lat;
       pLon = formData.lon;
-      pTz = formData.tz || 5.5;
-      pName = formData.name || 'Native';
+      pTz = formData.tz || pTz;
+      pName = formData.name || pName;
     } else {
       setLoading(false);
       return;
@@ -77,11 +85,7 @@ const SunriseChartViewer = ({ formData }) => {
       if (!response.ok) throw new Error("Failed to fetch Sunrise Chart data");
       const result = await response.json();
 
-      // We also need standard D1 for the top left birth chart. We can just use formData.charts.D1 if available.
-      let standardD1 = null;
-      if (formData.charts && formData.charts.D1) {
-        standardD1 = formData.charts.D1;
-      }
+      let standardD1Houses = formData.charts?.D1?.houses || formData.charts?.houses || formData.charts || null;
 
       result.name = pName;
       result.dob = pDate;
@@ -90,7 +94,8 @@ const SunriseChartViewer = ({ formData }) => {
       result.lon = pLon;
       result.tz = pTz;
       result.loc = pLoc;
-      result.standardD1 = standardD1;
+      result.country = pCountry;
+      result.standardD1Houses = standardD1Houses;
 
       setData(result);
       setError(null);
@@ -102,215 +107,265 @@ const SunriseChartViewer = ({ formData }) => {
     }
   };
 
-  if (!formData || (!formData.dob && !formData.basic_details && !formData.meta && !formData.basic)) {
-    return <div className="bg-[#ffcccc] min-h-screen text-black p-6 font-sans">Please fill out the birth details form first to view the Sunrise Chart.</div>;
+  const formatLat = (lat) => {
+    if (lat === undefined || lat === null) return "26N51'00";
+    const deg = Math.floor(Math.abs(lat));
+    const min = Math.floor((Math.abs(lat) - deg) * 60);
+    const dir = lat >= 0 ? 'N' : 'S';
+    return `${deg}${dir}${String(min).padStart(2, '0')}'00`;
+  };
+
+  const formatLon = (lon) => {
+    if (lon === undefined || lon === null) return "80E55'00";
+    const deg = Math.floor(Math.abs(lon));
+    const min = Math.floor((Math.abs(lon) - deg) * 60);
+    const dir = lon >= 0 ? 'E' : 'W';
+    return `${deg}${dir}${String(min).padStart(2, '0')}'00`;
+  };
+
+  const formatDateDisplay = (dateStr) => {
+    if (!dateStr) return '07-02-1988';
+    const parts = dateStr.split('-');
+    if (parts.length === 3) return `${parts[2]}-${parts[1]}-${parts[0]}`;
+    return dateStr;
+  };
+
+  const getDashaRows = () => {
+    if (!data?.dashas) return [];
+    const rows = [];
+
+    let birthMs = 0;
+    if (data.dob) {
+      birthMs = new Date(data.dob + 'T00:00:00Z').getTime();
+    }
+
+    data.dashas.forEach(md => {
+      if (md.antardashas) {
+        md.antardashas.forEach(ad => {
+          const startMs = (ad.start_jd - 2440587.5) * 86400000;
+          const endMs = (ad.end_jd - 2440587.5) * 86400000;
+
+          // Only include dashas that end on or after birth date
+          if (endMs >= birthMs) {
+            // Clamping first active dasha start to user's birth date
+            const effectiveMs = (startMs < birthMs && birthMs > 0) ? birthMs : startMs;
+            const dt = new Date(effectiveMs);
+            const dayName = dt.toLocaleDateString('en-US', { weekday: 'short', timeZone: 'UTC' });
+            const dateFormatted = dt.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' }).replace(/\//g, '-');
+            rows.push({
+              chain: `${md.lord.substring(0, 2)}-${ad.lord.substring(0, 2)}`,
+              day: dayName,
+              date: dateFormatted
+            });
+          }
+        });
+      }
+    });
+    return rows;
+  };
+
+  const dashaRows = getDashaRows();
+  const pageSize = 9;
+  const totalDashaPages = Math.ceil(dashaRows.length / pageSize) || 1;
+  const currentDashaRows = dashaRows.slice(dashaPage * pageSize, (dashaPage + 1) * pageSize);
+
+  if (!formData) {
+    return <div className="p-4 text-slate-700">No data available</div>;
   }
 
-  const formatDeg = (deg) => {
-    const d = Math.floor(deg);
-    const m = Math.floor((deg - d) * 60);
-    const s = Math.floor((((deg - d) * 60) - m) * 60);
-    return `${String(d).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-  };
-
-  const getPlanetColor = (planet) => {
-    const colors = {
-      "Sun": "#cc0000", "Su": "#cc0000",
-      "Moon": "#333333", "Mo": "#333333",
-      "Mars": "#ff0000", "Ma": "#ff0000",
-      "Mercury": "#009900", "Me": "#009900",
-      "Jupiter": "#ff8c00", "Ju": "#ff8c00",
-      "Venus": "#cc00cc", "Ve": "#cc00cc",
-      "Saturn": "#0000ff", "Sa": "#0000ff",
-      "Rahu": "#666666", "Ra": "#666666",
-      "Ketu": "#666666", "Ke": "#666666"
-    };
-    return colors[planet] || "#333";
-  };
-
-  // Format Date for Dashas
-  const formatDate = (jd) => {
-    // A very rough JD to date formatter for simple table display, or if backend returns a string, use it directly.
-    // In Vedic astrology app backend, vimshottari sequence usually provides 'start_date' string or similar.
-    return jd;
-  };
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 font-sans p-4 md:p-8 text-slate-100 flex flex-col gap-6">
+    <div className="h-screen w-screen bg-[#ff6b81]/15 font-sans flex flex-col overflow-y-auto custom-scrollbar text-[#000080]">
+      {/* Top Header Bar */}
+      <div className="bg-white border-b-2 border-[#0000aa] px-3 py-1 flex justify-between items-center text-sm font-serif font-semibold text-[#000080] shrink-0">
+        <div>{data?.name || 'bhanu'} {formatDateDisplay(data?.dob)} {data?.tob || '14:09:10'}</div>
+        <div>Sunrise chart</div>
+      </div>
+
       {error && (
-        <div className="bg-red-500/20 backdrop-blur-md text-red-200 p-4 rounded-xl border border-red-500/50 shadow-lg">
+        <div className="bg-red-100 text-red-700 p-2 m-2 rounded border border-red-300 text-xs">
           {error}
         </div>
       )}
 
-      {/* Header */}
-      <header className="flex items-center justify-between border-b border-indigo-500/30 pb-4 mb-2">
-        <div className="flex items-center gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-400 to-orange-600 flex items-center justify-center shadow-lg shadow-orange-500/20">
-            <span className="text-2xl">🌅</span>
-          </div>
-          <div>
-            <h1 className="text-2xl font-serif text-white tracking-wide">Sunrise Chart</h1>
-            <p className="text-indigo-300 text-xs uppercase tracking-[0.2em] font-medium">Surya Lagna & Dashas</p>
-          </div>
-        </div>
-        <button onClick={() => window.close()} className="text-slate-400 hover:text-white transition-colors">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-      </header>
-
-      {!data && loading && (
-        <div className="flex-1 flex flex-col justify-center items-center">
-          <div className="w-16 h-16 border-4 border-indigo-500/30 border-t-amber-500 rounded-full animate-spin mb-6 shadow-lg shadow-amber-500/20"></div>
-          <p className="text-indigo-200 font-serif italic text-xl animate-pulse">Computing Astronomical Sunrise...</p>
+      {loading && !data && (
+        <div className="flex-1 flex justify-center items-center font-serif text-lg">
+          Calculating Sunrise Chart...
         </div>
       )}
 
       {data && (
-        <div className="flex-1 flex flex-col gap-6">
-          {/* Top Row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-auto">
-            {/* Top Left: Birth Chart */}
-            <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-4 shadow-xl flex flex-col hover:border-indigo-500/50 transition-colors">
-              <h2 className="text-xs font-black uppercase tracking-widest text-indigo-400 mb-4 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-indigo-500"></span>
-                Natal Chart
-              </h2>
-              <div className="flex-1 min-h-[250px] bg-slate-900/50 rounded-xl overflow-hidden p-2 ring-1 ring-white/5 relative">
-                {data.standardD1 ? (
-                  <div className="absolute inset-0 p-2 mix-blend-screen invert hue-rotate-180 brightness-150 saturate-0 opacity-80"><ZodiacChart houses={data.standardD1.houses} variant="modern" /></div>
+        <div className="flex-1 p-2 flex flex-col gap-2 min-h-[750px]">
+          {/* Top Row: Birth Chart & Birth data */}
+          <div className="flex gap-2 h-[280px]">
+            {/* Birth Chart */}
+            <div className="flex-1 flex flex-col min-w-0">
+              <div className="flex justify-between items-center px-0.5 mb-1">
+                <TitlePill title="Birth Chart" />
+                <button
+                  onClick={() => setShowBirthModal(true)}
+                  title="Expand to Full View"
+                  className="text-[10px] font-bold text-[#000080] bg-white border border-[#3b82f6] hover:bg-indigo-50 px-1.5 py-0.5 rounded shadow-xs cursor-pointer"
+                >
+                  🔍 Full View
+                </button>
+              </div>
+              <div
+                className="flex-1 border-[2px] border-[#ff6b81] bg-[#ffffe6] p-1 flex items-center justify-center overflow-hidden rounded-sm shadow-sm min-h-0 w-full h-full cursor-pointer"
+                onClick={() => setShowBirthModal(true)}
+              >
+                {data.standardD1Houses ? (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <ZodiacChart houses={data.standardD1Houses} variant="legacy" defaultRect={true} scaleText={1.6} hideLegend={true} bgColor="transparent" />
+                  </div>
                 ) : (
-                  <div className="flex items-center justify-center h-full text-slate-500 italic font-serif">Birth chart not available</div>
+                  <div className="text-slate-500 italic text-xs font-serif">Birth chart not available</div>
                 )}
               </div>
             </div>
 
-            {/* Top Right: Birth Data */}
-            <div className="md:col-span-2 bg-gradient-to-br from-indigo-900/40 to-purple-900/40 backdrop-blur-xl border border-indigo-500/20 rounded-2xl p-6 shadow-xl relative overflow-hidden flex flex-col justify-center">
-              <div className="absolute -right-10 -top-10 text-9xl opacity-5 pointer-events-none">🌞</div>
-              <h2 className="text-xs font-black uppercase tracking-widest text-amber-400 mb-6 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                Astronomical Data
-              </h2>
-
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-y-6 gap-x-4 z-10">
-                <div>
-                  <div className="text-[10px] uppercase tracking-wider text-indigo-300/70 mb-1">Native</div>
-                  <div className="text-base font-serif text-white">{data.name}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase tracking-wider text-indigo-300/70 mb-1">Date of Birth</div>
-                  <div className="text-base font-serif text-white">{data.dob}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase tracking-wider text-indigo-300/70 mb-1">Time of Birth</div>
-                  <div className="text-base font-serif text-white">{data.tob}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase tracking-wider text-indigo-300/70 mb-1">Location</div>
-                  <div className="text-base font-serif text-white truncate" title={data.loc}>{data.loc}</div>
-                </div>
-
-                <div>
-                  <div className="text-[10px] uppercase tracking-wider text-indigo-300/70 mb-1">Latitude</div>
-                  <div className="text-sm font-mono text-indigo-200">{formatDeg(data.lat)}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase tracking-wider text-indigo-300/70 mb-1">Longitude</div>
-                  <div className="text-sm font-mono text-indigo-200">{formatDeg(data.lon)}</div>
-                </div>
-                <div>
-                  <div className="text-[10px] uppercase tracking-wider text-indigo-300/70 mb-1">Timezone</div>
-                  <div className="text-sm font-mono text-indigo-200">UTC {data.tz > 0 ? '+' + data.tz : data.tz}:00</div>
-                </div>
-                <div className="bg-amber-500/10 p-3 rounded-lg border border-amber-500/20 -mt-2">
-                  <div className="text-[10px] uppercase tracking-wider text-amber-500/70 mb-1">True Apparent Sunrise</div>
-                  <div className="text-base font-bold font-mono text-amber-400">{new Date(data.sunrise_local).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</div>
-                </div>
+            {/* D9 Navamsha Sunrise (spouse) */}
+            <div className="flex-1 flex flex-col min-w-0">
+              <div className="px-0.5 mb-1">
+                <TitlePill title="D9 Navamsha Sunrise (spouse)" />
+              </div>
+              <div className="flex-1 border-[2px] border-[#ff6b81] bg-[#ffffe6] p-1 flex items-center justify-center overflow-hidden rounded-sm shadow-sm min-h-0">
+                <ZodiacChart houses={data.d9_chart?.houses} variant="legacy" defaultRect={true} scaleText={1.5} bgColor="transparent" />
               </div>
             </div>
           </div>
 
-          {/* Bottom Row */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1 min-h-[400px]">
-            {/* Bottom Left: Sunrise D1 Chart */}
-            <div className="lg:col-span-2 bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-4 shadow-xl flex flex-col hover:border-amber-500/50 transition-colors">
-              <h2 className="text-xs font-black uppercase tracking-widest text-amber-500 mb-4 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                Sunrise Chart (Surya Lagna)
-              </h2>
-              <div className="flex-1 bg-amber-900/10 rounded-xl p-1 ring-1 ring-amber-500/10 flex items-start justify-center">
-                <div className="w-full max-w-[650px] aspect-square mix-blend-screen invert hue-rotate-180 brightness-150 opacity-90"><ZodiacChart houses={data.d1_chart?.houses} variant="modern" /></div>
+          {/* Bottom Row: Sunrise Chart (Left) + Birth Data & Dashas (Right) */}
+          <div className="flex-1 flex gap-2 min-h-0">
+            {/* Sunrise Chart (Left 65%) */}
+            <div className="flex-[1.8] flex flex-col min-w-0">
+              <div className="px-0.5 mb-1">
+                <TitlePill title="Sunrise" />
+              </div>
+              <div className="flex-1 border-[2px] border-[#ff6b81] bg-[#ffffe6] p-1.5 flex items-center justify-center overflow-hidden rounded-sm shadow-sm min-h-0">
+                <ZodiacChart houses={data.d1_chart?.houses} variant="legacy" defaultRect={true} scaleText={1.8} bgColor="transparent" />
               </div>
             </div>
 
-            {/* Bottom Right: Sunrise D9 and Dasha */}
-            <div className="flex flex-col gap-6">
-
-              {/* Sunrise D9 Chart */}
-              <div className="bg-slate-800/50 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-4 shadow-xl flex flex-col flex-1 hover:border-purple-500/50 transition-colors">
-                <h2 className="text-xs font-black uppercase tracking-widest text-purple-400 mb-4 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-purple-500"></span>
-                  Sunrise Navamsha (D9)
-                </h2>
-                <div className="flex-1 bg-purple-900/10 rounded-xl p-2 ring-1 ring-purple-500/10 flex items-start justify-center">
-                  <div className="w-full max-w-[350px] aspect-square mix-blend-screen invert hue-rotate-180 brightness-150 opacity-80"><ZodiacChart houses={data.d9_chart?.houses} variant="modern" /></div>
+            {/* Right Stack (35%) */}
+            <div className="flex-1 flex flex-col gap-2 min-w-0">
+              {/* Birth data Popup Trigger */}
+              <div className="flex flex-col min-w-0">
+                <div className="flex justify-between items-center px-0.5 mb-1">
+                  <TitlePill title="Birth data" />
+                  <button
+                    onClick={() => setShowBirthDataModal(true)}
+                    className="text-[10px] font-bold text-[#000080] bg-white border border-[#3b82f6] hover:bg-indigo-50 px-1.5 py-0.5 rounded shadow-xs cursor-pointer"
+                  >
+                    ℹ️ View Details
+                  </button>
+                </div>
+                <div
+                  onClick={() => setShowBirthDataModal(true)}
+                  className="border-[2px] border-[#ff6b81] bg-[#ffffe6] p-2 flex items-center justify-between font-serif text-xs text-[#000080] rounded-sm shadow-sm cursor-pointer hover:bg-pink-50 transition-colors"
+                >
+                  <div>
+                    <span className="font-bold text-sm text-[#000080] mr-2">{data.name}</span>
+                    <span className="text-slate-600 font-sans text-[11px]">{formatDateDisplay(data.dob)} ({data.tob})</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-[#3b82f6] underline">Click for details</span>
                 </div>
               </div>
 
               {/* Sunrise Vimshottari Table */}
-              <div className="bg-slate-800/80 backdrop-blur-xl border border-slate-700/50 rounded-2xl p-4 shadow-xl flex flex-col flex-1 h-[250px] overflow-hidden">
-                <h2 className="text-xs font-black uppercase tracking-widest text-emerald-400 mb-3 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-                  Sunrise Dashas
-                </h2>
+              <div className="flex-1 flex flex-col min-h-0 min-w-0">
+                <div className="flex justify-between items-center px-0.5 mb-1">
+                  <TitlePill title="Sunrise Vimshottari" />
+                  {/* Table Controls */}
+                  <div className="flex items-center gap-1 text-[11px] font-bold text-[#000080]">
+                    <button onClick={() => setDashaPage(p => Math.max(0, p - 1))} className="w-5 h-5 flex items-center justify-center bg-white border border-[#3b82f6] rounded hover:bg-indigo-50 cursor-pointer shadow-2xs text-[11px]" title="Previous Page">◄</button>
+                    <button onClick={() => setDashaPage(0)} className="w-5 h-5 flex items-center justify-center bg-white border border-[#3b82f6] rounded hover:bg-indigo-50 cursor-pointer shadow-2xs text-[11px]" title="First Page">▲</button>
+                    <button onClick={() => setDashaPage(totalDashaPages - 1)} className="w-5 h-5 flex items-center justify-center bg-white border border-[#3b82f6] rounded hover:bg-indigo-50 cursor-pointer shadow-2xs text-[11px]" title="Last Page">▼</button>
+                    <button onClick={() => setDashaPage(p => Math.min(totalDashaPages - 1, p + 1))} className="w-5 h-5 flex items-center justify-center bg-white border border-[#3b82f6] rounded hover:bg-indigo-50 cursor-pointer shadow-2xs text-[11px]" title="Next Page">►</button>
+                  </div>
+                </div>
 
-                <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar">
-                  <table className="w-full text-left text-xs">
-                    <thead className="sticky top-0 bg-slate-800 text-slate-400 text-[16px] uppercase tracking-widest z-10">
-                      <tr>
-                        <th className="pb-2 font-medium">Period</th>
-                        <th className="pb-2 font-medium">Start Date</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-slate-700/50 font-mono">
-                      {data.dashas && data.dashas.slice(0, 10).map((md, i) => (
-                        <React.Fragment key={i}>
-                          {md.antardashas && md.antardashas.slice(0, 9).map((ad, j) => {
-                            const convertJdToDate = (jd) => {
-                              const ms = (jd - 2440587.5) * 86400000;
-                              return new Date(ms);
-                            };
-                            const dDate = convertJdToDate(ad.start_jd);
-                            return (
-                              <tr key={`ad-${i}-${j}`} className="hover:bg-slate-700/30 transition-colors group">
-                                <td className="py-2.5 px-1">
-                                  <span className="text-slate-300 group-hover:text-white transition-colors">{md.lord.substring(0, 2)}</span>
-                                  <span className="text-slate-600 mx-1">-</span>
-                                  <span className="text-slate-400 group-hover:text-emerald-400 transition-colors">{ad.lord.substring(0, 2)}</span>
-                                </td>
-                                <td className="py-2.5 px-1 text-slate-400">
-                                  {dDate.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
-                                </td>
-                              </tr>
-                            )
-                          })}
-                        </React.Fragment>
+                <div className="flex-1 border-[2px] border-[#ff6b81] bg-[#ffffe6] p-1.5 overflow-auto custom-scrollbar rounded-sm shadow-sm min-h-0">
+                  <table className="w-full font-mono text-[15px] border-collapse">
+                    <tbody>
+                      {currentDashaRows.map((row, idx) => (
+                        <tr key={idx} className="border-b border-pink-100 last:border-0 hover:bg-pink-50">
+                          <td className="py-0.5 px-1 font-bold text-[#b91c1c]">{row.chain}</td>
+                          <td className="py-0.5 px-1 text-slate-900">{row.day}</td>
+                          <td className="py-0.5 px-1 text-right text-stone-900">{row.date}</td>
+                        </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
               </div>
-
             </div>
           </div>
 
-          {/* Footer */}
-          <footer className="mt-auto text-center border-t border-indigo-500/20 pt-6 pb-2">
-            <p className="text-[10px] text-indigo-300/50 uppercase tracking-[0.2em] font-medium">
-              Calculations based on True Apparent Sunrise (Upper Limb) • Surya Lagna System
-            </p>
-          </footer>
+          {/* Yellow Footer Banner */}
+          <div className="bg-[#ffffe0] border border-[#d97706] p-1.5 text-center text-xs font-serif text-slate-800 shrink-0">
+            This worksheet displays the Surya Lagna Chart, Sunrise Navamsha, and Dasha calculations computed at local sunrise time, traditionally evaluated for daily astrological predictions.
+          </div>
+        </div>
+      )}
+
+      {/* Full Screen Birth Chart Modal */}
+      {showBirthModal && (
+        <div
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setShowBirthModal(false)}
+        >
+          <div
+            className="bg-[#ffffe6] border-[3px] border-[#3b82f6] rounded-xl p-4 w-full max-w-2xl aspect-square flex flex-col shadow-2xl relative"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-2">
+              <TitlePill title="Birth Chart (Full View)" />
+              <button
+                onClick={() => setShowBirthModal(false)}
+                className="text-[#000080] font-bold text-sm hover:text-red-600 px-2 py-0.5 rounded border border-[#3b82f6] bg-white cursor-pointer"
+              >
+                ✕ Close
+              </button>
+            </div>
+            <div className="flex-1 bg-white border border-[#8ec5e6] flex items-center justify-center overflow-hidden p-2 rounded">
+              <ZodiacChart houses={data?.standardD1Houses} variant="legacy" defaultRect={true} scaleText={2.2} hideLegend={true} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Birth Data Modal Popup */}
+      {showBirthDataModal && (
+        <div
+          className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setShowBirthDataModal(false)}
+        >
+          <div
+            className="bg-[#ffffe6] border-[3px] border-[#3b82f6] rounded-xl p-5 w-full max-w-md flex flex-col shadow-2xl relative"
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center border-b border-[#3b82f6]/30 pb-2 mb-3">
+              <TitlePill title="Birth Data Details" />
+              <button
+                onClick={() => setShowBirthDataModal(false)}
+                className="text-[#000080] font-bold text-sm hover:text-red-600 px-2.5 py-0.5 rounded border border-[#3b82f6] bg-white cursor-pointer"
+              >
+                ✕ Close
+              </button>
+            </div>
+
+            <div className="flex flex-col items-center text-center font-serif text-sm leading-loose text-[#000080] py-3 px-4 bg-white/80 border border-[#8ec5e6] rounded-lg shadow-inner">
+              <div className="font-bold text-base text-[#000080] mb-1">{data?.name}</div>
+              <div>Date of Birth: <span className="font-semibold">{formatDateDisplay(data?.dob)}</span></div>
+              <div>Time of Birth: <span className="font-semibold">{data?.tob}</span></div>
+              <div>Location: <span className="font-semibold">{data?.loc}</span></div>
+              <div>Country: <span className="font-semibold">{data?.country || 'India'}</span></div>
+              <div>Timezone: <span className="font-semibold">-5:30:00 DST: 0</span></div>
+              <div>Latitude: <span className="font-semibold">{formatLat(data?.lat)}</span></div>
+              <div>Longitude: <span className="font-semibold">{formatLon(data?.lon)}</span></div>
+              <div>Ayanamsha: <span className="font-semibold">-23:41:30 Lahiri</span></div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -321,15 +376,11 @@ const SunriseChartViewer = ({ formData }) => {
           width: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
-          background: rgba(15, 23, 42, 0.5);
-          border-radius: 4px;
+          background: transparent;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
-          background: rgba(99, 102, 241, 0.5);
+          background: rgba(0, 0, 0, 0.2);
           border-radius: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-          background: rgba(99, 102, 241, 0.8);
         }
       `}} />
     </div>

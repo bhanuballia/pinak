@@ -250,6 +250,18 @@ export async function fetchPersonalFinanceInsights(data) {
   if (!res.ok) throw new Error("Failed to fetch personal Finance analysis");
   return res.json();
 }
+
+export async function fetchWealthActivation(payload) {
+  const url = `${BASE}/api/dasha/wealth-activation`;
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error("Failed to fetch Wealth Activation timeline");
+  return res.json();
+}
+
 export async function fetchMarriageInsights() {
   const url = `${BASE}/api/marriage`;
   const res = await fetch(url);
@@ -322,6 +334,20 @@ export async function fetchChildrenHealthInsights() {
   const url = `${BASE}/api/family-health/children`;
   const res = await fetch(url);
   if (!res.ok) throw new Error("Failed to fetch Children's Health insights");
+  return res.json();
+}
+
+export async function fetchMentalPeaceInsights() {
+  const url = `${BASE}/api/family-health/mental-peace`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch Mental Peace insights");
+  return res.json();
+}
+
+export async function fetchHomePeaceInsights() {
+  const url = `${BASE}/api/family-health/home-peace`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to fetch Home Peace insights");
   return res.json();
 }
 

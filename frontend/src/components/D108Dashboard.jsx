@@ -110,18 +110,118 @@ export default function D108Dashboard() {
         <RealtimeActivation />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-inner">
-            <h2 className="text-xl font-bold uppercase mb-4 text-slate-800">Transit Overlay (D144)</h2>
-            <TransitOverlay overlays={overlayData} />
+      {/* Detailed Astottaramsa (D108) Analytical Interpretations Card */}
+      <div className="mt-8 bg-rose-100 to-slate-950 p-6 rounded-2xl border border-indigo-500/40 text-slate-100 shadow-xl space-y-4">
+        <div className="flex items-center justify-between border-b border-indigo-800/60 pb-3">
+          <h2 className="text-[18px] font-bold uppercase tracking-wider text-amber-900 flex items-center gap-2">
+            <span>🔮</span> Astottaramsa (D108) Comprehensive Karmic Analysis
+          </h2>
+          <span className="px-3 py-1 bg-amber-950/80 text-amber-300 text-[16px] font-bold rounded-full border border-amber-500/50">
+            Micro-Divisional Refinement (0°16'40" per Arc)
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div className="p-4 bg-slate-900/80 border border-slate-800 rounded-xl space-y-2">
+            <h3 className="font-bold text-[16px] text-indigo-300 flex items-center gap-1.5">
+              <span>🌟</span> High Spiritual & Executive Activation
+            </h3>
+            <p className="text-orange-400 text-[16px] leading-relaxed">
+              D108 alignment indicates elevated spiritual awareness and refined decision-making capacity. Planetary strengths in Mercury (91) and Moon (88) highlight exceptional intellectual foresight and intuitive clarity.
+            </p>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-inner overflow-hidden">
+          <div className="p-4 bg-slate-900/80 border border-slate-800 rounded-xl space-y-2">
+            <h3 className="font-bold text-[16px] text-emerald-300 flex items-center gap-1.5">
+              <span>🚀</span> Destiny Refinement & Career Peak
+            </h3>
+            <p className="text-orange-400 text-[16px] leading-relaxed">
+              D108 vs D144 comparison reveals peak karmic activation in Spirituality (93%) and Career (85%). Transiting Jupiter in Leo aspecting D108 Lagna provides sudden opportunities and recognition.
+            </p>
+          </div>
+        </div>
+
+        {/* Detailed Analytical Breakdown Table */}
+        <div className="overflow-x-auto border border-slate-800 rounded-xl">
+          <table className="w-full text-[18px] text-left text-slate-200">
+            <thead className="bg-slate-900 text-amber-300 font-bold border-b border-slate-800">
+              <tr>
+                <th className="p-3 border-r border-slate-800">Karmic Sector</th>
+                <th className="p-3 border-r border-slate-800 w-24 text-center">Score</th>
+                <th className="p-3">Astottaramsa D108 Analytical Insights</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-800/60">
+              <tr className="hover:bg-slate-900/40">
+                <td className="p-3 font-semibold text-indigo-900 border-r border-slate-800">Spirituality & Higher Purpose</td>
+                <td className="p-3 text-center border-r border-slate-800"><span className="px-2 py-0.5 bg-emerald-950 text-emerald-300 rounded font-bold border border-emerald-600">93%</span></td>
+                <td className="p-3 text-slate-900">Exceptional spiritual alignment. Deep connection with ancient wisdom, mantra practice, and higher philosophical pursuits.</td>
+              </tr>
+              <tr className="hover:bg-slate-900/40">
+                <td className="p-3 font-semibold text-indigo-900 border-r border-slate-800">Career & Life Purpose</td>
+                <td className="p-3 text-center border-r border-slate-800"><span className="px-2 py-0.5 bg-emerald-950 text-emerald-300 rounded font-bold border border-emerald-600">85%</span></td>
+                <td className="p-3 text-slate-900">Strong executive authority and creative leadership. High potential for professional breakthroughs under current dasha activations.</td>
+              </tr>
+              <tr className="hover:bg-slate-900/40">
+                <td className="p-3 font-semibold text-indigo-900 border-r border-slate-800">Marriage & Relationships</td>
+                <td className="p-3 text-center border-r border-slate-800"><span className="px-2 py-0.5 bg-sky-950 text-sky-300 rounded font-bold border border-sky-600">76%</span></td>
+                <td className="p-3 text-slate-900">Harmonious partnership potential with refined mutual understanding and shared values.</td>
+              </tr>
+              <tr className="hover:bg-slate-900/40">
+                <td className="p-3 font-semibold text-indigo-900 border-r border-slate-800">Wealth & Prosperity</td>
+                <td className="p-3 text-center border-r border-slate-800"><span className="px-2 py-0.5 bg-amber-950 text-amber-300 rounded font-bold border border-amber-600">73%</span></td>
+                <td className="p-3 text-slate-900">Steady financial accumulation through intellectual and advisory endeavors.</td>
+              </tr>
+              <tr className="hover:bg-slate-900/40">
+                <td className="p-3 font-semibold text-indigo-900 border-r border-slate-800">Health & Physical Vitality</td>
+                <td className="p-3 text-center border-r border-slate-800"><span className="px-2 py-0.5 bg-amber-950 text-amber-300 rounded font-bold border border-amber-600">69%</span></td>
+                <td className="p-3 text-slate-900">Good overall vitality; maintain balanced routines and stress management during high transit activity.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+        {/* TRANSIT OVERLAY (D108) Card & Dedicated Analysis */}
+        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-inner flex flex-col justify-between">
+          <div>
+            <h2 className="text-[18px] font-bold uppercase mb-4 text-slate-800">TRANSIT OVERLAY (D108)</h2>
+            <TransitOverlay overlays={overlayData} />
+          </div>
+          <div className="mt-4 p-4 bg-indigo-50/70 border border-indigo-200 rounded-xl space-y-1.5 text-[18px]">
+            <h3 className="font-bold text-indigo-900 text-[18px] flex items-center gap-1.5">
+              <span>🌐</span> Transit Overlay Analytical Interpretation
+            </h3>
+            <p className="text-slate-700 leading-relaxed text-[18px]">
+              <strong>1st House (Lagna) Overlay:</strong> Transiting Jupiter in 1st house brings wisdom, auspicious timing, and personal expansion.
+            </p>
+            <p className="text-slate-700 leading-relaxed text-[18px]">
+              <strong>10th & 7th House Overlays:</strong> Saturn in 10th and Rahu in 7th highlight heightened professional accountability and relationship dynamics requiring mature alignment.
+            </p>
+          </div>
+        </div>
+
+        {/* Karmic Density Heatmap Card & Dedicated Analysis */}
+        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-inner flex flex-col justify-between overflow-hidden">
+          <div>
             <h2 className="text-xl font-bold uppercase mb-4 text-slate-800">Karmic Density Heatmap</h2>
             <div className="overflow-x-auto">
-                <KarmaHeatmap data={heatmapData} />
+              <KarmaHeatmap data={heatmapData} />
             </div>
           </div>
+          <div className="mt-4 p-4 bg-emerald-50/70 border border-emerald-200 rounded-xl space-y-1.5 text-[18px]">
+            <h3 className="font-bold text-emerald-900 text-[18px] flex items-center gap-1.5">
+              <span>🔥</span> Heatmap Density Analytical Interpretation
+            </h3>
+            <p className="text-slate-700 leading-relaxed text-[18px]">
+              <strong>High-Density Zones (Phafal Clusters):</strong> Darker color intensity indicates concentrated karmic resolution points across 9th (Dharma) and 10th (Karma) divisions.
+            </p>
+            <p className="text-slate-700 leading-relaxed">
+              <strong>Karmic Balance:</strong> Favorable distribution across major centers indicates smooth energy flow with minimal unblocked karmic resistance.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );

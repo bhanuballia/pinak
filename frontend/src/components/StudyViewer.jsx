@@ -4,6 +4,7 @@ import { fetchStudyInsights, fetchPersonalStudyInsights } from '../services/api'
 export default function StudyViewer() {
     const [insights, setInsights] = useState([]);
     const [personalInsights, setPersonalInsights] = useState([]);
+    const [govtJobActivationData, setGovtJobActivationData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('All');
@@ -53,6 +54,28 @@ export default function StudyViewer() {
                 setInsights(general);
                 setPersonalInsights(personalRes);
                 if (uData.date) setUserData(uData);
+
+                const localData = localStorage.getItem('worksheetData');
+                if (localData) {
+                    const parsed = JSON.parse(localData);
+                    const pos = parsed.planet_positions || parsed.positions || parsed.planets || [];
+                    let moonObj = pos.find(p => p.planet === 'Moon' || p.name === 'Moon');
+                    let ascObj = pos.find(p => p.planet === 'Lagna' || p.planet === 'Ascendant' || p.name === 'Lagna' || p.name === 'Ascendant');
+                    let moon_lon = moonObj ? (moonObj.sidereal_longitude ?? moonObj.longitude ?? moonObj.degree ?? 0) : 0;
+                    let ascendant = ascObj ? (ascObj.sidereal_longitude ?? ascObj.longitude ?? ascObj.degree ?? 0) : (parsed.ascendant || 0);
+
+                    fetch('/api/dasha/govt-job-activation', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            jd_ut: parsed.jd_ut || parsed.basic_details?.jd_ut || 2451545.0,
+                            moon_lon: moon_lon,
+                            ascendant: ascendant,
+                            house_lords: parsed.house_lords || null,
+                            years: 80.0
+                        })
+                    }).then(res => res.json()).then(data => setGovtJobActivationData(data)).catch(e => console.error("Govt job activation fetch failed", e));
+                }
             } catch (err) {
                 console.error("Study insights fetch error:", err);
                 setError(`Connection Error: ${err.message || "Unknown Error"}`);
@@ -223,6 +246,175 @@ export default function StudyViewer() {
                                     <p style={{ fontSize: '18px', color: theme.text, lineHeight: '1.7', fontStyle: 'italic' }}>{item.content}</p>
                                 </div>
                             ))}
+                        </div>
+
+                        {/* Classical Priority Hierarchy for Selecting Field of Study */}
+                        <div style={{
+                            marginTop: '60px',
+                            background: theme.cardBg,
+                            padding: '40px',
+                            borderRadius: '40px',
+                            border: '1px solid rgba(212,175,55,0.3)',
+                            boxShadow: isLightMode ? '0 10px 30px rgba(0,0,0,0.05)' : '0 20px 50px rgba(0,0,0,0.3)'
+                        }}>
+                            <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+                                <span style={{ fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px', color: '#d4af37' }}>
+                                    📜 Parashari & Jaimini Sastra Principles
+                                </span>
+                                <h3 style={{ fontSize: '28px', fontWeight: 900, color: theme.heading, marginTop: '8px' }}>
+                                    🏆 Classical Priority Hierarchy for Selecting Field of Study
+                                </h3>
+                                <p style={{ fontSize: '16px', color: theme.filterInactiveText, fontStyle: 'italic', marginTop: '6px' }}>
+                                    How to evaluate your educational factors in order of astrological importance
+                                </p>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+                                <div style={{ background: 'rgba(212,175,55,0.08)', padding: '24px', borderRadius: '24px', borderLeft: '5px solid #d4af37' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: 900, color: '#d4af37', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px' }}>
+                                        1st Priority (Rank #1)
+                                    </div>
+                                    <h4 style={{ fontSize: '18px', fontWeight: 900, color: theme.heading, marginBottom: '8px' }}>
+                                        🥇 5th Lord & Planets in 5th House
+                                    </h4>
+                                    <p style={{ fontSize: '18px', color: theme.text, lineHeight: '1.6' }}>
+                                        <b>Core Stream & Intellect:</b> Governs your primary mental capacity, learning style, and undergraduate stream (STEM, Law, Commerce, Arts).
+                                    </p>
+                                </div>
+
+                                <div style={{ background: 'rgba(59, 130, 246, 0.08)', padding: '24px', borderRadius: '24px', borderLeft: '5px solid #3b82f6' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: 900, color: '#3b82f6', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px' }}>
+                                        2nd Priority (Rank #2)
+                                    </div>
+                                    <h4 style={{ fontSize: '18px', fontWeight: 900, color: theme.heading, marginBottom: '8px' }}>
+                                        🥈 Birth Nakshatra Analysis
+                                    </h4>
+                                    <p style={{ fontSize: '18px', color: theme.text, lineHeight: '1.6' }}>
+                                        <b>Inborn Talent & Work Style:</b> Reveals your subconscious mind, natural dexterity, craftsmanship, and hands-on specialization skills.
+                                    </p>
+                                </div>
+
+                                <div style={{ background: 'rgba(16, 185, 129, 0.08)', padding: '24px', borderRadius: '24px', borderLeft: '5px solid #10b981' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: 900, color: '#10b981', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px' }}>
+                                        3rd Priority (Rank #3)
+                                    </div>
+                                    <h4 style={{ fontSize: '18px', fontWeight: 900, color: theme.heading, marginBottom: '8px' }}>
+                                        🥉 Planet Acting as 5th Lord
+                                    </h4>
+                                    <p style={{ fontSize: '18px', color: theme.text, lineHeight: '1.6' }}>
+                                        <b>Intellectual Temperament:</b> Determines your competitive disposition (e.g., Jupiter $\rightarrow$ Wisdom/Finance; Mars $\rightarrow$ Technical/Engineering).
+                                    </p>
+                                </div>
+
+                                <div style={{ background: 'rgba(168, 85, 247, 0.08)', padding: '24px', borderRadius: '24px', borderLeft: '5px solid #a855f7' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: 900, color: '#a855f7', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px' }}>
+                                        4th Priority (Rank #4)
+                                    </div>
+                                    <h4 style={{ fontSize: '18px', fontWeight: 900, color: theme.heading, marginBottom: '8px' }}>
+                                        🏅 9th Lord & Planets in 9th House
+                                    </h4>
+                                    <p style={{ fontSize: '18px', color: theme.text, lineHeight: '1.6' }}>
+                                        <b>Higher Degrees & Doctorate:</b> Governs Master's degrees, Ph.D. specialization, university reputation, and foreign university studies.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                )}
+
+                {/* Government Job Activation (Vimshottari Dasha Timing) Section */}
+                {govtJobActivationData && (
+                    <section style={{ marginBottom: '80px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
+                            <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to right, transparent, rgba(239, 68, 68, 0.4))' }}></div>
+                            <h2 style={{ fontSize: '32px', color: '#ef4444', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>🏛️ Government Job Activation (Vimshottari Dasha Timing)</h2>
+                            <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to left, transparent, rgba(239, 68, 68, 0.4))' }}></div>
+                        </div>
+
+                        {/* Goverment Lords & Career Domains Summary Badges */}
+                        {govtJobActivationData.govt_lords && (
+                            <div style={{ marginBottom: '40px' }}>
+                                <p style={{ color: theme.filterInactiveText, fontSize: '18px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 800, marginBottom: '20px', textAlign: 'center' }}>
+                                    👑 Government Service Karakas & Career Domain Mapping
+                                </p>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+                                    {govtJobActivationData.govt_lords.slice(0, 6).map((gl, i) => (
+                                        <div key={i} style={{
+                                            background: theme.cardBg,
+                                            border: `1px solid ${theme.borderColor}`,
+                                            padding: '20px 24px',
+                                            borderRadius: '24px',
+                                            boxShadow: isLightMode ? '0 8px 20px rgba(0,0,0,0.05)' : '0 15px 35px rgba(0,0,0,0.3)'
+                                        }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                                                <span style={{ fontSize: '20px', fontWeight: 900, color: theme.heading }}>
+                                                    👑 {gl.title}
+                                                </span>
+                                                <span style={{ fontSize: '14px', fontWeight: 900, padding: '4px 12px', borderRadius: '100px', background: 'rgba(239, 68, 68, 0.15)', color: '#ef4444' }}>
+                                                    Score: {gl.score}
+                                                </span>
+                                            </div>
+                                            <p style={{ fontSize: '16px', fontWeight: 800, color: '#fbbf24', marginBottom: '8px', lineHeight: '1.4' }}>
+                                                🏢 {gl.domains}
+                                            </p>
+                                            <p style={{ fontSize: '14px', color: theme.filterInactiveText, margin: 0, fontStyle: 'italic', lineHeight: '1.5' }}>
+                                                {gl.description}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Government Job Activation Timeline */}
+                        <div>
+                            <p style={{ color: theme.filterInactiveText, fontSize: '18px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 800, marginBottom: '20px', textAlign: 'center' }}>
+                                📅 Active & Peak Government Selection Years
+                            </p>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '20px' }}>
+                                {(govtJobActivationData.timeline || []).slice(0, 10).map((period, idx) => (
+                                    <div key={idx} style={{
+                                        background: theme.cardBg,
+                                        padding: '24px 30px',
+                                        borderRadius: '30px',
+                                        borderLeft: `6px solid ${period.badge_color || '#ef4444'}`,
+                                        borderTop: `1px solid ${theme.borderColor}`,
+                                        borderRight: `1px solid ${theme.borderColor}`,
+                                        borderBottom: `1px solid ${theme.borderColor}`,
+                                        boxShadow: isLightMode ? '0 10px 25px rgba(0,0,0,0.05)' : '0 20px 40px rgba(0,0,0,0.3)'
+                                    }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                                            <span style={{ fontSize: '20px', fontWeight: 900, color: theme.heading }}>
+                                                {period.mahadasha} (MD) - {period.antardasha} (AD)
+                                            </span>
+                                            <span style={{
+                                                fontSize: '18px',
+                                                color: '#fbbf24',
+                                                fontWeight: 900,
+                                                padding: '4px 12px',
+                                                borderRadius: '100px',
+                                                background: 'rgba(239, 68, 68, 0.2)'
+                                            }}>
+                                                {period.intensity.includes("Pinnacle") || period.intensity.includes("High") ? "High" : period.intensity.includes("Favorable") || period.intensity.includes("Average") ? "Average" : "Low"}
+                                            </span>
+                                        </div>
+                                        <p style={{ fontSize: '18px', fontWeight: 800, color: '#ef4444', marginBottom: '10px' }}>
+                                            🎯 Recommended Posts: {period.suggested_careers}
+                                        </p>
+                                        <p style={{ fontSize: '18px', color: theme.filterInactiveText, marginBottom: '15px', lineHeight: '1.6', fontStyle: 'italic' }}>
+                                            {period.description}
+                                        </p>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '10px', borderTop: `1px solid ${theme.borderColor}` }}>
+                                            <span style={{ fontSize: '18px', fontWeight: 800, color: '#fbbf24' }}>
+                                                📅 {period.start_date} to {period.end_date}
+                                            </span>
+                                            <span style={{ fontSize: '14px', color: '#ef4444', fontWeight: 900 }}>
+                                                Score: {period.score}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                     </section>
                 )}

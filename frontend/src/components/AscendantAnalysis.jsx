@@ -98,7 +98,7 @@ export default function AscendantAnalysis() {
     return (
         <div className="min-h-screen bg-[#fafaf9] text-[#1c1917] font-serif p-8 relative">
             {/* Language Toggle Button */}
-            <button 
+            <button
                 onClick={() => setIsHindi(!isHindi)}
                 style={{
                     position: 'absolute',
@@ -125,25 +125,25 @@ export default function AscendantAnalysis() {
                     <h1 className="text-6xl font-black text-[#44403c] italic tracking-tighter uppercase">
                         The {ascendantSign} Ascendant
                     </h1>
-                    <p className="text-stone-500 uppercase tracking-[0.5em] text-sm font-black">
+                    <p className="text-stone-900 uppercase tracking-[0.5em] text-[20px] font-black">
                         Identity • Vitality • Life Path • Soul Purpose
                     </p>
-                    <div className="max-w-3xl mx-auto mt-6 p-6 bg-stone-50 rounded-3xl border border-stone-100 text-stone-500 text-[11px] leading-relaxed italic text-center">
-                        <span className="block font-black uppercase tracking-widest text-[9px] text-stone-400 mb-2">Technical Insight</span>
+                    <div className="max-w-3xl mx-auto mt-6 p-6 bg-stone-50 rounded-3xl border border-stone-100 text-stone-900 text-[18px] leading-relaxed italic text-center">
+                        <span className="block font-black uppercase tracking-widest text-[18px] text-stone-900 mb-2">Technical Insight</span>
                         {ASCENDANT_INTRO}
                     </div>
-                    <div className="max-w-2xl mx-auto mt-6 text-stone-500 text-sm leading-relaxed italic">
+                    <div className="max-w-2xl mx-auto mt-6 text-stone-900 text-[18px] leading-relaxed italic">
                         {interpretation.description}
                     </div>
                     <div className="mt-8 flex flex-wrap justify-center gap-4">
-                        <span className="px-6 py-2 bg-stone-100 rounded-full text-xs font-black uppercase tracking-widest text-stone-600 border border-stone-200">
+                        <span className="px-6 py-2 bg-stone-100 rounded-full text-[18px] font-bold uppercase tracking-widest text-stone-900 border border-stone-200">
                             Element: {interpretation.element}
                         </span>
-                        <span className="px-6 py-2 bg-stone-100 rounded-full text-xs font-black uppercase tracking-widest text-stone-600 border border-stone-200">
+                        <span className="px-6 py-2 bg-stone-100 rounded-full text-[18px] font-bold uppercase tracking-widest text-stone-900 border border-stone-200">
                             Ruling Planet: {interpretation.ruler}
                         </span>
                         {interpretation.ruler_info && (
-                            <div className="w-full mt-4 text-[10px] text-stone-400 uppercase tracking-widest">
+                            <div className="w-full mt-4 text-[16px] text-stone-900 uppercase tracking-widest">
                                 Ruler Dynamics: {interpretation.ruler_info}
                             </div>
                         )}
@@ -160,14 +160,14 @@ export default function AscendantAnalysis() {
                                 <span className="px-3 py-1 bg-amber-100/60 text-amber-800 text-[9px] font-black uppercase tracking-widest rounded-full border border-amber-200">
                                     Lagna Lord House Placement (BPHS Ch. 24)
                                 </span>
-                                <h4 className="text-2xl font-black text-stone-800 italic">
+                                <h4 className="text-[20px] font-bold text-stone-800 italic">
                                     Ascendant Lord ({ascLord}) in the {ascLordHouse === 1 ? "1st" : ascLordHouse === 2 ? "2nd" : ascLordHouse === 3 ? "3rd" : ascLordHouse + "th"} House
                                 </h4>
-                                <p className="text-sm text-stone-600 leading-relaxed italic">
+                                <p className="text-[18px] text-stone-900 leading-relaxed italic">
                                     "{BPHS_BHAVA_LORDS_RULES.LagnaLord[ascLordHouse].result}"
                                 </p>
-                                <div className="text-xs text-stone-500 font-serif border-t border-stone-200/50 pt-2 italic">
-                                    <span className="font-bold block text-stone-700 not-italic mb-1">Sastra Notes:</span>
+                                <div className="text-[18px] text-stone-900 font-serif border-t border-stone-200/50 pt-2 italic">
+                                    <span className="font-bold block text-stone-900 not-italic mb-1">Sastra Notes:</span>
                                     {BPHS_BHAVA_LORDS_RULES.LagnaLord[ascLordHouse].notes}
                                 </div>
                             </div>
@@ -181,15 +181,15 @@ export default function AscendantAnalysis() {
                         <div className="bg-white rounded-[3rem] p-12 shadow-xl border border-stone-100 relative overflow-hidden group hover:shadow-2xl transition-all">
                             <div className="absolute top-0 right-0 p-8 opacity-5 text-9xl font-black text-stone-900 pointer-events-none">✨</div>
                             <h3 className="text-3xl font-black italic mb-8 text-[#44403c]">Soul Personality</h3>
-                            <p className="text-lg leading-relaxed italic text-stone-600 border-l-4 border-stone-400 pl-8 mb-10">
+                            <p className="text-[18px] leading-relaxed italic text-stone-900 border-l-4 border-stone-400 pl-8 mb-10">
                                 "{interpretation.personality}"
                             </p>
                             {interpretation.detailed_personality && (
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     {Object.entries(interpretation.detailed_personality).map(([key, val], i) => (
                                         <div key={i} className="p-4 bg-stone-50 rounded-2xl border border-stone-100">
-                                            <p className="text-[9px] font-black text-stone-400 uppercase mb-1 tracking-tighter">{key}</p>
-                                            <p className="text-[11px] text-stone-700 leading-tight italic">{val}</p>
+                                            <p className="text-[16px] font-bold text-stone-900 uppercase mb-1 tracking-tighter">{key}</p>
+                                            <p className="text-[16px] text-stone-900 leading-tight italic">{val}</p>
                                         </div>
                                     ))}
                                 </div>
@@ -200,13 +200,13 @@ export default function AscendantAnalysis() {
                             <div className="grid grid-cols-2 gap-6">
                                 <div className="bg-blue-50 p-8 rounded-[2.5rem] border border-blue-100 relative overflow-hidden">
                                     <div className="absolute -top-2 -right-2 text-4xl opacity-10">♂️</div>
-                                    <h4 className="text-[10px] font-black uppercase text-blue-700 mb-4 tracking-widest">Male Traits</h4>
-                                    <p className="text-xs text-blue-800 leading-relaxed italic">{interpretation.gender_traits.Male}</p>
+                                    <h4 className="text-[18px] font-black uppercase text-blue-700 mb-4 tracking-widest">Male Traits</h4>
+                                    <p className="text-[18px] text-blue-800 leading-relaxed italic">{interpretation.gender_traits.Male}</p>
                                 </div>
                                 <div className="bg-pink-50 p-8 rounded-[2.5rem] border border-pink-100 relative overflow-hidden">
                                     <div className="absolute -top-2 -right-2 text-4xl opacity-10">♀️</div>
-                                    <h4 className="text-[10px] font-black uppercase text-pink-700 mb-4 tracking-widest">Female Traits</h4>
-                                    <p className="text-xs text-pink-800 leading-relaxed italic">{interpretation.gender_traits.Female}</p>
+                                    <h4 className="text-[18px] font-black uppercase text-pink-700 mb-4 tracking-widest">Female Traits</h4>
+                                    <p className="text-[18px] text-pink-800 leading-relaxed italic">{interpretation.gender_traits.Female}</p>
                                 </div>
                             </div>
                         )}
@@ -217,32 +217,32 @@ export default function AscendantAnalysis() {
                             <h3 className="text-2xl font-black italic mb-8 relative z-10">Physical & Vitality Markers</h3>
                             <div className="space-y-8 relative z-10">
                                 <div>
-                                    <p className="text-[10px] font-black uppercase text-stone-400 mb-2 tracking-widest">Physical Traits</p>
-                                    <p className="text-sm opacity-90 leading-relaxed italic">{interpretation.physical_traits}</p>
+                                    <p className="text-[18px] font-bold uppercase text-stone-400 mb-2 tracking-widest">Physical Traits</p>
+                                    <p className="text-[18px] text-stone-200 leading-relaxed italic">{interpretation.physical_traits}</p>
                                 </div>
                                 <div>
-                                    <p className="text-[10px] font-black uppercase text-stone-400 mb-2 tracking-widest">Health & Constitution</p>
-                                    <p className="text-sm opacity-90 leading-relaxed italic">{interpretation.health_vitality}</p>
+                                    <p className="text-[18px] font-bold uppercase text-stone-400 mb-2 tracking-widest">Health & Constitution</p>
+                                    <p className="text-[18px] text-stone-200 leading-relaxed italic">{interpretation.health_vitality}</p>
                                 </div>
                             </div>
                         </div>
 
                         <div className="grid grid-cols-2 gap-6">
                             <div className="bg-emerald-50 p-8 rounded-[2.5rem] border border-emerald-100">
-                                <h4 className="text-[10px] font-black uppercase text-emerald-700 mb-4 tracking-widest">Core Strengths</h4>
+                                <h4 className="text-[18px] font-bold uppercase text-emerald-700 mb-4 tracking-widest">Core Strengths</h4>
                                 <ul className="space-y-2">
                                     {interpretation.strengths.map((s, i) => (
-                                        <li key={i} className="text-xs font-bold text-emerald-800 flex items-center gap-2">
+                                        <li key={i} className="text-[18px] font-bold text-emerald-800 flex items-center gap-2">
                                             <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span> {s}
                                         </li>
                                     ))}
                                 </ul>
                             </div>
                             <div className="bg-rose-50 p-8 rounded-[2.5rem] border border-rose-100">
-                                <h4 className="text-[10px] font-black uppercase text-rose-700 mb-4 tracking-widest">Growth Areas</h4>
+                                <h4 className="text-[18px] font-bold uppercase text-rose-700 mb-4 tracking-widest">Growth Areas</h4>
                                 <ul className="space-y-2">
                                     {interpretation.challenges.map((c, i) => (
-                                        <li key={i} className="text-xs font-bold text-rose-800 flex items-center gap-2">
+                                        <li key={i} className="text-[18px] font-bold text-rose-800 flex items-center gap-2">
                                             <span className="w-1.5 h-1.5 bg-rose-500 rounded-full"></span> {c}
                                         </li>
                                     ))}
@@ -256,11 +256,11 @@ export default function AscendantAnalysis() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {interpretation.love_life && (
                         <div className="bg-white p-10 rounded-[3rem] border border-stone-100 shadow-lg">
-                            <h4 className="text-xl font-black italic text-[#44403c] mb-4">Love & Relations</h4>
-                            <p className="text-xs text-stone-600 leading-relaxed italic mb-6">{interpretation.love_life.Description}</p>
+                            <h4 className="text-[18px] font-black italic text-[#44403c] mb-4">Love & Relations</h4>
+                            <p className="text-[18px] text-stone-900 leading-relaxed italic mb-6">{interpretation.love_life.Description}</p>
                             <div className="flex flex-wrap gap-2">
                                 {interpretation.love_life.Compatibility.map((c, i) => (
-                                    <span key={i} className="px-3 py-1 bg-rose-50 text-rose-700 text-[10px] font-bold rounded-full border border-rose-100">
+                                    <span key={i} className="px-3 py-1 bg-rose-50 text-rose-700 text-[18px] font-bold rounded-full border border-rose-100">
                                         {c}
                                     </span>
                                 ))}
@@ -269,18 +269,18 @@ export default function AscendantAnalysis() {
                     )}
                     {interpretation.career && (
                         <div className="bg-white p-10 rounded-[3rem] border border-stone-100 shadow-lg">
-                            <h4 className="text-xl font-black italic text-[#44403c] mb-4">Career Prospects</h4>
-                            <p className="text-xs text-stone-600 leading-relaxed italic">{interpretation.career}</p>
+                            <h4 className="text-[18px] font-black italic text-[#44403c] mb-4">Career Prospects</h4>
+                            <p className="text-[18px] text-stone-900 leading-relaxed italic">{interpretation.career}</p>
                         </div>
                     )}
                     {interpretation.psychological_traits && (
                         <div className="bg-white p-10 rounded-[3rem] border border-stone-100 shadow-lg">
-                            <h4 className="text-xl font-black italic text-[#44403c] mb-4">Psychology</h4>
+                            <h4 className="text-[18px] font-black italic text-[#44403c] mb-4">Psychology</h4>
                             <div className="space-y-4">
                                 {Object.entries(interpretation.psychological_traits).map(([key, val], i) => (
                                     <div key={i}>
-                                        <p className="text-[9px] font-black text-stone-400 uppercase tracking-widest mb-1">{key}</p>
-                                        <p className="text-[11px] text-stone-600 italic leading-tight">{val}</p>
+                                        <p className="text-[18px] font-bold text-stone-900 uppercase tracking-widest mb-1">{key}</p>
+                                        <p className="text-[18px] text-stone-900 italic leading-tight">{val}</p>
                                     </div>
                                 ))}
                             </div>
@@ -292,12 +292,12 @@ export default function AscendantAnalysis() {
                 {interpretation.planetary_impacts && (
                     <div className="bg-stone-900 rounded-[4rem] p-16 text-white shadow-2xl relative overflow-hidden">
                         <div className="absolute bottom-0 left-0 p-12 opacity-5 text-9xl">🔭</div>
-                        <h3 className="text-3xl font-black italic mb-12 text-stone-200 text-center">Planetary Dynamics for {ascendantSign}</h3>
+                        <h3 className="text-[18px] font-black italic mb-12 text-stone-200 text-center">Planetary Dynamics for {ascendantSign}</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {Object.entries(interpretation.planetary_impacts).map(([pName, pDesc], idx) => (
                                 <div key={idx} className="bg-white/5 border border-white/10 p-6 rounded-3xl hover:bg-white/10 transition-all group">
-                                    <p className="text-xs font-black text-amber-400 uppercase tracking-widest mb-3">{pName}</p>
-                                    <p className="text-[11px] text-stone-300 italic leading-relaxed">{pDesc}</p>
+                                    <p className="text-[18px] font-black text-amber-400 uppercase tracking-widest mb-3">{pName}</p>
+                                    <p className="text-[18px] text-stone-300 italic leading-relaxed">{pDesc}</p>
                                 </div>
                             ))}
                         </div>
@@ -308,21 +308,21 @@ export default function AscendantAnalysis() {
                 {planetsInFirst.length > 0 && (
                     <div className="bg-white rounded-[4rem] p-16 border border-stone-100 shadow-xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 p-12 opacity-5 text-9xl">🪐</div>
-                        <h3 className="text-3xl font-black italic mb-12 text-[#44403c] text-center">Chart-Specific Influences</h3>
+                        <h3 className="text-[18px] font-black italic mb-12 text-[#44403c] text-center">Chart-Specific Influences</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {planetsInFirst.map((pName, idx) => {
                                 const pData = ASCENDANT_PLANETS_1ST_HOUSE[pName];
                                 return (
-                                    <div 
-                                        key={idx} 
+                                    <div
+                                        key={idx}
                                         onClick={() => setSelectedPlanet({ name: pName, ...pData })}
                                         className="cursor-pointer bg-stone-50 p-8 rounded-[2.5rem] border border-stone-100 hover:bg-stone-100 hover:-translate-y-2 transition-all group"
                                     >
                                         <div className="flex justify-between items-center mb-4">
-                                            <span className="text-sm font-black text-stone-800 uppercase tracking-tighter">{pName}</span>
-                                            <span className="text-[10px] text-stone-400 group-hover:text-stone-800 transition-colors">READ MORE →</span>
+                                            <span className="text-[18px] font-black text-stone-800 uppercase tracking-tighter">{pName}</span>
+                                            <span className="text-[18px] text-stone-400 group-hover:text-stone-800 transition-colors">READ MORE →</span>
                                         </div>
-                                        <p className="text-xs text-stone-600 leading-relaxed line-clamp-3 italic">
+                                        <p className="text-[18px] text-stone-900 leading-relaxed line-clamp-3 italic">
                                             {pData?.effect || "Complex influence on the Ascendant... Analysis required."}
                                         </p>
                                     </div>
@@ -340,10 +340,10 @@ export default function AscendantAnalysis() {
                             <span className="px-4 py-1.5 bg-amber-100 text-amber-800 text-[10px] font-black uppercase tracking-widest rounded-full border border-amber-200">
                                 Classic Sastra Diagnostic
                             </span>
-                            <h3 className="text-4xl font-black text-stone-800 italic">
+                            <h3 className="text-[18px] font-black text-stone-800 italic">
                                 Brihat Parasara Hora Sastra
                             </h3>
-                            <p className="text-stone-500 uppercase tracking-widest text-xs font-black">
+                            <p className="text-stone-900 uppercase tracking-widest text-xs font-black">
                                 Chapter 12 • First House (Lagna Bhava) Analysis
                             </p>
                             <div className="h-0.5 w-24 bg-stone-300 mx-auto mt-4"></div>
@@ -352,94 +352,86 @@ export default function AscendantAnalysis() {
                         {/* Evaluation Summaries */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             {/* Sloka 1-2 Physical Comforts */}
-                            <div className={`p-8 rounded-[2.5rem] border transition-all ${
-                                physicalComfortsStatus === "diminished" 
-                                    ? "bg-rose-50/50 border-rose-100 shadow-sm" 
-                                    : "bg-emerald-50/50 border-emerald-100 shadow-sm"
-                            }`}>
+                            <div className={`p-8 rounded-[2.5rem] border transition-all ${physicalComfortsStatus === "diminished"
+                                ? "bg-rose-50/50 border-rose-100 shadow-sm"
+                                : "bg-emerald-50/50 border-emerald-100 shadow-sm"
+                                }`}>
                                 <div className="flex justify-between items-start mb-4">
                                     <h4 className="text-lg font-black text-stone-800 italic">{BPHS_FIRST_HOUSE_RULES.physicalComforts.title}</h4>
-                                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${
-                                        physicalComfortsStatus === "diminished"
-                                            ? "bg-rose-100 text-rose-800 border border-rose-200"
-                                            : "bg-emerald-100 text-emerald-800 border border-emerald-200"
-                                    }`}>
+                                    <span className={`px-3 py-1 rounded-full text-[18px] font-black uppercase tracking-wider ${physicalComfortsStatus === "diminished"
+                                        ? "bg-rose-100 text-rose-800 border border-rose-200"
+                                        : "bg-emerald-100 text-emerald-800 border border-emerald-200"
+                                        }`}>
                                         {physicalComfortsStatus === "diminished" ? "Afflicted" : "Fortified"}
                                     </span>
                                 </div>
-                                <p className="text-[10px] text-stone-400 italic font-mono mb-2 whitespace-pre-line">{BPHS_FIRST_HOUSE_RULES.physicalComforts.sanskrit}</p>
-                                <p className="text-xs text-stone-600 leading-relaxed italic mb-4">"{BPHS_FIRST_HOUSE_RULES.physicalComforts.english}"</p>
-                                <div className="p-4 bg-white/60 rounded-2xl border border-stone-200/50 text-[11px] text-stone-500 italic">
-                                    <span className="font-bold block text-stone-700 not-italic mb-1">Dynamic Chart Calculation:</span>
-                                    Ascendant Lord ({ascLord}) is placed in House {ascLordHouse || '?'}. 
+                                <p className="text-[18px] text-stone-900 italic font-mono mb-2 whitespace-pre-line">{BPHS_FIRST_HOUSE_RULES.physicalComforts.sanskrit}</p>
+                                <p className="text-[18px] text-stone-900 leading-relaxed italic mb-4">"{BPHS_FIRST_HOUSE_RULES.physicalComforts.english}"</p>
+                                <div className="p-4 bg-white/60 rounded-2xl border border-stone-200/50 text-[18px] text-stone-900 italic">
+                                    <span className="font-bold block  text-stone-700 not-italic mb-1">Dynamic Chart Calculation:</span>
+                                    Ascendant Lord ({ascLord}) is placed in House {ascLordHouse || '?'}.
                                     {isLordInDusthana ? " Since the Lord is in a dusthana house (6th/8th/12th), physical comforts may encounter blockages." : " Placed favorably outside dusthana houses."}
                                     {hasLordMaleficConj ? " It is conjunct malefic planets, indicating physical challenges." : " Safe from malefic conjunctions."}
                                 </div>
                             </div>
 
                             {/* Sloka 3 Bodily Health */}
-                            <div className={`p-8 rounded-[2.5rem] border transition-all ${
-                                healthAlertActive 
-                                    ? "bg-rose-50/50 border-rose-100 shadow-sm" 
-                                    : "bg-stone-50 border-stone-200"
-                            }`}>
+                            <div className={`p-8 rounded-[2.5rem] border transition-all ${healthAlertActive
+                                ? "bg-rose-50/50 border-rose-100 shadow-sm"
+                                : "bg-stone-50 border-stone-200"
+                                }`}>
                                 <div className="flex justify-between items-start mb-4">
-                                    <h4 className="text-lg font-black text-stone-800 italic">{BPHS_FIRST_HOUSE_RULES.bodilyHealth.title}</h4>
-                                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${
-                                        healthAlertActive ? "bg-rose-100 text-rose-800 border border-rose-200" : "bg-stone-200 text-stone-600"
-                                    }`}>
+                                    <h4 className="text-[18px] font-black text-stone-800 italic">{BPHS_FIRST_HOUSE_RULES.bodilyHealth.title}</h4>
+                                    <span className={`px-3 py-1 rounded-full text-[18px] font-black uppercase tracking-wider ${healthAlertActive ? "bg-rose-100 text-rose-800 border border-rose-200" : "bg-stone-200 text-stone-600"
+                                        }`}>
                                         {healthAlertActive ? "Active Alert" : "Neutral"}
                                     </span>
                                 </div>
-                                <p className="text-[10px] text-stone-400 italic font-mono mb-2 whitespace-pre-line">{BPHS_FIRST_HOUSE_RULES.bodilyHealth.sanskrit}</p>
-                                <p className="text-xs text-stone-600 leading-relaxed italic mb-4">"{BPHS_FIRST_HOUSE_RULES.bodilyHealth.english}"</p>
-                                <div className="p-4 bg-white/60 rounded-2xl border border-stone-200/50 text-[11px] text-stone-500 italic">
-                                    <span className="font-bold block text-stone-700 not-italic mb-1">Dynamic Chart Calculation:</span>
-                                    {hasAscMalefic ? "Malefics are present in your 1st house." : "No malefics in the 1st house."} 
+                                <p className="text-[18px] text-stone-900 italic font-mono mb-2 whitespace-pre-line">{BPHS_FIRST_HOUSE_RULES.bodilyHealth.sanskrit}</p>
+                                <p className="text-[18px] text-stone-900 leading-relaxed italic mb-4">"{BPHS_FIRST_HOUSE_RULES.bodilyHealth.english}"</p>
+                                <div className="p-4 bg-white/60 rounded-2xl border border-stone-200/50 text-[18px] text-stone-900 italic">
+                                    <span className="font-bold block text-stone-900 not-italic mb-1">Dynamic Chart Calculation:</span>
+                                    {hasAscMalefic ? "Malefics are present in your 1st house." : "No malefics in the 1st house."}
                                     {hasMoonMalefic ? " Malefics are conjunct your Moon, which requires conscious wellness efforts." : " Moon is free from malefic conjunction."}
                                 </div>
                             </div>
 
                             {/* Sloka 4 Bodily Beauty */}
-                            <div className={`p-8 rounded-[2.5rem] border transition-all ${
-                                hasAscBenefic 
-                                    ? "bg-emerald-50/50 border-emerald-100 shadow-sm" 
-                                    : "bg-stone-50 border-stone-200"
-                            }`}>
+                            <div className={`p-8 rounded-[2.5rem] border transition-all ${hasAscBenefic
+                                ? "bg-emerald-50/50 border-emerald-100 shadow-sm"
+                                : "bg-stone-50 border-stone-200"
+                                }`}>
                                 <div className="flex justify-between items-start mb-4">
-                                    <h4 className="text-lg font-black text-stone-800 italic">{BPHS_FIRST_HOUSE_RULES.bodilyBeauty.title}</h4>
-                                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${
-                                        hasAscBenefic ? "bg-emerald-100 text-emerald-800 border border-emerald-200" : "bg-stone-200 text-stone-600"
-                                    }`}>
+                                    <h4 className="text-[18px] font-black text-stone-900 italic">{BPHS_FIRST_HOUSE_RULES.bodilyBeauty.title}</h4>
+                                    <span className={`px-3 py-1 rounded-full text-[18px] font-black uppercase tracking-wider ${hasAscBenefic ? "bg-emerald-100 text-emerald-800 border border-emerald-200" : "bg-stone-200 text-stone-600"
+                                        }`}>
                                         {hasAscBenefic ? "Charming Aura" : "Standard"}
                                     </span>
                                 </div>
-                                <p className="text-[10px] text-stone-400 italic font-mono mb-2 whitespace-pre-line">{BPHS_FIRST_HOUSE_RULES.bodilyBeauty.sanskrit}</p>
-                                <p className="text-xs text-stone-600 leading-relaxed italic mb-4">"{BPHS_FIRST_HOUSE_RULES.bodilyBeauty.english}"</p>
-                                <div className="p-4 bg-white/60 rounded-2xl border border-stone-200/50 text-[11px] text-stone-500 italic">
-                                    <span className="font-bold block text-stone-700 not-italic mb-1">Dynamic Chart Calculation:</span>
+                                <p className="text-[18px] text-stone-900 italic font-mono mb-2 whitespace-pre-line">{BPHS_FIRST_HOUSE_RULES.bodilyBeauty.sanskrit}</p>
+                                <p className="text-[18px] text-stone-900 leading-relaxed italic mb-4">"{BPHS_FIRST_HOUSE_RULES.bodilyBeauty.english}"</p>
+                                <div className="p-4 bg-white/60 rounded-2xl border border-stone-200/50 text-[18px] text-stone-900 italic">
+                                    <span className="font-bold block text-stone-900 not-italic mb-1">Dynamic Chart Calculation:</span>
                                     {hasAscBenefic ? "A benefic planet is placed in your Ascendant, conferring bodily charm and dynamic visual grace." : "No major benefic occupies the Ascendant directly."}
                                 </div>
                             </div>
 
                             {/* Slokas 5-7 Success & Longevity */}
-                            <div className={`p-8 rounded-[2.5rem] border transition-all ${
-                                otherBenefitsActive 
-                                    ? "bg-amber-50/50 border-amber-100 shadow-sm" 
-                                    : "bg-stone-50 border-stone-200"
-                            }`}>
+                            <div className={`p-8 rounded-[2.5rem] border transition-all ${otherBenefitsActive
+                                ? "bg-amber-50/50 border-amber-100 shadow-sm"
+                                : "bg-stone-50 border-stone-200"
+                                }`}>
                                 <div className="flex justify-between items-start mb-4">
-                                    <h4 className="text-lg font-black text-stone-800 italic">{BPHS_FIRST_HOUSE_RULES.otherBenefits.title}</h4>
-                                    <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-wider ${
-                                        otherBenefitsActive ? "bg-amber-100 text-amber-800 border border-amber-200" : "bg-stone-200 text-stone-600"
-                                    }`}>
+                                    <h4 className="text-[18px] font-black text-stone-900 italic">{BPHS_FIRST_HOUSE_RULES.otherBenefits.title}</h4>
+                                    <span className={`px-3 py-1 rounded-full text-[18px] font-black uppercase tracking-wider ${otherBenefitsActive ? "bg-amber-100 text-amber-800 border border-amber-200" : "bg-stone-200 text-stone-600"
+                                        }`}>
                                         {otherBenefitsActive ? "Royal Marks (Active)" : "Neutral"}
                                     </span>
                                 </div>
-                                <p className="text-[10px] text-stone-400 italic font-mono mb-2 whitespace-pre-line">{BPHS_FIRST_HOUSE_RULES.otherBenefits.sanskrit}</p>
-                                <p className="text-xs text-stone-600 leading-relaxed italic mb-4">"{BPHS_FIRST_HOUSE_RULES.otherBenefits.english}"</p>
-                                <div className="p-4 bg-white/60 rounded-2xl border border-stone-200/50 text-[11px] text-stone-500 italic">
-                                    <span className="font-bold block text-stone-700 not-italic mb-1">Dynamic Chart Calculation:</span>
+                                <p className="text-[18px] text-stone-900 italic font-mono mb-2 whitespace-pre-line">{BPHS_FIRST_HOUSE_RULES.otherBenefits.sanskrit}</p>
+                                <p className="text-[18px] text-stone-900 leading-relaxed italic mb-4">"{BPHS_FIRST_HOUSE_RULES.otherBenefits.english}"</p>
+                                <div className="p-4 bg-white/60 rounded-2xl border border-stone-200/50 text-[18px] text-stone-900 italic">
+                                    <span className="font-bold block text-stone-900 not-italic mb-1">Dynamic Chart Calculation:</span>
                                     {isLordInKendraTrikona ? "Ascendant Lord is in a Kendra/Trikona (Fortunate placement!)." : "Ascendant Lord is in a non-kendra/trikona house."}
                                     {isJupiterKendraTrikona || isVenusKendraTrikona ? " Benefics (Jupiter/Venus) are in Kendra or Trikona, supporting wisdom, wealth and status." : ""}
                                 </div>
@@ -449,24 +441,24 @@ export default function AscendantAnalysis() {
                         {/* Special Conditions Check */}
                         {(coiledBirthActive || twinsBirthActive || nurturedActive) && (
                             <div className="bg-[#fffbeb] p-8 rounded-[3rem] border border-[#fef3c7] shadow-inner space-y-6">
-                                <h4 className="text-lg font-black text-amber-900 italic">Flagged Classical Yoga Combinations</h4>
+                                <h4 className="text-[18px] font-black text-amber-900 italic">Flagged Classical Yoga Combinations</h4>
                                 <div className="space-y-4">
                                     {coiledBirthActive && (
                                         <div className="p-4 bg-white rounded-2xl border border-amber-200/60">
-                                            <p className="text-xs font-black text-amber-800 uppercase tracking-widest mb-1">{BPHS_FIRST_HOUSE_RULES.coiledBirth.title}</p>
-                                            <p className="text-xs text-stone-600 italic">"{BPHS_FIRST_HOUSE_RULES.coiledBirth.english}"</p>
+                                            <p className="text-[18px] font-black text-amber-800 uppercase tracking-widest mb-1">{BPHS_FIRST_HOUSE_RULES.coiledBirth.title}</p>
+                                            <p className="text-[18px] text-stone-900 italic">"{BPHS_FIRST_HOUSE_RULES.coiledBirth.english}"</p>
                                         </div>
                                     )}
                                     {twinsBirthActive && (
                                         <div className="p-4 bg-white rounded-2xl border border-amber-200/60">
-                                            <p className="text-xs font-black text-amber-800 uppercase tracking-widest mb-1">{BPHS_FIRST_HOUSE_RULES.birthOfTwins.title}</p>
-                                            <p className="text-xs text-stone-600 italic">"{BPHS_FIRST_HOUSE_RULES.birthOfTwins.english}"</p>
+                                            <p className="text-[18px] font-black text-amber-800 uppercase tracking-widest mb-1">{BPHS_FIRST_HOUSE_RULES.birthOfTwins.title}</p>
+                                            <p className="text-[18px] text-stone-900 italic">"{BPHS_FIRST_HOUSE_RULES.birthOfTwins.english}"</p>
                                         </div>
                                     )}
                                     {nurturedActive && (
                                         <div className="p-4 bg-white rounded-2xl border border-amber-200/60">
-                                            <p className="text-xs font-black text-amber-800 uppercase tracking-widest mb-1">{BPHS_FIRST_HOUSE_RULES.nurturedByThreeMothers.title}</p>
-                                            <p className="text-xs text-stone-600 italic">"{BPHS_FIRST_HOUSE_RULES.nurturedByThreeMothers.english}"</p>
+                                            <p className="text-[18px] font-black text-amber-800 uppercase tracking-widest mb-1">{BPHS_FIRST_HOUSE_RULES.nurturedByThreeMothers.title}</p>
+                                            <p className="text-[18px] text-stone-900 italic">"{BPHS_FIRST_HOUSE_RULES.nurturedByThreeMothers.english}"</p>
                                         </div>
                                     )}
                                 </div>
@@ -477,8 +469,8 @@ export default function AscendantAnalysis() {
                         <div className="bg-stone-50 rounded-[3rem] p-8 md:p-10 border border-stone-200 space-y-6">
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                                 <div>
-                                    <h4 className="text-xl font-black text-stone-800 italic">{BPHS_FIRST_HOUSE_RULES.decanatesAndLimbs.title}</h4>
-                                    <p className="text-xs text-stone-500 uppercase tracking-widest font-black">
+                                    <h4 className="text-[18px] font-black text-stone-900 italic">{BPHS_FIRST_HOUSE_RULES.decanatesAndLimbs.title}</h4>
+                                    <p className="text-[18px] text-stone-900 uppercase tracking-widest font-black">
                                         Based on Ascending Decanate (Dreshkana)
                                     </p>
                                 </div>
@@ -486,7 +478,7 @@ export default function AscendantAnalysis() {
                                     Ascendant Cusp: {ascDegreeInfo.toFixed(2)}° (Decanate {decanateNum})
                                 </div>
                             </div>
-                            <p className="text-xs text-stone-600 leading-relaxed italic">
+                            <p className="text-[18px] text-stone-900 leading-relaxed italic">
                                 "{BPHS_FIRST_HOUSE_RULES.decanatesAndLimbs.english}"
                             </p>
 
@@ -495,21 +487,20 @@ export default function AscendantAnalysis() {
                                     const decData = BPHS_FIRST_HOUSE_RULES.decanatesAndLimbs.decanateDetails[dIndex];
                                     const isActive = decanateNum === dIndex;
                                     return (
-                                        <div key={dIndex} className={`p-6 rounded-[2rem] border transition-all ${
-                                            isActive 
-                                                ? "bg-stone-900 text-white border-stone-900 shadow-lg scale-105" 
-                                                : "bg-white text-stone-700 border-stone-200 opacity-60"
-                                        }`}>
+                                        <div key={dIndex} className={`p-6 rounded-[2rem] border transition-all ${isActive
+                                            ? "bg-stone-900 text-white border-stone-900 shadow-lg scale-105"
+                                            : "bg-white text-stone-700 border-stone-200 opacity-60"
+                                            }`}>
                                             <div className="flex justify-between items-center mb-4 border-b pb-2 border-stone-300/30">
-                                                <span className="text-xs font-black uppercase tracking-widest">{decData.description}</span>
+                                                <span className="text-[18px] font-bold uppercase tracking-widest">{decData.description}</span>
                                                 {isActive && (
                                                     <span className="w-2.5 h-2.5 bg-amber-400 rounded-full animate-ping"></span>
                                                 )}
                                             </div>
-                                            <div className="space-y-2 text-[11px] font-mono leading-tight">
+                                            <div className="space-y-2 text-[14px] font-mono leading-tight">
                                                 {decData.mapping.map((m, mIdx) => (
                                                     <div key={mIdx} className="flex justify-between border-b border-stone-200/10 pb-1">
-                                                        <span className={isActive ? "text-stone-300" : "text-stone-500"}>{m.house}</span>
+                                                        <span className={isActive ? "text-stone-900" : "text-stone-900"}>{m.house}</span>
                                                         <span className="font-bold">{m.part}</span>
                                                     </div>
                                                 ))}
@@ -520,10 +511,10 @@ export default function AscendantAnalysis() {
                             </div>
 
                             {/* Sloka 15 Scar / Moles interpretation */}
-                            <div className="p-6 bg-amber-50/50 rounded-3xl border border-amber-100 text-xs text-stone-600 italic space-y-2">
-                                <p className="font-black text-amber-900 not-italic">{BPHS_FIRST_HOUSE_RULES.limbsAffected.title}</p>
+                            <div className="p-6 bg-amber-50/50 rounded-3xl border border-amber-100 text-[18px] text-stone-900 italic space-y-2">
+                                <p className="font-bold text-amber-900 not-italic">{BPHS_FIRST_HOUSE_RULES.limbsAffected.title}</p>
                                 <p>"{BPHS_FIRST_HOUSE_RULES.limbsAffected.english}"</p>
-                                <p className="text-[10px] text-stone-400 font-mono italic">{BPHS_FIRST_HOUSE_RULES.limbsAffected.sanskrit}</p>
+                                <p className="text-[16px] text-stone-900 font-mono italic">{BPHS_FIRST_HOUSE_RULES.limbsAffected.sanskrit}</p>
                             </div>
                         </div>
 
@@ -536,11 +527,11 @@ export default function AscendantAnalysis() {
                     <div className="flex flex-col md:flex-row items-center gap-8">
                         <div className="text-6xl">📿</div>
                         <div className="flex-1 text-center md:text-left">
-                            <h3 className="text-2xl font-black italic text-amber-900 mb-2">Empowerment Remedies</h3>
-                            <p className="text-xs uppercase font-black text-amber-700 tracking-[0.3em] mb-6 opacity-70">Alignment & Harmonization</p>
+                            <h3 className="text-[18px] font-black italic text-amber-900 mb-2">Empowerment Remedies</h3>
+                            <p className="text-[18px] uppercase font-black text-amber-700 tracking-[0.3em] mb-6 opacity-70">Alignment & Harmonization</p>
                             <div className="flex flex-wrap gap-4 justify-center md:justify-start">
                                 {interpretation.remedies.map((rem, idx) => (
-                                    <div key={idx} className="bg-white/80 px-6 py-3 rounded-full border border-amber-200 text-xs font-bold text-amber-900 shadow-sm">
+                                    <div key={idx} className="bg-white/80 px-6 py-3 rounded-full border border-amber-200 text-[18px] font-bold text-amber-900 shadow-sm">
                                         {rem}
                                     </div>
                                 ))}
@@ -550,7 +541,7 @@ export default function AscendantAnalysis() {
                 </div>
 
                 <div className="text-center opacity-30 py-8">
-                    <p className="text-[10px] uppercase font-black tracking-widest">Astro Consult • Ascendant Diagnostic Engine v1.0</p>
+                    <p className="text-[18px] uppercase font-black tracking-widest">Astro Consult • Ascendant Diagnostic Engine v1.0</p>
                 </div>
             </div>
 
@@ -561,17 +552,17 @@ export default function AscendantAnalysis() {
                     <div className="relative w-full max-w-xl bg-white rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
                         <div className="p-12 space-y-8">
                             <div className="flex justify-between items-center">
-                                <h2 className="text-4xl font-black text-[#44403c] italic tracking-tighter">{selectedPlanet.name} in 1st House</h2>
+                                <h2 className="text-[18px] font-black text-[#44403c] italic tracking-tighter">{selectedPlanet.name} in 1st House</h2>
                                 <button onClick={() => setSelectedPlanet(null)} className="text-stone-300 hover:text-stone-800 text-5xl font-light leading-none">&times;</button>
                             </div>
                             <div className="space-y-6">
                                 <div>
-                                    <h4 className="text-[10px] font-black uppercase text-stone-400 tracking-[0.2em] mb-3">Core Influence</h4>
-                                    <p className="text-lg text-stone-700 italic leading-relaxed">{selectedPlanet.effect}</p>
+                                    <h4 className="text-[18px] font-black uppercase text-stone-400 tracking-[0.2em] mb-3">Core Influence</h4>
+                                    <p className="text-[18px] text-stone-700 italic leading-relaxed">{selectedPlanet.effect}</p>
                                 </div>
                                 <div className="bg-stone-50 p-8 rounded-3xl border border-stone-100">
-                                    <h4 className="text-[10px] font-black uppercase text-stone-400 tracking-[0.2em] mb-3">Impact on Vitality</h4>
-                                    <p className="text-sm text-stone-600 italic">{selectedPlanet.vitality}</p>
+                                    <h4 className="text-[18px] font-black uppercase text-stone-400 tracking-[0.2em] mb-3">Impact on Vitality</h4>
+                                    <p className="text-[18px] text-stone-600 italic">{selectedPlanet.vitality}</p>
                                 </div>
                             </div>
                         </div>

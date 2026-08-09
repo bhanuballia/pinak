@@ -80,7 +80,7 @@ export default function LordshipView({ data }) {
                 <div className="bg-white border-b-2 border-[#005c99] px-2 py-0.5 text-[#005c99] font-bold text-sm tracking-wide rounded-t-md">
                     {title}
                 </div>
-                <div className="flex-1 flex p-2 text-sm font-serif">
+                <div className="flex-1 flex p-2 text-[16px] font-serif">
                     <div className="flex-1 flex flex-col gap-1 pr-2">
                         {leftCol.map((l, idx) => (
                             <div key={idx} className="flex whitespace-nowrap" style={{ color: PLANET_COLORS[l.planetName] || '#000' }}>
@@ -107,11 +107,11 @@ export default function LordshipView({ data }) {
     const renderRow = (chartId, title, subTitle, titleSuffix = "Lordships") => {
         const houses = getHouses(chartId);
         return (
-            <div className="flex w-full min-h-[300px]">
+            <div className="flex w-full min-h-[200px]">
                 {/* Left: Chart */}
                 <div className="flex-1 border-2 border-[#005c99] rounded-lg bg-white relative flex flex-col shadow-sm max-w-[50%]">
-                    <div className="absolute inset-0 flex items-center justify-center p-0 pt-6">
-                        <ZodiacChart houses={houses} variant="legacy" defaultRect={true} scaleText={1.6} title={`${title} ${subTitle}`} />
+                    <div className="absolute inset-0 flex items-center justify-center p-0 pt-0">
+                        <ZodiacChart houses={houses} variant="legacy" defaultRect={true} scaleText={1.6} title={`${title} ${subTitle}`} hideTranslation={true} hideLegend={true} hideOuterRect={true} />
                     </div>
                 </div>
                 {/* Right: Lordships */}
@@ -128,9 +128,7 @@ export default function LordshipView({ data }) {
                 {renderRow('d10', 'D10 Dashamsha', '(great successes)')}
             </div>
 
-            <div className="fixed bottom-0 left-0 right-0 bg-[#ffff99] border-t border-yellow-400 p-2 text-xs text-black shadow-lg">
-                In the "Lordships" cells, you can read the interpretation for that lordship. Within the birth chart, you can get a comprehensive overview of calculations related to that planet.
-            </div>
+
         </div>
     );
 }

@@ -2,30 +2,29 @@ import React, { useState, useEffect } from 'react';
 import { fetchParentsHealthInsights } from '../services/api';
 import DiagnosticDetails from './DiagnosticDetails';
 
-
 class ErrorBoundary extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = { hasError: false, error: null, errorInfo: null };
-  }
-  static getDerivedStateFromError(error) { return { hasError: true }; }
-  componentDidCatch(error, errorInfo) { this.setState({ error, errorInfo }); }
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div style={{ padding: '20px', color: 'red', background: 'white', minHeight: '100vh' }}>
-          <h2>Something went wrong in Parents Health Viewer.</h2>
-          <details style={{ whiteSpace: 'pre-wrap', marginTop: '20px' }}>
-            <summary>Click for error details</summary>
-            {this.state.error && this.state.error.toString()}
-            <br />
-            {this.state.errorInfo && this.state.errorInfo.componentStack}
-          </details>
-        </div>
-      );
+    constructor(props) {
+        super(props);
+        this.state = { hasError: false, error: null, errorInfo: null };
     }
-    return this.props.children; 
-  }
+    static getDerivedStateFromError(error) { return { hasError: true }; }
+    componentDidCatch(error, errorInfo) { this.setState({ error, errorInfo }); }
+    render() {
+        if (this.state.hasError) {
+            return (
+                <div style={{ padding: '20px', color: 'red', background: 'white', minHeight: '100vh' }}>
+                    <h2>Something went wrong in Parents Health Viewer.</h2>
+                    <details style={{ whiteSpace: 'pre-wrap', marginTop: '20px' }}>
+                        <summary>Click for error details</summary>
+                        {this.state.error && this.state.error.toString()}
+                        <br />
+                        {this.state.errorInfo && this.state.errorInfo.componentStack}
+                    </details>
+                </div>
+            );
+        }
+        return this.props.children;
+    }
 }
 
 export default function ParentsHealthViewerWithErrorBoundary(props) {
@@ -39,6 +38,7 @@ function ParentsHealthViewer() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('All');
+    const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'mother' | 'father' | 'remedies'
     const [userData, setUserData] = useState(null);
     const [worksheetData, setWorksheetData] = useState(null);
 
@@ -101,15 +101,24 @@ function ParentsHealthViewer() {
     const categories = ['All', ...new Set(insights.map(item => item.category))];
     const filteredInsights = filter === 'All' ? insights : insights.filter(item => item.category === filter);
 
-    return (
-        <div style={{ minHeight: '100vh', backgroundColor: isLightMode ? '#f8fafc' : '#020617', color: isLightMode ? '#a51e0dbd' : '#cbd5e1', fontFamily: 'serif', paddingBottom: '100px', position: 'relative' }}>
+    const getRiskColor = (level) => {
+        if (level === 'High') return '#ef4444';
+        if (level === 'Moderate') return '#f59e0b';
+        return '#10b981';
+    };
 
-            <button 
+    const motherData = personalData?.mother || {};
+    const fatherData = personalData?.father || {};
+
+    return (
+        <div style={{ minHeight: '100vh', backgroundColor: isLightMode ? '#f8fafc' : '#020617', color: isLightMode ? '#1e293b' : '#cbd5e1', fontFamily: 'serif', paddingBottom: '100px', position: 'relative' }}>
+
+            <button
                 onClick={() => setIsLightMode(!isLightMode)}
                 style={{
                     position: 'absolute',
                     top: '20px',
-                    right: '100px',
+                    right: '40px',
                     zIndex: 1000,
                     background: isLightMode ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',
                     border: '1px solid #ccc',
@@ -126,187 +135,408 @@ function ParentsHealthViewer() {
             </button>
 
             {/* Premium Header */}
-            <div style={{ 
-                padding: '80px 40px', 
-                background: isLightMode ? 'linear-gradient(135deg, #e0f2fe 0%, #f8fafc 100%)' : 'linear-gradient(135deg, #0c4a6e 0%, #020617 100%)', 
+            <div style={{
+                padding: '70px 40px',
+                background: isLightMode ? 'linear-gradient(135deg, #e0f2fe 0%, #f8fafc 100%)' : 'linear-gradient(135deg, #0c4a6e 0%, #020617 100%)',
                 borderBottom: '1px solid rgba(14, 165, 233, 0.1)',
                 position: 'relative',
                 overflow: 'hidden',
                 boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
             }}>
                 <div style={{ position: 'absolute', top: '-100px', right: '-100px', width: '400px', height: '400px', background: 'rgba(14, 165, 233, 0.05)', borderRadius: '50%', filter: 'blur(100px)' }}></div>
-                
+
                 <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '40px' }}>
-                    <div style={{ 
-                        width: '120px', 
-                        height: '120px', 
-                        borderRadius: '35px', 
-                        background: 'rgba(255,255,255,0.03)', 
+                    <div style={{
+                        width: '110px',
+                        height: '110px',
+                        borderRadius: '30px',
+                        background: 'rgba(255,255,255,0.03)',
                         backdropFilter: 'blur(20px)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        fontSize: '60px',
+                        fontSize: '56px',
                         border: '1px solid rgba(14, 165, 233, 0.2)',
                         boxShadow: '0 20px 40px rgba(0,0,0,0.4)'
                     }}>👨‍👩‍👧</div>
                     <div>
-                        <h1 style={{ fontSize: '64px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', margin: 0, fontStyle: 'italic', letterSpacing: '-2px' }}>Parents Health Guide</h1>
-                        <p style={{ color: '#0ea5e9', textTransform: 'uppercase', letterSpacing: '6px', fontSize: '14px', fontWeight: 900, marginTop: '10px' }}>
-                            Lineage Vitality • Parental Well-being Diagnostic
+                        <h1 style={{ fontSize: '56px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', margin: 0, fontStyle: 'italic', letterSpacing: '-2px' }}>Parents Health Guide</h1>
+                        <p style={{ color: '#0ea5e9', textTransform: 'uppercase', letterSpacing: '6px', fontSize: '13px', fontWeight: 900, marginTop: '10px' }}>
+                            Lineage Vitality • Parental Well-being & Vedic Remedies
                         </p>
                     </div>
                 </div>
             </div>
 
-            {/* Filter Bar */}
-            <div style={{ 
-                position: 'sticky', 
-                top: 0, 
-                zIndex: 100, 
-                backgroundColor: 'rgba(2, 6, 23, 0.8)', 
-                backdropFilter: 'blur(10px)', 
-                borderBottom: '1px solid rgba(14, 165, 233, 0.1)',
-                padding: '20px 0'
+            {/* Navigation Tabs (Overview / Mother / Father / Remedies) */}
+            <div style={{
+                backgroundColor: isLightMode ? 'rgba(241, 245, 249, 0.9)' : 'rgba(15, 23, 42, 0.9)',
+                backdropFilter: 'blur(10px)',
+                borderBottom: '1px solid rgba(14, 165, 233, 0.2)',
+                position: 'sticky',
+                top: 0,
+                zIndex: 90
             }}>
-                <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', gap: '15px', padding: '0 40px', overflowX: 'auto' }}>
-                    {categories.map(cat => (
+                <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', gap: '10px', padding: '15px 40px', overflowX: 'auto' }}>
+                    {[
+                        { id: 'overview', label: '📊 Overview', desc: 'Summary & Risk Status' },
+                        { id: 'mother', label: "👩 Mother's Health", desc: '4th House & Moon' },
+                        { id: 'father', label: "👨 Father's Health", desc: '9th House & Sun' },
+                        { id: 'remedies', label: '🌿 Vedic Remedies', desc: 'Mantras & Charity' }
+                    ].map(tab => (
                         <button
-                            key={cat}
-                            onClick={() => setFilter(cat)}
+                            key={tab.id}
+                            onClick={() => setActiveTab(tab.id)}
                             style={{
-                                padding: '12px 30px',
-                                borderRadius: '100px',
-                                background: filter === cat ? '#0ea5e9' : 'rgba(255,255,255,0.05)',
-                                color: filter === cat ? 'white' : '#94a3b8',
-                                border: filter === cat ? 'none' : '1px solid rgba(255,255,255,0.1)',
-                                fontSize: '11px',
-                                fontWeight: 900,
-                                textTransform: 'uppercase',
-                                letterSpacing: '2px',
+                                padding: '12px 24px',
+                                borderRadius: '16px',
+                                background: activeTab === tab.id
+                                    ? 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)'
+                                    : (isLightMode ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.05)'),
+                                color: activeTab === tab.id ? 'white' : (isLightMode ? '#334155' : 'rgba(228, 241, 170, 1)'),
+                                border: activeTab === tab.id ? 'none' : '1px solid rgba(255,255,255,0.1)',
                                 cursor: 'pointer',
                                 transition: 'all 0.3s ease',
+                                textAlign: 'left',
+                                display: 'flex',
+                                flexDirection: 'column',
                                 whiteSpace: 'nowrap'
                             }}
                         >
-                            {cat}
+                            <span style={{ fontSize: '20px', fontWeight: 900 }}>{tab.label}</span>
+                            <span style={{ fontSize: '14px', opacity: 0.8, marginTop: '2px' }}>{tab.desc}</span>
                         </button>
                     ))}
                 </div>
             </div>
 
-            <div style={{ maxWidth: '1200px', margin: '60px auto', padding: '0 40px' }}>
+            <div style={{ maxWidth: '1200px', margin: '40px auto', padding: '0 40px' }}>
                 {error && (
-                    <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '40px', borderRadius: '40px', textAlign: 'center' }}>
-                        <h3 style={{ fontSize: '24px', fontWeight: 900, color: '#ef4444', fontStyle: 'italic', marginBottom: '10px' }}>Connection Error</h3>
-                        <p style={{ color: isLightMode ? '#475569' : '#94a3b8' }}>{error}</p>
+                    <div style={{ background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.2)', padding: '30px', borderRadius: '30px', textAlign: 'center', marginBottom: '40px' }}>
+                        <h3 style={{ fontSize: '20px', fontWeight: 900, color: '#ef4444', fontStyle: 'italic', marginBottom: '10px' }}>Connection Notice</h3>
+                        <p style={{ color: isLightMode ? '#475569' : 'rgba(248, 235, 49, 1)' }}>{error}</p>
                     </div>
                 )}
 
-                {/* Personal Analysis Section */}
-                {personalData && (
-                    <section style={{ marginBottom: '80px' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
-                            <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to right, transparent, rgba(14,165,233,0.3))' }}></div>
-                            <h2 style={{ fontSize: '32px', color: '#0ea5e9', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>Lineage Health Diagnostic</h2>
-                            <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to left, transparent, rgba(14,165,233,0.3))' }}></div>
-                        </div>
-                        
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px' }}>
-                            {/* Mother Health Card */}
-                            <div style={{ 
-                                background: isLightMode ? 'linear-gradient(135deg, #e0f2fe 0%, #f8fafc 100%)' : 'linear-gradient(135deg, #0c4a6e 0%, #020617 100%)', 
-                                padding: '40px', 
-                                borderRadius: '50px', 
-                                border: '1px solid rgba(14,165,233,0.2)',
-                                boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
-                                textAlign: 'center'
+                {/* TAB 1: OVERVIEW */}
+                {activeTab === 'overview' && (
+                    <section style={{ animation: 'fadeIn 0.5s ease-in-out' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px', marginBottom: '40px' }}>
+                            {/* Mother Card Summary */}
+                            <div style={{
+                                background: isLightMode ? 'linear-gradient(135deg, #e0f2fe 0%, #ffffff 100%)' : 'linear-gradient(135deg, #0c4a6e 0%, #0f172a 100%)',
+                                padding: '35px',
+                                borderRadius: '30px',
+                                border: '1px solid rgba(14,165,233,0.3)',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
                             }}>
-                                <p style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '4px', color: '#38bdf8', marginBottom: '15px' }}>👩 Mother's Health (4th House)</p>
-                                <p style={{ fontSize: '24px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', margin: '10px 0', lineHeight: '1.4' }}>{typeof personalData.mother === 'object' ? (Array.isArray(personalData.mother.notes) ? personalData.mother.notes.join(' ') : (personalData.mother.notes || personalData.mother.score)) : personalData.mother}</p>
-                            </div>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                                    <span style={{ fontSize: '20px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '3px', color: '#38bdf8' }}>👩 Mother (4th House)</span>
+                                    {motherData.risk_level && (
+                                        <span style={{
+                                            padding: '4px 12px',
+                                            borderRadius: '20px',
+                                            fontSize: '18px',
+                                            fontWeight: 300,
+                                            backgroundColor: getRiskColor(motherData.risk_level),
+                                            color: 'white',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '1px'
+                                        }}>
+                                            {motherData.risk_level} Sensitivity
+                                        </span>
+                                    )}
+                                </div>
 
-                            {/* Father Health Card */}
-                            <div style={{ 
-                                background: isLightMode ? 'linear-gradient(135deg, #e0f2fe 0%, #f8fafc 100%)' : 'linear-gradient(135deg, #0c4a6e 0%, #020617 100%)', 
-                                padding: '40px', 
-                                borderRadius: '50px', 
-                                border: '1px solid rgba(14,165,233,0.2)',
-                                boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
-                                textAlign: 'center'
-                            }}>
-                                <p style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '4px', color: '#38bdf8', marginBottom: '15px' }}>👨 Father's Health (9th House)</p>
-                                <p style={{ fontSize: '24px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', margin: '10px 0', lineHeight: '1.4' }}>{typeof personalData.father === 'object' ? (Array.isArray(personalData.father.notes) ? personalData.father.notes.join(' ') : (personalData.father.notes || personalData.father.score)) : personalData.father}</p>
-                            </div>
+                                <div style={{ fontSize: '42px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', marginBottom: '15px' }}>
+                                    {motherData.score !== undefined ? `${motherData.score}/100` : 'N/A'}
+                                    <span style={{ fontSize: '18px', fontWeight: 400, opacity: 0.7, marginLeft: '10px' }}>Vitality Index</span>
+                                </div>
 
-                            {/* Deep Insights */}
-                            <div style={{ 
-                                background: isLightMode ? 'rgba(255,255,255,0.8)' : 'rgba(30,41,59,0.4)', 
-                                padding: '40px', 
-                                borderRadius: '50px', 
-                                border: '1px solid rgba(255,255,255,0.05)',
-                                boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
-                                gridColumn: 'span 2',
-                                textAlign: 'center'
-                            }}>
-                                <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: isLightMode ? '#475569' : '#94a3b8', marginBottom: '20px' }}>Diagnostic Summary</p>
-                                <p style={{ fontSize: '20px', color: isLightMode ? '#a51e0dbd' : '#cbd5e1', fontStyle: 'italic', maxWidth: '800px', margin: '0 auto', lineHeight: '1.6' }}>
-                                    Your chart indicates that the parental energy is guided by the luminaries (Sun & Moon). Benefic influences on the 4th and 9th houses suggest stability, while any challenges can be mitigated through designated remedies.
+                                <p style={{ fontSize: '18px', color: isLightMode ? '#334155' : '#cbd5e1', lineHeight: '1.6', fontStyle: 'italic', marginBottom: '20px' }}>
+                                    {Array.isArray(motherData.notes) ? motherData.notes.join(' ') : (motherData.notes || 'Analyzed via 4th House & Moon placement.')}
                                 </p>
+
+                                <button
+                                    onClick={() => setActiveTab('mother')}
+                                    style={{
+                                        padding: '10px 20px',
+                                        borderRadius: '12px',
+                                        background: '#0ea5e9',
+                                        color: 'white',
+                                        border: 'none',
+                                        fontSize: '18px',
+                                        fontWeight: 300,
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    Explore Mother's Diagnostics →
+                                </button>
+                            </div>
+
+                            {/* Father Card Summary */}
+                            <div style={{
+                                background: isLightMode ? 'linear-gradient(135deg, #fef3c7 0%, #ffffff 100%)' : 'linear-gradient(135deg, #78350f 0%, #0f172a 100%)',
+                                padding: '35px',
+                                borderRadius: '30px',
+                                border: '1px solid rgba(245,158,11,0.3)',
+                                boxShadow: '0 20px 40px rgba(0,0,0,0.3)'
+                            }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                                    <span style={{ fontSize: '18px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '3px', color: '#fbbf24' }}>👨 Father (9th House)</span>
+                                    {fatherData.risk_level && (
+                                        <span style={{
+                                            padding: '4px 12px',
+                                            borderRadius: '20px',
+                                            fontSize: '18px',
+                                            fontWeight: 300,
+                                            backgroundColor: getRiskColor(fatherData.risk_level),
+                                            color: 'white',
+                                            textTransform: 'uppercase',
+                                            letterSpacing: '1px'
+                                        }}>
+                                            {fatherData.risk_level} Sensitivity
+                                        </span>
+                                    )}
+                                </div>
+
+                                <div style={{ fontSize: '42px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', marginBottom: '15px' }}>
+                                    {fatherData.score !== undefined ? `${fatherData.score}/100` : 'N/A'}
+                                    <span style={{ fontSize: '18px', fontWeight: 400, opacity: 0.7, marginLeft: '10px' }}>Vitality Index</span>
+                                </div>
+
+                                <p style={{ fontSize: '18px', color: isLightMode ? '#334155' : '#cbd5e1', lineHeight: '1.6', fontStyle: 'italic', marginBottom: '20px' }}>
+                                    {Array.isArray(fatherData.notes) ? fatherData.notes.join(' ') : (fatherData.notes || 'Analyzed via 9th House & Sun placement.')}
+                                </p>
+
+                                <button
+                                    onClick={() => setActiveTab('father')}
+                                    style={{
+                                        padding: '10px 20px',
+                                        borderRadius: '12px',
+                                        background: '#d97706',
+                                        color: 'white',
+                                        border: 'none',
+                                        fontSize: '18px',
+                                        fontWeight: 300,
+                                        cursor: 'pointer'
+                                    }}
+                                >
+                                    Explore Father's Diagnostics →
+                                </button>
                             </div>
                         </div>
-                        
+
                         {worksheetData && (
-                            <DiagnosticDetails domain="parents_health" worksheetData={worksheetData} />
+                            <div style={{ marginTop: '40px' }}>
+                                <DiagnosticDetails domain="parents_health" worksheetData={worksheetData} />
+                            </div>
                         )}
                     </section>
                 )}
 
-                {/* General Insights */}
-                <section>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
-                        <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to right, transparent, rgba(255,255,255,0.1))' }}></div>
-                        <h2 style={{ fontSize: '32px', color: isLightMode ? '#0f172a' : 'white', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>Parental Care Wisdom</h2>
-                        <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to left, transparent, rgba(255,255,255,0.1))' }}></div>
-                    </div>
-                    
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px' }}>
-                        {filteredInsights.map((item, idx) => (
-                            <div key={idx} style={{ 
-                                background: isLightMode ? 'rgba(255,255,255,0.8)' : 'rgba(15, 23, 42, 0.6)', 
-                                padding: '40px', 
-                                borderRadius: '50px', 
-                                border: '1px solid rgba(255,255,255,0.05)',
-                                boxShadow: '0 40px 100px rgba(0,0,0,0.4)'
-                            }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '25px' }}>
-                                    <span style={{ padding: '6px 15px', borderRadius: '100px', background: 'rgba(14, 165, 233, 0.05)', fontSize: '10px', color: '#0ea5e9', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', border: '1px solid rgba(14, 165, 233, 0.1)' }}>{item.category}</span>
-                                    <span style={{ fontSize: '24px' }}>{item.icon || '👨‍👩‍👧'}</span>
+                {/* TAB 2: MOTHER'S HEALTH */}
+                {activeTab === 'mother' && (
+                    <section style={{ animation: 'fadeIn 0.5s ease-in-out' }}>
+                        <div style={{
+                            background: isLightMode ? '#ffffff' : 'rgba(15, 23, 42, 0.8)',
+                            padding: '40px',
+                            borderRadius: '30px',
+                            border: '1px solid rgba(14, 165, 233, 0.2)',
+                            boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
+                            marginBottom: '40px'
+                        }}>
+                            <h2 style={{ fontSize: '32px', color: '#0ea5e9', fontWeight: 900, fontStyle: 'italic', marginTop: 0, marginBottom: '20px' }}>👩 Mother's Health Diagnostic (4th House & Moon)</h2>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '25px', marginBottom: '30px' }}>
+                                <div style={{ padding: '20px', borderRadius: '20px', background: isLightMode ? '#f0f9ff' : 'rgba(14, 165, 233, 0.1)', border: '1px solid rgba(14, 165, 233, 0.2)' }}>
+                                    <p style={{ fontSize: '18px', textTransform: 'uppercase', color: '#0ea5e9', fontWeight: 900, margin: '0 0 5px 0' }}>Primary Karaka</p>
+                                    <p style={{ fontSize: '22px', fontWeight: 300, margin: 0, color: isLightMode ? '#0f172a' : 'white' }}>Moon (Matru Karaka)</p>
+                                    <p style={{ fontSize: '22px', color: 'hsla(12, 56%, 83%, 1.00)', marginTop: '5px' }}>Governs emotional serenity, mind, and liquid balance.</p>
                                 </div>
-                                <h3 style={{ fontSize: '24px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', marginBottom: '15px' }}>{item.title}</h3>
-                                <p style={{ fontSize: '18px', color: isLightMode ? '#475569' : '#94a3b8', lineHeight: '1.7', fontStyle: 'italic' }}>{item.content}</p>
+
+                                <div style={{ padding: '20px', borderRadius: '20px', background: isLightMode ? '#f0f9ff' : 'rgba(14, 165, 233, 0.1)', border: '1px solid rgba(14, 165, 233, 0.2)' }}>
+                                    <p style={{ fontSize: '18px', textTransform: 'uppercase', color: '#0ea5e9', fontWeight: 900, margin: '0 0 5px 0' }}>Key Anatomical Focus</p>
+                                    <p style={{ fontSize: '22px', fontWeight: 900, margin: 0, color: isLightMode ? '#0f172a' : 'white' }}>{motherData.organs || 'Chest, Lungs, Stomach & Blood'}</p>
+                                    <p style={{ fontSize: '22px', color: 'hsla(12, 56%, 83%, 1.00)', marginTop: '5px' }}>Regions governed by 4th house and Cancer zodiac sign.</p>
+                                </div>
+
+                                <div style={{ padding: '20px', borderRadius: '20px', background: isLightMode ? '#f0f9ff' : 'rgba(14, 165, 233, 0.1)', border: '1px solid rgba(14, 165, 233, 0.2)' }}>
+                                    <p style={{ fontSize: '18px', textTransform: 'uppercase', color: '#0ea5e9', fontWeight: 900, margin: '0 0 5px 0' }}>4th Lord</p>
+                                    <p style={{ fontSize: '22px', fontWeight: 300, margin: 0, color: isLightMode ? '#0f172a' : 'white' }}>{motherData.lord_4 || '4th Lord'}</p>
+                                    <p style={{ fontSize: '22px', color: 'hsla(12, 56%, 83%, 1.00)', marginTop: '5px' }}>Ruler of home peace and physical resilience for mother.</p>
+                                </div>
                             </div>
-                        ))}
-                    </div>
-                </section>
+
+                            <h3 style={{ fontSize: '20px', fontWeight: 300, color: isLightMode ? '#0f172a' : 'white', marginBottom: '15px' }}>Planetary Influences & Strengths</h3>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '15px', marginBottom: '30px' }}>
+                                {(motherData.planets || [
+                                    { name: 'Moon', role: 'Matru Karaka', strength: '60/150' },
+                                    { name: 'Venus', role: 'Comfort Karaka', strength: '60/150' }
+                                ]).map((p, idx) => (
+                                    <div key={idx} style={{ padding: '15px 20px', borderRadius: '16px', background: isLightMode ? '#f8fafc' : 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 900, fontSize: '18px', color: '#38bdf8' }}>
+                                            <span>{p.name}</span>
+                                            <span>{p.strength}</span>
+                                        </div>
+                                        <div style={{ fontSize: '22px', color: 'hsla(12, 56%, 83%, 1.00)', marginTop: '5px' }}>{p.role}</div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <h3 style={{ fontSize: '22px', fontWeight: 300, color: isLightMode ? '#0f172a' : 'white', marginBottom: '15px' }}>Astrological Observations</h3>
+                            <ul style={{ paddingLeft: '20px', fontSize: '18px', lineHeight: '1.8', color: isLightMode ? '#334155' : 'rgba(241, 201, 185, 1)' }}>
+                                {(motherData.notes || ["4th house receives supportive aspects."]).map((n, i) => (
+                                    <li key={i}>{n}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    </section>
+                )}
+
+                {/* TAB 3: FATHER'S HEALTH */}
+                {activeTab === 'father' && (
+                    <section style={{ animation: 'fadeIn 0.5s ease-in-out' }}>
+                        <div style={{
+                            background: isLightMode ? '#ffffff' : 'rgba(15, 23, 42, 0.8)',
+                            padding: '40px',
+                            borderRadius: '30px',
+                            border: '1px solid rgba(245, 158, 11, 0.2)',
+                            boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
+                            marginBottom: '40px'
+                        }}>
+                            <h2 style={{ fontSize: '32px', color: '#f59e0b', fontWeight: 900, fontStyle: 'italic', marginTop: 0, marginBottom: '20px' }}>👨 Father's Health Diagnostic (9th House & Sun)</h2>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '25px', marginBottom: '30px' }}>
+                                <div style={{ padding: '20px', borderRadius: '20px', background: isLightMode ? '#fffbeb' : 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                                    <p style={{ fontSize: '18px', textTransform: 'uppercase', color: '#f59e0b', fontWeight: 900, margin: '0 0 5px 0' }}>Primary Karaka</p>
+                                    <p style={{ fontSize: '22px', fontWeight: 900, margin: 0, color: isLightMode ? '#0f172a' : 'white' }}>Sun (Pitru Karaka)</p>
+                                    <p style={{ fontSize: '22px', color: 'rgba(250, 203, 159, 1)', marginTop: '5px' }}>Governs vitality, soul, heart, and bone structure.</p>
+                                </div>
+
+                                <div style={{ padding: '20px', borderRadius: '20px', background: isLightMode ? '#fffbeb' : 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                                    <p style={{ fontSize: '18px', textTransform: 'uppercase', color: '#f59e0b', fontWeight: 900, margin: '0 0 5px 0' }}>Key Anatomical Focus</p>
+                                    <p style={{ fontSize: '22px', fontWeight: 900, margin: 0, color: isLightMode ? '#0f172a' : 'white' }}>{fatherData.organs || 'Thighs, Spine, Bones & Heart'}</p>
+                                    <p style={{ fontSize: '22px', color: 'rgba(250, 203, 159, 1)', marginTop: '5px' }}>Regions governed by 9th house and Sagittarius zodiac sign.</p>
+                                </div>
+
+                                <div style={{ padding: '20px', borderRadius: '20px', background: isLightMode ? '#fffbeb' : 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                                    <p style={{ fontSize: '18px', textTransform: 'uppercase', color: '#f59e0b', fontWeight: 900, margin: '0 0 5px 0' }}>9th Lord</p>
+                                    <p style={{ fontSize: '22px', fontWeight: 900, margin: 0, color: isLightMode ? '#0f172a' : 'white' }}>{fatherData.lord_9 || '9th Lord'}</p>
+                                    <p style={{ fontSize: '22px', color: 'rgba(250, 203, 159, 1)', marginTop: '5px' }}>Ruler of fortune, longevity and vitality for father.</p>
+                                </div>
+                            </div>
+
+                            <h3 style={{ fontSize: '20px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', marginBottom: '15px' }}>Planetary Influences & Strengths</h3>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '15px', marginBottom: '30px' }}>
+                                {(fatherData.planets || [
+                                    { name: 'Sun', role: 'Pitru Karaka', strength: '60/150' },
+                                    { name: 'Jupiter', role: 'Protective Shield', strength: '60/150' }
+                                ]).map((p, idx) => (
+                                    <div key={idx} style={{ padding: '15px 20px', borderRadius: '16px', background: isLightMode ? '#f8fafc' : 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.08)' }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 900, fontSize: '18px', color: '#fbbf24' }}>
+                                            <span>{p.name}</span>
+                                            <span>{p.strength}</span>
+                                        </div>
+                                        <div style={{ fontSize: '18px', color: isLightMode ? '#64748b' : '#94a3b8', marginTop: '4px' }}>{p.role}</div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            <h3 style={{ fontSize: '22px', fontWeight: 300, color: isLightMode ? '#0f172a' : 'white', marginBottom: '15px' }}>Astrological Observations</h3>
+                            <ul style={{ paddingLeft: '20px', lineHeight: '1.8', fontSize: '18px', color: isLightMode ? '#334155' : 'rgba(245, 198, 167, 1)' }}>
+                                {(fatherData.notes || ["9th house receives supportive aspects."]).map((n, i) => (
+                                    <li key={i}>{n}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    </section>
+                )}
+
+                {/* TAB 4: VEDIC REMEDIES */}
+                {activeTab === 'remedies' && (
+                    <section style={{ animation: 'fadeIn 0.5s ease-in-out' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px', marginBottom: '40px' }}>
+                            {/* Mother Remedies */}
+                            <div style={{ background: isLightMode ? '#ffffff' : 'rgba(15, 23, 42, 0.8)', padding: '35px', borderRadius: '30px', border: '1px solid rgba(14, 165, 233, 0.2)' }}>
+                                <h3 style={{ fontSize: '22px', fontWeight: 300, color: '#0ea5e9', marginTop: 0 }}>👩 Remedies for Mother</h3>
+                                <div style={{ padding: '15px', background: 'rgba(14, 165, 233, 0.08)', borderRadius: '15px', marginBottom: '20px', border: '1px solid rgba(14, 165, 233, 0.2)' }}>
+                                    <p style={{ fontSize: '18px', textTransform: 'uppercase', color: '#0ea5e9', fontWeight: 900, margin: '0 0 5px 0' }}>Recommended Mantra</p>
+                                    <p style={{ fontSize: '18px', fontWeight: 300, margin: 0, color: isLightMode ? '#0f172a' : 'white' }}>{motherData.mantra || 'Om Som Somaya Namah & Om Namah Shivaya'}</p>
+                                </div>
+                                <ul style={{ paddingLeft: '20px', lineHeight: '1.8', fontSize: '22px', color: isLightMode ? '#334155' : 'rgba(245, 198, 167, 1)' }}>
+                                    {(motherData.remedies || [
+                                        "Respect Mother and seek her daily blessings.",
+                                        "Donate Milk, Rice, White clothes on Mondays.",
+                                        "Keep silver square piece in pocket or wear silver ring.",
+                                        "Chant Om Som Somaya Namah for her well-being."
+                                    ]).map((rem, idx) => (
+                                        <li key={idx}>{rem}</li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            {/* Father Remedies */}
+                            <div style={{ background: isLightMode ? '#ffffff' : 'rgba(15, 23, 42, 0.8)', padding: '35px', borderRadius: '30px', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                                <h3 style={{ fontSize: '22px', fontWeight: 300, color: '#f59e0b', marginTop: 0 }}>👨 Remedies for Father</h3>
+                                <div style={{ padding: '15px', background: 'rgba(245, 158, 11, 0.08)', borderRadius: '15px', marginBottom: '20px', border: '1px solid rgba(245, 158, 11, 0.2)' }}>
+                                    <p style={{ fontSize: '18px', textTransform: 'uppercase', color: '#f59e0b', fontWeight: 900, margin: '0 0 5px 0' }}>Recommended Mantra</p>
+                                    <p style={{ fontSize: '18px', fontWeight: 300, margin: 0, color: isLightMode ? '#0f172a' : 'white' }}>{fatherData.mantra || 'Om Suryaya Namah & Gayatri Mantra'}</p>
+                                </div>
+                                <ul style={{ paddingLeft: '20px', lineHeight: '1.8', fontSize: '22px', color: isLightMode ? '#334155' : 'rgba(245, 198, 167, 1)' }}>
+                                    {(fatherData.remedies || [
+                                        "Respect Father and touch his feet daily.",
+                                        "Offer water (Arghya) to Sun in a copper vessel every morning.",
+                                        "Donate Wheat, Jaggery & Copper on Sundays.",
+                                        "Chant Aditya Hrudaya Stotram for Father's longevity."
+                                    ]).map((rem, idx) => (
+                                        <li key={idx}>{rem}</li>
+                                    ))}
+                                </ul>
+                            </div>
+                        </div>
+
+                        {/* General Educational Insights */}
+                        <div style={{ marginTop: '40px' }}>
+                            <h3 style={{ fontSize: '24px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', marginBottom: '25px' }}>Vedic Guidance & Transits</h3>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+                                {filteredInsights.map((item, idx) => (
+                                    <div key={idx} style={{
+                                        background: isLightMode ? 'rgba(255,255,255,0.8)' : 'rgba(15, 23, 42, 0.6)',
+                                        padding: '25px',
+                                        borderRadius: '20px',
+                                        border: '1px solid rgba(255,255,255,0.05)'
+                                    }}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '15px' }}>
+                                            <span style={{ fontSize: '18px', color: '#0ea5e9', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px' }}>{item.category}</span>
+                                            <span style={{ fontSize: '22px' }}>{item.icon || '👨‍👩‍👧'}</span>
+                                        </div>
+                                        <h4 style={{ fontSize: '18px', fontWeight: '300', color: isLightMode ? '#0f172a' : 'white', margin: '0 0 10px 0' }}>{item.title}</h4>
+                                        <p style={{ fontSize: '20px', color: isLightMode ? '#475569' : 'rgba(244, 247, 95, 1)', lineHeight: '1.6', margin: 0 }}>{item.content}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                )}
             </div>
 
             {/* Footer */}
-            <div style={{ textAlign: 'center', marginTop: '100px' }}>
-                <p style={{ color: '#0ea5e9', fontSize: '24px', fontWeight: 900, fontStyle: 'italic', marginBottom: '15px' }}>Matru Devo Bhava • Pitru Devo Bhava</p>
-                <p style={{ color: '#64748b', fontSize: '16px', maxWidth: '600px', margin: '0 auto 40px', lineHeight: '1.6' }}>"Parents are the living representatives of the Divine. Their health and happiness are the foundation of your own life's stability."</p>
-                <button 
-                    onClick={() => window.close()} 
-                    style={{ 
-                        padding: '24px 80px', 
-                        borderRadius: '100px', 
-                        background: 'rgba(14, 165, 233, 0.05)', 
-                        color: '#0ea5e9', 
-                        border: '1px solid rgba(14, 165, 233, 0.2)', 
-                        fontSize: '11px', 
-                        fontWeight: 900, 
-                        textTransform: 'uppercase', 
-                        letterSpacing: '5px', 
+            <div style={{ textAlign: 'center', marginTop: '80px' }}>
+                <p style={{ color: '#0ea5e9', fontSize: '22px', fontWeight: 900, fontStyle: 'italic', marginBottom: '10px' }}>Matru Devo Bhava • Pitru Devo Bhava</p>
+                <p style={{ color: '#64748b', fontSize: '15px', maxWidth: '600px', margin: '0 auto 30px', lineHeight: '1.6' }}>"Parents are the living representatives of the Divine. Their health and happiness are the foundation of your own life's stability."</p>
+                <button
+                    onClick={() => window.close()}
+                    style={{
+                        padding: '16px 50px',
+                        borderRadius: '100px',
+                        background: 'rgba(14, 165, 233, 0.1)',
+                        color: '#0ea5e9',
+                        border: '1px solid rgba(14, 165, 233, 0.3)',
+                        fontSize: '11px',
+                        fontWeight: 900,
+                        textTransform: 'uppercase',
+                        letterSpacing: '4px',
                         cursor: 'pointer',
                         transition: 'all 0.3s ease'
                     }}
@@ -314,6 +544,14 @@ function ParentsHealthViewer() {
                     Return to Workstation
                 </button>
             </div>
+
+            <style>{`
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `}</style>
         </div>
     );
 }
+

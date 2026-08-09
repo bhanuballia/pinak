@@ -140,6 +140,11 @@ class DetailedNumerologyRequest(BaseModel):
     name: str
     dob: str  # YYYY-MM-DD
 
+class FullNumerologyRequest(BaseModel):
+    name: str
+    dob: str
+
+
 @router.post("/detailed-report")
 async def get_detailed_report(request: DetailedNumerologyRequest):
     try:
@@ -195,4 +200,15 @@ async def get_detailed_report(request: DetailedNumerologyRequest):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post("/quantum/calculate")
+async def get_quantum_numerology_analysis(request: FullNumerologyRequest):
+    try:
+        from api.quantum_numerology_engine import calculate_quantum_resonance
+        res = calculate_quantum_resonance(request.dob, request.name)
+        return res
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 

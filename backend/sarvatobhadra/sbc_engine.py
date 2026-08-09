@@ -21,23 +21,33 @@ class SarvatobhadraEngine:
         personalized_context = None
         if birth_data:
             natal_moon_nak = None
+            dasha_lord = None
             if isinstance(birth_data, dict):
-                # Try to find natal Moon Nakshatra
-                chart = birth_data.get("chart", {})
-                if isinstance(chart, dict):
-                    planets = chart.get("planets", [])
-                    if isinstance(planets, list):
-                        for p in planets:
-                            if isinstance(p, dict) and p.get("name") == "Moon":
-                                natal_moon_nak = p.get("nakshatra")
+                # 1. Inspect planet_positions (array of objects)
+                planet_positions = birth_data.get("planet_positions", [])
+                if isinstance(planet_positions, list):
+                    for p in planet_positions:
+                        if isinstance(p, dict) and p.get("planet") == "Moon":
+                            natal_moon_nak = p.get("nakshatra") or p.get("nakshatra_name")
+                
+                # 2. Inspect chart -> planets
+                if not natal_moon_nak:
+                    chart = birth_data.get("chart", {})
+                    if isinstance(chart, dict):
+                        planets = chart.get("planets", [])
+                        if isinstance(planets, list):
+                            for p in planets:
+                                if isinstance(p, dict) and (p.get("name") == "Moon" or p.get("planet") == "Moon"):
+                                    natal_moon_nak = p.get("nakshatra")
 
-                # Try to find active Dasha/Antardasha lord
-                # If not found directly, check standard locations in the payload
-                dasha_lord = birth_data.get("active_dasha", {}).get("antardasha") or birth_data.get("active_dasha", {}).get("mahadasha") or "Saturn"
+                # 3. Inspect active dasha
+                active_dasha = birth_data.get("active_dasha") or birth_data.get("current_dasha") or birth_data.get("dasha", {})
+                if isinstance(active_dasha, dict):
+                    dasha_lord = active_dasha.get("antardasha") or active_dasha.get("mahadasha") or active_dasha.get("lord")
                 
                 personalized_context = {
                     "janma_nakshatra": natal_moon_nak or "Rohini",
-                    "active_antardasha": dasha_lord,
+                    "active_antardasha": dasha_lord or "Saturn",
                     "transit_planets": transit_data
                 }
 

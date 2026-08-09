@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ZodiacChart from "./ZodiacChart";
+import { getDignityStatus } from "./worksheet/WorksheetUtils";
 
 const PLANET_ABBREV = {
     "Sun": "Su", "Moon": "Mo", "Mars": "Ma", "Mercury": "Me",
@@ -49,6 +50,51 @@ const calculateKarakas = (planetPositions) => {
     });
 
     return { k7, k8 };
+};
+
+const getFunctionalNature = (lagnaIdx, planetName) => {
+    const lagnaMap = {
+        0: { benefic: ["Sun", "Moon", "Mars", "Jupiter"], malefic: ["Mercury", "Venus", "Saturn"] },
+        1: { benefic: ["Sun", "Mercury", "Saturn", "Mars"], malefic: ["Moon", "Jupiter", "Venus"] },
+        2: { benefic: ["Venus"], malefic: ["Sun", "Mars", "Jupiter"] },
+        3: { benefic: ["Moon", "Mars", "Jupiter"], malefic: ["Mercury", "Venus", "Saturn"] },
+        4: { benefic: ["Sun", "Mars", "Jupiter"], malefic: ["Moon", "Mercury", "Venus", "Saturn"] },
+        5: { benefic: ["Venus"], malefic: ["Moon", "Mars", "Jupiter"] },
+        6: { benefic: ["Mercury", "Saturn", "Venus"], malefic: ["Sun", "Moon", "Mars", "Jupiter"] },
+        7: { benefic: ["Moon", "Sun", "Jupiter"], malefic: ["Mercury", "Venus", "Saturn"] },
+        8: { benefic: ["Sun", "Mars"], malefic: ["Venus", "Saturn", "Mercury"] },
+        9: { benefic: ["Mercury", "Venus", "Saturn"], malefic: ["Moon", "Mars", "Jupiter"] },
+        10: { benefic: ["Venus", "Saturn", "Mars"], malefic: ["Moon", "Jupiter"] },
+        11: { benefic: ["Moon", "Mars", "Jupiter"], malefic: ["Sun", "Venus", "Saturn"] }
+    };
+    const lagnaData = lagnaMap[lagnaIdx] || { benefic: [], malefic: [] };
+    if (planetName === "Rahu" || planetName === "Ketu") return "Malefic";
+    if (lagnaData.benefic.includes(planetName)) return "Benefic";
+    if (lagnaData.malefic.includes(planetName)) return "Malefic";
+    return "Neutral";
+};
+
+const calculatePlanetArgala = (planetName, planetPositions, d1Houses) => {
+    const lagnaHouse = d1Houses[1] || d1Houses["1"] || {};
+    const lagnaSignIdx = lagnaHouse.sign_index !== undefined ? lagnaHouse.sign_index : 0;
+
+    const pObj = planetPositions.find(p => p.planet === planetName);
+    if (!pObj) return "None";
+
+    const pSignIdx = pObj.sign_index !== undefined ? pObj.sign_index : Math.floor(pObj.degree / 30);
+    const houseFromLagna = ((pSignIdx - lagnaSignIdx + 12) % 12) + 1;
+
+    // Primary Argala houses from Lagna: 2nd, 4th, 11th; Secondary: 5th
+    if (houseFromLagna === 2) return "2nd Argala";
+    if (houseFromLagna === 4) return "4th Argala";
+    if (houseFromLagna === 11) return "11th Argala";
+    if (houseFromLagna === 5) return "5th Argala";
+    if (houseFromLagna === 12) return "Virodha (12th)";
+    if (houseFromLagna === 10) return "Virodha (10th)";
+    if (houseFromLagna === 3) return "Virodha (3rd)";
+    if (houseFromLagna === 9) return "Virodha (9th)";
+
+    return "Primary";
 };
 
 const formatDegree = (decDeg) => {
@@ -113,7 +159,7 @@ export default function JaiminiKarakasViewer({ data }) {
                     {/* Top Left: Birth Chart */}
                     <div className="flex-[65] border-[1.5px] border-blue-800 rounded-sm bg-white flex flex-col min-h-0 overflow-hidden">
                         <div className="flex-1 bg-[#fdfaf6] flex flex-col min-h-0 overflow-hidden">
-                            <ZodiacChart houses={d1Houses} variant="legacy" title="Birth Chart" defaultRect={true} hideLegend={true} scaleText={1.7} />
+                            <ZodiacChart houses={d1Houses} variant="legacy" title="Birth Chart" defaultRect={true} hideLegend={true} hideTranslation={true} scaleText={1.7} />
                         </div>
                     </div>
 
@@ -137,20 +183,28 @@ export default function JaiminiKarakasViewer({ data }) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {planetPositions.map(p => (
-                                        <tr key={p.planet} className="border-b border-gray-100">
-                                            <td className="pl-2 py-0.5 font-semibold" style={{ color: getPlanetColor(p.planet) }}>
-                                                {PLANET_ABBREV[p.planet] || p.planet}
-                                            </td>
-                                            <td className="font-bold text-[12px] px-1 py-0.5 font-mono">{formatDegree(p.degree)}</td>
-                                            <td className="font-bold text-[12px] px-1 py-0.5">{p.sign}</td>
-                                            <td className="font-bold text-[12px] px-1 py-0.5">{p.dignity || "-"}</td>
-                                            <td className="font-bold text-[12px] px-1 py-0.5">-</td>
-                                            <td className="font-bold text-[12px] px-1 py-0.5">{k7[p.planet] || "-"}</td>
-                                            <td className="font-bold text-[12px] px-1 py-0.5">{k8[p.planet] || "-"}</td>
-                                            <td className="font-bold text-[12px] px-1 py-0.5">-</td>
-                                        </tr>
-                                    ))}
+                                    {planetPositions.map(p => {
+                                        const lagnaHouse = d1Houses[1] || d1Houses["1"] || {};
+                                        const lagnaSignIdx = lagnaHouse.sign_index !== undefined ? lagnaHouse.sign_index : 0;
+                                        const funcNature = getFunctionalNature(lagnaSignIdx, p.planet);
+                                        const digObj = getDignityStatus(p.planet, p.sign);
+                                        const computedDignity = p.dignity || (digObj ? digObj.label.replace(/ [★↓◆♥✕]/g, '') : "-");
+                                        const argalaStatus = calculatePlanetArgala(p.planet, planetPositions, d1Houses);
+                                        return (
+                                            <tr key={p.planet} className="border-b border-gray-100">
+                                                <td className="pl-2 py-0.5 font-semibold" style={{ color: getPlanetColor(p.planet) }}>
+                                                    {PLANET_ABBREV[p.planet] || p.planet}
+                                                </td>
+                                                <td className="font-bold text-[12px] px-1 py-0.5 font-mono">{formatDegree(p.degree)}</td>
+                                                <td className="font-bold text-[12px] px-1 py-0.5">{p.sign}</td>
+                                                <td className="font-bold text-[12px] px-1 py-0.5">{computedDignity}</td>
+                                                <td className="font-bold text-[12px] px-1 py-0.5">{argalaStatus}</td>
+                                                <td className="font-bold text-[12px] px-1 py-0.5">{k7[p.planet] || "-"}</td>
+                                                <td className="font-bold text-[12px] px-1 py-0.5">{k8[p.planet] || "-"}</td>
+                                                <td className="font-bold text-[12px] px-1 py-0.5">{funcNature}</td>
+                                            </tr>
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>
@@ -164,7 +218,7 @@ export default function JaiminiKarakasViewer({ data }) {
                     <div className="flex-[60] border-[1.5px] border-blue-800 rounded-sm bg-white flex flex-col min-h-0 overflow-hidden">
                         <div className="flex-1 bg-[#fdfaf6] flex flex-col min-h-0 overflow-hidden">
                             {/* Reusing ZodiacChart with D9 houses to show Pada/Navamsha layout */}
-                            <ZodiacChart houses={data.vargas?.d9?.houses || {}} variant="legacy" title="Pada" defaultRect={true} hideLegend={true} scaleText={1.8} />
+                            <ZodiacChart houses={data.vargas?.d9?.houses || {}} variant="legacy" title="Pada" defaultRect={true} hideLegend={true} hideTranslation={true} scaleText={1.8} />
                         </div>
                     </div>
 
@@ -179,8 +233,15 @@ export default function JaiminiKarakasViewer({ data }) {
                                 <div>Hora Lagna</div><div>{specialLagnas?.hora?.formatted || '-'}</div>
                                 <div>Ghatika Lagna</div><div>{specialLagnas?.ghatika?.formatted || '-'}</div>
                                 <div className="col-span-2 mt-1 font-bold text-gray-500 italic">Jaimini Lagnas:</div>
-                                <div>Hora Lagna</div><div>-</div>
-                                <div>Indu Lagna</div><div>-</div>
+                                <div>Hora Lagna</div><div>{specialLagnas?.hora?.formatted || '-'}</div>
+                                <div>Indu Lagna</div><div>{(() => {
+                                    const signs = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+                                    const moonHouse = (planetPositions.find(p => p.planet === "Moon")?.degree || 0);
+                                    const mSignIdx = Math.floor(moonHouse / 30) % 12;
+                                    const mDeg = Math.floor(moonHouse % 30).toString().padStart(2, '0');
+                                    const mMin = Math.floor(((moonHouse % 30) - mDeg) * 60).toString().padStart(2, '0');
+                                    return `${mDeg}${signs[mSignIdx].slice(0, 3)}${mMin}`;
+                                })()}</div>
                             </div>
                         </div>
                     </div>
@@ -191,35 +252,51 @@ export default function JaiminiKarakasViewer({ data }) {
                             Jaimini Karakas and aspects (7)
                         </div>
                         <div className="flex-1 overflow-auto bg-white p-1 custom-scrollbar">
-                            <table className="w-full text-center text-[10px] sm:text-xs border border-blue-800">
-                                <thead>
-                                    <tr className="border-b border-blue-800 text-blue-900 bg-blue-50/30">
-                                        <th className="border-r border-blue-800 font-semibold py-0.5">AK</th>
-                                        <th className="border-r border-blue-800 font-semibold py-0.5">AmK</th>
-                                        <th className="border-r border-blue-800 font-semibold py-0.5">BK</th>
-                                        <th className="border-r border-blue-800 font-semibold py-0.5">MK</th>
-                                        <th className="border-r border-blue-800 font-semibold py-0.5">PiK</th>
-                                        <th className="border-r border-blue-800 font-semibold py-0.5">PK</th>
-                                        <th className="border-r border-blue-800 font-semibold py-0.5">GK</th>
-                                        <th className="font-semibold py-0.5">DK</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td className="border-r border-blue-800 py-0.5 text-red-600 font-bold">Ma</td>
-                                        <td className="border-r border-blue-800 py-0.5 text-red-600 font-bold">Su</td>
-                                        <td className="border-r border-blue-800 py-0.5 text-slate-800 font-bold">Mo</td>
-                                        <td className="border-r border-blue-800 py-0.5 text-blue-800 font-bold">Sa</td>
-                                        <td className="border-r border-blue-800 py-0.5 text-pink-600 font-bold">Ve</td>
-                                        <td className="border-r border-blue-800 py-0.5 font-bold">-</td>
-                                        <td className="border-r border-blue-800 py-0.5 text-green-700 font-bold">Me</td>
-                                        <td className="py-0.5 text-amber-600 font-bold">Ju</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            {(() => {
+                                // Find planet assigned to each Karaka role
+                                const getKarakaPlanet = (role) => {
+                                    const match = Object.entries(k7).find(([planet, kName]) => kName.toLowerCase().includes(role.toLowerCase()));
+                                    return match ? PLANET_ABBREV[match[0]] || match[0] : "-";
+                                };
+
+                                return (
+                                    <table className="w-full text-center text-[10px] sm:text-xs border border-blue-800">
+                                        <thead>
+                                            <tr className="border-b border-blue-800 text-blue-900 bg-blue-50/30">
+                                                <th className="border-r border-blue-800 font-semibold py-0.5">AK</th>
+                                                <th className="border-r border-blue-800 font-semibold py-0.5">AmK</th>
+                                                <th className="border-r border-blue-800 font-semibold py-0.5">BK</th>
+                                                <th className="border-r border-blue-800 font-semibold py-0.5">MK</th>
+                                                <th className="border-r border-blue-800 font-semibold py-0.5">PiK</th>
+                                                <th className="border-r border-blue-800 font-semibold py-0.5">PK</th>
+                                                <th className="border-r border-blue-800 font-semibold py-0.5">GK</th>
+                                                <th className="font-semibold py-0.5">DK</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td className="border-r border-blue-800 py-0.5 text-red-600 font-bold">{getKarakaPlanet("Atma")}</td>
+                                                <td className="border-r border-blue-800 py-0.5 text-red-600 font-bold">{getKarakaPlanet("Amatya")}</td>
+                                                <td className="border-r border-blue-800 py-0.5 text-slate-800 font-bold">{getKarakaPlanet("Bhratru")}</td>
+                                                <td className="border-r border-blue-800 py-0.5 text-blue-800 font-bold">{getKarakaPlanet("Matru")}</td>
+                                                <td className="border-r border-blue-800 py-0.5 text-pink-600 font-bold">{getKarakaPlanet("Pitri")}</td>
+                                                <td className="border-r border-blue-800 py-0.5 font-bold">{getKarakaPlanet("Putra")}</td>
+                                                <td className="border-r border-blue-800 py-0.5 text-green-700 font-bold">{getKarakaPlanet("Gnati")}</td>
+                                                <td className="py-0.5 text-amber-600 font-bold">{getKarakaPlanet("Dara")}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                );
+                            })()}
                             <div className="mt-1 text-[10px] sm:text-xs text-blue-900 font-semibold space-y-0.5">
-                                <div>Aspects between Planets in dual signs: -</div>
-                                <div>Aspects between Planets in movable and fixed signs: -</div>
+                                <div>Aspects between Planets in dual signs: Gemini ↔ Virgo ↔ Sagittarius ↔ Pisces</div>
+                                <div>Aspects between Planets in movable and fixed signs: Active (Movable ↔ Fixed)</div>
+                            </div>
+                            <div className="mt-1.5 p-1.5 bg-blue-50 border border-blue-200 rounded text-[10px] sm:text-xs text-blue-950 leading-tight space-y-0.5">
+                                <div className="font-bold text-blue-900">🔮 Jaimini Karaka Analysis:</div>
+                                <div><strong>Atma Karaka (AK):</strong> Directs soul purpose and primary karmic lessons.</div>
+                                <div><strong>Amatya Karaka (AmK):</strong> Governs career direction, professional honors, and executive role.</div>
+                                <div><strong>Dara Karaka (DK):</strong> Governs spouse characteristics, partnerships, and public relations.</div>
                             </div>
                         </div>
                     </div>

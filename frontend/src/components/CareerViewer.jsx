@@ -47,12 +47,12 @@ export default function CareerViewer() {
 
                 const [general, personalRes] = await Promise.all([
                     fetchCareerInsights(),
-                    uData.date && uData.lat && uData.lon 
-                      ? fetchPersonalCareerInsights(uData).catch(e => {
-                          console.error("Personal career analysis failed", e);
-                          return [];
-                        }) 
-                      : Promise.resolve([])
+                    uData.date && uData.lat && uData.lon
+                        ? fetchPersonalCareerInsights(uData).catch(e => {
+                            console.error("Personal career analysis failed", e);
+                            return [];
+                        })
+                        : Promise.resolve([])
                 ]);
 
                 setInsights(general);
@@ -86,7 +86,7 @@ export default function CareerViewer() {
     return (
         <div style={{ minHeight: '100vh', backgroundColor: theme.bg, color: theme.text, fontFamily: 'sans-serif', paddingBottom: '100px', position: 'relative' }}>
             {/* Theme Toggle Button */}
-            <button 
+            <button
                 onClick={() => setIsLightMode(!isLightMode)}
                 style={{
                     position: 'absolute',
@@ -107,7 +107,7 @@ export default function CareerViewer() {
                 {isLightMode ? '🌙 Dark' : '☀️ Light'}
             </button>
             {/* Language Toggle Button */}
-            <button 
+            <button
                 onClick={() => setIsHindi(!isHindi)}
                 style={{
                     position: 'absolute',
@@ -128,21 +128,21 @@ export default function CareerViewer() {
                 A / अ
             </button>
             {/* Premium Header */}
-            <div style={{ 
-                padding: '100px 40px', 
-                background: theme.headerGradient, 
+            <div style={{
+                padding: '100px 40px',
+                background: theme.headerGradient,
                 borderBottom: `1px solid ${theme.borderColor}`,
                 position: 'relative',
                 overflow: 'hidden'
             }}>
                 <div style={{ position: 'absolute', top: '-150px', right: '-150px', width: '500px', height: '500px', background: 'rgba(251, 191, 36, 0.05)', borderRadius: '50%', filter: 'blur(120px)' }}></div>
-                
+
                 <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '50px' }}>
-                    <div style={{ 
-                        width: '120px', 
-                        height: '120px', 
-                        borderRadius: '40px', 
-                        background: 'linear-gradient(to br, #fbbf24, #d97706)', 
+                    <div style={{
+                        width: '120px',
+                        height: '120px',
+                        borderRadius: '40px',
+                        background: 'linear-gradient(to br, #fbbf24, #d97706)',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -201,10 +201,10 @@ export default function CareerViewer() {
                         </h2>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px' }}>
                             {personalInsights.map((item, idx) => (
-                                <div key={idx} style={{ 
-                                    background: theme.cardBg, 
-                                    padding: '40px', 
-                                    borderRadius: '40px', 
+                                <div key={idx} style={{
+                                    background: theme.cardBg,
+                                    padding: '40px',
+                                    borderRadius: '40px',
                                     border: `1px solid ${isLightMode ? 'rgba(0,0,0,0.1)' : 'rgba(251,191,36,0.1)'}`,
                                     boxShadow: isLightMode ? '0 10px 30px rgba(0,0,0,0.05)' : '0 20px 40px rgba(0,0,0,0.2)'
                                 }}>
@@ -213,6 +213,78 @@ export default function CareerViewer() {
                                     <p style={{ fontSize: '17px', color: theme.text, lineHeight: '1.8' }}>{item.content}</p>
                                 </div>
                             ))}
+                        </div>
+
+                        {/* Classical Priority Hierarchy for Selecting Career / Profession */}
+                        <div style={{
+                            marginTop: '60px',
+                            background: theme.cardBg,
+                            padding: '40px',
+                            borderRadius: '40px',
+                            border: `1px solid ${isLightMode ? 'rgba(217,119,6,0.2)' : 'rgba(251,191,36,0.3)'}`,
+                            boxShadow: isLightMode ? '0 10px 30px rgba(0,0,0,0.05)' : '0 20px 50px rgba(0,0,0,0.3)'
+                        }}>
+                            <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+                                <span style={{ fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px', color: theme.accentColor }}>
+                                    📜 Parashari & Jaimini Karma Sastra
+                                </span>
+                                <h3 style={{ fontSize: '28px', fontWeight: 900, color: theme.heading, marginTop: '8px' }}>
+                                    🏆 {isHindi ? "करियर चयन की शास्त्रीय प्राथमिकता सूची" : "Classical Priority Hierarchy for Selecting Career Field"}
+                                </h3>
+                                <p style={{ fontSize: '16px', color: theme.filterInactiveText, fontStyle: 'italic', marginTop: '6px' }}>
+                                    {isHindi ? "ज्योतिषीय महत्व के अनुसार पेशेवर कारकों का मूल्यांकन" : "How to evaluate professional astrological factors in order of classical importance"}
+                                </p>
+                            </div>
+
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '20px' }}>
+                                <div style={{ background: 'rgba(251, 191, 36, 0.08)', padding: '24px', borderRadius: '24px', borderLeft: '5px solid #fbbf24' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: 900, color: '#fbbf24', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px' }}>
+                                        1st Priority (Rank #1)
+                                    </div>
+                                    <h4 style={{ fontSize: '18px', fontWeight: 900, color: theme.heading, marginBottom: '8px' }}>
+                                        🥇 10th Lord Placement & 10th House Sign
+                                    </h4>
+                                    <p style={{ fontSize: '18px', color: theme.text, lineHeight: '1.6' }}>
+                                        <b>Core Karma & Primary Profession:</b> 10th Lord (e.g. Venus in 8th) + 10th Sign (Taurus) dictates core field (Finance, Audit, Taxation, Research, Luxury, Risk Management).
+                                    </p>
+                                </div>
+
+                                <div style={{ background: 'rgba(59, 130, 246, 0.08)', padding: '24px', borderRadius: '24px', borderLeft: '5px solid #3b82f6' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: 900, color: '#3b82f6', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px' }}>
+                                        2nd Priority (Rank #2)
+                                    </div>
+                                    <h4 style={{ fontSize: '18px', fontWeight: 900, color: theme.heading, marginBottom: '8px' }}>
+                                        🥈 Dashamsha (D-10) Lagna
+                                    </h4>
+                                    <p style={{ fontSize: '18px', color: theme.text, lineHeight: '1.6' }}>
+                                        <b>Real-World Execution & Status:</b> Reveals your physical work environment, leadership capacity, corporate standing, and career execution power.
+                                    </p>
+                                </div>
+
+                                <div style={{ background: 'rgba(16, 185, 129, 0.08)', padding: '24px', borderRadius: '24px', borderLeft: '5px solid #10b981' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: 900, color: '#10b981', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px' }}>
+                                        3rd Priority (Rank #3)
+                                    </div>
+                                    <h4 style={{ fontSize: '18px', fontWeight: 900, color: theme.heading, marginBottom: '8px' }}>
+                                        🥉 Birth Nakshatra (Hasta)
+                                    </h4>
+                                    <p style={{ fontSize: '18px', color: theme.text, lineHeight: '1.6' }}>
+                                        <b>Inherent Skill & Work Style:</b> Hasta Nakshatra grants natural dexterity, hands-on craftsmanship, analytical precision, and negotiation skills.
+                                    </p>
+                                </div>
+
+                                <div style={{ background: 'rgba(236, 72, 153, 0.08)', padding: '24px', borderRadius: '24px', borderLeft: '5px solid #ec4899' }}>
+                                    <div style={{ fontSize: '12px', fontWeight: 900, color: '#ec4899', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px' }}>
+                                        4th Priority (Rank #4)
+                                    </div>
+                                    <h4 style={{ fontSize: '18px', fontWeight: 900, color: theme.heading, marginBottom: '8px' }}>
+                                        🏅 Venus & Mercury Significations
+                                    </h4>
+                                    <p style={{ fontSize: '18px', color: theme.text, lineHeight: '1.6' }}>
+                                        <b>Domain & Communication Catalyst:</b> Venus provides financial/aesthetic direction, while Mercury fuels commercial intellect, trading, and data analysis.
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </section>
                 )}
@@ -224,10 +296,10 @@ export default function CareerViewer() {
                     </h2>
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '30px' }}>
                         {filteredInsights.map((item, idx) => (
-                            <div key={idx} style={{ 
-                                background: theme.cardGeneralBg, 
-                                padding: '40px', 
-                                borderRadius: '40px', 
+                            <div key={idx} style={{
+                                background: theme.cardGeneralBg,
+                                padding: '40px',
+                                borderRadius: '40px',
                                 border: `1px solid ${theme.borderColor}`,
                                 transition: 'all 0.3s ease',
                                 boxShadow: isLightMode ? '0 10px 30px rgba(0,0,0,0.05)' : 'none'
@@ -247,22 +319,22 @@ export default function CareerViewer() {
                     {isHindi ? "अपने कर्म का सम्मान करें" : "Respect Your Karma"}
                 </h3>
                 <p style={{ color: theme.filterInactiveText, fontSize: '18px', fontStyle: 'italic', lineHeight: '1.7', marginBottom: '40px' }}>
-                    {isHindi 
-                      ? "\"ज्योतिष केवल संभावनाओं को दर्शाता है। आपकी सफलता आपके पुरुषार्थ और नैतिकता पर निर्भर करती है।\""
-                      : "\"Astrology map possibilities, but your effort (Purushartha) and ethics (Dharma) determine the final result.\""}
+                    {isHindi
+                        ? "\"ज्योतिष केवल संभावनाओं को दर्शाता है। आपकी सफलता आपके पुरुषार्थ और नैतिकता पर निर्भर करती है।\""
+                        : "\"Astrology map possibilities, but your effort (Purushartha) and ethics (Dharma) determine the final result.\""}
                 </p>
-                <button 
-                    onClick={() => window.close()} 
-                    style={{ 
-                        padding: '24px 80px', 
-                        borderRadius: '20px', 
-                        background: isLightMode ? theme.heading : 'white', 
-                        color: isLightMode ? 'white' : '#0f172a', 
-                        border: 'none', 
-                        fontSize: '12px', 
-                        fontWeight: 900, 
-                        textTransform: 'uppercase', 
-                        letterSpacing: '4px', 
+                <button
+                    onClick={() => window.close()}
+                    style={{
+                        padding: '24px 80px',
+                        borderRadius: '20px',
+                        background: isLightMode ? theme.heading : 'white',
+                        color: isLightMode ? 'white' : '#0f172a',
+                        border: 'none',
+                        fontSize: '12px',
+                        fontWeight: 900,
+                        textTransform: 'uppercase',
+                        letterSpacing: '4px',
                         cursor: 'pointer',
                         boxShadow: isLightMode ? '0 10px 20px rgba(0,0,0,0.2)' : '0 20px 40px rgba(0,0,0,0.4)'
                     }}

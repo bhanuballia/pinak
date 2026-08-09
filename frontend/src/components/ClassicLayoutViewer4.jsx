@@ -25,16 +25,39 @@ const getPlanetColor = (planet) => {
 
 
 
-// Simplified component for Vargavimshopaka
-const VargavimshopakaTable = ({ vimsopakaData }) => {
-    if (!vimsopakaData) return <div className="p-4">No data</div>;
+// Component for Vargavimshopaka
+const VargavimshopakaTable = ({ vimsopakaData, data }) => {
     const planets = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
     const vargas = [
-        { key: "shadvarga", label: "Shad Varga" },
-        { key: "saptavarga", label: "Saptha Varga" },
-        { key: "dasavarga", label: "Dasa Varga" },
-        { key: "shodasavarga", label: "Shodasa Varga" }
+        { keys: ["shadvarga", "shad_varga"], label: "Shad Varga" },
+        { keys: ["saptavarga", "saptha_varga", "saptavarga"], label: "Saptha Varga" },
+        { keys: ["dasavarga", "dasa_varga", "dashavarga"], label: "Dasa Varga" },
+        { keys: ["shodashvarga", "shodasavarga", "shodashavarga", "shodasa_varga"], label: "Shodasa Varga" }
     ];
+
+    const getScore = (vKeys, planetName) => {
+        if (vimsopakaData) {
+            for (const k of vKeys) {
+                if (vimsopakaData[k] && vimsopakaData[k][planetName] !== undefined) {
+                    return Number(vimsopakaData[k][planetName]);
+                }
+            }
+        }
+        // Fallback: estimate from planet strength/dignity in chart data
+        const positionArray = Array.isArray(data?.planet_positions) ? data.planet_positions : Object.values(data?.planet_positions || {});
+        const pObj = positionArray.find(pos => pos.planet === planetName || pos.name === planetName);
+        const pStrength = data?.strength?.planets?.[planetName];
+
+        let baseScore = 14.0;
+        const dignity = pObj?.dignity || pStrength?.dignity || "";
+        if (dignity.includes("EXALTED") || dignity.includes("Exalted") || dignity.includes("Moolatrikona")) baseScore = 18.0;
+        else if (dignity.includes("OWN") || dignity.includes("Own")) baseScore = 16.0;
+        else if (dignity.includes("FRIEND") || dignity.includes("Friend")) baseScore = 14.5;
+        else if (dignity.includes("ENEMY") || dignity.includes("Enemy")) baseScore = 10.5;
+        else if (dignity.includes("DEBILITATED") || dignity.includes("Debilitated")) baseScore = 7.5;
+
+        return baseScore;
+    };
 
     return (
         <div className="w-full bg-[#ffffe0] border-2 border-green-700/50 flex flex-col h-full rounded-sm shadow-sm mt-1">
@@ -47,17 +70,16 @@ const VargavimshopakaTable = ({ vimsopakaData }) => {
                         <tr className="border-b border-green-700/20">
                             <th className="font-normal text-left pl-2"></th>
                             {planets.map(p => (
-                                <th key={p} style={{ color: getPlanetColor(p) }} className="font-semibold py-1">{PLANET_ABBREV[p]}</th>
+                                <th key={p} style={{ color: getPlanetColor(p) }} className="font-semibold py-1">{PLANET_ABBREV[p] || p}</th>
                             ))}
                         </tr>
                     </thead>
                     <tbody>
                         {vargas.map(v => (
-                            <tr key={v.key} className="border-b border-green-700/10 last:border-0 hover:bg-white/40">
+                            <tr key={v.label} className="border-b border-green-700/10 last:border-0 hover:bg-white/40">
                                 <td className="font-medium text-slate-700 text-left pl-2 py-1">{v.label}</td>
                                 {planets.map(p => {
-                                    let score = vimsopakaData[v.key]?.[p] || 0;
-                                    // Make text color based on score
+                                    const score = getScore(v.keys, p);
                                     let scoreColor = "#333";
                                     if (score >= 15) scoreColor = "#16a34a"; // Green for high
                                     else if (score <= 10) scoreColor = "#dc2626"; // Red for low
@@ -78,6 +100,81 @@ const VargavimshopakaTable = ({ vimsopakaData }) => {
 };
 
 
+
+const NAISARGIKA_RELATIONS = {
+    Sun: { friend: ["Moon", "Mars", "Jupiter"], enemy: ["Venus", "Saturn", "Rahu", "Ketu"] },
+    Moon: { friend: ["Sun", "Mercury"], enemy: [] },
+    Mars: { friend: ["Sun", "Moon", "Jupiter"], enemy: ["Mercury", "Rahu", "Ketu"] },
+    Mercury: { friend: ["Sun", "Venus"], enemy: ["Moon"] },
+    Jupiter: { friend: ["Sun", "Moon", "Mars"], enemy: ["Mercury", "Venus"] },
+    Venus: { friend: ["Mercury", "Saturn"], enemy: ["Sun", "Moon"] },
+    Saturn: { friend: ["Mercury", "Venus"], enemy: ["Sun", "Moon", "Mars"] },
+    Rahu: { friend: ["Venus", "Saturn", "Mercury"], enemy: ["Sun", "Moon", "Mars"] },
+    Ketu: { friend: ["Venus", "Saturn", "Mercury"], enemy: ["Sun", "Moon", "Mars"] }
+};
+
+const calculateCompoundRelationships = (data) => {
+    const PLANET_NAMES = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
+    const positionArray = Array.isArray(data.planet_positions) ? data.planet_positions : Object.values(data.planet_positions || {});
+
+    const planetHouseMap = {};
+    PLANET_NAMES.forEach(pName => {
+        const found = positionArray.find(p => p.planet === pName || p.name === pName);
+        if (found) {
+            let houseNum = found.house;
+            if (!houseNum && found.degree !== undefined) {
+                const ascDeg = data.charts?.houses?.[1]?.cusp_deg ?? data.charts?.houses?.["1"]?.cusp_deg ?? 0;
+                houseNum = Math.floor(((found.degree - ascDeg + 360) % 360) / 30) + 1;
+            }
+            planetHouseMap[pName] = houseNum || 1;
+        } else {
+            let houseNum = 1;
+            const houses = data.charts?.houses || data.charts?.D1?.houses || {};
+            for (const [hNum, hData] of Object.entries(houses)) {
+                const pList = (hData.planets || []).map(p => typeof p === 'object' ? p.name || p.planet : p);
+                if (pList.includes(pName)) {
+                    houseNum = parseInt(hNum);
+                    break;
+                }
+            }
+            planetHouseMap[pName] = houseNum;
+        }
+    });
+
+    const compoundMatrix = {};
+    PLANET_NAMES.forEach(p1 => {
+        compoundMatrix[p1] = {};
+        PLANET_NAMES.forEach(p2 => {
+            if (p1 === p2) {
+                compoundMatrix[p1][p2] = "-";
+                return;
+            }
+            let natScore = 0;
+            const p1Nat = NAISARGIKA_RELATIONS[p1] || { friend: [], enemy: [] };
+            if (p1Nat.friend.includes(p2)) natScore = 1;
+            else if (p1Nat.enemy.includes(p2)) natScore = -1;
+
+            const h1 = planetHouseMap[p1] || 1;
+            const h2 = planetHouseMap[p2] || 1;
+            let diff = (h2 - h1 + 12) % 12;
+            if (diff === 0) diff = 12;
+
+            const tempScore = [2, 3, 4, 10, 11, 12].includes(diff) ? 1 : -1;
+
+            const totalScore = natScore + tempScore;
+            let relText = "Neutral";
+            if (totalScore >= 2) relText = "Grt. Friend";
+            else if (totalScore === 1) relText = "Friend";
+            else if (totalScore === 0) relText = "Neutral";
+            else if (totalScore === -1) relText = "Enemy";
+            else if (totalScore <= -2) relText = "Grt. Enemy";
+
+            compoundMatrix[p1][p2] = relText;
+        });
+    });
+
+    return compoundMatrix;
+};
 
 export default function ClassicLayoutViewer4({ data }) {
     if (!data) return null;
@@ -110,8 +207,13 @@ export default function ClassicLayoutViewer4({ data }) {
 
     const d1Houses = data.charts?.houses || data.charts?.D1?.houses || [];
     const friendshipData = data.friendship_matrix || data.planetary_relationships || {};
-    const compound = friendshipData.compound !== undefined ? friendshipData.compound : friendshipData;
-    const vimsopakaData = data.vimsopaka_assessment?.vimsopaka_bala || {};
+    let compound = friendshipData.compound !== undefined ? friendshipData.compound : (Object.keys(friendshipData).length > 0 ? friendshipData : null);
+
+    if (!compound || Object.keys(compound).length === 0) {
+        compound = calculateCompoundRelationships(data);
+    }
+
+    const vimsopakaData = data.vimsopaka_bala || data.vimsopaka_assessment?.vimsopaka_bala || data.vimsopaka || {};
 
 
     const handleExportPDF = async () => {
@@ -143,14 +245,14 @@ export default function ClassicLayoutViewer4({ data }) {
 
                 {/* Middle Row: Vargavimshopaka */}
                 <div className="flex-[2] min-h-0 mt-1">
-                    <VargavimshopakaTable vimsopakaData={vimsopakaData} />
+                    <VargavimshopakaTable vimsopakaData={vimsopakaData} data={data} />
                 </div>
 
                 {/* Bottom Row: Vimshottari | D1 | Transit */}
                 <div className="flex-[5] flex gap-1 min-h-0 mt-1">
                     {/* Left: Vimshottari Table */}
                     <div className="flex-1 border-2 border-green-700/50 shadow-sm flex flex-col overflow-hidden rounded-sm bg-white min-w-0">
-                        <VimshottariTable data={data} />
+                        <VimshottariTable data={data} hideMarriageDasha={true} />
                     </div>
 
                     {/* Middle: Birth Chart */}

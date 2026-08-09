@@ -35,6 +35,16 @@ const DOMAIN_MAP = {
         title: "Children Health Diagnostic",
         houses: [5],
         houseLabels: { 5: "Children & Progeny (5th House)" }
+    },
+    mental_peace: {
+        title: "Mental Peace Diagnostic",
+        houses: [4, 5, 12],
+        houseLabels: { 4: "Emotional Peace (4th House)", 5: "Mindset & Thoughts (5th House)", 12: "Subconscious & Sleep (12th House)" }
+    },
+    home_peace: {
+        title: "Domestic Peace & Harmony Diagnostic",
+        houses: [4],
+        houseLabels: { 4: "Domestic Environment & Griha Sukha (4th House)" }
     }
 };
 
@@ -105,7 +115,7 @@ export default function DiagnosticDetails({ domain, worksheetData }) {
                             <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#d4af37', marginBottom: '10px' }}>
                                 {domainInfo.houseLabels[hNum]}
                             </h4>
-                            <p style={{ fontSize: '16px', marginBottom: '15px' }}>
+                            <p style={{ fontSize: '18px', marginBottom: '15px' }}>
                                 <strong style={{ color: 'white' }}>Responsible Sign:</strong> {houseObj.sign_name || "Unknown"}
                             </p>
 
@@ -121,7 +131,7 @@ export default function DiagnosticDetails({ domain, worksheetData }) {
                                                 border: '1px solid rgba(255,255,255,0.1)'
                                             }}>
                                                 <span style={{ fontWeight: 'bold', color: '#818cf8', display: 'block', fontSize: '18px' }}>{p}</span>
-                                                <p style={{ fontSize: '14px', marginTop: '5px', fontStyle: 'italic' }}>
+                                                <p style={{ fontSize: '22px', marginTop: '5px', fontStyle: 'italic' }}>
                                                     {PLANET_EFFECTS[p] || "Influence depends on aspects and strength."}
                                                 </p>
                                             </div>

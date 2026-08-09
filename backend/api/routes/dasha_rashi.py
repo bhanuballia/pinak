@@ -25,16 +25,18 @@ def standardize_dasha_list(dasha_list, birth_dt_utc, default_duration=10):
     
     for item in dasha_list:
         # Determine sign name
-        sign_num = item.get("sign")
-        if sign_num is not None:
-            sign_name = SIGN_NAMES.get(sign_num, str(sign_num))
+        sign_val = item.get("sign")
+        if isinstance(sign_val, str):
+            sign_name = sign_val
+        elif sign_val is not None:
+            sign_name = SIGN_NAMES.get(sign_val, str(sign_val))
         elif "cycle" in item:
             sign_name = f"Cycle {item['cycle']}"
         else:
             sign_name = "Unknown"
             
         # Determine duration
-        duration = item.get("years", default_duration)
+        duration = item.get("duration_years", item.get("years", default_duration))
         
         # Calculate start date based on accumulated years
         start_dt = birth_dt_utc + datetime.timedelta(days=current_start_yrs * 365.2425)
@@ -43,7 +45,7 @@ def standardize_dasha_list(dasha_list, birth_dt_utc, default_duration=10):
             "d": sign_name,
             "start": current_start_yrs,
             "duration": duration,
-            "date": start_dt.strftime("%a \u00A0\u00A0 %d-%m-%Y"),
+            "date": start_dt.strftime("%A \u00A0\u00A0 %d-%m-%Y"),
             "date_iso": start_dt.isoformat()
         })
         current_start_yrs += duration
@@ -89,17 +91,33 @@ def api_rashi_dashas(payload: Dict = Body(...)):
         time_str = payload.get("time", "12:00:00")
         tz_offset = float(payload.get("tz_offset", 5.5))
         
-        birth_dt_local = datetime.datetime.strptime(f"{date_str} {time_str}", "%Y-%m-%d %H:%M:%S")
-        birth_dt_utc = birth_dt_local - datetime.timedelta(hours=tz_offset)
+        y, m, d = [int(x) for x in date_str.split("-")]
+        tp = [int(x) for x in time_str.split(":")]
+        dt_local = datetime.datetime(y, m, d, tp[0], tp[1], tp[2] if len(tp) > 2 else 0)
+        birth_dt_utc = dt_local - datetime.timedelta(hours=tz_offset)
+        
+        # Calculate Birth JD
+        from astronomy.julian import datetime_to_julian
+        from charts.rashi_chart import build_rashi_chart
+        lat = float(payload.get("lat", 28.6139))
+        lon = float(payload.get("lon", 77.2090))
+        jd_birth_ut = datetime_to_julian(birth_dt_utc)
+        chart_data = build_rashi_chart(jd_birth_ut, lat, lon)
+        ascendant_sign_raw = chart_data.get("ascendant_sign", 0)
+        try:
+            ascendant_sign_idx = int(ascendant_sign_raw)
+        except (ValueError, TypeError):
+            ascendant_sign_idx = 0
+        ascendant_sign_name = SIGN_NAMES.get(ascendant_sign_idx + 1, "Aries")
         
         # Instantiate the new Jaimini engines
-        chara = CharaDasha().calculate(start_sign=2, years=12) # Returns 12 years sequence
+        chara = CharaDasha(chart_data).calculate(birth_jd=jd_birth_ut, lagna_sign=ascendant_sign_name)
         sthira = SthiraDasha().calculate(start_sign=3) # Returns 12 periods
         narayana = NarayanaDasha().calculate(lagna_sign=6) # Returns 12 periods
         kalachakra = KalachakraDasha().calculate(nakshatra_pada=1) # Returns 9 cycles
         
         # These return non-sequence data, so we wrap them
-        drig_res = DrigDasha().calculate(start_sign=4)
+        drig_res = DrigDasha(chart_data).calculate(start_sign=4)
         drig = wrapper_aspected_signs(drig_res.get("aspected_signs", []), birth_dt_utc)
         
         kendradi_res = KendradiDasha().calculate()

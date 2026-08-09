@@ -67,35 +67,35 @@ export default function NakshatraDashaView({ data }) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ date: dateStr, time: timeStr, tz_offset: tz, offsets })
         })
-        .then(res => res.json())
-        .then(res => {
-            const formatDashaRow = (row) => {
-                const lordAbbr = row.lord ? row.lord.split('-').map(l => l.substring(0, 2)).join('-') : "??";
-                const dDate = new Date(bDate.getTime() + (row.start || 0) * 365.2425 * 24 * 60 * 60 * 1000);
-                const ds = dDate.toLocaleDateString("en-GB", { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/,/g, '');
-                return { d: lordAbbr, date: ds };
-            };
-            const jdToDate = (jd) => {
-                const ts = (jd - 2440587.5) * 86400000;
-                const d = new Date(ts);
-                return d.toLocaleDateString("en-GB", { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/,/g, '');
-            };
+            .then(res => res.json())
+            .then(res => {
+                const formatDashaRow = (row) => {
+                    const lordAbbr = row.lord ? row.lord.split('-').map(l => l.substring(0, 2)).join('-') : "??";
+                    const dDate = new Date(bDate.getTime() + (row.start || 0) * 365.2425 * 24 * 60 * 60 * 1000);
+                    const ds = dDate.toLocaleDateString("en-GB", { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/,/g, '');
+                    return { d: lordAbbr, date: ds };
+                };
+                const jdToDate = (jd) => {
+                    const ts = (jd - 2440587.5) * 86400000;
+                    const d = new Date(ts);
+                    return d.toLocaleDateString("en-GB", { weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/,/g, '');
+                };
 
-            const formatYearsData = (rows) => rows.map(r => formatDashaRow(r)).slice(0, 10);
-            const formatJDData = (rows) => rows.map(r => ({ d: r.lord ? r.lord.split('-').map(l => l.substring(0, 2)).join('-') : "??", date: jdToDate(r.start_jd) })).slice(0, 10);
-            
-            setDashaData({
-                vimshottari: res.vimshottari ? formatJDData(res.vimshottari) : [],
-                ashtottari: res.ashtottari ? formatYearsData(res.ashtottari) : [],
-                shodashottari: res.shodashottari ? formatYearsData(res.shodashottari) : [],
-                chaturshitisama: res.chaturshitisama ? formatYearsData(res.chaturshitisama) : [],
-                dwadashottari: res.dwadashottari ? formatYearsData(res.dwadashottari) : [],
-                shatabdika: res.shatabdika ? formatYearsData(res.shatabdika) : [],
-                dwisaptatisama: res.dwisaptatisama ? formatYearsData(res.dwisaptatisama) : [],
-                panchottari: res.panchottari ? formatYearsData(res.panchottari) : []
-            });
-        })
-        .catch(err => console.error("Failed to load nakshatra dashas:", err));
+                const formatYearsData = (rows) => rows.map(r => formatDashaRow(r)).slice(0, 10);
+                const formatJDData = (rows) => rows.map(r => ({ d: r.lord ? r.lord.split('-').map(l => l.substring(0, 2)).join('-') : "??", date: jdToDate(r.start_jd) })).slice(0, 10);
+
+                setDashaData({
+                    vimshottari: res.vimshottari ? formatJDData(res.vimshottari) : [],
+                    ashtottari: res.ashtottari ? formatYearsData(res.ashtottari) : [],
+                    shodashottari: res.shodashottari ? formatYearsData(res.shodashottari) : [],
+                    chaturshitisama: res.chaturshitisama ? formatYearsData(res.chaturshitisama) : [],
+                    dwadashottari: res.dwadashottari ? formatYearsData(res.dwadashottari) : [],
+                    shatabdika: res.shatabdika ? formatYearsData(res.shatabdika) : [],
+                    dwisaptatisama: res.dwisaptatisama ? formatYearsData(res.dwisaptatisama) : [],
+                    panchottari: res.panchottari ? formatYearsData(res.panchottari) : []
+                });
+            })
+            .catch(err => console.error("Failed to load nakshatra dashas:", err));
     }, [data, offsets]);
 
     const handleOffsetChange = (sysKey, change) => {
@@ -167,9 +167,7 @@ export default function NakshatraDashaView({ data }) {
 
             </div>
 
-            <div className="text-xs text-center text-gray-800 mt-2 bg-[#ffffea] p-1 rounded border border-gray-400">
-                This worksheet shows the major Nakshatra based Dasha systems together. You can change the Dasha system of any of them by clicking on the title...
-            </div>
+
         </div>
     );
 }

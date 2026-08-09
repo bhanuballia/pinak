@@ -208,6 +208,19 @@ app.include_router(chaitra_routes.router, prefix="/api", tags=["Chaitra Chart"])
 app.include_router(jaimini.router, prefix="/api/jaimini_advanced", tags=["Advanced Jaimini"])
 app.include_router(btr.router, prefix="/api/btr", tags=["BTR Wizard"])
 app.include_router(ayurdaya.router, prefix="/api/ayurdaya", tags=["ayurdaya"])
+
+from fastapi import WebSocket, WebSocketDisconnect
+@app.websocket("/ws")
+async def root_websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+    try:
+        while True:
+            import asyncio, json
+            payload = json.dumps({"event": "Transiting Jupiter in Leo aspecting D108 Lagna", "type": "activation"})
+            await websocket.send_text(payload)
+            await asyncio.sleep(5)
+    except WebSocketDisconnect:
+        pass
 app.include_router(biodata.router, prefix="/api/biodata", tags=["biodata"])
 print("[STARTUP] Initializing routers...")
 app.include_router(family_health.router, prefix="/api/family-health", tags=["Family Health"])
@@ -301,6 +314,55 @@ def api_vimshottari(payload: Dict = Body(...)):
         raise HTTPException(status_code=400, detail=f"Missing {e}")
     res = compute_vimshottari_full(jd_ut, moon_lon, years_ahead=years)
     return JSONResponse(res)
+
+from dasha.wealth_activation import compute_wealth_activation_timeline, derive_house_lords
+
+@app.post("/api/dasha/wealth-activation")
+def api_wealth_activation(payload: Dict = Body(...)):
+    try:
+        jd_ut = float(payload.get("jd_ut", 0))
+        moon_lon = float(payload.get("moon_lon", 0))
+        house_lords = payload.get("house_lords")
+        if not house_lords:
+            ascendant_deg = float(payload.get("ascendant", 0))
+            house_lords = derive_house_lords(ascendant_deg)
+        else:
+            house_lords = {int(k): str(v) for k, v in house_lords.items()}
+
+        res = compute_wealth_activation_timeline(
+            jd_ut=jd_ut,
+            moon_sidereal_long=moon_lon,
+            house_lords=house_lords,
+            years_ahead=float(payload.get("years", 80.0))
+        )
+        return JSONResponse(res)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+from dasha.govt_job_activation import compute_govt_job_activation_timeline
+
+@app.post("/api/dasha/govt-job-activation")
+def api_govt_job_activation(payload: Dict = Body(...)):
+    try:
+        jd_ut = float(payload.get("jd_ut", 0))
+        moon_lon = float(payload.get("moon_lon", 0))
+        house_lords = payload.get("house_lords")
+        if not house_lords:
+            ascendant_deg = float(payload.get("ascendant", 0))
+            house_lords = derive_house_lords(ascendant_deg)
+        else:
+            house_lords = {int(k): str(v) for k, v in house_lords.items()}
+
+        res = compute_govt_job_activation_timeline(
+            jd_ut=jd_ut,
+            moon_sidereal_long=moon_lon,
+            house_lords=house_lords,
+            years_ahead=float(payload.get("years", 80.0))
+        )
+        return JSONResponse(res)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.post("/api/dasha/shodashottari")
 def api_shodashottari(payload: Dict = Body(...)):

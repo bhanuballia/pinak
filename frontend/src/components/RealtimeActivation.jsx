@@ -12,8 +12,12 @@ export default function RealtimeActivation() {
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        console.log(data);
-        setMessages(prev => [...prev, data.event].slice(-5));
+        if (data.event) {
+          setMessages(prev => {
+            if (prev.includes(data.event)) return prev;
+            return [...prev, data.event].slice(-5);
+          });
+        }
       } catch(e) {}
     };
 

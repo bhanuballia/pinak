@@ -9,6 +9,30 @@ from core.analysis.shadbala_engine import compute_shadbala
 
 router = APIRouter()
 
+DIGNITY_MAP = {
+    "Sun": {"exalt": "Ari", "deb": "Lib", "own": ["Leo"]},
+    "Moon": {"exalt": "Tau", "deb": "Sco", "own": ["Can"]},
+    "Mars": {"exalt": "Cap", "deb": "Can", "own": ["Ari", "Sco"]},
+    "Mercury": {"exalt": "Vir", "deb": "Pis", "own": ["Gem", "Vir"]},
+    "Jupiter": {"exalt": "Can", "deb": "Cap", "own": ["Sag", "Pis"]},
+    "Venus": {"exalt": "Pis", "deb": "Vir", "own": ["Tau", "Lib"]},
+    "Saturn": {"exalt": "Lib", "deb": "Ari", "own": ["Cap", "Aqu"]},
+    "Rahu": {"exalt": "Gem", "deb": "Sag", "own": ["Aqu"]},
+    "Ketu": {"exalt": "Sag", "deb": "Gem", "own": ["Sco"]},
+}
+
+def get_basic_dignity(planet: str, rashi: str) -> str:
+    info = DIGNITY_MAP.get(planet)
+    if not info:
+        return "Neutr"
+    if rashi == info.get("exalt"):
+        return "Exalt"
+    if rashi == info.get("deb"):
+        return "Debil"
+    if rashi in info.get("own", []):
+        return "Own"
+    return "Neutr"
+
 def build_planet_data(chart: Dict[str, Any], shadbala_data: Dict[str, Any]) -> List[Dict[str, Any]]:
     planet_positions = chart.get("planet_positions", {})
     results = []
@@ -23,8 +47,8 @@ def build_planet_data(chart: Dict[str, Any], shadbala_data: Dict[str, Any]) -> L
         "nakshatra": asc_nak["nakshatra_name"][:8],
         "pada": str(asc_nak["pada"]),
         "degree": asc_lon % 30, # local sign degree
-        "dignity": "",
-        "sb": ""
+        "dignity": "-",
+        "sb": "-"
     })
     
     for planet, data in planet_positions.items():
@@ -38,15 +62,29 @@ def build_planet_data(chart: Dict[str, Any], shadbala_data: Dict[str, Any]) -> L
         
         p_name = planet[:2] if planet not in ["Sun", "Moon", "Mars"] else planet[:2] # Su, Mo, Ma, Me, Ju, Ve, Sa, Ra, Ke
         
-        # Add basic dignity/sb lookups
         sb_val = ""
         dignity = ""
         if shadbala_data:
-            sb_info = shadbala_data.get("shadbala", {}).get(planet, {})
-            if "total_rupas" in sb_info:
+            sb_info = (
+                shadbala_data.get("planets", {}).get(planet, {}) or
+                shadbala_data.get("shadbala", {}).get(planet, {}) or
+                shadbala_data.get(planet, {})
+            )
+            if "total_score" in sb_info:
+                sb_val = f"{sb_info['total_score']:.1f}"
+            elif "total_rupas" in sb_info:
                 sb_val = f"{sb_info['total_rupas']:.2f}"
-            if "dignity" in sb_info:
-                dignity = sb_info["dignity"][:5] # Neutr, Exalt, Own, etc
+            elif "total" in sb_info:
+                sb_val = f"{sb_info['total']:.2f}"
+
+            dignity_raw = sb_info.get("dignity", "")
+            if dignity_raw:
+                dignity = str(dignity_raw).capitalize()[:6]
+
+        if not dignity:
+            dignity = get_basic_dignity(planet, rashi)
+        if not sb_val:
+            sb_val = "-"
                 
         results.append({
             "planet": p_name,

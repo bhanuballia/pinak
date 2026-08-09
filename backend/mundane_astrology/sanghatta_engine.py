@@ -96,33 +96,57 @@ class SanghattaEngine:
                 })
 
         # Generate Market Risk Assessment
-        risk_level = "LOW"
         risk_score = 0
         market_analysis = []
 
-        if any(v["source_planet"] in ["Saturn", "Mars"] for v in vedhas):
-            risk_score += 40
-            market_analysis.append("Heavy malefic Vedha detected from Saturn/Mars. Suggests sharp volatility or decline in affected commodity sectors.")
-            
-        if any(len(v["affected_planets"]) > 0 for v in vedhas):
-            risk_score += 30
-            market_analysis.append("Direct planetary collision along Sanghatta axes. Expect sudden shifts in market indices.")
-            
-        if any(v["target_nakshatra"] in ["Krittika", "Rohini", "Mrigashira"] for v in vedhas):
-            risk_score += 20
-            market_analysis.append("Agriculture and precious metals (gold) under stress.")
-            
-        if any(v["target_nakshatra"] in ["Anuradha", "Jyeshtha", "Mula"] for v in vedhas):
-            risk_score += 20
-            market_analysis.append("Financial institutions, banking, and treasury reserves face potential crisis.")
+        # 1. Inspect Malefic Vedha Severity
+        saturn_mars_vedhas = [v for v in vedhas if v["source_planet"] in ["Saturn", "Mars"]]
+        rahu_ketu_vedhas = [v for v in vedhas if v["source_planet"] in ["Rahu", "Ketu"]]
 
-        if risk_score > 60:
+        if saturn_mars_vedhas:
+            risk_score += 40
+            planets_str = ", ".join(list(set(v["source_planet"] for v in saturn_mars_vedhas)))
+            market_analysis.append(f"Heavy malefic Vedha active from {planets_str}. Indicates sharp market volatility and selling pressure in core equity sectors.")
+            
+        if rahu_ketu_vedhas:
+            risk_score += 25
+            market_analysis.append("Node-driven Sanghatta rays detected (Rahu/Ketu). Expect sudden speculative market swings and unannounced news triggers.")
+
+        # 2. Inspect Direct Collisions with Natal / Transit Planets
+        direct_collisions = [v for v in vedhas if len(v["affected_planets"]) > 0]
+        if direct_collisions:
+            risk_score += 30
+            hit_planets = list(set([p for v in direct_collisions for p in v["affected_planets"]]))
+            market_analysis.append(f"Direct planetary collision on Sanghatta axes hitting {', '.join(hit_planets)}. Expect swift sectorial rotation.")
+
+        # 3. Commodity & Sectorial Checks
+        agri_vedhas = [v for v in vedhas if v["target_nakshatra"] in ["Krittika", "Rohini", "Mrigashira", "Pushya"]]
+        if agri_vedhas:
+            risk_score += 15
+            market_analysis.append("Agriculture, bullion (Gold/Silver), and commodity markets under planetary stress.")
+            
+        banking_vedhas = [v for v in vedhas if v["target_nakshatra"] in ["Anuradha", "Jyeshtha", "Mula", "Uttara Bhadrapada"]]
+        if banking_vedhas:
+            risk_score += 15
+            market_analysis.append("Financial institutions, banking indices, and treasury yields face pressure.")
+
+        tech_vedhas = [v for v in vedhas if v["target_nakshatra"] in ["Ardra", "Shatabhisha", "Swati"]]
+        if tech_vedhas:
+            risk_score += 15
+            market_analysis.append("Technology, IT services, and telecom stocks experience high intraday fluctuations.")
+
+        # Cap score at 100
+        risk_score = min(risk_score, 100)
+
+        if risk_score >= 60:
             risk_level = "HIGH"
-        elif risk_score > 30:
+        elif risk_score >= 30:
             risk_level = "MODERATE"
+        else:
+            risk_level = "LOW"
             
         if len(market_analysis) == 0:
-            market_analysis.append("Markets remain relatively stable with no critical geometric afflictions detected.")
+            market_analysis.append("Markets remain relatively stable with no critical geometric afflictions detected on the 28-Nakshatra Sanghatta grid.")
 
         return {
             "planet_positions": planet_nakshatras,

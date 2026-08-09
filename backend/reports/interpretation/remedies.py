@@ -15,7 +15,8 @@ def recommend_remedies(chart, dosha, dasha):
             "type": "Ritual"
         })
 
-    if dasha["current"]["lord"] == "Saturn":
+    current_dasha = dasha.get("current", {}) if isinstance(dasha, dict) else {}
+    if current_dasha.get("lord") == "Saturn" or current_dasha.get("planet") == "Saturn":
         remedies.append({
             "issue": "Saturn Dasha",
             "remedy": "Charity on Saturdays",

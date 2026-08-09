@@ -28,6 +28,85 @@ const formatDeg = (deg) => {
     return `${d.toString().padStart(2, '0')}°${m.toString().padStart(2, '0')}'${s.toString().padStart(2, '0')}"`;
 };
 
+const getLagnaSignIndex = (data) => {
+    const lagnaHouse = data.charts?.houses?.[1] || data.charts?.houses?.["1"] || {};
+    let idx = lagnaHouse.sign_index;
+    if (idx === undefined && lagnaHouse.cusp_deg !== undefined) {
+        idx = Math.floor(lagnaHouse.cusp_deg / 30);
+    }
+    if (idx === undefined) {
+        idx = data.charts?.ascendant_sign_index || 0;
+    }
+    return idx;
+};
+
+const getFunctionalNature = (lagnaIdx, planetName) => {
+    const lagnaMap = {
+        0: { benefic: ["Sun", "Moon", "Mars", "Jupiter"], malefic: ["Mercury", "Venus", "Saturn"] },
+        1: { benefic: ["Sun", "Mercury", "Saturn", "Mars"], malefic: ["Moon", "Jupiter", "Venus"] },
+        2: { benefic: ["Venus"], malefic: ["Sun", "Mars", "Jupiter"] },
+        3: { benefic: ["Moon", "Mars", "Jupiter"], malefic: ["Mercury", "Venus", "Saturn"] },
+        4: { benefic: ["Sun", "Mars", "Jupiter"], malefic: ["Moon", "Mercury", "Venus", "Saturn"] },
+        5: { benefic: ["Venus"], malefic: ["Moon", "Mars", "Jupiter"] },
+        6: { benefic: ["Mercury", "Saturn", "Venus"], malefic: ["Sun", "Moon", "Mars", "Jupiter"] },
+        7: { benefic: ["Moon", "Sun", "Jupiter"], malefic: ["Mercury", "Venus", "Saturn"] },
+        8: { benefic: ["Sun", "Mars"], malefic: ["Venus", "Saturn", "Mercury"] },
+        9: { benefic: ["Mercury", "Venus", "Saturn"], malefic: ["Moon", "Mars", "Jupiter"] },
+        10: { benefic: ["Venus", "Saturn", "Mars"], malefic: ["Moon", "Jupiter"] },
+        11: { benefic: ["Moon", "Mars", "Jupiter"], malefic: ["Sun", "Venus", "Saturn"] }
+    };
+    const lagnaData = lagnaMap[lagnaIdx] || { benefic: [], malefic: [] };
+    if (planetName === "Rahu" || planetName === "Ketu") return "Malefic";
+    if (lagnaData.benefic.includes(planetName)) return "Benefic";
+    if (lagnaData.malefic.includes(planetName)) return "Malefic";
+    return "Neutral";
+};
+
+const calculateJaiminiKarakas = (planetPositions) => {
+    if (!planetPositions || !Array.isArray(planetPositions)) return {};
+    const planetsFor7 = planetPositions.filter(p => !["Rahu", "Ketu", "Ascendant", "Lagna", "Uranus", "Neptune", "Pluto"].includes(p.planet || p.name));
+    const sorted7 = [...planetsFor7].sort((a, b) => ((b.degree || b.normDegree || 0) % 30) - ((a.degree || a.normDegree || 0) % 30));
+    const k7Names = ["AK", "AmK", "BK", "MK", "PiK", "GK", "DK"];
+    const k7 = {};
+    sorted7.forEach((p, idx) => {
+        if (idx < 7) k7[p.planet || p.name] = k7Names[idx];
+    });
+    return k7;
+};
+
+const getSBRanks = (strengthPlanets) => {
+    if (!strengthPlanets) return {};
+    const validPlanets = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn"];
+    const sbList = validPlanets.map(p => ({
+        planet: p,
+        sb: strengthPlanets[p]?.total || strengthPlanets[p]?.ratio_data?.ratio || 0
+    }));
+    sbList.sort((a, b) => b.sb - a.sb);
+    const ranks = {};
+    sbList.forEach((item, idx) => {
+        if (item.sb > 0) ranks[item.planet] = idx + 1;
+    });
+    return ranks;
+};
+
+const getBaladiAge = (deg, signIdx) => {
+    const degInSign = (deg || 0) % 30;
+    const isOddSign = (signIdx || 0) % 2 === 0;
+    if (isOddSign) {
+        if (degInSign < 6) return "Infant";
+        if (degInSign < 12) return "Youth";
+        if (degInSign < 18) return "Adult";
+        if (degInSign < 24) return "Old";
+        return "Dead";
+    } else {
+        if (degInSign < 6) return "Dead";
+        if (degInSign < 12) return "Old";
+        if (degInSign < 18) return "Adult";
+        if (degInSign < 24) return "Youth";
+        return "Infant";
+    }
+};
+
 export default function ClassicLayoutViewer({ data }) {
     if (!data) return null;
 
@@ -46,6 +125,11 @@ export default function ClassicLayoutViewer({ data }) {
     const dashaList = data.dasha?.list || data.dashas || [];
 
     const positions = data.planet_positions || {};
+    const positionArray = Array.isArray(positions) ? positions : Object.values(positions);
+    const lagnaSignIndex = getLagnaSignIndex(data);
+    const k7 = calculateJaiminiKarakas(positionArray);
+    const sbRanks = getSBRanks(data?.strength?.planets);
+    const avasthas = data?.planetary_avasthas || {};
 
 
     const handleExportPDF = async () => {
@@ -155,7 +239,6 @@ export default function ClassicLayoutViewer({ data }) {
                                 </thead>
                                 <tbody>
                                     {PLANETS.map(pName => {
-                                        const positionArray = Array.isArray(data.planet_positions) ? data.planet_positions : (Object.values(data.planet_positions || {}));
                                         const p = positionArray.find(pos => pos.planet === pName || pos.name === pName);
                                         if (!p) return null;
 
@@ -202,29 +285,56 @@ export default function ClassicLayoutViewer({ data }) {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {PLANETS.filter(p => p !== "Ascendant" && p !== "Rahu" && p !== "Ketu").map(pName => {
-                                        const positionArray = Array.isArray(data.planet_positions) ? data.planet_positions : (Object.values(data.planet_positions || {}));
+                                    {PLANETS.filter(p => p !== "Ascendant").map(pName => {
                                         const p = positionArray.find(pos => pos.planet === pName || pos.name === pName);
                                         if (!p) return null;
 
-                                        let abbrev = PLANET_ABBREV[pName];
+                                        let abbrev = PLANET_ABBREV[pName] || pName;
                                         const color = getPlanetColor(pName);
-                                        const dignity = p.dignity || "Neutral";
-                                        const sbPct = p.shadbala_pct ? p.shadbala_pct.toFixed(2) : "1.00";
-                                        const av = p.ashtakavarga || "4";
+
+                                        const pStrength = data?.strength?.planets?.[pName];
+                                        let dignity = p.dignity || pStrength?.dignity || "Neutral";
+                                        if (["Rahu", "Ketu"].includes(pName) && (dignity === "Unknown" || !dignity)) {
+                                            dignity = "Neutral";
+                                        }
+                                        dignity = dignity.replace(/[★↓◆♥✕]/g, '').trim();
+
+                                        const sbTotal = pStrength?.total || pStrength?.ratio_data?.ratio || p.shadbala_pct || p.shadbala || 1.0;
+                                        const sbPct = typeof sbTotal === 'number' ? sbTotal.toFixed(2) : "1.00";
+                                        const sbRank = ["Rahu", "Ketu"].includes(pName) ? "-" : (sbRanks[pName] || "-");
+
+                                        const vbScore = data?.vimsopaka_bala?.shodashvarga?.[pName] ??
+                                            data?.vimsopaka_assessment?.vimsopaka_bala?.dasavarga?.[pName] ??
+                                            data?.vimsopaka_assessment?.vimsopaka_bala?.shodashvarga?.[pName] ??
+                                            (data?.vimsopaka?.[pName] !== undefined ? data.vimsopaka[pName] : 15);
+                                        const vbDisplay = typeof vbScore === 'number' ? vbScore.toFixed(1) : (vbScore || "15");
+
+                                        const av = p.ashtakavarga || data?.ashtakavarga?.binnashtakavarga?.[pName]?.total || data?.ashtakavarga?.[pName] || "4";
+
+                                        const pAv = avasthas[pName] || {};
+                                        const shyanadiParts = pAv.shyanadi ? pAv.shyanadi.split('\n') : [];
+                                        const avasthaStr = shyanadiParts[1] ? shyanadiParts[1].replace(/[()]/g, '').trim() : (shyanadiParts[0] || p.avastha || "Awake");
+
+                                        const baladiParts = pAv.baladi ? pAv.baladi.split('\n') : [];
+                                        const ageStr = baladiParts[1] ? baladiParts[1].replace(/[()]/g, '').trim() : (baladiParts[0] || getBaladiAge(p.degree || p.normDegree, Math.floor((p.degree || p.normDegree || 0) / 30)));
+
+                                        const karakStr = ["Rahu", "Ketu"].includes(pName) ? "-" : (k7[pName] || "-");
+
+                                        const natureStr = getFunctionalNature(lagnaSignIndex, pName);
+                                        const natureColor = natureStr === "Benefic" ? "text-emerald-700 font-semibold" : natureStr === "Malefic" ? "text-red-700 font-semibold" : "text-amber-700 font-semibold";
 
                                         return (
                                             <tr key={pName} className="border-b border-slate-50 last:border-0 hover:bg-slate-50">
                                                 <td className="py-0.5 font-bold" style={{ color }}>{abbrev}</td>
                                                 <td className="py-0.5 text-black truncate max-w-[50px]">{dignity}</td>
                                                 <td className="py-0.5 font-mono text-black">{sbPct}</td>
-                                                <td className="py-0.5 font-mono text-black">3</td>
-                                                <td className="py-0.5 font-mono text-black">15</td>
+                                                <td className="py-0.5 font-mono text-black">{sbRank}</td>
+                                                <td className="py-0.5 font-mono text-black">{vbDisplay}</td>
                                                 <td className="py-0.5 font-mono text-indigo-600 font-bold">{av}</td>
-                                                <td className="py-0.5 text-black">Sleep</td>
-                                                <td className="py-0.5 text-black">Youth</td>
-                                                <td className="py-0.5 text-black">AmK</td>
-                                                <td className="py-0.5 text-red-700/80">Malefic</td>
+                                                <td className="py-0.5 text-black">{avasthaStr}</td>
+                                                <td className="py-0.5 text-black">{ageStr}</td>
+                                                <td className="py-0.5 text-black">{karakStr}</td>
+                                                <td className={`py-0.5 ${natureColor}`}>{natureStr}</td>
                                             </tr>
                                         );
                                     })}

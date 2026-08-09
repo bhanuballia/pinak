@@ -276,7 +276,7 @@ export default function ClassicLayoutViewer2({ data: worksheetData }) {
                     <div className="flex-[1.8] flex gap-1">
                         {/* Vimshottari Table */}
                         <div className="flex-1 bg-white border border-[#8ec5e6] overflow-hidden flex flex-col">
-                            <VimshottariTable data={worksheetData} />
+                            <VimshottariTable data={worksheetData} hideMarriageDasha={true} />
                         </div>
                     </div>
                 </div>

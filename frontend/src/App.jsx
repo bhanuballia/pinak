@@ -36,13 +36,17 @@ import Remedy from './components/Remedy';
 import MuhurtCalculator from './components/MuhurtCalculator';
 import StudyViewer from './components/StudyViewer';
 import CareerViewer from './components/CareerViewer';
+import FinanceViewer from './components/FinanceViewer';
 import FinanceAnalysis from './components/FinanceAnalysis';
 import MarriageAnalysis from './components/MarriageAnalysis';
+import MarriageViewer from './components/MarriageViewer';
 import BusinessViewer from './components/BusinessViewer';
 import HealthAnalysis from './components/HealthAnalysis';
 import ParentsHealthViewer from './components/ParentsHealthViewer';
 import SpouseHealthViewer from './components/SpouseHealthViewer';
 import ChildrenHealthViewer from './components/ChildrenHealthViewer';
+import MentalPeaceViewer from './components/MentalPeaceViewer';
+import HomePeaceViewer from './components/HomePeaceViewer';
 import AscendantAnalysis from './components/AscendantAnalysis';
 import MoonSignAnalysis from './components/MoonSignAnalysis';
 import SadesatiAnalysis from './components/SadesatiAnalysis';
@@ -140,6 +144,8 @@ function App() {
     const [parentsHealthMode, setParentsHealthMode] = useState(false);
     const [spouseHealthMode, setSpouseHealthMode] = useState(false);
     const [childrenHealthMode, setChildrenHealthMode] = useState(false);
+    const [mentalPeaceMode, setMentalPeaceMode] = useState(false);
+    const [homePeaceMode, setHomePeaceMode] = useState(false);
     const [ascendantMode, setAscendantMode] = useState(false);
     const [moonSignMode, setMoonSignMode] = useState(false);
     const [sadesatiReportMode, setSadesatiReportMode] = useState(false);
@@ -537,6 +543,10 @@ function App() {
             setSpouseHealthMode(true);
         } else if (params.get('children_health') === 'true') {
             setChildrenHealthMode(true);
+        } else if (params.get('mental_peace') === 'true') {
+            setMentalPeaceMode(true);
+        } else if (params.get('home_peace') === 'true') {
+            setHomePeaceMode(true);
         } else if (params.get('ascendant') === 'true') {
             setAscendantMode(true);
         } else if (params.get('moonSign') === 'true') {
@@ -581,11 +591,46 @@ function App() {
             setKarakaMode(true);
         } else if (params.get('tithi') === 'true') {
             setTithiMode(true);
-            const savedData = localStorage.getItem('worksheetData');
-            if (savedData) {
-                try {
-                    setWorksheetData(JSON.parse(savedData));
-                } catch (e) { }
+            const urlDate = params.get("date");
+            const urlTime = params.get("time");
+            const urlLat = params.get("lat");
+            const urlLon = params.get("lon");
+            const urlName = params.get("name") || "";
+            const urlTz = params.get("tz_offset");
+            const urlLocName = params.get("location_name") || "Birth Place";
+            const urlGender = params.get("gender") || "Male";
+
+            if (urlDate && urlTime && urlLat && urlLon) {
+                const tzVal = urlTz ? parseFloat(urlTz) : 5.5;
+                const payload = {
+                    name: urlName,
+                    date: urlDate,
+                    time: urlTime,
+                    tz_offset: tzVal,
+                    lat: parseFloat(urlLat),
+                    lon: parseFloat(urlLon),
+                    style: "minimal",
+                    language: "english",
+                    gender: urlGender,
+                    location_name: urlLocName,
+                };
+
+                (async () => {
+                    try {
+                        const detailedData = await fetchReportData(payload);
+                        setWorksheetData(detailedData);
+                        localStorage.setItem('worksheetData', JSON.stringify(detailedData));
+                    } catch (e) {
+                        console.error("Failed to dynamically fetch tithi pravesha birth data:", e);
+                    }
+                })();
+            } else {
+                const savedData = localStorage.getItem('worksheetData');
+                if (savedData) {
+                    try {
+                        setWorksheetData(JSON.parse(savedData));
+                    } catch (e) { }
+                }
             }
         } else if (params.get('vastu') === 'true') {
             setVastuMode(true);
@@ -844,11 +889,11 @@ function App() {
     }
 
     if (financeMode) {
-        return <FinanceAnalysis />;
+        return <FinanceViewer />;
     }
 
     if (marriageMode) {
-        return <MarriageAnalysis />;
+        return <MarriageViewer />;
     }
 
     if (businessMode) {
@@ -869,6 +914,14 @@ function App() {
 
     if (childrenHealthMode) {
         return <ChildrenHealthViewer />;
+    }
+
+    if (mentalPeaceMode) {
+        return <MentalPeaceViewer />;
+    }
+
+    if (homePeaceMode) {
+        return <HomePeaceViewer />;
     }
 
     if (ascendantMode) {

@@ -33,3 +33,33 @@ def vimshottari(
     nak_index = nak["nakshatra_index"]
     sequence = compute_vimshottari(jd, nak_index, years_ahead=150)
     return {"birth_jd": jd, "nakshatra_index": nak_index, "vimshottari": sequence}
+
+from fastapi import Body
+from typing import Dict
+from dasha.wealth_activation import compute_wealth_activation_timeline, derive_house_lords
+
+@router.post("/wealth-activation")
+def wealth_activation_endpoint(payload: Dict = Body(...)):
+    try:
+        jd_ut = float(payload.get("jd_ut", 0))
+        moon_lon = float(payload.get("moon_lon", 0))
+        
+        # If house_lords passed directly, use them, otherwise derive from ascendant
+        house_lords = payload.get("house_lords")
+        if not house_lords:
+            ascendant_deg = float(payload.get("ascendant", 0))
+            house_lords = derive_house_lords(ascendant_deg)
+        else:
+            # ensure keys are ints
+            house_lords = {int(k): str(v) for k, v in house_lords.items()}
+
+        result = compute_wealth_activation_timeline(
+            jd_ut=jd_ut,
+            moon_sidereal_long=moon_lon,
+            house_lords=house_lords,
+            years_ahead=float(payload.get("years", 80.0))
+        )
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+

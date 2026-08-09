@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { fetchFinanceInsights, fetchPersonalFinanceInsights } from '../services/api';
 import DiagnosticDetails from './DiagnosticDetails';
+import FinanceAnalysis from './FinanceAnalysis';
 
 export default function FinanceViewer() {
     const [insights, setInsights] = useState([]);
@@ -10,6 +11,7 @@ export default function FinanceViewer() {
     const [filter, setFilter] = useState('All');
     const [userData, setUserData] = useState(null);
     const [worksheetData, setWorksheetData] = useState(null);
+    const [wealthActivationData, setWealthActivationData] = useState(null);
     const [isLightMode, setIsLightMode] = useState(false);
 
     const theme = {
@@ -58,7 +60,27 @@ export default function FinanceViewer() {
 
                 const localData = localStorage.getItem('worksheetData');
                 if (localData) {
-                    setWorksheetData(JSON.parse(localData));
+                    const parsed = JSON.parse(localData);
+                    setWorksheetData(parsed);
+
+                    // Fetch Wealth Activation Timeline
+                    const pos = parsed.planet_positions || parsed.positions || parsed.planets || [];
+                    let moonObj = pos.find(p => p.planet === 'Moon' || p.name === 'Moon');
+                    let ascObj = pos.find(p => p.planet === 'Lagna' || p.planet === 'Ascendant' || p.name === 'Lagna' || p.name === 'Ascendant');
+                    let moon_lon = moonObj ? (moonObj.sidereal_longitude ?? moonObj.longitude ?? moonObj.degree ?? 0) : 0;
+                    let ascendant = ascObj ? (ascObj.sidereal_longitude ?? ascObj.longitude ?? ascObj.degree ?? 0) : (parsed.ascendant || 0);
+
+                    fetch('/api/dasha/wealth-activation', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            jd_ut: parsed.jd_ut || parsed.basic_details?.jd_ut || 2451545.0,
+                            moon_lon: moon_lon,
+                            ascendant: ascendant,
+                            house_lords: parsed.house_lords || null,
+                            years: 80.0
+                        })
+                    }).then(res => res.json()).then(data => setWealthActivationData(data)).catch(e => console.error("Wealth activation fetch failed", e));
                 }
             } catch (err) {
                 console.error("Finance insights fetch error:", err);
@@ -217,6 +239,103 @@ export default function FinanceViewer() {
                     </section>
                 )}
 
+                {/* Wealth Activation (Vimshottari Dasha Timing) Section */}
+                {wealthActivationData && (
+                    <section style={{ marginBottom: '80px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
+                            <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to right, transparent, rgba(16, 185, 129, 0.4))' }}></div>
+                            <h2 style={{ fontSize: '32px', color: '#10b981', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>💰 Wealth Activation (Vimshottari Dasha Timing)</h2>
+                            <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to left, transparent, rgba(16, 185, 129, 0.4))' }}></div>
+                        </div>
+
+                        {/* Wealth Lords Summary */}
+                        {wealthActivationData.wealth_lords && (
+                            <div style={{ marginBottom: '30px', textAlign: 'center' }}>
+                                <p style={{ color: theme.filterInactiveText, fontSize: '18px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 800, marginBottom: '15px' }}>
+                                    👑 Identified Wealth Lords & Karaka Scores
+                                </p>
+                                <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '12px' }}>
+                                    {wealthActivationData.wealth_lords.map((wl, i) => (
+                                        <div key={i} style={{
+                                            background: theme.cardBg,
+                                            border: `1px solid ${theme.borderColor}`,
+                                            padding: '10px 20px',
+                                            borderRadius: '16px',
+                                            fontSize: '20px',
+                                            fontWeight: 800,
+                                            color: theme.heading
+                                        }}>
+                                            👑 {wl.planet}: <span style={{ color: '#10b981' }}>Score {wl.score}</span> {wl.houses.length > 0 && `(Lords ${wl.houses.join(',')})`}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Activation Timeline */}
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '20px' }}>
+                            {(wealthActivationData.timeline || []).slice(0, 10).map((period, idx) => (
+                                <div key={idx} style={{
+                                    background: theme.cardBg,
+                                    padding: '24px 30px',
+                                    borderRadius: '30px',
+                                    borderLeft: `6px solid ${period.badge_color || '#10b981'}`,
+                                    borderTop: `1px solid ${theme.borderColor}`,
+                                    borderRight: `1px solid ${theme.borderColor}`,
+                                    borderBottom: `1px solid ${theme.borderColor}`,
+                                    boxShadow: isLightMode ? '0 10px 25px rgba(0,0,0,0.05)' : '0 20px 40px rgba(0,0,0,0.3)'
+                                }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                                        <span style={{ fontSize: '20px', fontWeight: 900, color: theme.heading }}>
+                                            {period.mahadasha} (MD) - {period.antardasha} (AD)
+                                        </span>
+                                        <span style={{
+                                            fontSize: '20px',
+                                            color: '#fbbf24',
+                                            fontWeight: 900,
+                                            padding: '4px 12px',
+                                            borderRadius: '100px',
+                                            background: 'hsla(160, 100%, 23%, 1.00)',
+
+                                        }}>
+                                            {period.intensity}
+                                        </span>
+                                    </div>
+                                    <p style={{ fontSize: '18px', color: theme.filterInactiveText, marginBottom: '15px', lineHeight: '1.6', fontStyle: 'italic' }}>
+                                        {period.description}
+                                    </p>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '10px', borderTop: `1px solid ${theme.borderColor}` }}>
+                                        <span style={{ fontSize: '18px', fontWeight: 800, color: '#fbbf24' }}>
+                                            📅 {period.start_date} to {period.end_date}
+                                        </span>
+                                        <span style={{ fontSize: '12px', color: '#10b981', fontWeight: 900 }}>
+                                            Score: {period.score}
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                {/* Classical Financial Analysis Section (from FinanceAnalysis.jsx) */}
+                <section style={{ marginBottom: '80px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
+                        <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to right, transparent, rgba(59, 130, 246, 0.4))' }}></div>
+                        <h2 style={{ fontSize: '32px', color: '#3b82f6', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>📊 Classical Financial & Dhana Yoga Analysis</h2>
+                        <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to left, transparent, rgba(59, 130, 246, 0.4))' }}></div>
+                    </div>
+                    <div style={{
+                        background: theme.cardBg,
+                        padding: '30px',
+                        borderRadius: '30px',
+                        border: `1px solid ${theme.borderColor}`,
+                        boxShadow: isLightMode ? '0 10px 30px rgba(0,0,0,0.05)' : '0 20px 50px rgba(0,0,0,0.3)'
+                    }}>
+                        <FinanceAnalysis />
+                    </div>
+                </section>
+
                 {/* General Insights */}
                 <section>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
@@ -235,11 +354,11 @@ export default function FinanceViewer() {
                                 boxShadow: isLightMode ? '0 10px 30px rgba(0,0,0,0.1)' : '0 40px 100px rgba(0,0,0,0.4)'
                             }}>
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '25px' }}>
-                                    <span style={{ padding: '6px 15px', borderRadius: '100px', background: theme.buttonBg, fontSize: '10px', color: theme.accentText, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', border: `1px solid ${theme.borderColor}` }}>{item.category}</span>
-                                    <span style={{ fontSize: '24px' }}>{item.icon || '✨'}</span>
+                                    <span style={{ padding: '6px 15px', borderRadius: '100px', background: theme.buttonBg, fontSize: '20px', color: theme.accentText, fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', border: `1px solid ${theme.borderColor}` }}>{item.category}</span>
+                                    <span style={{ fontSize: '20px' }}>{item.icon || '✨'}</span>
                                 </div>
-                                <h3 style={{ fontSize: '24px', fontWeight: 900, color: theme.heading, marginBottom: '15px' }}>{item.title}</h3>
-                                <p style={{ fontSize: '18px', color: theme.filterInactiveText, lineHeight: '1.7', fontStyle: 'italic' }}>{item.content}</p>
+                                <h3 style={{ fontSize: '20px', fontWeight: 900, color: theme.heading, marginBottom: '15px' }}>{item.title}</h3>
+                                <p style={{ fontSize: '20px', color: theme.filterInactiveText, lineHeight: '1.7', fontStyle: 'italic' }}>{item.content}</p>
                             </div>
                         ))}
                     </div>
@@ -248,8 +367,8 @@ export default function FinanceViewer() {
 
             {/* Footer */}
             <div style={{ textAlign: 'center', marginTop: '100px' }}>
-                <p style={{ color: theme.accentText, fontSize: '24px', fontWeight: 900, fontStyle: 'italic', marginBottom: '15px' }}>Lakshmi Kripa</p>
-                <p style={{ color: theme.filterInactiveText, fontSize: '16px', maxWidth: '600px', margin: '0 auto 40px', lineHeight: '1.6' }}>"May the divine grace of Mahalakshmi bring stability and abundance to your life. Align your efforts with cosmic timing."</p>
+                <p style={{ color: theme.accentText, fontSize: '30px', fontWeight: 900, fontStyle: 'italic', marginBottom: '15px' }}>Lakshmi Kripa</p>
+                <p style={{ color: theme.filterInactiveText, fontSize: '25px', maxWidth: '600px', margin: '0 auto 40px', lineHeight: '1.6' }}>"May the divine grace of Mahalakshmi bring stability and abundance to your life. Align your efforts with cosmic timing."</p>
                 <button
                     onClick={() => window.close()}
                     style={{
@@ -258,7 +377,7 @@ export default function FinanceViewer() {
                         background: theme.buttonBg,
                         color: theme.heading,
                         border: `1px solid ${theme.borderColor}`,
-                        fontSize: '11px',
+                        fontSize: '18px',
                         fontWeight: 900,
                         textTransform: 'uppercase',
                         letterSpacing: '5px',

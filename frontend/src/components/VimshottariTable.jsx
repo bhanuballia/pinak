@@ -17,7 +17,7 @@ const PLANET_COLORS = {
   Jupiter: '#f97316', Venus: '#ec4899', Saturn: '#64748b', Rahu: '#0ea5e9', Ketu: '#8b5cf6',
 };
 
-export default function VimshottariTable({ data: worksheetData, transitDate }) {
+export default function VimshottariTable({ data: worksheetData, transitDate, hideMarriageDasha = false }) {
   const [rows, setRows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -181,7 +181,7 @@ export default function VimshottariTable({ data: worksheetData, transitDate }) {
         onLevelsChange={setLevels}
       />
 
-      {nextMarriageRow && (
+      {!hideMarriageDasha && nextMarriageRow && (
         <div className="shrink-0 bg-pink-50 border-b border-pink-100 px-3 py-2 flex items-center justify-between text-xs text-pink-900 font-medium">
           <span className="flex items-center gap-1.5">
             <span className="text-sm">💍</span>

@@ -778,7 +778,7 @@ export default function GocharaWheelView({ data }) {
                     {renderTable("Birth Chart", birthChartData)}
                     {renderTable("Gochara (Transits)", gocharaData)}
                     {renderKakshaTable()}
-                    {renderAnalysisPanel("Transit Analysis", gocharaData, true)}
+
                 </div>
             </div>
         </div>

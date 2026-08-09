@@ -22,7 +22,7 @@ const SolarReturnViewer = () => {
 
         if (storedData) {
           const parsed = JSON.parse(storedData);
-          
+
           let pDate = '2000-01-01';
           let pTime = '12:00:00';
           let pLat = 28.6139;
@@ -67,7 +67,7 @@ const SolarReturnViewer = () => {
           };
         }
 
-        const response = await fetch('/api/solar_return/calculate', {
+        const response = await fetch('/api/solar_return/calculate_daily', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(requestBody)
@@ -123,15 +123,15 @@ const SolarReturnViewer = () => {
           {title}
         </div>
       </div>
-      
+
       {/* Chart Container */}
       <div className="flex-1 bg-[#ffffe6] border-[1.5px] border-[#0066cc] p-1 pt-3 min-h-[200px] md:min-h-[260px] relative">
         <div className="absolute inset-0 pt-3 pb-1 px-1 z-0">
-             <ZodiacChart houses={houses} hideTitle={true} variant="legacy" />
+          <ZodiacChart houses={houses} hideTitle={true} variant="legacy" defaultRect={true} scaleText={1.8} />
         </div>
       </div>
     </div>
-  );
+  )
 
   return (
     <div className="min-h-screen bg-[#ffcccc] flex flex-col font-sans">
@@ -143,7 +143,7 @@ const SolarReturnViewer = () => {
 
       {/* Main Content Area */}
       <div className="flex-1 p-2 flex flex-col gap-2 max-w-[1400px] w-full mx-auto">
-        
+
         {/* Row 1: Birth Chart */}
         <div className="flex w-full md:w-1/3">
           <div className="w-full">

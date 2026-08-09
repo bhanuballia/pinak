@@ -22,7 +22,7 @@ const DailySolarViewer = () => {
 
         if (storedData) {
           const parsed = JSON.parse(storedData);
-          
+
           let pDate = '2000-01-01';
           let pTime = '12:00:00';
           let pLat = 28.6139;
@@ -123,11 +123,11 @@ const DailySolarViewer = () => {
           {title}
         </div>
       </div>
-      
+
       {/* Chart Container */}
-      <div className="flex-1 bg-[#ffffe6] border-[1.5px] border-[#0066cc] p-1 pt-3 min-h-[200px] md:min-h-[260px] relative">
+      <div className="flex-1 bg-[#ffffe6] border-[1.5px] border-[#0066cc] p-1 pt-3 min-h-[200px] md:min-h-[180px] relative">
         <div className="absolute inset-0 pt-3 pb-1 px-1 z-0">
-             <ZodiacChart houses={houses} hideTitle={true} variant="legacy" />
+          <ZodiacChart houses={houses} hideTitle={true} variant="legacy" defaultRect={true} scaleText={1.8} />
         </div>
       </div>
     </div>
@@ -136,14 +136,14 @@ const DailySolarViewer = () => {
   return (
     <div className="min-h-screen bg-[#ffcccc] flex flex-col font-sans">
       {/* Header matching Parashara Light style */}
-      <div className="bg-white border-b border-black flex justify-between items-center px-2 py-0.5 text-xs text-black shadow-sm font-sans">
+      <div className="bg-white border-b border-black flex justify-between items-center px-2 py-0.5 text-[18px] text-black shadow-sm font-sans">
         <span>{user_info}</span>
-        <span>87. Daily Solar Return 3 day overview</span>
+        <span>Daily Solar Return </span>
       </div>
 
       {/* Main Content Area */}
       <div className="flex-1 p-2 flex flex-col gap-2 max-w-[1400px] w-full mx-auto">
-        
+
         {/* Row 1: Birth Chart */}
         <div className="flex w-full md:w-1/3">
           <div className="w-full">

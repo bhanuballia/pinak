@@ -1,5 +1,7 @@
 import React, { useState, useEffect, Component } from 'react';
 import LoShuGrid from './LoShuGrid';
+import MarriageAnalysis from './MarriageAnalysis';
+import MarriageExtendedTopics from './MarriageExtendedTopics';
 
 class ErrorBoundary extends Component {
     constructor(props) {
@@ -114,13 +116,19 @@ const PITRA_REMEDIES = [
     { title: "Mantra 2", content: "Om Pitrabhya devatabhya mahayogibhyech cha, Namah swaha swadhyaya cha Nityamev namah (108 times on New/Full Moon)" }
 ];
 
+import FinanceAnalysis from './FinanceAnalysis';
+import FinanceViewer from './FinanceViewer';
+
 export default function OracleViewer({ categoryProp }) {
     const [category, setCategory] = useState(categoryProp);
     const [data, setData] = useState(null);
     const [financeDbData, setFinanceDbData] = useState(null);
+    const [wealthActivationData, setWealthActivationData] = useState(null);
     const [businessNamingData, setBusinessNamingData] = useState(null);
     const [isLightMode, setIsLightMode] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [marriageTab, setMarriageTab] = useState('summary');
+    const [financeTab, setFinanceTab] = useState('wealth_activation');
 
     useEffect(() => {
         if (!category) {
@@ -137,6 +145,7 @@ export default function OracleViewer({ categoryProp }) {
                 // Fetch specialized Finance data if category is finance
                 if (category === 'finance' && parsed) {
                     fetchFinanceData(parsed);
+                    fetchWealthActivationData(parsed);
                 }
                 if (category === 'business_naming' && parsed) {
                     fetchBusinessNamingData(parsed);
@@ -146,6 +155,44 @@ export default function OracleViewer({ categoryProp }) {
             }
         }
     }, [category]);
+
+    const fetchWealthActivationData = async (horoscopeData) => {
+        try {
+            const basic = horoscopeData.basic_details || {};
+            const pos = horoscopeData.planet_positions || horoscopeData.positions || horoscopeData.planets || [];
+            let moonObj = pos.find(p => p.planet === 'Moon' || p.name === 'Moon');
+            let ascObj = pos.find(p => p.planet === 'Lagna' || p.planet === 'Ascendant' || p.name === 'Lagna' || p.name === 'Ascendant');
+
+            let moon_lon = moonObj ? (moonObj.sidereal_longitude ?? moonObj.longitude ?? moonObj.degree ?? 0) : 0;
+            let ascendant = ascObj ? (ascObj.sidereal_longitude ?? ascObj.longitude ?? ascObj.degree ?? 0) : (horoscopeData.ascendant || 0);
+
+            // Fallback moon_lon from nakshatra or basic details if positions list is structure-differing
+            if (!moon_lon && horoscopeData.moon_longitude) {
+                moon_lon = horoscopeData.moon_longitude;
+            }
+
+            const payload = {
+                jd_ut: horoscopeData.jd_ut || basic.jd_ut || 2451545.0,
+                moon_lon: moon_lon,
+                ascendant: ascendant,
+                house_lords: horoscopeData.house_lords || null,
+                years: 80.0
+            };
+
+            const response = await fetch('/api/dasha/wealth-activation', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                setWealthActivationData(result);
+            }
+        } catch (error) {
+            console.error("Failed to fetch wealth activation data:", error);
+        }
+    };
 
     const fetchFinanceData = async (horoscopeData) => {
         try {
@@ -176,6 +223,7 @@ export default function OracleViewer({ categoryProp }) {
             setLoading(false);
         }
     };
+
 
     const fetchBusinessNamingData = async (horoscopeData) => {
         try {
@@ -229,26 +277,26 @@ export default function OracleViewer({ categoryProp }) {
         <ErrorBoundary>
             <div style={{ minHeight: '100vh', backgroundColor: isLightMode ? '#f8fafc' : '#020617', color: isLightMode ? '#a51e0dbd' : '#cbd5e1', fontFamily: 'serif', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px' }}>
 
-            <button 
-                onClick={() => setIsLightMode(!isLightMode)}
-                style={{
-                    position: 'absolute',
-                    top: '20px',
-                    right: '80px',
-                    zIndex: 1000,
-                    background: isLightMode ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',
-                    border: '1px solid #ccc',
-                    borderRadius: '4px',
-                    padding: '6px 12px',
-                    fontSize: '14px',
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                    color: isLightMode ? 'white' : 'black',
-                    boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
-                }}
-            >
-                {isLightMode ? '🌙 Dark' : '☀️ Light'}
-            </button>
+                <button
+                    onClick={() => setIsLightMode(!isLightMode)}
+                    style={{
+                        position: 'absolute',
+                        top: '20px',
+                        right: '80px',
+                        zIndex: 1000,
+                        background: isLightMode ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',
+                        border: '1px solid #ccc',
+                        borderRadius: '4px',
+                        padding: '6px 12px',
+                        fontSize: '14px',
+                        cursor: 'pointer',
+                        fontWeight: 'bold',
+                        color: isLightMode ? 'white' : 'black',
+                        boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+                    }}
+                >
+                    {isLightMode ? '🌙 Dark' : '☀️ Light'}
+                </button>
 
                 <div style={{
                     width: '100%',
@@ -381,30 +429,387 @@ export default function OracleViewer({ categoryProp }) {
                                 </div>
                             </div>
                         ) : category === 'marriage' && typeof info === 'object' ? (
-                            /* ── ROYAL DARK MARRIAGE PANEL ── */
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
-                                <div style={{ borderRadius: '30px', padding: '40px', border: '2px solid rgba(244, 63, 94, 0.1)', textAlign: 'center', background: 'linear-gradient(135deg, #4c0519 0%, #020617 100%)', boxShadow: '0 30px 60px rgba(0,0,0,0.5)' }}>
-                                    <p style={{ fontSize: '10px', textTransform: 'uppercase', fontWeight: 900, letterSpacing: '4px', color: '#fb7185', marginBottom: '15px' }}>Predicted Marriage Age Window</p>
-                                    <p style={{ fontSize: '84px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white', margin: '10px 0' }}>{info.age}</p>
-                                    <p style={{ fontSize: '20px', fontWeight: 700, color: '#fb7185', fontStyle: 'italic', margin: 0 }}>{info.age_en}</p>
-                                    <p style={{ marginTop: '25px', fontSize: '14px', color: isLightMode ? '#475569' : '#94a3b8', lineHeight: '1.8' }}>{info.classification_note}</p>
+                            <>
+                                {/* Custom premium Tab bar */}
+                                <div style={{ display: 'flex', borderBottom: '1px solid rgba(244, 63, 94, 0.2)', gap: '10px', marginBottom: '15px', overflowX: 'auto', paddingBottom: '8px' }}>
+                                    {[
+                                        { id: 'summary', label: 'Summary' },
+                                        { id: 'analysis', label: 'Marriage Analysis & Timing' },
+                                        { id: 'jataka', label: 'Vedic (Jataka)' },
+                                        { id: 'western', label: 'Western' },
+                                        { id: 'delays', label: 'Delay Factors' },
+                                        { id: 'partner', label: 'Partner & Profession' },
+                                        { id: 'sublord', label: '7th Sublord & Psychology' },
+                                        { id: 'kp_rules', label: 'KP Rules & Divorce' },
+                                        { id: 'progeny', label: 'Progeny & Pregnancy' },
+                                        { id: 'case_studies', label: 'Case Studies (1-10)' }
+                                    ].map(t => (
+                                        <button
+                                            key={t.id}
+                                            onClick={() => setMarriageTab(t.id)}
+                                            style={{
+                                                background: marriageTab === t.id ? 'rgba(251, 113, 133, 0.15)' : 'transparent',
+                                                border: 'none',
+                                                borderRadius: '8px',
+                                                borderBottom: marriageTab === t.id ? '3px solid #fb7185' : '3px solid transparent',
+                                                color: marriageTab === t.id ? '#fb7185' : (isLightMode ? '#475569' : '#94a3b8'),
+                                                padding: '8px 12px',
+                                                fontSize: '11px',
+                                                fontWeight: 900,
+                                                textTransform: 'uppercase',
+                                                letterSpacing: '1.5px',
+                                                cursor: 'pointer',
+                                                whiteSpace: 'nowrap',
+                                                transition: 'all 0.3s ease'
+                                            }}
+                                        >
+                                            {t.label}
+                                        </button>
+                                    ))}
                                 </div>
-                                <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '30px', padding: '35px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                    <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: isLightMode ? '#475569' : '#94a3b8', marginBottom: '25px' }}>Cosmic Calculation Steps</p>
+
+                                {marriageTab === 'analysis' && (
+                                    <div style={{ background: 'rgba(15, 23, 42, 0.6)', padding: '20px', borderRadius: '24px', border: '1px solid rgba(244, 63, 94, 0.2)' }}>
+                                        <MarriageAnalysis />
+                                    </div>
+                                )}
+
+                                {marriageTab === 'summary' && (
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
-                                        <div style={{ borderLeft: '2px solid #f43f5e', paddingLeft: '25px' }}>
-                                            <p style={{ fontSize: '11px', fontWeight: 900, color: '#f43f5e', textTransform: 'uppercase', marginBottom: '10px' }}>🏠 Step 1 — 7th House Analysis</p>
-                                            {(info.seventh_house_notes || [])?.map((n, i) => <p key={i} style={{ fontSize: '14px', color: isLightMode ? '#a51e0dbd' : '#cbd5e1', marginBottom: '5px' }}>• {n}</p>)}
+                                        {/* State of Married Life Card */}
+                                        <div style={{ background: 'rgba(244, 63, 94, 0.05)', borderLeft: '4px solid #fb7185', padding: '30px', borderRadius: '0 25px 25px 0' }}>
+                                            <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#fb7185', marginBottom: '15px' }}>State of Married Life</p>
+                                            <p style={{ fontSize: '18px', color: isLightMode ? '#0f172a' : 'white', lineHeight: '1.6', fontStyle: 'italic', fontWeight: 'bold' }}>
+                                                "{info.married_state_desc || 'Evaluation unavailable.'}"
+                                            </p>
                                         </div>
-                                        {info.lord_placement && (
-                                            <div style={{ borderLeft: '2px solid #6366f1', paddingLeft: '25px' }}>
-                                                <p style={{ fontSize: '11px', fontWeight: 900, color: '#6366f1', textTransform: 'uppercase', marginBottom: '10px' }}>🪐 Step 2 — 7th Lord Placement</p>
-                                                <p style={{ fontSize: '14px', color: isLightMode ? '#a51e0dbd' : '#cbd5e1' }}>• {info.lord_placement}</p>
+
+                                        {/* Physical Union & Pleasure Tendencies (Cusp Lord) */}
+                                        {info.cusp_pleasure_desc && (
+                                            <div style={{ background: 'rgba(99, 102, 241, 0.05)', borderLeft: '4px solid #6366f1', padding: '30px', borderRadius: '0 25px 25px 0' }}>
+                                                <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#6366f1', marginBottom: '15px' }}>Physical Union & Pleasure Tendencies (7th Cusp Governorship)</p>
+                                                <p style={{ fontSize: '16px', color: isLightMode ? '#0f172a' : 'white', lineHeight: '1.6', fontStyle: 'italic' }}>
+                                                    "{info.cusp_pleasure_desc}"
+                                                </p>
                                             </div>
                                         )}
+
+                                        {/* Partner Age Difference (KP System) */}
+                                        {info.partner_age_diff_desc && (
+                                            <div style={{ background: 'rgba(239, 68, 68, 0.05)', borderLeft: '4px solid #ef4444', padding: '30px', borderRadius: '0 25px 25px 0' }}>
+                                                <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#ef4444', marginBottom: '15px' }}>Partner Age Difference (KP System)</p>
+                                                <p style={{ fontSize: '16px', color: isLightMode ? '#0f172a' : 'white', lineHeight: '1.6', fontStyle: 'italic' }}>
+                                                    "{info.partner_age_diff_desc}"
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {/* Punarphoo Dosha Alert Box */}
+                                        {info.punarphoo && (
+                                            <div style={{ background: 'rgba(245, 158, 11, 0.05)', border: '1px solid rgba(245, 158, 11, 0.2)', padding: '30px', borderRadius: '30px', display: 'flex', gap: '20px', alignItems: 'center' }}>
+                                                <div style={{ fontSize: '32px' }}>⚖️</div>
+                                                <div>
+                                                    <h4 style={{ color: '#fbbf24', fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', margin: 0 }}>Punarphoo Dosha (Moon-Saturn Connection)</h4>
+                                                    <p style={{ fontSize: '14px', color: isLightMode ? '#475569' : '#cbd5e1', margin: '5px 0 0' }}>
+                                                        This connection causes delays, anxieties, and temporary obstacles in negotiations before the ultimate union.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '30px', padding: '35px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                            <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: isLightMode ? '#475569' : '#94a3b8', marginBottom: '25px' }}>Cosmic Calculation Steps</p>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                                                <div style={{ borderLeft: '2px solid #f43f5e', paddingLeft: '25px' }}>
+                                                    <p style={{ fontSize: '11px', fontWeight: 900, color: '#f43f5e', textTransform: 'uppercase', marginBottom: '10px' }}>🏠 Step 1 — 7th House Analysis</p>
+                                                    {(info.seventh_house_notes || [])?.map((n, i) => <p key={i} style={{ fontSize: '14px', color: isLightMode ? '#a51e0dbd' : '#cbd5e1', marginBottom: '5px' }}>• {n}</p>)}
+                                                </div>
+                                                {info.lord_placement && (
+                                                    <div style={{ borderLeft: '2px solid #6366f1', paddingLeft: '25px' }}>
+                                                        <p style={{ fontSize: '11px', fontWeight: 900, color: '#6366f1', textTransform: 'uppercase', marginBottom: '10px' }}>🪐 Step 2 — 7th Lord Placement</p>
+                                                        <p style={{ fontSize: '14px', color: isLightMode ? '#a51e0dbd' : '#cbd5e1' }}>• {info.lord_placement}</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
+                                )}
+
+                                {marriageTab === 'jataka' && (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                                        {/* Happy Indicators Group */}
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                            <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#10b981', marginBottom: '5px' }}>✨ Happy Married Life Indicators</p>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                                {(info.happy_rules || []).map((rule, idx) => (
+                                                    <div key={idx} style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center',
+                                                        background: 'rgba(255,255,255,0.02)',
+                                                        padding: '15px 20px',
+                                                        borderRadius: '16px',
+                                                        border: '1px solid rgba(255,255,255,0.05)'
+                                                    }}>
+                                                        <span style={{ fontSize: '14px', color: isLightMode ? '#0f172a' : '#cbd5e1' }}>{rule.text}</span>
+                                                        <span style={{
+                                                            fontSize: '10px',
+                                                            fontWeight: 900,
+                                                            padding: '4px 12px',
+                                                            borderRadius: '100px',
+                                                            background: rule.satisfied ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255,255,255,0.05)',
+                                                            color: rule.satisfied ? '#10b981' : (isLightMode ? '#64748b' : '#475569')
+                                                        }}>
+                                                            {rule.satisfied ? 'ACTIVE' : 'INACTIVE'}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Unhappy/Friction Group */}
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                            <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#ef4444', marginBottom: '5px' }}>⚠️ Friction & Unhappy Signatures</p>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                                {(info.unhappy_rules || []).map((rule, idx) => (
+                                                    <div key={idx} style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center',
+                                                        background: 'rgba(255,255,255,0.02)',
+                                                        padding: '15px 20px',
+                                                        borderRadius: '16px',
+                                                        border: '1px solid rgba(255,255,255,0.05)'
+                                                    }}>
+                                                        <span style={{ fontSize: '14px', color: isLightMode ? '#0f172a' : '#cbd5e1' }}>{rule.text}</span>
+                                                        <span style={{
+                                                            fontSize: '10px',
+                                                            fontWeight: 900,
+                                                            padding: '4px 12px',
+                                                            borderRadius: '100px',
+                                                            background: rule.satisfied ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                                                            color: rule.satisfied ? '#ef4444' : '#10b981'
+                                                        }}>
+                                                            {rule.satisfied ? 'DETECTED' : 'CLEARED'}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '20px' }}>
+                                            <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#fb7185', marginBottom: '5px' }}>Jataka (Classical Vedic) Base Rules</p>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                                {(info.jataka_rules || []).map((rule, idx) => (
+                                                    <div key={idx} style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center',
+                                                        background: 'rgba(255,255,255,0.02)',
+                                                        padding: '15px 20px',
+                                                        borderRadius: '16px',
+                                                        border: '1px solid rgba(255,255,255,0.05)'
+                                                    }}>
+                                                        <span style={{ fontSize: '14px', color: isLightMode ? '#0f172a' : '#cbd5e1' }}>{rule.text}</span>
+                                                        <span style={{
+                                                            fontSize: '10px',
+                                                            fontWeight: 900,
+                                                            padding: '4px 12px',
+                                                            borderRadius: '100px',
+                                                            background: rule.satisfied ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255,255,255,0.05)',
+                                                            color: rule.satisfied ? '#10b981' : (isLightMode ? '#64748b' : '#475569')
+                                                        }}>
+                                                            {rule.satisfied ? 'ACTIVE' : 'INACTIVE'}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {marriageTab === 'western' && (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                        <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#fb7185', marginBottom: '10px' }}>Western System Rules</p>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                            {(info.western_rules || []).map((rule, idx) => (
+                                                <div key={idx} style={{
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center',
+                                                    background: 'rgba(255,255,255,0.02)',
+                                                    padding: '15px 20px',
+                                                    borderRadius: '16px',
+                                                    border: '1px solid rgba(255,255,255,0.05)'
+                                                }}>
+                                                    <span style={{ fontSize: '14px', color: isLightMode ? '#0f172a' : '#cbd5e1' }}>{rule.text}</span>
+                                                    <span style={{
+                                                        fontSize: '10px',
+                                                        fontWeight: 900,
+                                                        padding: '4px 12px',
+                                                        borderRadius: '100px',
+                                                        background: rule.satisfied ? 'rgba(16, 185, 129, 0.1)' : 'rgba(255,255,255,0.05)',
+                                                        color: rule.satisfied ? '#10b981' : (isLightMode ? '#64748b' : '#475569')
+                                                    }}>
+                                                        {rule.satisfied ? 'ACTIVE' : 'INACTIVE'}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {marriageTab === 'delays' && (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                        <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#fb7185', marginBottom: '10px' }}>Obstacles & Delay Signatures</p>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                            {(info.delay_rules || []).map((rule, idx) => (
+                                                <div key={idx} style={{
+                                                    display: 'flex',
+                                                    justifyContent: 'space-between',
+                                                    alignItems: 'center',
+                                                    background: 'rgba(255,255,255,0.02)',
+                                                    padding: '15px 20px',
+                                                    borderRadius: '16px',
+                                                    border: '1px solid rgba(255,255,255,0.05)'
+                                                }}>
+                                                    <span style={{ fontSize: '14px', color: isLightMode ? '#0f172a' : '#cbd5e1' }}>{rule.text}</span>
+                                                    <span style={{
+                                                        fontSize: '10px',
+                                                        fontWeight: 900,
+                                                        padding: '4px 12px',
+                                                        borderRadius: '100px',
+                                                        background: rule.satisfied ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)',
+                                                        color: rule.satisfied ? '#ef4444' : '#10b981'
+                                                    }}>
+                                                        {rule.satisfied ? 'DETECTED' : 'CLEARED'}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {marriageTab === 'partner' && (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                                        {/* Partner Characteristics */}
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                            <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#6366f1', marginBottom: '5px' }}>👤 Partner Traits & Placements</p>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                                {(info.partner_traits || []).map((rule, idx) => (
+                                                    <div key={idx} style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center',
+                                                        background: 'rgba(255,255,255,0.02)',
+                                                        padding: '15px 20px',
+                                                        borderRadius: '16px',
+                                                        border: '1px solid rgba(255,255,255,0.05)'
+                                                    }}>
+                                                        <span style={{ fontSize: '14px', color: isLightMode ? '#0f172a' : '#cbd5e1' }}>{rule.text}</span>
+                                                        <span style={{
+                                                            fontSize: '10px',
+                                                            fontWeight: 900,
+                                                            padding: '4px 12px',
+                                                            borderRadius: '100px',
+                                                            background: rule.satisfied ? 'rgba(99, 102, 241, 0.1)' : 'rgba(255,255,255,0.05)',
+                                                            color: rule.satisfied ? '#6366f1' : (isLightMode ? '#64748b' : '#475569')
+                                                        }}>
+                                                            {rule.satisfied ? 'ACTIVE' : 'INACTIVE'}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+
+                                        {/* Plurality of Marriage */}
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                            <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#fb7185', marginBottom: '5px' }}>👥 Plurality of Marriage / Multiple Unions</p>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                                {(info.plurality_rules || []).map((rule, idx) => (
+                                                    <div key={idx} style={{
+                                                        display: 'flex',
+                                                        justifyContent: 'space-between',
+                                                        alignItems: 'center',
+                                                        background: 'rgba(255,255,255,0.02)',
+                                                        padding: '15px 20px',
+                                                        borderRadius: '16px',
+                                                        border: '1px solid rgba(255,255,255,0.05)'
+                                                    }}>
+                                                        <span style={{ fontSize: '14px', color: isLightMode ? '#0f172a' : '#cbd5e1' }}>{rule.text}</span>
+                                                        <span style={{
+                                                            fontSize: '10px',
+                                                            fontWeight: 900,
+                                                            padding: '4px 12px',
+                                                            borderRadius: '100px',
+                                                            background: rule.satisfied ? 'rgba(244, 63, 94, 0.1)' : 'rgba(255,255,255,0.05)',
+                                                            color: rule.satisfied ? '#f43f5e' : (isLightMode ? '#64748b' : '#475569')
+                                                        }}>
+                                                            {rule.satisfied ? 'ACTIVE' : 'INACTIVE'}
+                                                        </span>
+                                                    </div>
+                                                ))}
+                                            </div>
+
+                                        </div>
+                                        <MarriageExtendedTopics activeSection="partner_extended" isLightMode={isLightMode} />
+                                    </div>
+                                )}
+
+
+
+                                {marriageTab === 'sublord' && (
+                                    <MarriageExtendedTopics activeSection="sublord_deep" isLightMode={isLightMode} />
+                                )}
+
+                                {marriageTab === 'kp_rules' && (
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '25px' }}>
+                                        {/* KP Childbirth & Progeny Rules */}
+                                        {info.kp_childbirth_timing && (
+                                            <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '24px', padding: '30px', border: '1px solid rgba(244, 63, 94, 0.2)' }}>
+                                                <h4 style={{ color: '#fb7185', fontSize: '14px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '15px' }}>
+                                                    👶 KP Childbirth & Progeny Rules
+                                                </h4>
+                                                <p style={{ fontSize: '14px', color: isLightMode ? '#0f172a' : '#cbd5e1', marginBottom: '10px' }}>
+                                                    <strong>Progeny Promise Status:</strong> <span style={{ color: '#10b981', fontWeight: 700 }}>{info.kp_childbirth_timing.promise_status}</span>
+                                                </p>
+                                                <p style={{ fontSize: '13px', color: isLightMode ? '#475569' : '#94a3b8', lineHeight: '1.6' }}>
+                                                    <strong>Timing Transit Rule:</strong> {info.kp_childbirth_timing.predicted_transit_rule}
+                                                </p>
+                                            </div>
+                                        )}
+
+                                        {/* KP Case Studies & Rules */}
+                                        <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '24px', padding: '30px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                            <h4 style={{ color: '#6366f1', fontSize: '14px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '15px' }}>
+                                                📜 KP Marriage & Divorce Core Principles
+                                            </h4>
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                                                <div style={{ padding: '15px', borderRadius: '16px', background: 'rgba(99, 102, 241, 0.05)', borderLeft: '4px solid #6366f1' }}>
+                                                    <strong style={{ color: '#6366f1', display: 'block', marginBottom: '5px' }}>Marriage Union Houses:</strong>
+                                                    <span style={{ fontSize: '13px', color: isLightMode ? '#0f172a' : '#cbd5e1' }}>Houses 2 (Family addition), 7 (Partner), 11 (Desire fulfillment & permanent friendship).</span>
+                                                </div>
+                                                <div style={{ padding: '15px', borderRadius: '16px', background: 'rgba(239, 68, 68, 0.05)', borderLeft: '4px solid #ef4444' }}>
+                                                    <strong style={{ color: '#ef4444', display: 'block', marginBottom: '5px' }}>Denial & Separation Houses:</strong>
+                                                    <span style={{ fontSize: '13px', color: isLightMode ? '#0f172a' : '#cbd5e1' }}>Houses 1, 6, 10 (12th / Vyaya to 2, 7, 11). If 7th Cusp sublord connects with 1, 6, 10, separation or denial of marriage occurs.</span>
+                                                </div>
+                                                <div style={{ padding: '15px', borderRadius: '16px', background: 'rgba(16, 185, 129, 0.05)', borderLeft: '4px solid #10b981' }}>
+                                                    <strong style={{ color: '#10b981', display: 'block', marginBottom: '5px' }}>Second Marriage & Remarriage:</strong>
+                                                    <span style={{ fontSize: '13px', color: isLightMode ? '#0f172a' : '#cbd5e1' }}>9th House (2nd from 8th) and 2nd Cusp sublord connected with 7th house promise legal second marriage after separation/divorce.</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {marriageTab === 'progeny' && (
+                                    <MarriageExtendedTopics activeSection="progeny_deep" isLightMode={isLightMode} />
+                                )}
+
+                                {marriageTab === 'case_studies' && (
+                                    <MarriageExtendedTopics activeSection="case_studies_deep" isLightMode={isLightMode} />
+                                )}
+                            </>
                         ) : category === 'business' && typeof info === 'object' && info.path ? (
                             /* ── ROYAL DARK BUSINESS PANEL ── */
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
@@ -414,12 +819,12 @@ export default function OracleViewer({ categoryProp }) {
                                     <p style={{ fontSize: '15px', color: isLightMode ? '#475569' : '#94a3b8', fontWeight: 700, fontStyle: 'italic' }}>{info.path_note}</p>
                                 </div>
                             </div>
-                        ) : category === 'finance' && (financeDbData || (typeof info === 'object' && info.score !== undefined)) ? (
+                        ) : category === 'finance' ? (
                             /* ── ROYAL DARK FINANCE PANEL ── */
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '30px' }}>
                                 {loading ? (
                                     <div className="flex flex-col items-center justify-center py-20 gap-4">
-                                        <div className="w-16 h-16 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
+                                        <div className="w-24 h-24 border-4 border-emerald-500/20 border-t-emerald-500 rounded-full animate-spin"></div>
                                         <p className="text-emerald-400 font-black uppercase tracking-[0.3em] text-[10px]">Accessing Wealth Database...</p>
                                     </div>
                                 ) : (
@@ -431,30 +836,162 @@ export default function OracleViewer({ categoryProp }) {
                                                 <span style={{ fontSize: '24px', fontWeight: 700, color: '#065f46' }}>/100</span>
                                             </div>
                                             <p style={{ fontSize: '16px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '4px', color: '#fbbf24' }}>{info?.label || 'Prosperous Alignment'}</p>
+
+                                            {/* SUB NAVIGATION TABS FOR FINANCE ORACLE */}
+                                            <div style={{ display: 'flex', gap: '10px', overflowX: 'auto', paddingBottom: '10px', marginBottom: '10px' }}>
+                                                {[
+                                                    { id: 'wealth_activation', label: '💰 Wealth Activation (Dasha Timing)' },
+                                                    { id: 'classical_analysis', label: '📊 Classical Financial Analysis' },
+                                                    { id: 'wealth_diagnostics', label: '💎 Wealth Diagnostics & Insights' }
+                                                ].map(tab => (
+                                                    <button
+                                                        key={tab.id}
+                                                        onClick={() => setFinanceTab(tab.id)}
+                                                        style={{
+                                                            padding: '10px 18px',
+                                                            borderRadius: '12px',
+                                                            border: 'none',
+                                                            background: financeTab === tab.id
+                                                                ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                                                                : 'rgba(255, 255, 255, 0.05)',
+                                                            color: financeTab === tab.id ? 'white' : (isLightMode ? '#475569' : '#94a3b8'),
+                                                            fontWeight: 800,
+                                                            fontSize: '12px',
+                                                            cursor: 'pointer',
+                                                            whiteSpace: 'nowrap',
+                                                            boxShadow: financeTab === tab.id ? '0 4px 15px rgba(16, 185, 129, 0.3)' : 'none',
+                                                            transition: 'all 0.2s ease'
+                                                        }}
+                                                    >
+                                                        {tab.label}
+                                                    </button>
+                                                ))}
+                                            </div>
                                         </div>
 
-                                        {/* DB INSIGHTS SECTION */}
-                                        {financeDbData && financeDbData.length > 0 && (
+                                        {/* TAB 1: WEALTH ACTIVATION VIMSHOTTARI TIMELINE */}
+                                        {financeTab === 'wealth_activation' && wealthActivationData && (
                                             <div className="space-y-6">
-                                                <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '4px', color: isLightMode ? '#475569' : '#94a3b8' }}>💎 Deep Financial Diagnostics</p>
-                                                <div className="grid grid-cols-1 gap-4">
-                                                    {financeDbData.map((insight, idx) => (
-                                                        <div key={idx} style={{
-                                                            background: 'rgba(255,255,255,0.02)',
-                                                            borderRadius: '24px',
-                                                            padding: '24px',
-                                                            border: '1px solid rgba(255,255,255,0.05)',
-                                                            display: 'flex',
-                                                            gap: '20px',
-                                                            alignItems: 'flex-start'
-                                                        }}>
-                                                            <div style={{ fontSize: '24px' }}>{insight.icon}</div>
-                                                            <div>
-                                                                <h5 style={{ color: '#6ee7b7', fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px' }}>{insight.category} — {insight.title}</h5>
-                                                                <p style={{ fontSize: '14px', color: isLightMode ? '#a51e0dbd' : '#cbd5e1', lineHeight: '1.6' }}>{insight.content}</p>
-                                                            </div>
+                                                <div style={{
+                                                    background: 'rgba(16, 185, 129, 0.05)',
+                                                    borderRadius: '24px',
+                                                    padding: '24px',
+                                                    border: '1px solid rgba(16, 185, 129, 0.2)'
+                                                }}>
+                                                    <h4 style={{ color: '#10b981', fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px', marginBottom: '15px' }}>
+                                                        💰 Wealth Activation (Vimshottari Dasha Timing)
+                                                    </h4>
+
+                                                    {/* WEALTH LORDS SUMMARY BADGES */}
+                                                    {wealthActivationData.wealth_lords && (
+                                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '20px' }}>
+                                                            {wealthActivationData.wealth_lords.map((wl, i) => (
+                                                                <div key={i} style={{
+                                                                    background: 'rgba(255, 255, 255, 0.05)',
+                                                                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                                                                    padding: '6px 14px',
+                                                                    borderRadius: '12px',
+                                                                    fontSize: '11px',
+                                                                    fontWeight: 700,
+                                                                    color: isLightMode ? '#0f172a' : '#e2e8f0'
+                                                                }}>
+                                                                    👑 {wl.planet}: <span style={{ color: '#10b981' }}>Score {wl.score}</span> {wl.houses.length > 0 && `(Lords ${wl.houses.join(',')})`}
+                                                                </div>
+                                                            ))}
                                                         </div>
-                                                    ))}
+                                                    )}
+
+                                                    {/* ACTIVATION TIMELINE CARDS */}
+                                                    <div className="space-y-3">
+                                                        <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#94a3b8', marginBottom: '10px' }}>
+                                                            📅 Active & Peak Wealth Years
+                                                        </p>
+                                                        {(wealthActivationData.timeline || []).slice(0, 8).map((period, idx) => (
+                                                            <div key={idx} style={{
+                                                                background: 'rgba(255,255,255,0.02)',
+                                                                borderRadius: '16px',
+                                                                padding: '16px 20px',
+                                                                borderLeft: `4px solid ${period.badge_color || '#10b981'}`,
+                                                                borderTop: '1px solid rgba(255,255,255,0.05)',
+                                                                borderRight: '1px solid rgba(255,255,255,0.05)',
+                                                                borderBottom: '1px solid rgba(255,255,255,0.05)',
+                                                                display: 'flex',
+                                                                justifyContent: 'space-between',
+                                                                alignItems: 'center',
+                                                                flexWrap: 'wrap',
+                                                                gap: '10px'
+                                                            }}>
+                                                                <div>
+                                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
+                                                                        <span style={{ fontSize: '14px', fontWeight: 900, color: isLightMode ? '#0f172a' : 'white' }}>
+                                                                            {period.mahadasha} (MD) - {period.antardasha} (AD)
+                                                                        </span>
+                                                                        <span style={{
+                                                                            fontSize: '9px',
+                                                                            fontWeight: 900,
+                                                                            padding: '2px 8px',
+                                                                            borderRadius: '6px',
+                                                                            background: 'rgba(16, 185, 129, 0.15)',
+                                                                            color: period.badge_color || '#10b981'
+                                                                        }}>
+                                                                            {period.intensity}
+                                                                        </span>
+                                                                    </div>
+                                                                    <p style={{ fontSize: '12px', color: isLightMode ? '#475569' : '#94a3b8', margin: 0 }}>
+                                                                        {period.description}
+                                                                    </p>
+                                                                </div>
+                                                                <div style={{ textAlign: 'right' }}>
+                                                                    <span style={{ fontSize: '13px', fontWeight: 800, color: '#fbbf24' }}>
+                                                                        {period.start_date} to {period.end_date}
+                                                                    </span>
+                                                                    <div style={{ fontSize: '10px', color: '#10b981', fontWeight: 700 }}>
+                                                                        Activation Score: {period.score}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )}
+
+                                        {/* TAB 2: CLASSICAL FINANCIAL ANALYSIS */}
+                                        {financeTab === 'classical_analysis' && (
+                                            <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '24px', padding: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                                <FinanceAnalysis />
+                                            </div>
+                                        )}
+
+                                        {/* TAB 3: WEALTH DIAGNOSTICS & INSIGHTS */}
+                                        {financeTab === 'wealth_diagnostics' && (
+                                            <div className="space-y-6">
+                                                {financeDbData && financeDbData.length > 0 && (
+                                                    <div className="space-y-6">
+                                                        <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '4px', color: isLightMode ? '#475569' : '#94a3b8' }}>💎 Deep Financial Diagnostics</p>
+                                                        <div className="grid grid-cols-1 gap-4">
+                                                            {financeDbData.map((insight, idx) => (
+                                                                <div key={idx} style={{
+                                                                    background: 'rgba(255,255,255,0.02)',
+                                                                    borderRadius: '24px',
+                                                                    padding: '24px',
+                                                                    border: '1px solid rgba(255,255,255,0.05)',
+                                                                    display: 'flex',
+                                                                    gap: '20px',
+                                                                    alignItems: 'flex-start'
+                                                                }}>
+                                                                    <div style={{ fontSize: '24px' }}>{insight.icon}</div>
+                                                                    <div>
+                                                                        <h5 style={{ color: '#6ee7b7', fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px' }}>{insight.category} — {insight.title}</h5>
+                                                                        <p style={{ fontSize: '14px', color: isLightMode ? '#a51e0dbd' : '#cbd5e1', lineHeight: '1.6' }}>{insight.content}</p>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    </div>
+                                                )}
+                                                <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '24px', padding: '20px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                                    <FinanceViewer />
                                                 </div>
                                             </div>
                                         )}
@@ -496,7 +1033,7 @@ export default function OracleViewer({ categoryProp }) {
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
                                         <div style={{ background: 'rgba(59, 130, 246, 0.05)', borderRadius: '30px', padding: '35px', border: '1px solid rgba(59, 130, 246, 0.1)' }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '25px' }}>
                                                 <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: '#60a5fa', margin: 0 }}>✨ AI Generated Name Suggestions</p>
@@ -506,7 +1043,7 @@ export default function OracleViewer({ categoryProp }) {
                                                     // Handle both old string format and new object format gracefully
                                                     let englishName = typeof nameObj === 'string' ? nameObj : nameObj.english;
                                                     let hindiName = typeof nameObj === 'string' ? null : nameObj.hindi;
-                                                    
+
                                                     // Defensively split if AI hallucinated both names into one string separated by a comma
                                                     if (englishName && typeof englishName === 'string' && englishName.includes(',') && !hindiName) {
                                                         const parts = englishName.split(',');
@@ -885,6 +1422,6 @@ export default function OracleViewer({ categoryProp }) {
                     </div>
                 </div>
             </div>
-        </ErrorBoundary>
+        </ErrorBoundary >
     );
 }

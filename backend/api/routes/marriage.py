@@ -36,11 +36,45 @@ async def get_marriage_insights():
     ]
     return insights
 
+from reports.report_data import assemble_report_data
+from core.analysis.life_oracle import _analyze_marriage
+
 @router.post("/personal")
 async def get_personal_marriage_analysis(payload: Dict[str, Any] = Body(...)):
     """
-    This is a placeholder for personal marriage analysis if needed via API.
-    However, the app currently calculates this in life_oracle.py and 
-    passes it via worksheetData.
+    Calculate personalized marriage analysis & rules dynamically from birth details.
     """
-    return []
+    try:
+        name = payload.get("name", "Native")
+        date = payload.get("date")
+        time = payload.get("time", "12:00:00")
+        lat = float(payload.get("lat", 0))
+        lon = float(payload.get("lon", 0))
+        tz_offset = float(payload.get("tz_offset", 0.0))
+
+        if not date:
+            return {}
+
+        report_data = assemble_report_data(
+            name=name, date=date, time=time,
+            tz_offset=tz_offset, lat=lat, lon=lon
+        )
+
+        d1 = report_data.get("chart", {})
+        houses = d1.get("houses", {})
+        _raw_planets = report_data.get("planet_positions", {})
+        if isinstance(_raw_planets, list):
+            planets = {p["planet"]: p for p in _raw_planets if isinstance(p, dict) and "planet" in p}
+        else:
+            planets = _raw_planets
+
+        strength = report_data.get("strength", {}).get("planets", {})
+        dasha = report_data.get("dasha", {}).get("current", {})
+        vargas = report_data.get("vargas", {})
+        d9 = vargas.get("d9", {})
+
+        result = _analyze_marriage(houses, planets, strength, d9=d9, dasha=dasha)
+        return result
+    except Exception as e:
+        print("Personal Marriage Analysis Error:", e)
+        return {}

@@ -9,6 +9,7 @@ import swisseph as swe
 router = APIRouter()
 
 @router.post("/annual")
+@router.post("/calculate")
 def api_solar_return_annual(payload: Dict = Body(...)):
     try:
         date_str = payload["date"]

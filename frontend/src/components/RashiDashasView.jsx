@@ -81,28 +81,28 @@ export default function RashiDashasView({ data }) {
 
     const handleDrillDown = (dataKey) => {
         // If no row is selected, default to the first row (index 0)
-        const selectedIdx = selectedRows[dataKey] !== undefined && selectedRows[dataKey] !== null 
-            ? selectedRows[dataKey] 
+        const selectedIdx = selectedRows[dataKey] !== undefined && selectedRows[dataKey] !== null
+            ? selectedRows[dataKey]
             : 0;
-            
+
         // Find current level data
         const currentData = getCurrentLevelData(dataKey);
         if (!currentData || !currentData[selectedIdx]) return;
-        
+
         const selectedLord = currentData[selectedIdx].d;
-        
+
         setDrillPaths(prev => ({
             ...prev,
             [dataKey]: [...prev[dataKey], selectedLord]
         }));
-        
+
         // Reset selected row for the new level
         setSelectedRows(prev => ({
             ...prev,
             [dataKey]: null
         }));
     };
-    
+
     const handleReset = (dataKey) => {
         setDrillPaths(prev => ({
             ...prev,
@@ -220,7 +220,7 @@ export default function RashiDashasView({ data }) {
                             className="px-1 hover:bg-gray-200 cursor-pointer rounded"
                             title="Drill Down (Defaults to 1st row if none selected)"
                         >▶</button>
-                        <button 
+                        <button
                             onClick={() => handleReset(dataKey)}
                             disabled={!canDrillUp}
                             className={`px-1 rounded ${canDrillUp ? 'hover:bg-gray-200 cursor-pointer' : 'opacity-30 cursor-not-allowed'}`}
@@ -255,7 +255,7 @@ export default function RashiDashasView({ data }) {
                                             }}
                                             className={`cursor-pointer ${isSelected ? 'bg-blue-100 font-semibold' : 'hover:bg-gray-100'}`}
                                         >
-                                            <td className="pr-2 w-20 text-gray-800" title={row.d}>{displayName}</td>
+                                            <td className="pr-4 w-20 text-gray-800" title={row.d}>{displayName}</td>
                                             <td className="text-gray-800">{row.date}</td>
                                         </tr>
                                     );

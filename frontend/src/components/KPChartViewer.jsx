@@ -156,17 +156,17 @@ const KPChartViewer = ({ formData }) => {
                   Krishnamurti chart
                 </div>
                 <div className="p-2 overflow-auto">
-                  <table className="w-full text-left font-serif">
+                  <table className="w-full py-1 text-center text-[16px] font-serif">
                     <tbody>
                       {data.planets.map((p, i) => {
                         if (p.planet === "Ascendant") return null;
                         return (
                           <tr key={i}>
-                            <td style={{ color: getPlanetColor(p.short_name) }} className="font-bold w-6">{p.short_name}</td>
-                            <td className="w-20">{formatDegOnly(p.longitude)}</td>
-                            <td className="w-10">{p.sign_name.substring(0, 3)}</td>
-                            <td className="w-16">{p.nak_name.substring(0, 7)}.</td>
-                            <td className="w-10">...</td>
+                            <td style={{ color: getPlanetColor(p.planet) }} className="font-bold w-6">{p.planet}</td>
+                            <td className="w-25">{formatDegOnly(p.longitude)}</td>
+                            <td className="w-12">{p.sign_name.substring(0, 9)}</td>
+                            <td className="w-18">{p.nak_name.substring(0, 7)}.</td>
+                            <td className="w-12">...</td>
                             <td className="w-24">1.{p.sign_lord.substring(0, 2)}/{p.star_lord.substring(0, 2)}/{p.sub_lord.substring(0, 2)}</td>
                             <td>Neutr.</td>
                           </tr>
@@ -200,8 +200,8 @@ const KPChartViewer = ({ formData }) => {
                         // Mocking significator strength mapping based on standard KP logic for UI
                         // Usually: V.Strong = Tenant of House, Strong = Occupant, etc.
                         return (
-                          <tr key={i}>
-                            <td style={{ color: getPlanetColor(p.short_name) }} className="font-bold">{p.short_name}</td>
+                          <tr key={i} className="text-[16px]">
+                            <td style={{ color: getPlanetColor(p.short_name) }} className="font-bold">{p.planet} </td>
                             <td>
                               <span style={{ color: getPlanetColor(p.sign_lord.substring(0, 2)) }}>{p.sign_lord.substring(0, 2)}</span> / <span style={{ color: getPlanetColor(p.star_lord.substring(0, 2)) }}>{p.star_lord.substring(0, 2)}</span> / <span style={{ color: getPlanetColor(p.sub_lord.substring(0, 2)) }}>{p.sub_lord.substring(0, 2)}</span>
                             </td>
@@ -225,7 +225,7 @@ const KPChartViewer = ({ formData }) => {
               <div className="bg-white border-b border-[#0000aa] px-2 py-0.5 text-[#0000aa] font-serif font-bold text-sm">
                 Birth data
               </div>
-              <div className="p-4 flex flex-col items-center justify-center text-center font-serif leading-tight">
+              <div className="p-4 flex flex-col items-center justify-center text-center text-[18px] font-serif leading-tight">
                 <span className="font-bold">{data.name}</span>
                 <span>{data.dob}</span>
                 <span>{data.tob}</span>
@@ -242,7 +242,7 @@ const KPChartViewer = ({ formData }) => {
                 Krishnamurti chart KP significators
               </div>
               <div className="p-1 overflow-auto">
-                <table className="w-full text-left font-serif text-[11px]">
+                <table className="w-full text-left font-serif text-[16px]">
                   <thead>
                     <tr className="border-b border-[#0000aa]">
                       <th className="py-1">Bhava</th>
@@ -278,8 +278,8 @@ const KPChartViewer = ({ formData }) => {
       )}
 
       {/* Footer */}
-      <div className="bg-[#ffff99] border-t border-black p-2 text-xs text-black font-sans mt-auto">
-        The Krishnamurti chart is based on the Placidius house system. Because of the importance of the cusps and Nakshatras, the chart is shown in this unique circular format. On the next worksheet you can see the same chart in the traditional chart style.
+      <div className="bg-[#ffff99] border-t border-black p-2 text-[16px] text-black font-sans mt-auto">
+        Constructed using the Placidus house division, the KP chart highlights precise cuspal degrees and Nakshatras through a dynamic circular layout. The next worksheet features the traditional chart layout for comparison.
       </div>
     </div>
   );

@@ -16,10 +16,12 @@ class CharaDasha:
         return self.SIGNS.index(sign_name)
 
     def get_planet_sign(self, planet_name):
-        for h, data in self.chart.get("houses", {}).items():
+        houses_dict = self.chart.get("houses", {})
+        for h, data in houses_dict.items():
             for p in data.get("planets", []):
-                if p["name"] == planet_name:
-                    return data["sign_name"]
+                p_name = p.get("name") if isinstance(p, dict) else (p.get("planet") if isinstance(p, dict) else p)
+                if p_name == planet_name:
+                    return data.get("sign_name", "Aries")
         return "Aries" # fallback
 
     def get_dasha_sequence(self, lagna_sign):

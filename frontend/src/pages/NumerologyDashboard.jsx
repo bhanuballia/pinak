@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Sparkles, Calendar, User, ArrowLeft, RefreshCw, Star, Compass, Flame, ShieldAlert, Award, AlertCircle, ToggleLeft, CheckCircle, Heart, Coins, Baby, Briefcase, Landmark } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Sparkles, Calendar, User, ArrowLeft, RefreshCw, Star, Compass, Flame, ShieldAlert, Award, AlertCircle, ToggleLeft, CheckCircle, Heart, Coins, Baby, Briefcase, Landmark, Volume2, VolumeX, Play, Square, Radio, Activity, Zap, Clock, Sun } from "lucide-react";
 
 // Chaldean Numerology Letter Values
 const CHALDEAN_MAP = {
@@ -325,10 +325,199 @@ export default function NumerologyDashboard() {
   const [compatLoading, setCompatLoading] = useState(false);
   const [compatError, setCompatError] = useState(null);
 
-  React.useEffect(() => {
+  const [quantumData, setQuantumData] = useState(null);
+
+  // Brand & Business Name Resonance Tuner state
+  const [brandInput, setBrandInput] = useState("");
+  const [brandResult, setBrandResult] = useState(null);
+
+  const calculateBrandResonance = (nameStr, ownerMulankVal, ownerBhagyankVal) => {
+    if (!nameStr) return null;
+    const cleaned = nameStr.replace(/[^a-zA-Z]/g, "").toUpperCase();
+    if (!cleaned) return null;
+
+    let rawTotal = 0;
+    for (let i = 0; i < cleaned.length; i++) {
+      rawTotal += CHALDEAN_MAP[cleaned[i]] || 0;
+    }
+
+    let singleDigit = rawTotal;
+    while (singleDigit > 9) {
+      singleDigit = String(singleDigit).split("").reduce((acc, curr) => acc + parseInt(curr), 0);
+    }
+
+    const planetMap = {
+      1: { planet: "Sun", freq: 528, element: "Fire", color: "Gold & Ruby Red", traits: "Authority, Leadership, Pioneer Status" },
+      2: { planet: "Moon", freq: 432, element: "Water", color: "Silver & Pure White", traits: "Emotional Appeal, Public Relations, Nurturing" },
+      3: { planet: "Jupiter", freq: 639, element: "Ether", color: "Yellow & Royal Purple", traits: "Expansion, Wisdom, High Growth" },
+      4: { planet: "Rahu", freq: 741, element: "Air/Shadow", color: "Electric Blue & Metallic", traits: "Disruptive Tech, Innovation, Viral Growth" },
+      5: { planet: "Mercury", freq: 852, element: "Earth/Air", color: "Emerald Green", traits: "Commerce, Digital Speed, High Sales" },
+      6: { planet: "Venus", freq: 963, element: "Water/Luxury", color: "Pastel Pink & Gold", traits: "Luxury, Beauty, Comfort, High Margins" },
+      7: { planet: "Ketu", freq: 174, element: "Fire/Moksha", color: "Violet & Sea Green", traits: "Niche Mastery, Research, Spiritual Appeal" },
+      8: { planet: "Saturn", freq: 285, element: "Earth/Karma", color: "Dark Navy & Steel", traits: "Long-term Stability, Real Estate, Enterprise" },
+      9: { planet: "Mars", freq: 396, element: "Fire/Action", color: "Bright Crimson & Orange", traits: "Energy, Defense, Sports, Bold Execution" },
+    };
+
+    const pInfo = planetMap[singleDigit] || planetMap[1];
+
+    let harmony = 100;
+    if (ownerMulankVal) {
+      const diff1 = Math.abs(ownerMulankVal - singleDigit);
+      harmony -= diff1 * 7;
+    }
+    if (ownerBhagyankVal) {
+      const diff2 = Math.abs(ownerBhagyankVal - singleDigit);
+      harmony -= diff2 * 4;
+    }
+    harmony = Math.max(45, Math.min(99, harmony));
+
+    const compoundDetail = COMPOUND_LUCKY_DETAILS[rawTotal] || null;
+
+    let statusText = "Super Resonance";
+    if (harmony < 65) statusText = "Vibrational Shift Advised";
+    else if (harmony < 82) statusText = "Good Harmony";
+
+    return {
+      brandName: nameStr,
+      rawTotal,
+      singleDigit,
+      planet: pInfo.planet,
+      freq: pInfo.freq,
+      element: pInfo.element,
+      color: pInfo.color,
+      traits: pInfo.traits,
+      harmony,
+      statusText,
+      compoundDetail
+    };
+  };
+
+  const getDailyQuantumVoltage = (userMulank, userBhagyank) => {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = today.getMonth() + 1;
+    const dd = today.getDate();
+
+    const dateDigits = `${yyyy}${String(mm).padStart(2, "0")}${String(dd).padStart(2, "0")}`.split("").map(Number);
+    let univSum = dateDigits.reduce((acc, curr) => acc + curr, 0);
+    while (univSum > 9) {
+      univSum = String(univSum).split("").reduce((acc, curr) => acc + parseInt(curr), 0);
+    }
+
+    const mul = userMulank || 1;
+    const bhag = userBhagyank || 1;
+
+    let voltage = 100 - (Math.abs(univSum - mul) * 6 + Math.abs(univSum - bhag) * 4);
+    voltage = Math.max(52, Math.min(98, voltage));
+
+    const planetMap = {
+      1: { planet: "Sun", freq: 528, color: "Gold & Ruby Red", focus: "Authority, Executive Decisions & New Launches" },
+      2: { planet: "Moon", freq: 432, color: "Pearl White & Silver", focus: "Public Relations, Intuition & Collaborative Agreements" },
+      3: { planet: "Jupiter", freq: 639, color: "Yellow & Royal Purple", focus: "Financial Expansion, Higher Learning & Strategic Planning" },
+      4: { planet: "Rahu", freq: 741, color: "Electric Blue & Metallic", focus: "Innovation, Disruptive Ideas & High Tech Execution" },
+      5: { planet: "Mercury", freq: 852, color: "Emerald Green", focus: "Commercial Trading, Sales Calls & Rapid Networking" },
+      6: { planet: "Venus", freq: 963, color: "Pastel Pink & Royal Gold", focus: "Creative Design, Luxury Pitching & Relationship Harmony" },
+      7: { planet: "Ketu", freq: 174, color: "Light Violet & Sea Green", focus: "Deep Research, Technical Mastery & Meditation" },
+      8: { planet: "Saturn", freq: 285, color: "Dark Navy & Charcoal", focus: "Structural Operations, Complex Tasks & Long-term Investments" },
+      9: { planet: "Mars", freq: 396, color: "Bright Crimson & Coral", focus: "Bold Execution, Competitive Moves & Negotiations" },
+    };
+
+    const pData = planetMap[univSum] || planetMap[1];
+
+    const windows = [
+      { time: "06:00 AM - 09:00 AM", slot: "Morning Solar Alignment", planet: "Sun / Jupiter", score: 92, type: "Golden Window", desc: "Prime window for high-level strategy, pitch calls & meditation." },
+      { time: "09:00 AM - 12:00 PM", slot: "Mid-Day Voltage Peak", planet: "Mercury / Venus", score: 88, type: "High Manifestation", desc: "Ideal for sales presentations, financial transactions & deal closing." },
+      { time: "12:00 PM - 03:00 PM", slot: "Afternoon Karma Cycle", planet: "Mars / Rahu", score: 74, type: "Execution Focus", desc: "Best for intense operations, analytical coding & routine execution." },
+      { time: "03:00 PM - 06:00 PM", slot: "Pre-Sunset Energy Peak", planet: "Jupiter / Sun", score: 96, type: "Golden Window", desc: "Super-charged slot for launching products, signing contracts & big announcements." },
+      { time: "06:00 PM - 09:00 PM", slot: "Evening Solfeggio Resonance", planet: "Moon / Venus", score: 86, type: "Harmonic Flow", desc: "Best for networking dinners, creative arts & relationship bonding." },
+      { time: "09:00 PM - 12:00 AM", slot: "Night Quantum Void Tuning", planet: "Ketu / Saturn", score: 80, type: "Recharge Window", desc: "Perfect for Solfeggio audio therapy, journaling & deep restful sleep." },
+    ];
+
+    return {
+      todayFormatted: today.toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" }),
+      univNumber: univSum,
+      planet: pData.planet,
+      freq: pData.freq,
+      color: pData.color,
+      focus: pData.focus,
+      voltage,
+      windows
+    };
+  };
+
+  // Solfeggio Web Audio Synth State
+  const [playingFreq, setPlayingFreq] = useState(null);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [binauralMode, setBinauralMode] = useState(true);
+  const audioCtxRef = React.useRef(null);
+  const osc1Ref = React.useRef(null);
+  const osc2Ref = React.useRef(null);
+  const gainNodeRef = React.useRef(null);
+
+  const stopAudio = () => {
+    try {
+      if (osc1Ref.current) { osc1Ref.current.stop(); osc1Ref.current.disconnect(); osc1Ref.current = null; }
+      if (osc2Ref.current) { osc2Ref.current.stop(); osc2Ref.current.disconnect(); osc2Ref.current = null; }
+      if (audioCtxRef.current && audioCtxRef.current.state !== "closed") {
+        audioCtxRef.current.close();
+        audioCtxRef.current = null;
+      }
+    } catch (e) { console.error("Audio stop error:", e); }
+    setIsPlayingAudio(false);
+    setPlayingFreq(null);
+  };
+
+  const playSolfeggioTone = (freqHz) => {
+    stopAudio();
+    if (!freqHz) return;
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      audioCtxRef.current = ctx;
+
+      const gain = ctx.createGain();
+      gain.gain.setValueAtTime(0.12, ctx.currentTime);
+      gain.connect(ctx.destination);
+      gainNodeRef.current = gain;
+
+      const osc1 = ctx.createOscillator();
+      osc1.type = "sine";
+      osc1.frequency.setValueAtTime(freqHz, ctx.currentTime);
+      osc1.connect(gain);
+      osc1.start();
+      osc1Ref.current = osc1;
+
+      if (binauralMode) {
+        const osc2 = ctx.createOscillator();
+        osc2.type = "sine";
+        osc2.frequency.setValueAtTime(freqHz + 4, ctx.currentTime);
+        osc2.connect(gain);
+        osc2.start();
+        osc2Ref.current = osc2;
+      }
+
+      setPlayingFreq(freqHz);
+      setIsPlayingAudio(true);
+    } catch (e) {
+      console.error("Audio synth error:", e);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopAudio();
+    };
+  }, []);
+
+  useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const urlName = params.get("name");
     const urlDob = params.get("date");
+    const urlTab = params.get("tab");
+    if (urlTab === "quantum") {
+      setActiveTab("quantum");
+    }
     if (urlName) setName(urlName);
     if (urlDob) {
       setDob(urlDob);
@@ -348,6 +537,17 @@ export default function NumerologyDashboard() {
             if (response.ok) {
               const data = await response.json();
               setResult(data);
+            }
+
+            // Also fetch Quantum Analysis
+            const qRes = await fetch("/api/numerology/quantum/calculate", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ name: urlName, dob: urlDob }),
+            });
+            if (qRes.ok) {
+              const qData = await qRes.json();
+              setQuantumData(qData);
             }
           } catch (e) {
             console.error("Auto calculation failed:", e);
@@ -378,6 +578,16 @@ export default function NumerologyDashboard() {
       }
       const data = await response.json();
       setResult(data);
+
+      const qRes = await fetch("/api/numerology/quantum/calculate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, dob }),
+      });
+      if (qRes.ok) {
+        const qData = await qRes.json();
+        setQuantumData(qData);
+      }
     } catch (err) {
       console.error(err);
       setError(err?.message || "An error occurred while calculating.");
@@ -1628,6 +1838,473 @@ export default function NumerologyDashboard() {
     };
   };
 
+  const renderQuantumPanel = () => {
+    const q = quantumData || {};
+    const gridInfo = q.quantum_grid || {};
+    const gridAnalysis = gridInfo.grid_analysis || [];
+    const remedies = q.quantum_remedies || [];
+
+    return (
+      <div className="space-y-6 animate-fadeIn">
+        {/* Header Banner */}
+        <div className="bg-gradient-to-r from-purple-900 via-indigo-900 to-slate-900 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
+          <div className="relative z-10 space-y-2">
+            <div className="flex items-center gap-2 text-purple-300 font-bold uppercase tracking-widest text-xs">
+              <Sparkles className="w-4 h-4 animate-spin-slow" /> Quantum Resonance Engine
+            </div>
+            <h3 className="text-2xl md:text-3xl font-black">Quantum Numerology Matrix</h3>
+            <p className="text-purple-200 text-[18px] max-w-2xl leading-relaxed">
+              Fuses your birth date superposition grid with name frequencies and planetary entanglement vectors to measure your energetic resonance phase.
+            </p>
+          </div>
+          <div className="mt-4 pt-4 border-t border-purple-800/60 flex flex-wrap gap-6 items-center">
+            <div>
+              <span className="text-[18px] text-purple-300 block font-semibold uppercase">Phase Coherence Score</span>
+              <span className="text-[24px] font-black text-amber-300">{q.phase_coherence_percent || 88}%</span>
+            </div>
+            <div>
+              <span className="text-[18px] text-purple-300 block font-semibold uppercase">Entanglement Status</span>
+              <span className="text-[24px] font-bold text-emerald-400">{q.quantum_entanglement_status || "Constructive Resonance"}</span>
+            </div>
+            <div>
+              <span className="text-[18px] text-purple-300 block font-semibold uppercase">Name Frequency</span>
+              <span className="text-[24px] font-bold text-cyan-300">{q.name_frequency?.frequency_hz || 528} Hz ({q.name_frequency?.ruling_planet || 'Sun'})</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Real-Time Daily Quantum Voltage & Peak Windows */}
+        {(() => {
+          const daily = getDailyQuantumVoltage(result?.mulank, result?.bhagyank);
+          return (
+            <div className="bg-white border border-purple-100 rounded-3xl p-6 shadow-sm space-y-5">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-purple-100 pb-3">
+                <div>
+                  <h4 className="font-bold text-purple-950 text-[24px] flex items-center gap-2">
+                    <Zap className="w-5 h-5 text-amber-500 fill-amber-500" />
+                    <span>Real-Time Daily Quantum Voltage & Peak Windows</span>
+                  </h4>
+                  <p className="text-[18px] text-slate-500">
+                    Live daily planetary alignment clock calculated for {daily.todayFormatted}.
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[18px] font-black bg-rose-100 text-rose-900 px-3 py-1 rounded-full flex items-center gap-1">
+                    <Sun className="w-3.5 h-3.5" /> Universal Day Number: {daily.univNumber} ({daily.planet})
+                  </span>
+                </div>
+              </div>
+
+              {/* Voltage Metrics Summary */}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-900 to-indigo-950 text-white flex items-center justify-between shadow-md">
+                  <div>
+                    <span className="text-[18px] text-purple-200 uppercase font-bold block">Today's Voltage Power</span>
+                    <span className="text-[24px] font-black text-amber-300">{daily.voltage}%</span>
+                    <span className="text-[14px] text-purple-200 block mt-0.5 font-medium">Manifestation Supercharge</span>
+                  </div>
+                  <Zap className="w-8 h-8 text-amber-400 fill-amber-400 animate-pulse" />
+                </div>
+
+                <div className="p-4 rounded-2xl bg-purple-50 border border-purple-100 space-y-1">
+                  <span className="text-[18px] text-purple-900 font-bold uppercase block">Lucky Color & Gem Resonance</span>
+                  <span className="text-[24px] font-black text-purple-950 block">{daily.color}</span>
+                  <span className="text-[14px] text-slate-600 font-medium block">Wear or visualize this palette today</span>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-indigo-50 border border-indigo-100 space-y-1">
+                  <span className="text-[18px] text-indigo-900 font-bold uppercase block">Primary Energy Focus Area</span>
+                  <span className="text-[24px] font-bold text-indigo-950 block">{daily.focus}</span>
+                  <span className="text-[14px] text-indigo-700 block font-semibold">{daily.freq} Hz Active Tuning</span>
+                </div>
+              </div>
+
+              {/* Hourly Peak Windows Grid */}
+              <div className="space-y-3 pt-2">
+                <h5 className="text-[18px] font-black uppercase text-purple-900 tracking-wider flex items-center gap-1.5">
+                  <Clock className="w-4 h-4 text-purple-600" />
+                  <span>Hourly Planetary Hora Windows & Optimal Activities</span>
+                </h5>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {daily.windows.map((w, idx) => (
+                    <div
+                      key={idx}
+                      className={`p-3.5 rounded-2xl border transition-all space-y-1.5 flex flex-col justify-between ${w.type === "Golden Window"
+                        ? "bg-amber-50/70 border-amber-300 ring-1 ring-amber-200"
+                        : w.type === "High Manifestation"
+                          ? "bg-emerald-50/70 border-emerald-300"
+                          : "bg-slate-50 border-slate-200"
+                        }`}
+                    >
+                      <div>
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-[18px] font-black text-slate-900">{w.time}</span>
+                          <span className={`text-[14px] font-extrabold px-2 py-0.5 rounded-full ${w.type === "Golden Window"
+                            ? "bg-amber-500 text-white"
+                            : w.type === "High Manifestation"
+                              ? "bg-emerald-600 text-white"
+                              : "bg-slate-200 text-slate-700"
+                            }`}>
+                            {w.score}% Score
+                          </span>
+                        </div>
+                        <h6 className="font-bold text-[18px] text-purple-950">{w.slot}</h6>
+                        <span className="text-[14px] font-bold text-purple-700 block">Planet Alignment: {w.planet}</span>
+                      </div>
+                      <p className="text-[14px] text-slate-600 font-medium leading-relaxed pt-1 border-t border-slate-200/50">
+                        {w.desc}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
+
+        {/* 3x3 Quantum Superposition Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="md:col-span-2 bg-white border border-purple-100 rounded-3xl p-6 shadow-sm space-y-4">
+            <h4 className="font-bold text-purple-950 text-lg flex items-center justify-between">
+              <span>⚛️ 3x3 Quantum Energy Grid</span>
+              <span className="text-[18px] text-purple-700 bg-purple-50 px-3 py-1 rounded-full font-bold">Active vs Void States</span>
+            </h4>
+            <div className="grid grid-cols-3 gap-3 pt-2">
+              {gridAnalysis.map((item) => {
+                const isSuper = item.count >= 2;
+                const isLatent = item.count === 1;
+                return (
+                  <div
+                    key={item.number}
+                    className={`p-4 rounded-2xl border text-center transition-all flex flex-col items-center justify-center ${isSuper
+                      ? "bg-purple-900 text-white border-purple-700 shadow-md shadow-purple-900/20"
+                      : isLatent
+                        ? "bg-purple-50 border-purple-200 text-purple-950"
+                        : "bg-slate-50 border-dashed border-slate-300 text-slate-400"
+                      }`}
+                  >
+                    <span className="text-[18px] font-semibold uppercase opacity-75">{item.planet}</span>
+                    <span className="text-[24px] font-black my-0.5">
+                      {item.count > 0 ? String(item.number).repeat(item.count) : item.number}
+                    </span>
+                    <span className="text-[14px] font-bold tracking-tight">
+                      {item.solfeggio} Hz
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Frequencies Summary */}
+          <div className="bg-white border border-purple-100 rounded-3xl p-6 shadow-sm space-y-4">
+            <h4 className="font-bold text-purple-950 text-[24px]">Quantum States</h4>
+            <div className="space-y-3">
+              <div className="p-3 bg-purple-50 rounded-2xl border border-purple-100">
+                <span className="text-[18px] font-bold text-purple-900 uppercase block">Active Superposition</span>
+                <span className="text-[24px] font-semibold text-purple-950">
+                  {gridInfo.active_superposition?.length > 0 ? gridInfo.active_superposition.join(", ") : "None (Balanced)"}
+                </span>
+              </div>
+              <div className="p-3 bg-indigo-50 rounded-2xl border border-indigo-100">
+                <span className="text-[18px] font-bold text-indigo-900 uppercase block">Latent Frequency States</span>
+                <span className="text-[24px] font-semibold text-indigo-950">
+                  {gridInfo.latent_states?.length > 0 ? gridInfo.latent_states.join(", ") : "None"}
+                </span>
+              </div>
+              <div className="p-3 bg-rose-50 rounded-2xl border border-rose-100">
+                <span className="text-[18px] font-bold text-rose-900 uppercase block">Quantum Void (Missing)</span>
+                <span className="text-[24px] font-semibold text-rose-950">
+                  {gridInfo.quantum_voids?.length > 0 ? gridInfo.quantum_voids.join(", ") : "All Present"}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Interactive Solfeggio Sound Healing Synthesizer Console */}
+        <div className="bg-gradient-to-br from-purple-950 via-slate-900 to-indigo-950 text-white rounded-3xl p-6 shadow-xl space-y-5 border border-purple-800/50">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-purple-800/60 pb-4">
+            <div>
+              <h4 className="text-[18px] font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-pink-300 to-cyan-300 flex items-center gap-2">
+                <Radio className={`w-6 h-6 ${isPlayingAudio ? "text-cyan-400 animate-pulse" : "text-purple-400"}`} />
+                <span>Solfeggio Harmonic Audio Synthesizer</span>
+              </h4>
+              <p className="text-[14px] text-purple-200 mt-1">
+                Real-time Web Audio API sound generator tailored for Solfeggio Sol-Fa healing frequencies.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setBinauralMode(!binauralMode)}
+                className={`text-[18px] font-bold px-3 py-1.5 rounded-full transition-all flex items-center gap-1.5 border ${binauralMode
+                  ? "bg-purple-600 border-purple-400 text-white shadow-md shadow-purple-600/30"
+                  : "bg-slate-800/80 border-slate-700 text-purple-300"
+                  }`}
+              >
+                <Activity className="w-3.5 h-3.5" />
+                <span>Binaural Theta (+4 Hz): {binauralMode ? "ON" : "OFF"}</span>
+              </button>
+
+              {isPlayingAudio ? (
+                <button
+                  onClick={stopAudio}
+                  className="bg-rose-600 hover:bg-rose-700 text-white text-xs font-black px-4 py-2 rounded-full transition-all shadow-lg flex items-center gap-1.5 animate-pulse"
+                >
+                  <Square className="w-3.5 h-3.5 fill-current" />
+                  <span>Stop Audio</span>
+                </button>
+              ) : (
+                <div className="text-[14px] font-semibold text-purple-300 bg-purple-900/50 px-3 py-1.5 rounded-full border border-purple-700/50 flex items-center gap-1">
+                  <Volume2 className="w-3.5 h-3.5 text-purple-400" />
+                  <span>Select Frequency Below</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Sound Wave Graphic Visualizer */}
+          {isPlayingAudio && (
+            <div className="p-3 bg-purple-900/40 rounded-2xl border border-purple-700/50 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Volume2 className="w-5 h-5 text-cyan-400 animate-bounce" />
+                <div>
+                  <span className="text-[18px] font-extrabold text-cyan-300 block">
+                    Now Playing: {playingFreq} Hz Solfeggio Vibration
+                  </span>
+                  <span className="text-[14px] text-purple-200">
+                    {binauralMode ? `Binaural Theta Beat Layer active (${playingFreq} Hz + ${playingFreq + 4} Hz)` : "Pure Carrier Wave"}
+                  </span>
+                </div>
+              </div>
+              <div className="flex items-center gap-1">
+                <span className="w-1.5 h-6 bg-cyan-400 rounded-full animate-pulse"></span>
+                <span className="w-1.5 h-10 bg-purple-400 rounded-full animate-pulse delay-75"></span>
+                <span className="w-1.5 h-4 bg-pink-400 rounded-full animate-pulse delay-150"></span>
+                <span className="w-1.5 h-8 bg-amber-400 rounded-full animate-pulse delay-100"></span>
+                <span className="w-1.5 h-5 bg-emerald-400 rounded-full animate-pulse"></span>
+              </div>
+            </div>
+          )}
+
+          {/* Preset Frequency Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5">
+            {[
+              { freq: 174, label: "174 Hz", planet: "Ketu", benefit: "Pain & Grounding" },
+              { freq: 285, label: "285 Hz", planet: "Saturn", benefit: "Cellular Healing" },
+              { freq: 396, label: "396 Hz", planet: "Mars", benefit: "Liberation & Courage" },
+              { freq: 432, label: "432 Hz", planet: "Moon", benefit: "Cosmic Harmony" },
+              { freq: 528, label: "528 Hz", planet: "Sun", benefit: "Miracle & Vitality" },
+              { freq: 639, label: "639 Hz", planet: "Jupiter", benefit: "Love & Abundance" },
+              { freq: 741, label: "741 Hz", planet: "Rahu", benefit: "Awakening & Clarity" },
+              { freq: 852, label: "852 Hz", planet: "Mercury", benefit: "Intuition & Order" },
+              { freq: 963, label: "963 Hz", planet: "Venus", benefit: "Divine Joy & Charm" },
+            ].map((item) => {
+              const isThisPlaying = isPlayingAudio && playingFreq === item.freq;
+              return (
+                <button
+                  key={item.freq}
+                  onClick={() => isThisPlaying ? stopAudio() : playSolfeggioTone(item.freq)}
+                  className={`p-3 rounded-2xl border text-left transition-all flex flex-col justify-between ${isThisPlaying
+                    ? "bg-gradient-to-r from-cyan-600 to-purple-600 border-cyan-300 text-white shadow-lg scale-[1.02] ring-2 ring-cyan-400"
+                    : "bg-purple-900/40 hover:bg-purple-800/60 border-purple-800/80 text-purple-100"
+                    }`}
+                >
+                  <div className="flex justify-between items-center w-full mb-1">
+                    <span className="text-[18px] font-black tracking-wider text-cyan-200">{item.planet}</span>
+                    {isThisPlaying ? (
+                      <Square className="w-3.5 h-3.5 text-white fill-current animate-pulse" />
+                    ) : (
+                      <Play className="w-3.5 h-3.5 text-purple-300 fill-purple-300 opacity-70" />
+                    )}
+                  </div>
+                  <span className="text-[18px] font-black text-white">{item.label}</span>
+                  <span className="text-[14px] text-purple-300 font-semibold">{item.benefit}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Quantum Remedies & Tuning */}
+        <div className="bg-white border border-purple-100 rounded-3xl p-6 shadow-sm space-y-4">
+          <h4 className="font-bold text-purple-950 text-[18px] flex items-center justify-between">
+            <span className="flex items-center gap-2">
+              <span>🎵 Harmonic Quantum Tuning & Remedies</span>
+            </span>
+            <span className="text-[14px] text-purple-700 bg-purple-50 px-3 py-1 rounded-full font-bold">
+              Listen to Custom Void Frequencies
+            </span>
+          </h4>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {remedies.map((rem, idx) => {
+              const numericFreq = parseInt(rem.solfeggio_freq);
+              const isCardPlaying = isPlayingAudio && playingFreq === numericFreq;
+              return (
+                <div key={idx} className="bg-purple-50/60 border border-purple-200/70 p-4 rounded-2xl space-y-3 flex flex-col justify-between">
+                  <div className="space-y-2">
+                    <div className="flex justify-between items-center">
+                      <span className="font-black text-purple-900 text-[18px]">Number {rem.missing_number} Void</span>
+                      <span className="text-[14px] font-bold bg-purple-200 text-purple-900 px-2 py-0.5 rounded-full">{rem.solfeggio_freq}</span>
+                    </div>
+                    <p className="text-[14px] font-bold text-slate-800">Planet: {rem.planet}</p>
+                    <p className="text-[14px] text-slate-600 leading-relaxed font-medium">
+                      {rem.quantum_tuning}
+                    </p>
+                    <div className="text-[14px] font-semibold text-purple-900 bg-white p-2 rounded-xl border border-purple-100">
+                      <strong>Bija Mantra:</strong> {rem.bija_mantra}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => isCardPlaying ? stopAudio() : playSolfeggioTone(numericFreq)}
+                    className={`w-full mt-2 py-2 px-3 rounded-xl font-bold text-xs transition-all flex items-center justify-center gap-2 shadow-sm ${isCardPlaying
+                      ? "bg-rose-600 hover:bg-rose-700 text-white animate-pulse"
+                      : "bg-purple-900 hover:bg-purple-950 text-white"
+                      }`}
+                  >
+                    {isCardPlaying ? (
+                      <>
+                        <Square className="w-3.5 h-3.5 fill-current" />
+                        <span>Stop {rem.solfeggio_freq} Audio</span>
+                      </>
+                    ) : (
+                      <>
+                        <Play className="w-3.5 h-3.5 fill-current" />
+                        <span>Play {rem.solfeggio_freq} Audio Remedy</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Business & Brand Name Quantum Resonance Tuner */}
+        <div className="bg-white border border-purple-100 rounded-3xl p-6 shadow-sm space-y-5">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 border-b border-purple-100 pb-3">
+            <div>
+              <h4 className="font-bold text-purple-950 text-[18px] flex items-center gap-2">
+                <Briefcase className="w-5 h-5 text-purple-600" />
+                <span>Quantum Brand & Business Name Optimizer</span>
+              </h4>
+              <p className="text-[14px] text-slate-500">
+                Analyze company names, social handles, or personal signatures against your birth vibration.
+              </p>
+            </div>
+            <span className="text-[14px] font-bold bg-amber-100 text-amber-900 px-3 py-1 rounded-full w-fit">
+              Chaldean Quantum Resonance Engine
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+            <div className="md:col-span-2 space-y-1.5">
+              <label className="text-[14px] font-extrabold text-purple-900 uppercase">
+                Enter Business / Brand / Handle / Signature:
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={brandInput}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setBrandInput(val);
+                    if (val.trim()) {
+                      const res = calculateBrandResonance(val, result?.mulank, result?.bhagyank);
+                      setBrandResult(res);
+                    } else {
+                      setBrandResult(null);
+                    }
+                  }}
+                  placeholder="e.g. Astro Consult, Zenith Corp, @quantum_app"
+                  className="w-full px-4 py-2.5 rounded-xl border border-purple-200 focus:outline-none focus:ring-2 focus:ring-purple-600 text-sm font-semibold text-slate-800 bg-purple-50/30"
+                />
+              </div>
+            </div>
+            <div>
+              <button
+                type="button"
+                onClick={() => {
+                  if (brandInput.trim()) {
+                    const res = calculateBrandResonance(brandInput, result?.mulank, result?.bhagyank);
+                    setBrandResult(res);
+                  }
+                }}
+                className="w-full bg-purple-900 hover:bg-purple-950 text-white font-bold py-2.5 px-4 rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-2"
+              >
+                <Sparkles className="w-4 h-4 text-cyan-300" />
+                <span>Analyze Resonance</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Brand Analysis Output Card */}
+          {brandResult && (
+            <div className="p-5 rounded-2xl bg-gradient-to-br from-purple-50 via-indigo-50/50 to-white border border-purple-200 space-y-4 animate-fadeIn">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 border-b border-purple-200/60 pb-3">
+                <div>
+                  <span className="text-[14px] font-bold uppercase tracking-wider text-purple-700 block">Brand Analysis Target</span>
+                  <h5 className="text-[18px] font-black text-purple-950">{brandResult.brandName}</h5>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-right">
+                    <span className="text-[14px] font-bold text-slate-500 block uppercase">Phase Coherence</span>
+                    <span className="text-[24px] font-black text-rose-600">{brandResult.harmony}%</span>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-[14px] font-extrabold ${brandResult.harmony >= 80 ? "bg-emerald-100 text-emerald-900" : "bg-amber-100 text-amber-900"}`}>
+                    {brandResult.statusText}
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-[14px]">
+                <div className="p-3 bg-white rounded-xl border border-purple-100 shadow-2xs">
+                  <span className="text-slate-400 font-bold block uppercase text-[14px]">Chaldean Sum</span>
+                  <span className="text-[18px] font-black text-purple-900">{brandResult.rawTotal}</span>
+                </div>
+                <div className="p-3 bg-white rounded-xl border border-purple-100 shadow-2xs">
+                  <span className="text-slate-400 font-bold block uppercase text-[14px]">Single Root Digit</span>
+                  <span className="text-[18px] font-black text-rose-600">{brandResult.singleDigit} ({brandResult.planet})</span>
+                </div>
+                <div className="p-3 bg-white rounded-xl border border-purple-100 shadow-2xs">
+                  <span className="text-slate-400 font-bold block uppercase text-[14px]">Solfeggio Frequency</span>
+                  <span className="text-lg font-black text-cyan-600">{brandResult.freq} Hz</span>
+                </div>
+                <div className="p-3 bg-white rounded-xl border border-purple-100 shadow-2xs">
+                  <span className="text-slate-400 font-bold block uppercase text-[14px]">Resonance Element</span>
+                  <span className="text-sm font-bold text-slate-800">{brandResult.element}</span>
+                </div>
+              </div>
+
+              <div className="space-y-2 pt-1 text-[14px]">
+                <div className="p-3 bg-purple-100/60 rounded-xl text-purple-950 font-medium">
+                  <strong>Corporate Traits & Energy:</strong> {brandResult.traits}
+                </div>
+
+                <div className="p-3 bg-pink-50 rounded-xl border border-pink-100 text-slate-800 font-medium">
+                  <strong>Auspicious Brand Palette & Gemstone Alignment:</strong> {brandResult.color}
+                </div>
+
+                {brandResult.compoundDetail && (
+                  <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-amber-950">
+                    <strong className="text-amber-900 block font-black text-[14px] mb-0.5">
+                      🌟 Compound Royal Star Number {brandResult.rawTotal}: {brandResult.compoundDetail.title}
+                    </strong>
+                    <p className="text-[14px] leading-relaxed">{brandResult.compoundDetail.desc}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   const renderLifespanCyclesPanel = () => {
     const data = getPinnacleAndChallengeData(result.dob, result.bhagyank);
 
@@ -1957,6 +2634,16 @@ export default function NumerologyDashboard() {
               >
                 <Calendar className="w-5 h-5" />
                 <span>Cycles & Progression</span>
+              </button>
+              <button
+                onClick={() => setActiveTab("quantum")}
+                className={`py-3 px-6 font-bold text-sm md:text-base border-b-2 transition-all flex items-center gap-2 ${activeTab === "quantum"
+                  ? "border-purple-600 text-purple-700 bg-purple-50/50"
+                  : "border-transparent text-purple-900 hover:text-purple-600"
+                  }`}
+              >
+                <Sparkles className="w-5 h-5 text-purple-600" />
+                <span>Quantum Numerology</span>
               </button>
             </div>
 
@@ -2689,19 +3376,20 @@ export default function NumerologyDashboard() {
                   </div>
 
                 </div>
-
-                {activeTab === "correction" && renderNameCorrectionPanel()}
-                {activeTab === "compatibility" && renderMarriageCompatibilityPanel()}
-                {activeTab === "vastu" && renderVastuOverlayPanel()}
-                {activeTab === "analytics" && renderAdvancedAnalyticsPanel()}
-                {activeTab === "cycles" && renderLifespanCyclesPanel()}
               </div>
             )}
 
-          </div>
+            {activeTab === "correction" && renderNameCorrectionPanel()}
+            {activeTab === "compatibility" && renderMarriageCompatibilityPanel()}
+            {activeTab === "vastu" && renderVastuOverlayPanel()}
+            {activeTab === "analytics" && renderAdvancedAnalyticsPanel()}
+            {activeTab === "cycles" && renderLifespanCyclesPanel()}
+            {activeTab === "quantum" && renderQuantumPanel()}
 
-        )};
+          </div>
+        )}
       </div>
     </div>
   )
-};
+}
+

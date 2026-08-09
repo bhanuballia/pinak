@@ -5,7 +5,7 @@ const AnimatedTransitsViewer = ({ formData }) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  
+
   // Animation state
   const [transitDate, setTransitDate] = useState(new Date());
   const [stepUnit, setStepUnit] = useState('day');
@@ -31,7 +31,7 @@ const AnimatedTransitsViewer = ({ formData }) => {
   const fetchData = async () => {
     if (!formData) return;
     setLoading(true);
-    
+
     let pDate = '2000-01-01';
     let pTime = '12:00:00';
     let pLat = 28.6139;
@@ -65,18 +65,18 @@ const AnimatedTransitsViewer = ({ formData }) => {
       setLoading(false);
       return; // Cannot parse
     }
-    
+
     try {
       const year = transitDate.getFullYear();
       const month = String(transitDate.getMonth() + 1).padStart(2, '0');
       const day = String(transitDate.getDate()).padStart(2, '0');
       const t_date = `${year}-${month}-${day}`;
-      
+
       const hours = String(transitDate.getHours()).padStart(2, '0');
       const mins = String(transitDate.getMinutes()).padStart(2, '0');
       const secs = String(transitDate.getSeconds()).padStart(2, '0');
       const t_time = `${hours}:${mins}:${secs}`;
-      
+
       const payload = {
         birth_date: pDate,
         birth_time: pTime.includes(":") && pTime.split(":").length === 2 ? pTime + ":00" : pTime,
@@ -92,7 +92,7 @@ const AnimatedTransitsViewer = ({ formData }) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
       });
-      
+
       if (!response.ok) throw new Error("Failed to fetch transit data");
       const result = await response.json();
       setData(result);
@@ -133,39 +133,39 @@ const AnimatedTransitsViewer = ({ formData }) => {
           <h1 className="text-2xl font-bold text-[#00ffcc]">Animated Transits (Gochara)</h1>
           <p className="text-gray-400 text-sm">Inner: Birth Chart • Outer: Transits</p>
         </div>
-        
+
         {/* Animation Controls */}
         <div className="flex items-center gap-3 mt-4 md:mt-0">
-          <button 
+          <button
             onClick={() => handleStep(-1)}
             className="px-3 py-1 bg-[#333] hover:bg-[#444] rounded text-white text-lg font-bold"
           >
             -
           </button>
-          
-          <button 
+
+          <button
             onClick={() => setIsAnimating(!isAnimating)}
             className={`px-4 py-1 rounded text-white font-bold ${isAnimating ? 'bg-red-600 hover:bg-red-500' : 'bg-blue-600 hover:bg-blue-500'}`}
           >
             {isAnimating ? 'Stop' : 'Animate'}
           </button>
-          
-          <button 
+
+          <button
             onClick={() => handleStep(1)}
             className="px-3 py-1 bg-[#333] hover:bg-[#444] rounded text-white text-lg font-bold"
           >
             +
           </button>
-          
-          <select 
+
+          <select
             className="bg-[#222] border border-[#444] text-white px-2 py-1 rounded outline-none"
             value={stepValue}
             onChange={(e) => setStepValue(parseInt(e.target.value))}
           >
             {[1, 2, 3, 4, 5, 10].map(v => <option key={v} value={v}>{v}</option>)}
           </select>
-          
-          <select 
+
+          <select
             className="bg-[#222] border border-[#444] text-white px-2 py-1 rounded outline-none"
             value={stepUnit}
             onChange={(e) => setStepUnit(e.target.value)}
@@ -189,32 +189,32 @@ const AnimatedTransitsViewer = ({ formData }) => {
         <div className="flex flex-col xl:flex-row gap-6">
           {/* Chart Section */}
           <div className="flex-1 flex justify-center items-start">
-             <div className="relative">
-               <CircularTransitChart 
-                 birthPlanets={data.birth_chart}
-                 transitPlanets={data.transit_chart}
-                 ascendantSignIndex={ascIndex >= 0 ? ascIndex : 0}
-                 currentDate={data.transit_date_formatted}
-                 currentTime={data.transit_time_formatted}
-               />
-               {loading && (
-                 <div className="absolute top-2 right-2 flex items-center gap-2">
-                   <div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
-                   <span className="text-xs text-yellow-400 font-bold">Calculating...</span>
-                 </div>
-               )}
-             </div>
+            <div className="relative">
+              <CircularTransitChart
+                birthPlanets={data.birth_chart}
+                transitPlanets={data.transit_chart}
+                ascendantSignIndex={ascIndex >= 0 ? ascIndex : 0}
+                currentDate={data.transit_date_formatted}
+                currentTime={data.transit_time_formatted}
+              />
+              {loading && (
+                <div className="absolute top-2 right-2 flex items-center gap-2">
+                  <div className="w-3 h-3 bg-yellow-400 rounded-full animate-pulse"></div>
+                  <span className="text-xs text-yellow-400 font-bold">Calculating...</span>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Tables Section */}
           <div className="flex-1 flex flex-col gap-4">
-            
+
             {/* Birth Chart Table */}
             <div className="bg-[#f8d0dc] text-black border border-[#0000aa] rounded overflow-hidden shadow-lg">
               <div className="bg-[#ffffff] text-[#0000aa] font-bold p-1 px-3 border-b border-[#0000aa] flex justify-between">
                 <span>Birth Chart</span>
               </div>
-              <div className="overflow-x-auto text-xs font-mono p-1">
+              <div className="overflow-x-auto text-[14px] font-mono p-1">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-[#0000aa]/30">
@@ -230,7 +230,7 @@ const AnimatedTransitsViewer = ({ formData }) => {
                         <td className="py-1 px-2 font-bold">{p.planet}</td><td className="py-1 px-1">{p.rc}</td>
                         <td className="py-1 px-2">{p.rashi}</td><td className="py-1 px-2">{p.nakshatra}</td>
                         <td className="py-1 px-1">{p.pada}</td><td className="py-1 px-2">{p.degree.toFixed(4)}°</td>
-                        <td className="py-1 px-2">{p.dignity}</td><td className="py-1 px-2">{p.sb}</td>
+                        <td className="py-1 px-2">{p.dignity || '-'}</td><td className="py-1 px-2">{p.sb || '-'}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -243,7 +243,7 @@ const AnimatedTransitsViewer = ({ formData }) => {
               <div className="bg-[#ffffff] text-[#0000aa] font-bold p-1 px-3 border-b border-[#0000aa] flex justify-between">
                 <span>Gochara (Transits)</span>
               </div>
-              <div className="overflow-x-auto text-xs font-mono p-1">
+              <div className="overflow-x-auto text-[14px] font-mono p-1">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-[#0000aa]/30">
@@ -270,7 +270,7 @@ const AnimatedTransitsViewer = ({ formData }) => {
               <div className="bg-[#ffffff] text-[#0000aa] font-bold p-1 px-3 border-b border-[#0000aa] flex justify-between">
                 <span>Kakshas</span>
               </div>
-              <div className="overflow-x-auto text-xs font-mono p-1">
+              <div className="overflow-x-auto text-[14px] font-mono p-1">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-[#0000aa]/30">

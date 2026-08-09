@@ -2866,7 +2866,7 @@ const getDignityStatus = (planet, signName) => {
   return { label: 'Neutral', bg: 'bg-slate-100', text: 'text-slate-600', border: 'border-slate-200' };
 };
 
-export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', fullSize = false, onChartClick }) => {
+export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', fullSize = false, hideAnalysis = false, onChartClick }) => {
   const [language, setLanguage] = useState('en');
   const chartData = baseChartKey === 'charts' ? data.charts : (data.vargas?.[baseChartKey] || data.charts);
   const lagnaHouse = chartData?.houses?.[1] || chartData?.houses?.["1"] || {};
@@ -2959,9 +2959,9 @@ export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', 
         </div>
 
         {/* Planet in Sign & House Analysis Section */}
-        {!fullSize && (
+        {!fullSize && !hideAnalysis && (
           <div className="p-2 bg-slate-50 border-t border-slate-200 mt-2">
-            <h3 className="text-[10px] font-black uppercase tracking-tight mb-3 text-slate-800 text-center">Transit Planet in Sign & House Analysis</h3>
+            <h3 className="text-[18px] font-black uppercase tracking-tight mb-3 text-slate-800 text-center">Transit Planet in Sign & House Analysis</h3>
             <div className="space-y-3">
               {Object.entries(transitPositions).map(([planet, pos]) => {
                 const valid = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
@@ -3001,15 +3001,15 @@ export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', 
                             {planet}{isRetro ? '*' : ''}{isCombust ? '#' : ''} Transit
                           </h4>
                           {dignity && (
-                            <span className={`text-[7px] px-1.5 py-0.5 rounded font-black uppercase border ${dignity.bg} ${dignity.text} ${dignity.border}`}>
+                            <span className={`text-[16px] px-1.5 py-0.5 rounded font-black uppercase border ${dignity.bg} ${dignity.text} ${dignity.border}`}>
                               {dignity.label}
                             </span>
                           )}
                         </div>
                         <div className="flex items-center gap-2 mt-1 flex-wrap">
-                          <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest">{signName} · House {houseLabel}</span>
-                          {isRetro && <span className="text-[7px] px-1 bg-amber-100 text-amber-700 rounded font-black uppercase">Vakri ℞</span>}
-                          {isCombust && <span className="text-[7px] px-1 bg-red-100 text-red-700 rounded font-black uppercase">Combust</span>}
+                          <span className="text-[18px] font-bold text-slate-500 uppercase tracking-widest">{signName} · House {houseLabel}</span>
+                          {isRetro && <span className="text-[18px] px-1 bg-amber-100 text-amber-700 rounded font-black uppercase">Vakri ℞</span>}
+                          {isCombust && <span className="text-[18px] px-1 bg-red-100 text-red-700 rounded font-black uppercase">Combust</span>}
                         </div>
                       </div>
                     </div>
@@ -3018,18 +3018,18 @@ export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', 
                     <div className="px-4 pb-4 space-y-3">
                       {signEffect ? (
                         <div>
-                          <p className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {signName}</p>
-                          <p className="text-sm leading-relaxed text-slate-700 font-serif">
+                          <p className="text-[18px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {signName}</p>
+                          <p className="text-[18px] leading-relaxed text-slate-900 font-serif">
                             {signEffect}
                           </p>
                         </div>
                       ) : (
-                        <p className="text-sm text-gray-400 italic font-serif">Sign interpretation coming soon.</p>
+                        <p className="text-[18px] text-gray-400 italic font-serif">Sign interpretation coming soon.</p>
                       )}
                       {houseEffect && (
                         <div className="pt-3 border-t border-indigo-50">
-                          <p className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {houseLabel} House (Transiting)</p>
-                          <p className="text-sm leading-relaxed text-slate-700 font-serif">
+                          <p className="text-[18px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {houseLabel} House (Transiting)</p>
+                          <p className="text-[18px] leading-relaxed text-slate-900 font-serif">
                             {houseEffect}
                           </p>
                         </div>
@@ -5122,7 +5122,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
     { id: "ascendant", label: "Ascendant", icon: "👤", color: "from-stone-500 to-stone-700" },
     { id: "study", label: "Study", icon: "📚", color: "from-red-500 to-black-600" },
     { id: "career", label: "Career", icon: "💼", color: "from-slate-700 to-slate-900" },
-    { id: "finance", label: "Finance", icon: "💰", color: "from-emerald-500 to-teal-700" },
+    { id: "finance", label: "Finance (Wealth Activation)", icon: "💰", color: "from-emerald-500 to-teal-700" },
     { id: "marriage", label: "Marriage", icon: "💍", color: "from-rose-400 to-pink-600" },
     { id: "business", label: "Business", icon: "💹", color: "from-amber-500 to-orange-700" },
     { id: "business_naming", label: "Business Naming", icon: "🏢", color: "from-blue-500 to-indigo-700" },
@@ -6254,6 +6254,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                       transitPositions={timeControlledPositions || transitPositions}
                       baseChartKey={cid === 'transit_compare2' ? transitCompareBaseChart : 'charts'}
                       onChartClick={() => setShowVimshottariTransitControl(true)}
+                      hideAnalysis={cid === 'transit_compare2'}
                     />
                   </div>
                 </div>
@@ -6711,14 +6712,17 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
               <button className="bg-rose-100 hover:bg-indigo-200 text-black px-4 py-1.5 rounded-lg text-[12px] font-black uppercase tracking-widest transition-all shadow-lg border border-emerald-500/30 outline-none cursor-pointer flex items-center gap-2">
                 ORACLE TOOLS <span className="text-[10px]">▼</span>
               </button>
-              <div className="absolute top-full left-0 mt-2 w-56 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/oracle:opacity-100 group-hover/oracle:visible transition-all duration-200 py-2">
+              <div className="absolute top-full left-0 mt-2 w-72 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/oracle:opacity-100 group-hover/oracle:visible transition-all duration-200 py-2">
                 {oracle_items.map(item => (
                   <button
                     key={item.id}
                     onClick={() => handleOracleClick(item.id)}
-                    className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight flex items-center gap-2"
+                    className={`w-full text-left px-4 py-2.5 text-xs font-bold transition-all uppercase tracking-tight flex items-center gap-2.5 ${item.id === 'finance'
+                      ? 'bg-rose-50 hover:bg-rose-100 text-rose-900 font-extrabold border-l-4 border-rose-500 shadow-sm my-0.5'
+                      : 'text-slate-700 hover:bg-indigo-50 hover:text-indigo-900'
+                      }`}
                   >
-                    <span className="text-sm">{item.icon}</span> {item.label}
+                    <span className="text-sm shrink-0">{item.icon}</span> <span className="whitespace-normal leading-snug">{item.label}</span>
                   </button>
                 ))}
               </div>

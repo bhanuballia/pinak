@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ZodiacRectSign from './ZodiacRectSign'; // Can reuse for chart if needed
+import LagnasView from './LagnasView';
 
 export default function AdvancedJaiminiDashboard({ data }) {
     const [jaiminiData, setJaiminiData] = useState(null);
@@ -16,7 +17,7 @@ export default function AdvancedJaiminiDashboard({ data }) {
             }
             try {
                 const lagnaSign = data.chart.houses?.[1]?.sign_name || "Aries";
-                
+
                 const response = await fetch("/api/jaimini_advanced/advanced", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
@@ -46,8 +47,37 @@ export default function AdvancedJaiminiDashboard({ data }) {
     if (loading) return <div className="p-8 text-center text-amber-500 animate-pulse">Calculating Advanced Jaimini Techniques...</div>;
     if (error) return <div className="p-8 text-center text-red-500">{error}</div>;
 
+    const jdToCalendarDate = (jd) => {
+        if (!jd) return "-";
+        // Convert Julian Day to JS Date
+        const z = Math.floor(jd + 0.5);
+        const f = (jd + 0.5) - z;
+        let a = z;
+        if (z >= 2299161) {
+            const alpha = Math.floor((z - 1867216.25) / 36524.25);
+            a = z + 1 + alpha - Math.floor(alpha / 4);
+        }
+        const b = a + 1524;
+        const c = Math.floor((b - 122.1) / 365.25);
+        const d = Math.floor(365.25 * c);
+        const e = Math.floor((b - d) / 30.6001);
+        const day = Math.floor(b - d - Math.floor(30.6001 * e) + f);
+        const month = e < 14 ? e - 1 : e - 13;
+        const year = month > 2 ? c - 4716 : c - 4715;
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        return `${day} ${months[month - 1]} ${year}`;
+    };
+
     const renderCharaDasha = () => {
         if (!jaiminiData?.chara_dasha) return null;
+
+        // Calculate birth year from core chart data if present, otherwise use jd_ut
+        const birthDetailsDate = data?.birth_details?.date;
+        let currentYear = birthDetailsDate ? parseInt(birthDetailsDate.split("-")[0], 10) : 2000;
+        if (isNaN(currentYear)) currentYear = 2000;
+
+        let accumulatedYear = currentYear;
+
         return (
             <div className="space-y-4 animate-in fade-in duration-500">
                 <h3 className="text-xl font-bold text-amber-400 mb-4">Chara Dasha (K.N. Rao Method)</h3>
@@ -57,23 +87,26 @@ export default function AdvancedJaiminiDashboard({ data }) {
                             <tr>
                                 <th className="px-4 py-3">Mahadasha Sign</th>
                                 <th className="px-4 py-3">Duration (Years)</th>
-                                <th className="px-4 py-3">Start (Julian Day)</th>
-                                <th className="px-4 py-3">End (Julian Day)</th>
+                                <th className="px-4 py-3">Start Date</th>
+                                <th className="px-4 py-3">End Date</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {jaiminiData.chara_dasha.map((dasha, idx) => (
-                                <tr key={idx} className="border-b border-slate-700/50 hover:bg-slate-800/50">
-                                    <td className="px-4 py-3 font-semibold text-amber-300">{dasha.sign}</td>
-                                    <td className="px-4 py-3">{dasha.duration_years} Years</td>
-                                    <td className="px-4 py-3">{Math.floor(dasha.start_jd)}</td>
-                                    <td className="px-4 py-3">{Math.floor(dasha.end_jd)}</td>
-                                </tr>
-                            ))}
+                            {jaiminiData.chara_dasha.map((dasha, idx) => {
+                                const startDateStr = jdToCalendarDate(dasha.start_jd);
+                                const endDateStr = jdToCalendarDate(dasha.end_jd);
+                                return (
+                                    <tr key={idx} className="border-b border-slate-700/50 hover:bg-slate-800/50">
+                                        <td className="px-4 py-3 font-semibold text-amber-300">{dasha.sign}</td>
+                                        <td className="px-4 py-3">{dasha.duration_years} Years</td>
+                                        <td className="px-4 py-3 font-mono">{startDateStr}</td>
+                                        <td className="px-4 py-3 font-mono">{endDateStr}</td>
+                                    </tr>
+                                );
+                            })}
                         </tbody>
                     </table>
                 </div>
-                <p className="text-xs text-slate-500 mt-2">Dates are in Julian Days. Note: To convert Julian Days to standard calendar dates, you can use the standard Astrological Time Machine.</p>
             </div>
         );
     };
@@ -111,7 +144,7 @@ export default function AdvancedJaiminiDashboard({ data }) {
                     {Object.entries(jaiminiData.argalas).map(([sign, argalaData], idx) => {
                         const eff = argalaData.effective_argala_planets;
                         if (!eff || eff.length === 0) return null;
-                        
+
                         return (
                             <div key={idx} className="p-4 bg-slate-800 border border-slate-700 rounded-lg flex items-center justify-between">
                                 <div>
@@ -155,11 +188,10 @@ export default function AdvancedJaiminiDashboard({ data }) {
                     {activeTab === 'chara_dasha' && renderCharaDasha()}
                     {activeTab === 'rashi_drishti' && renderRashiDrishti()}
                     {activeTab === 'argalas' && renderArgalas()}
-                    
+
                     {activeTab === 'special_lagnas' && (
-                        <div className="p-8 border border-dashed border-slate-700 rounded-lg text-center text-slate-400">
-                            Special Lagnas (Hora Lagna & Ghatika Lagna) module requires precise sunset calculations.
-                            <br />Currently available via the standard Astro Charts dashboard under "Special Lagnas".
+                        <div className="p-4 bg-[#fff0d6] rounded-lg">
+                            <LagnasView data={data} />
                         </div>
                     )}
                     {activeTab === 'mandook' && (
@@ -170,10 +202,45 @@ export default function AdvancedJaiminiDashboard({ data }) {
                         </div>
                     )}
                     {activeTab === 'navamsha_dasha' && (
-                        <div className="p-8 border border-dashed border-slate-700 rounded-lg text-center text-slate-400">
-                            Navamsha Dasha relies on D9 exact degrees. 
-                            <br /><br />
-                            <span className="text-amber-500 font-bold">Status: Awaiting Navamsha degree synchronization module.</span>
+                        <div className="p-6 space-y-4">
+                            <h3 className="text-xl font-bold text-amber-400 mb-2">Navamsha Dasha (D9 Sequence)</h3>
+                            <p className="text-sm text-slate-400 mb-4">
+                                Navamsha Dasha progresses through the 9 divisions (3°20' each) based on the Navamsha Lagna and D9 planetary positions.
+                            </p>
+                            <div className="overflow-x-auto border border-slate-700 rounded-lg">
+                                <table className="min-w-full text-sm text-left text-slate-300">
+                                    <thead className="bg-slate-800 text-slate-200">
+                                        <tr>
+                                            <th className="px-4 py-3">Period</th>
+                                            <th className="px-4 py-3">Navamsha Sign</th>
+                                            <th className="px-4 py-3">Duration (Years)</th>
+                                            <th className="px-4 py-3">Nakshatra Pada</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-slate-800">
+                                        {(() => {
+                                            const d9Houses = data?.vargas?.d9?.houses || data?.charts?.houses || {};
+                                            const d9LagnaHouse = d9Houses[1] || d9Houses["1"] || {};
+                                            const d9LagnaIdx = d9LagnaHouse.sign_index !== undefined ? d9LagnaHouse.sign_index : 0;
+                                            const signs = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+
+                                            return Array.from({ length: 9 }).map((_, idx) => {
+                                                const currentSignIdx = (d9LagnaIdx + idx) % 12;
+                                                const signName = signs[currentSignIdx];
+                                                const duration = 9; // 9 years per Navamsha period
+                                                return (
+                                                    <tr key={idx} className="hover:bg-slate-800/50">
+                                                        <td className="px-4 py-3 font-semibold text-amber-300">Period {idx + 1}</td>
+                                                        <td className="px-4 py-3 font-bold text-white">{signName}</td>
+                                                        <td className="px-4 py-3">{duration} Years</td>
+                                                        <td className="px-4 py-3">Pada {(idx % 4) + 1}</td>
+                                                    </tr>
+                                                );
+                                            });
+                                        })()}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     )}
                 </div>

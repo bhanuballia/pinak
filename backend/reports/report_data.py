@@ -5,7 +5,7 @@ pdf renderer and the frontend preview ui.
 
 from __future__ import annotations
 
-import datetime as _dt
+from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 
 from astronomy.julian import datetime_to_julian, julian_to_datetime
@@ -613,7 +613,43 @@ def summarize_dasha(jd_ut: float, chart: Dict[str, Any]) -> Dict[str, Any]:
                 
         return entry
     dashas = [enrich(dict(d)) for d in dashas]
-    current = dashas[0] if dashas else None
+    
+    # Calculate current Julian Day (now)
+    now_dt = datetime.now()
+    now_jd = datetime_to_julian(now_dt)
+
+    current_maha = None
+    current_antar = None
+
+    # Search for active Mahadasha and Antardasha corresponding to now_jd
+    for d in dashas:
+        if d.get("start_jd", 0) <= now_jd <= d.get("end_jd", 0):
+            current_maha = d
+            for ad in d.get("antardashas", []):
+                if ad.get("start_jd", 0) <= now_jd <= ad.get("end_jd", 0):
+                    current_antar = ad
+                    break
+            break
+
+    # Fallback to first dasha if current date is outside calculation bounds
+    if not current_maha and dashas:
+        current_maha = dashas[0]
+        if current_maha.get("antardashas"):
+            current_antar = current_maha["antardashas"][0]
+
+    current = {
+        "mahadasha": {
+            "planet": current_maha.get("lord") if current_maha else "",
+            "start_date": current_maha.get("start_date") if current_maha else "",
+            "end_date": current_maha.get("end_date") if current_maha else "",
+        },
+        "antardasha": {
+            "planet": current_antar.get("lord") if current_antar else "",
+            "start_date": current_antar.get("start_date") if current_antar else "",
+            "end_date": current_antar.get("end_date") if current_antar else "",
+        }
+    } if current_maha else None
+
     return {
         "current": current,
         "list": dashas,
@@ -662,8 +698,8 @@ def assemble_report_data(
         time += ":00"
     y, m, d = [int(x) for x in date.split("-")]
     hh, mm, ss = [int(x) for x in time.split(":")]
-    dt_local = _dt.datetime(y, m, d, hh, mm, ss)
-    dt_utc = dt_local - _dt.timedelta(hours=tz_offset)
+    dt_local = datetime(y, m, d, hh, mm, ss)
+    dt_utc = dt_local - timedelta(hours=tz_offset)
     jd_ut = datetime_to_julian(dt_utc)
 
     chart = build_rashi_chart(jd_ut, lat, lon, house_system="W", style="north")

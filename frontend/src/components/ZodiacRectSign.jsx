@@ -88,7 +88,7 @@ const NAKSHATRA_HINDI = {
     "Revati": "रेव"
 };
 
-const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", planetEffects = {}, aspectRatio = 2.5, planetPositions = [], isRect, setIsRect, scaleText = 1, hideLegend = false, hideOuterRect, defaultLang = 'en', showFullscreenButton = false, onPopOut, showNakshatra = false, showDegree = false }) => {
+const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", planetEffects = {}, aspectRatio = 2.5, planetPositions = [], isRect, setIsRect, scaleText = 1, hideLegend = false, hideOuterRect, defaultLang = 'en', showFullscreenButton = false, onPopOut, showNakshatra = false, showDegree = false, bgColor, hideTranslation = false }) => {
     const isMainChart = title && (
         title.toLowerCase().includes('birth') ||
         title.toLowerCase().includes('lagna') ||
@@ -146,7 +146,7 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
         <div ref={containerRef} style={{
             display: 'flex', flexDirection: 'column',
             width: '100%', height: '100%',
-            background: isLegacy ? '#f0ebe3ff' : 'white',
+            background: bgColor !== undefined ? bgColor : (isLegacy ? 'transparent' : 'white'),
             transform: `scale(${zoom})`,
             transformOrigin: 'center center',
             zIndex: zoom > 1 ? 50 : 1,
@@ -154,7 +154,7 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
             transition: 'transform 0.2s ease-in-out',
             boxShadow: zoom > 1 ? '0 25px 50px -12px rgba(0, 0, 0, 0.25)' : 'none'
         }}>
-            {(title || setIsRect) && (
+            {Boolean(title && title.trim()) && (
                 <div style={{
                     display: 'flex',
                     justifyContent: 'space-between',
@@ -192,17 +192,19 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
                     </div>
 
                     <div style={{ display: 'flex', gap: '4px' }}>
-                        <button
-                            onClick={(e) => { e.stopPropagation(); setLang(lang === 'en' ? 'hi' : 'en'); }}
-                            style={{
-                                background: 'rgba(228, 234, 243, 1)', color: '#fff', border: 'none',
-                                padding: '2px 6px', borderRadius: '4px', fontSize: '14px',
-                                fontWeight: 'bold', cursor: 'pointer'
-                            }}
-                            title="Toggle Language"
-                        >
-                            {lang === 'en' ? 'अ' : 'A'}
-                        </button>
+                        {!hideTranslation && (
+                            <button
+                                onClick={(e) => { e.stopPropagation(); setLang(lang === 'en' ? 'hi' : 'en'); }}
+                                style={{
+                                    background: 'rgba(228, 234, 243, 1)', color: '#fff', border: 'none',
+                                    padding: '2px 6px', borderRadius: '4px', fontSize: '14px',
+                                    fontWeight: 'bold', cursor: 'pointer'
+                                }}
+                                title="Toggle Language"
+                            >
+                                {lang === 'en' ? 'अ' : 'A'}
+                            </button>
+                        )}
                     </div>
                 </div>
             )}
