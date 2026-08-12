@@ -4,19 +4,24 @@ import { BPHS_FIRST_HOUSE_RULES, SIGN_LORDS, SIGN_NAMES, MALEFIC_PLANETS, BENEFI
 import { BPHS_BHAVA_LORDS_RULES } from '../data/bphsBhavaLords';
 
 
-export default function AscendantAnalysis() {
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
+export default function AscendantAnalysis({ reportData }) {
+    const [data, setData] = useState(reportData || null);
+    const [loading, setLoading] = useState(!reportData);
     const [selectedPlanet, setSelectedPlanet] = useState(null);
     const [isHindi, setIsHindi] = useState(false);
 
     useEffect(() => {
+        if (reportData) {
+            setData(reportData);
+            setLoading(false);
+            return;
+        }
         const savedData = localStorage.getItem('worksheetData');
         if (savedData) {
             setData(JSON.parse(savedData));
         }
         setLoading(false);
-    }, []);
+    }, [reportData]);
 
     if (loading) return <div className="p-10 text-center italic text-indigo-600">Loading Ascendant Analysis...</div>;
     if (!data) return <div className="p-10 text-center italic text-red-400">No data found. Please generate a report.</div>;
@@ -176,7 +181,7 @@ export default function AscendantAnalysis() {
                 )}
 
                 {/* Core Personality & Gender Traits */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 print-avoid-break print:break-before-page" style={{ pageBreakBefore: 'always', breakBefore: 'page' }}>
                     <div className="space-y-8">
                         <div className="bg-white rounded-[3rem] p-12 shadow-xl border border-stone-100 relative overflow-hidden group hover:shadow-2xl transition-all">
                             <div className="absolute top-0 right-0 p-8 opacity-5 text-9xl font-black text-stone-900 pointer-events-none">✨</div>
@@ -213,16 +218,16 @@ export default function AscendantAnalysis() {
                     </div>
 
                     <div className="space-y-8">
-                        <div className="bg-[#44403c] rounded-[3rem] p-12 text-white shadow-2xl relative overflow-hidden">
-                            <h3 className="text-2xl font-black italic mb-8 relative z-10">Physical & Vitality Markers</h3>
+                        <div className="bg-white rounded-[3rem] p-12 border border-stone-200 shadow-xl relative overflow-hidden print:bg-white print:border-stone-200">
+                            <h3 className="text-2xl font-black italic mb-8 text-[#44403c] relative z-10">Physical & Vitality Markers</h3>
                             <div className="space-y-8 relative z-10">
                                 <div>
-                                    <p className="text-[18px] font-bold uppercase text-stone-400 mb-2 tracking-widest">Physical Traits</p>
-                                    <p className="text-[18px] text-stone-200 leading-relaxed italic">{interpretation.physical_traits}</p>
+                                    <p className="text-[18px] font-bold uppercase text-amber-800 mb-2 tracking-widest">Physical Traits</p>
+                                    <p className="text-[18px] text-stone-800 leading-relaxed italic">{interpretation.physical_traits}</p>
                                 </div>
                                 <div>
-                                    <p className="text-[18px] font-bold uppercase text-stone-400 mb-2 tracking-widest">Health & Constitution</p>
-                                    <p className="text-[18px] text-stone-200 leading-relaxed italic">{interpretation.health_vitality}</p>
+                                    <p className="text-[18px] font-bold uppercase text-amber-800 mb-2 tracking-widest">Health & Constitution</p>
+                                    <p className="text-[18px] text-stone-800 leading-relaxed italic">{interpretation.health_vitality}</p>
                                 </div>
                             </div>
                         </div>
@@ -290,14 +295,14 @@ export default function AscendantAnalysis() {
 
                 {/* Planetary Impacts Specific to Sign */}
                 {interpretation.planetary_impacts && (
-                    <div className="bg-stone-900 rounded-[4rem] p-16 text-white shadow-2xl relative overflow-hidden">
+                    <div className="bg-white rounded-[4rem] p-16 border border-stone-200 shadow-xl relative overflow-hidden print:bg-white print:border-stone-200">
                         <div className="absolute bottom-0 left-0 p-12 opacity-5 text-9xl">🔭</div>
-                        <h3 className="text-[18px] font-black italic mb-12 text-stone-200 text-center">Planetary Dynamics for {ascendantSign}</h3>
+                        <h3 className="text-[18px] font-black italic mb-12 text-[#44403c] text-center">Planetary Dynamics for {ascendantSign}</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                             {Object.entries(interpretation.planetary_impacts).map(([pName, pDesc], idx) => (
-                                <div key={idx} className="bg-white/5 border border-white/10 p-6 rounded-3xl hover:bg-white/10 transition-all group">
-                                    <p className="text-[18px] font-black text-amber-400 uppercase tracking-widest mb-3">{pName}</p>
-                                    <p className="text-[18px] text-stone-300 italic leading-relaxed">{pDesc}</p>
+                                <div key={idx} className="bg-stone-50 border border-stone-200 p-6 rounded-3xl hover:bg-stone-100 transition-all group print:bg-stone-50">
+                                    <p className="text-[18px] font-black text-amber-800 uppercase tracking-widest mb-3">{pName}</p>
+                                    <p className="text-[18px] text-stone-800 italic leading-relaxed">{pDesc}</p>
                                 </div>
                             ))}
                         </div>
@@ -466,7 +471,7 @@ export default function AscendantAnalysis() {
                         )}
 
                         {/* Decanates & Bodily Limbs Mapping */}
-                        <div className="bg-stone-50 rounded-[3rem] p-8 md:p-10 border border-stone-200 space-y-6">
+                        <div className="bg-stone-50 rounded-[3rem] p-8 md:p-10 border border-stone-200 space-y-6 print:break-before-page" style={{ pageBreakBefore: 'always', breakBefore: 'page' }}>
                             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                                 <div>
                                     <h4 className="text-[18px] font-black text-stone-900 italic">{BPHS_FIRST_HOUSE_RULES.decanatesAndLimbs.title}</h4>
@@ -488,20 +493,20 @@ export default function AscendantAnalysis() {
                                     const isActive = decanateNum === dIndex;
                                     return (
                                         <div key={dIndex} className={`p-6 rounded-[2rem] border transition-all ${isActive
-                                            ? "bg-stone-900 text-white border-stone-900 shadow-lg scale-105"
+                                            ? "bg-white text-stone-900 border-amber-600 shadow-lg scale-105 ring-2 ring-amber-200 print:bg-white print:border-amber-600"
                                             : "bg-white text-stone-700 border-stone-200 opacity-60"
                                             }`}>
-                                            <div className="flex justify-between items-center mb-4 border-b pb-2 border-stone-300/30">
-                                                <span className="text-[18px] font-bold uppercase tracking-widest">{decData.description}</span>
+                                            <div className="flex justify-between items-center mb-4 border-b pb-2 border-amber-200">
+                                                <span className={`text-[18px] font-black uppercase tracking-widest ${isActive ? "text-amber-900" : "text-stone-700"}`}>{decData.description}</span>
                                                 {isActive && (
-                                                    <span className="w-2.5 h-2.5 bg-amber-400 rounded-full animate-ping"></span>
+                                                    <span className="w-2.5 h-2.5 bg-amber-500 rounded-full animate-ping"></span>
                                                 )}
                                             </div>
                                             <div className="space-y-2 text-[14px] font-mono leading-tight">
                                                 {decData.mapping.map((m, mIdx) => (
-                                                    <div key={mIdx} className="flex justify-between border-b border-stone-200/10 pb-1">
-                                                        <span className={isActive ? "text-stone-900" : "text-stone-900"}>{m.house}</span>
-                                                        <span className="font-bold">{m.part}</span>
+                                                    <div key={mIdx} className="flex justify-between border-b border-stone-200/50 pb-1">
+                                                        <span className="text-stone-800 font-bold">{m.house}</span>
+                                                        <span className="font-bold text-amber-900">{m.part}</span>
                                                     </div>
                                                 ))}
                                             </div>

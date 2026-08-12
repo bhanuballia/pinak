@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { MOON_SIGN_INTERPRETATIONS, MOON_SIGN_INTRO } from '../data/moonSignData';
 
-export default function MoonSignAnalysis() {
-    const [data, setData] = useState(null);
-    const [loading, setLoading] = useState(true);
+export default function MoonSignAnalysis({ reportData }) {
+    const [data, setData] = useState(reportData || null);
+    const [loading, setLoading] = useState(!reportData);
 
     useEffect(() => {
+        if (reportData) {
+            setData(reportData);
+            setLoading(false);
+            return;
+        }
         const savedData = localStorage.getItem('worksheetData');
         if (savedData) {
             setData(JSON.parse(savedData));
         }
         setLoading(false);
-    }, []);
+    }, [reportData]);
 
     if (loading) return <div className="p-10 text-center italic text-indigo-600">Loading Moon Sign Analysis...</div>;
     if (!data) return <div className="p-10 text-center italic text-red-400">No data found. Please generate a report.</div>;
@@ -131,15 +136,15 @@ export default function MoonSignAnalysis() {
 
                 {/* Compatibility & Remedies */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="bg-white p-12 rounded-[3rem] border border-slate-100 shadow-lg relative overflow-hidden">
+                    <div className="bg-white p-12 rounded-[3rem] border border-slate-200 shadow-xl relative overflow-hidden print:bg-white print:border-slate-200">
                         <h4 className="text-2xl font-black italic text-[#334155] mb-6">Emotional Alignment</h4>
                         <p className="text-sm text-slate-600 leading-relaxed italic mb-8">
                             Your Moon sign deeply influences how you connect with others on a soul level. You feel most secure with partners who understand your inner world.
                         </p>
                         <div className="flex flex-wrap gap-3">
-                            {["Compatible Signs:", "Cancer", "Scorpio", "Pisces", "Earth Signs"].map((tag, i) => (
-                                <span key={i} className={`px-4 py-2 rounded-full text-xs font-bold border ${i === 0 ? 'bg-slate-800 text-white border-slate-800' : 'bg-slate-50 text-slate-700 border-slate-200'}`}>
-                                    {tag}
+                            {["Compatible Signs:", ...(interpretation.suitable_partners ? interpretation.suitable_partners.split('.')[0].replace(/.*compatible with /i, '').split(/,|\band\b/) : ["Cancer", "Scorpio", "Pisces"])].map((tag, i) => (
+                                <span key={i} className={`px-4 py-2 rounded-full text-xs font-bold border ${i === 0 ? 'bg-slate-900 text-white border-slate-900 print:bg-slate-900 print:text-white' : 'bg-white text-slate-800 border-slate-300 shadow-sm print:bg-white print:text-slate-800'}`}>
+                                    {typeof tag === 'string' ? tag.trim() : tag}
                                 </span>
                             ))}
                         </div>

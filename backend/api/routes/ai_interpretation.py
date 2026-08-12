@@ -193,7 +193,7 @@ def ai_chart_reading(payload: Dict[str, Any] = Body(...)):
         if "Quota exceeded" in err_msg or "429" in err_msg or "ResourceExhausted" in err_msg:
             raise HTTPException(
                 status_code=429,
-                detail="The AI Oracle's daily rate limit has been exceeded. Please retry in a few minutes or verify your Gemini API key limits."
+                detail="The  Oracle's daily rate limit has been exceeded. Please retry in a few minutes or verify your Gemini API key limits."
             )
         raise HTTPException(status_code=500, detail=err_msg)
 
@@ -481,6 +481,7 @@ def ai_planets_reading(payload: Dict[str, Any] = Body(...)):
 
 
 @router.post("/section-insight")
+@router.post("/ai-section-insights")
 def ai_section_insight(payload: Dict[str, Any] = Body(...)):
     try:
         model = get_gemini_model()

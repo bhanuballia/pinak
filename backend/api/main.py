@@ -87,6 +87,7 @@ from api.routes import kota_routes
 from api.routes import kurma_routes
 from api.routes import chaitra_routes
 from api.routes import jaimini
+from api.routes import sudarshan_routes
 from api.routes import btr
 from api.routes import ayurdaya
 from api.routes import biodata
@@ -134,6 +135,7 @@ app.include_router(tithi_routes.router, prefix="/api", tags=["tithi"])
 app.include_router(websocket_router, tags=["websocket"])
 app.include_router(solar_return.router, prefix="/api/solar_return", tags=["Solar Return"])
 app.include_router(ai_interpretation.router, prefix="/api/ai", tags=["AI"])
+app.include_router(ai_interpretation.router, prefix="/api", tags=["AI"])
 app.include_router(transit.router, prefix="/api/transit", tags=["Transit"])
 app.include_router(vakri_routes.router, tags=["Vakri Explorer"])
 app.include_router(vastu.router)
@@ -204,6 +206,7 @@ app.include_router(longevity.router, prefix="/api/longevity", tags=["Longevity"]
 app.include_router(astronomy.router, prefix="/api/astronomy", tags=["Astronomy"])
 app.include_router(kota_routes.router, prefix="/api", tags=["Kota Chakra"])
 app.include_router(kurma_routes.router, prefix="/api", tags=["Kurma Chakra"])
+app.include_router(sudarshan_routes.router, prefix="/api", tags=["Sudarshan Chakra"])
 app.include_router(chaitra_routes.router, prefix="/api", tags=["Chaitra Chart"])
 app.include_router(jaimini.router, prefix="/api/jaimini_advanced", tags=["Advanced Jaimini"])
 app.include_router(btr.router, prefix="/api/btr", tags=["BTR Wizard"])

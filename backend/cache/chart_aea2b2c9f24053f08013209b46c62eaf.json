@@ -1333,86 +1333,16 @@
     "yogas": [],
     "dasha": {
         "current": {
-            "lord": "Moon",
-            "start_jd": 2446422.502374076,
-            "end_jd": 2450074.9273740756,
-            "duration_years": 10.0,
-            "antardashas": [
-                {
-                    "lord": "Moon",
-                    "start_jd": 2446422.502374076,
-                    "end_jd": 2446726.8711240757,
-                    "duration_years": 0.8333333333333333,
-                    "start_date": "23/12/1985",
-                    "end_date": "23/10/1986"
-                },
-                {
-                    "lord": "Mars",
-                    "start_jd": 2446726.8711240757,
-                    "end_jd": 2446939.9292490757,
-                    "duration_years": 0.5833333333333334,
-                    "start_date": "23/10/1986",
-                    "end_date": "24/05/1987"
-                },
-                {
-                    "lord": "Rahu",
-                    "start_jd": 2446939.9292490757,
-                    "end_jd": 2447487.7929990757,
-                    "duration_years": 1.5,
-                    "start_date": "24/05/1987",
-                    "end_date": "22/11/1988"
-                },
-                {
-                    "lord": "Jupiter",
-                    "start_jd": 2447487.7929990757,
-                    "end_jd": 2447974.782999076,
-                    "duration_years": 1.3333333333333333,
-                    "start_date": "22/11/1988",
-                    "end_date": "24/03/1990"
-                },
-                {
-                    "lord": "Saturn",
-                    "start_jd": 2447974.782999076,
-                    "end_jd": 2448553.083624076,
-                    "duration_years": 1.5833333333333333,
-                    "start_date": "24/03/1990",
-                    "end_date": "23/10/1991"
-                },
-                {
-                    "lord": "Mercury",
-                    "start_jd": 2448553.083624076,
-                    "end_jd": 2449070.510499076,
-                    "duration_years": 1.4166666666666665,
-                    "start_date": "23/10/1991",
-                    "end_date": "24/03/1993"
-                },
-                {
-                    "lord": "Ketu",
-                    "start_jd": 2449070.510499076,
-                    "end_jd": 2449283.568624076,
-                    "duration_years": 0.5833333333333334,
-                    "start_date": "24/03/1993",
-                    "end_date": "23/10/1993"
-                },
-                {
-                    "lord": "Venus",
-                    "start_jd": 2449283.568624076,
-                    "end_jd": 2449892.306124076,
-                    "duration_years": 1.6666666666666665,
-                    "start_date": "23/10/1993",
-                    "end_date": "23/06/1995"
-                },
-                {
-                    "lord": "Sun",
-                    "start_jd": 2449892.306124076,
-                    "end_jd": 2450074.9273740756,
-                    "duration_years": 0.5,
-                    "start_date": "23/06/1995",
-                    "end_date": "23/12/1995"
-                }
-            ],
-            "start_date": "23/12/1985",
-            "end_date": "23/12/1995"
+            "mahadasha": {
+                "planet": "Jupiter",
+                "start_date": "22/12/2020",
+                "end_date": "22/12/2036"
+            },
+            "antardasha": {
+                "planet": "Mercury",
+                "start_date": "22/08/2025",
+                "end_date": "28/11/2027"
+            }
         },
         "list": [
             {
@@ -15334,19 +15264,6 @@
             "reason": "Benefic planet for your Ascendant"
         },
         {
-            "planet": "Moon",
-            "details": {
-                "gemstone": "Pearl",
-                "sanskrit": "Moti",
-                "color": "White",
-                "metal": "Silver",
-                "finger": "Little Finger",
-                "day": "Monday",
-                "mantra": "Om Chandraya Namah"
-            },
-            "reason": "Strengthening current Mahadasha lord"
-        },
-        {
             "planet": "Sun",
             "details": {
                 "gemstone": "Ruby",
@@ -16111,7 +16028,7 @@
         "Venus": {
             "jagradadi": "Jagrad\n(Wakefulness)",
             "baladi": "Mrita\n(State of death)",
-            "lajjitadi": "Garvit Trushit",
+            "lajjitadi": "Trushit Garvit",
             "deeptadi": "Deepta\n(Luminous)",
             "shyanadi": "Nidra\n(Sleeping)"
         },
@@ -17459,7 +17376,7 @@
         "description": "Your Atmakaraka (soul planet) is Mars. In your Navamsa (D9) chart, Mars is in Aquarius (your Karakamsa). The 12th house from Karakamsa is Capricorn. No planets are in Capricorn, so we look at its Lord, Saturn. The planet determining your Ishta Devata is Saturn."
     },
     "cosmic": {
-        "yogini_dasha": "Relationship and emotional growth phase.",
+        "yogini_dasha": "Stable karmic rhythm.",
         "transits": [
             {
                 "month": 1,
@@ -17523,7 +17440,7 @@
             "Focus on internal balancing.",
             "Caution is advised in major transitions."
         ],
-        "cosmic_narrative": "Cosmic Cycle Insight: Relationship and emotional growth phase. Destiny probability indicates Stable Phase. Career outlook: Significant growth and expansion."
+        "cosmic_narrative": "Cosmic Cycle Insight: Stable karmic rhythm. Destiny probability indicates Stable Phase. Career outlook: Significant growth and expansion."
     },
     "sentient": {
         "archetype": {
@@ -18515,7 +18432,7 @@
             "marriage": 60,
             "wealth": 60,
             "health": 60,
-            "dasha_lord": "Moon"
+            "dasha_lord": "Unknown"
         },
         {
             "year": 2026,
@@ -18523,7 +18440,7 @@
             "marriage": 60,
             "wealth": 60,
             "health": 60,
-            "dasha_lord": "Moon"
+            "dasha_lord": "Unknown"
         },
         {
             "year": 2027,
@@ -18531,7 +18448,7 @@
             "marriage": 60,
             "wealth": 60,
             "health": 60,
-            "dasha_lord": "Moon"
+            "dasha_lord": "Unknown"
         },
         {
             "year": 2028,
@@ -18539,7 +18456,7 @@
             "marriage": 60,
             "wealth": 60,
             "health": 60,
-            "dasha_lord": "Moon"
+            "dasha_lord": "Unknown"
         },
         {
             "year": 2029,
@@ -18547,7 +18464,7 @@
             "marriage": 60,
             "wealth": 60,
             "health": 60,
-            "dasha_lord": "Moon"
+            "dasha_lord": "Unknown"
         },
         {
             "year": 2030,
@@ -18555,7 +18472,7 @@
             "marriage": 60,
             "wealth": 60,
             "health": 60,
-            "dasha_lord": "Moon"
+            "dasha_lord": "Unknown"
         },
         {
             "year": 2031,
@@ -18563,7 +18480,7 @@
             "marriage": 60,
             "wealth": 60,
             "health": 60,
-            "dasha_lord": "Moon"
+            "dasha_lord": "Unknown"
         },
         {
             "year": 2032,
@@ -18571,7 +18488,7 @@
             "marriage": 60,
             "wealth": 60,
             "health": 60,
-            "dasha_lord": "Moon"
+            "dasha_lord": "Unknown"
         },
         {
             "year": 2033,
@@ -18579,7 +18496,7 @@
             "marriage": 60,
             "wealth": 60,
             "health": 60,
-            "dasha_lord": "Moon"
+            "dasha_lord": "Unknown"
         },
         {
             "year": 2034,
@@ -18587,7 +18504,7 @@
             "marriage": 60,
             "wealth": 60,
             "health": 60,
-            "dasha_lord": "Moon"
+            "dasha_lord": "Unknown"
         },
         {
             "year": 2035,
@@ -18595,7 +18512,7 @@
             "marriage": 60,
             "wealth": 60,
             "health": 60,
-            "dasha_lord": "Moon"
+            "dasha_lord": "Unknown"
         }
     ],
     "dimensional": {
@@ -19372,47 +19289,47 @@
     "transits": {
         "Sun": {
             "house": 2,
-            "lon": 111.64,
-            "speed": 0.9587263760948344
+            "lon": 115.39,
+            "speed": 0.9601048672172919
         },
         "Moon": {
-            "house": 12,
-            "lon": 52.27,
-            "speed": 14.542033938485812
+            "house": 2,
+            "lon": 109.59,
+            "speed": 14.534622358831294
         },
         "Mercury": {
             "house": 2,
-            "lon": 93.81,
-            "speed": 1.4756478682866696
+            "lon": 100.12,
+            "speed": 1.7466183822325179
         },
         "Venus": {
             "house": 4,
-            "lon": 157.38,
-            "speed": 1.000961820479613
+            "lon": 161.24,
+            "speed": 0.9780569251500626
         },
         "Mars": {
             "house": 1,
-            "lon": 63.8,
-            "speed": 0.6666707244641878
+            "lon": 66.4,
+            "speed": 0.661612915642495
         },
         "Jupiter": {
             "house": 2,
-            "lon": 104.37,
-            "speed": 0.22045247477833205
+            "lon": 105.23,
+            "speed": 0.21953511500246978
         },
         "Saturn": {
             "house": 10,
-            "lon": 350.38,
-            "speed": -0.021308696291728876
+            "lon": 350.29,
+            "speed": -0.02774335139353657
         },
         "Rahu": {
             "house": 9,
-            "lon": 305.64,
-            "speed": -0.020064994960214196
+            "lon": 305.56,
+            "speed": -0.010509592128045477
         },
         "Ketu": {
             "house": 3,
-            "lon": 125.64,
+            "lon": 125.56,
             "speed": 0
         }
     },
@@ -19421,47 +19338,47 @@
         "current_positions": {
             "Sun": {
                 "house": 2,
-                "lon": 111.64,
-                "speed": 0.9587263760948344
+                "lon": 115.39,
+                "speed": 0.9601048672172919
             },
             "Moon": {
-                "house": 12,
-                "lon": 52.27,
-                "speed": 14.542033938485812
+                "house": 2,
+                "lon": 109.59,
+                "speed": 14.534622358831294
             },
             "Mercury": {
                 "house": 2,
-                "lon": 93.81,
-                "speed": 1.4756478682866696
+                "lon": 100.12,
+                "speed": 1.7466183822325179
             },
             "Venus": {
                 "house": 4,
-                "lon": 157.38,
-                "speed": 1.000961820479613
+                "lon": 161.24,
+                "speed": 0.9780569251500626
             },
             "Mars": {
                 "house": 1,
-                "lon": 63.8,
-                "speed": 0.6666707244641878
+                "lon": 66.4,
+                "speed": 0.661612915642495
             },
             "Jupiter": {
                 "house": 2,
-                "lon": 104.37,
-                "speed": 0.22045247477833205
+                "lon": 105.23,
+                "speed": 0.21953511500246978
             },
             "Saturn": {
                 "house": 10,
-                "lon": 350.38,
-                "speed": -0.021308696291728876
+                "lon": 350.29,
+                "speed": -0.02774335139353657
             },
             "Rahu": {
                 "house": 9,
-                "lon": 305.64,
-                "speed": -0.020064994960214196
+                "lon": 305.56,
+                "speed": -0.010509592128045477
             },
             "Ketu": {
                 "house": 3,
-                "lon": 125.64,
+                "lon": 125.56,
                 "speed": 0
             }
         },
@@ -19566,10 +19483,10 @@
     },
     "probability_matrix": {
         "career_growth": 60,
-        "marriage_probability": 70,
+        "marriage_probability": 60,
         "wealth_index": 60,
         "health_stability": 60,
-        "life_balance_index": 62
+        "life_balance_index": 60
     },
     "life_events": [
         {
@@ -20011,11 +19928,11 @@
         "signals": {
             "dominant_planets": [],
             "dosha_intensity": 0,
-            "current_dasha_lord": "Moon"
+            "current_dasha_lord": null
         },
         "archetype": "Explorer Archetype",
         "patterns": [],
-        "summary": "Neural Archetype: Explorer Archetype. Current destiny influence comes from Moon Mahadasha."
+        "summary": "Neural Archetype: Explorer Archetype."
     },
     "destiny": {
         "vector": {
@@ -20023,7 +19940,7 @@
             "moon_sign": "Virgo",
             "dominant_planets": [],
             "dosha_score": 0,
-            "current_dasha": "Moon",
+            "current_dasha": null,
             "archetype": "Explorer Archetype"
         },
         "type": "Explorer Archetype Destiny",
@@ -20047,11 +19964,11 @@
         "signals": {
             "dominant_planets": [],
             "dosha_intensity": 0,
-            "current_dasha_lord": "Moon"
+            "current_dasha_lord": null
         },
         "archetype": "Explorer Archetype",
         "patterns": [],
-        "summary": "Neural Archetype: Explorer Archetype. Current destiny influence comes from Moon Mahadasha."
+        "summary": "Neural Archetype: Explorer Archetype."
     },
     "adaptive_intelligence": {
         "profile": {
@@ -20217,174 +20134,17 @@
         ],
         "peaks": []
     },
-    "omniscient_timeline": {
-        "omniscient_timeline": [
-            {
-                "year": 2025,
-                "lord": "Jupiter",
-                "events": [
-                    {
-                        "type": "career_growth",
-                        "message": "Expansion in career, promotions or authority."
-                    },
-                    {
-                        "type": "wealth_cycle",
-                        "message": "Favorable period for finance and investments."
-                    }
-                ]
-            },
-            {
-                "year": 2026,
-                "lord": "Jupiter",
-                "events": [
-                    {
-                        "type": "career_growth",
-                        "message": "Expansion in career, promotions or authority."
-                    },
-                    {
-                        "type": "wealth_cycle",
-                        "message": "Favorable period for finance and investments."
-                    }
-                ]
-            },
-            {
-                "year": 2027,
-                "lord": "Jupiter",
-                "events": [
-                    {
-                        "type": "career_growth",
-                        "message": "Expansion in career, promotions or authority."
-                    },
-                    {
-                        "type": "wealth_cycle",
-                        "message": "Favorable period for finance and investments."
-                    }
-                ]
-            },
-            {
-                "year": 2028,
-                "lord": "Jupiter",
-                "events": [
-                    {
-                        "type": "career_growth",
-                        "message": "Expansion in career, promotions or authority."
-                    },
-                    {
-                        "type": "wealth_cycle",
-                        "message": "Favorable period for finance and investments."
-                    }
-                ]
-            },
-            {
-                "year": 2029,
-                "lord": "Jupiter",
-                "events": [
-                    {
-                        "type": "career_growth",
-                        "message": "Expansion in career, promotions or authority."
-                    },
-                    {
-                        "type": "wealth_cycle",
-                        "message": "Favorable period for finance and investments."
-                    }
-                ]
-            },
-            {
-                "year": 2030,
-                "lord": "Jupiter",
-                "events": [
-                    {
-                        "type": "career_growth",
-                        "message": "Expansion in career, promotions or authority."
-                    },
-                    {
-                        "type": "wealth_cycle",
-                        "message": "Favorable period for finance and investments."
-                    }
-                ]
-            },
-            {
-                "year": 2031,
-                "lord": "Jupiter",
-                "events": [
-                    {
-                        "type": "career_growth",
-                        "message": "Expansion in career, promotions or authority."
-                    },
-                    {
-                        "type": "wealth_cycle",
-                        "message": "Favorable period for finance and investments."
-                    }
-                ]
-            },
-            {
-                "year": 2032,
-                "lord": "Jupiter",
-                "events": [
-                    {
-                        "type": "career_growth",
-                        "message": "Expansion in career, promotions or authority."
-                    },
-                    {
-                        "type": "wealth_cycle",
-                        "message": "Favorable period for finance and investments."
-                    }
-                ]
-            },
-            {
-                "year": 2033,
-                "lord": "Jupiter",
-                "events": [
-                    {
-                        "type": "career_growth",
-                        "message": "Expansion in career, promotions or authority."
-                    },
-                    {
-                        "type": "wealth_cycle",
-                        "message": "Favorable period for finance and investments."
-                    }
-                ]
-            },
-            {
-                "year": 2034,
-                "lord": "Jupiter",
-                "events": [
-                    {
-                        "type": "career_growth",
-                        "message": "Expansion in career, promotions or authority."
-                    },
-                    {
-                        "type": "wealth_cycle",
-                        "message": "Favorable period for finance and investments."
-                    }
-                ]
-            },
-            {
-                "year": 2035,
-                "lord": "Jupiter",
-                "events": [
-                    {
-                        "type": "career_growth",
-                        "message": "Expansion in career, promotions or authority."
-                    },
-                    {
-                        "type": "wealth_cycle",
-                        "message": "Favorable period for finance and investments."
-                    }
-                ]
-            }
-        ]
-    },
+    "omniscient_timeline": {},
     "life_path": {},
     "graph_images": {},
     "ai_interpretation": {
-        "career_finance": "Career & Finance Predictions\n\nCareer growth may require persistence and patience. Hard work will be the key to overcoming professional hurdles. Focus on building skills rather than seeking immediate rewards. 2025 may bring opportunities for expansion. 2026 may bring opportunities for expansion. 2027 may bring opportunities for expansion. 2028 may bring opportunities for expansion. 2029 may bring opportunities for expansion. 2030 may bring opportunities for expansion. 2031 may bring opportunities for expansion. 2032 may bring opportunities for expansion. 2033 may bring opportunities for expansion. 2034 may bring opportunities for expansion. 2035 may bring opportunities for expansion.\n",
+        "career_finance": "Career & Finance Predictions\n\nCareer growth may require persistence and patience. Hard work will be the key to overcoming professional hurdles. Focus on building skills rather than seeking immediate rewards.\n",
         "love_relationship": "Love & Relationships\n\nRelationships may face some testing times. Clear communication is essential to avoid misunderstandings. Patience is required in matters of the heart.\n",
         "health_wellness": ""
     },
     "ultra_nlp_text": {
-        "career_finance": "Career developments begin to accelerate. Additionally, consistent effort helps stabilize professional progress. Meanwhile, 2025 may highlight a turning point. Interestingly, 2026 may highlight a turning point. From another perspective, 2027 may highlight a turning point. Interestingly, 2028 may highlight a turning point. Additionally, 2029 may highlight a turning point. Interestingly, 2030 may highlight a turning point. Additionally, 2031 may highlight a turning point. Meanwhile, 2032 may highlight a turning point. Interestingly, 2033 may highlight a turning point. Interestingly, 2034 may highlight a turning point. Additionally, 2035 may highlight a turning point.",
-        "love_relationship": "Relationships carry transformative lessons. Meanwhile, patience and spiritual grounding enhance outcomes.."
+        "career_finance": "Career developments begin to accelerate. Additionally, consistent effort helps stabilize professional progress.",
+        "love_relationship": "Emotional dynamics become more meaningful. Interestingly, mindful decisions lead to long-term stability.."
     },
     "oracle_insights": [
         {
@@ -24845,10 +24605,12 @@
             "note": "Success in study requires both intelligence (5th) and dedication (Saturn). Balance them for best results."
         },
         "career": {
-            "score": 30,
-            "label": "Struggle/Shift",
-            "color": "risk",
-            "notes": [],
+            "score": 40,
+            "label": "Moderate Growth",
+            "color": "average",
+            "notes": [
+                "Jupiter Dasha active -> Period of career elevation"
+            ],
             "remedies": [
                 "Offer water to Sun daily",
                 "Wear professional attire to boost Sun/Mercury",
@@ -24921,11 +24683,11 @@
                 "Venus weak (6/150) → Relationship challenges",
                 "Jupiter weak (8/150) → Delay or challenge for female natives"
             ],
-            "dasha_note": "⚠️ / not a primary marriage Dasha — wait for Jupiter/Venus/Jupiter period",
+            "dasha_note": "🟡 MODERATE: Jupiter period active → Marriage possible in this phase",
             "navamsa_note": "🟡 Neutral D9: No strong confirmation or negation from Navamsa",
-            "outcome_score": 18,
-            "outcome_label": "High Risk - Delay / Conflict Risk",
-            "outcome_color": "risk",
+            "outcome_score": 26,
+            "outcome_label": "Challenging - Significant Hurdles Expected",
+            "outcome_color": "challenging",
             "score_breakdown": {
                 "seventh_house": {
                     "score": 5,
@@ -24953,16 +24715,16 @@
                     "label": "Navamsa (D9) Confirm"
                 },
                 "dasha": {
-                    "score": 0,
+                    "score": 8,
                     "max": 15,
                     "label": "Dasha Activation"
                 }
             },
-            "score": 18,
-            "label": "High Risk - Delay / Conflict Risk",
-            "harmony_index": "18%",
+            "score": 26,
+            "label": "Challenging - Significant Hurdles Expected",
+            "harmony_index": "26%",
             "karaka_status": "Venus (5.9), Jupiter (7.6)",
-            "dasha_influence": "⚠️ / not a primary marriage Dasha — wait for Jupiter/Venus/Jupiter period",
+            "dasha_influence": "🟡 MODERATE: Jupiter period active → Marriage possible in this phase",
             "remedies": [
                 "Worship Goddess Parvati or Lord Shiva (for marital peace)",
                 "Donate white items (Sweets, Milk, Cloth) on Fridays",
@@ -25518,14 +25280,14 @@
                 "is_moon_barren_sign": true,
                 "chief_karaka": "Jupiter",
                 "prime_significators": [
-                    "Venus",
                     "Jupiter",
                     "Mars",
-                    "Moon"
+                    "Moon",
+                    "Venus"
                 ],
                 "ruling_planets": [
-                    "Jupiter",
                     "Mercury",
+                    "Jupiter",
                     "Venus"
                 ],
                 "predicted_transit_rule": "Delivery fructifies when Moon transits Sign Lord, Star Lord, Sub Lord & Sub-Sub Lord matching top significators (Houses 2, 5, 11).",
@@ -26428,15 +26190,15 @@
             "job_notes": [],
             "biz_notes": [],
             "job_age": "28-32 years (delayed)",
-            "biz_age": "27-35 years",
-            "dasha_note": "/ - Wait for Jupiter/Mercury/Rahu Dasha.",
+            "biz_age": "Current period",
+            "dasha_note": "Jupiter Mahadasha active -> Business window OPEN now",
             "transition_note": "",
-            "dasha_start_time": null,
-            "dasha_end_time": null,
-            "mahadasha_start_time": null,
-            "mahadasha_end_time": null,
-            "antardasha_start_time": null,
-            "antardasha_end_time": null,
+            "dasha_start_time": "22/08/2025",
+            "dasha_end_time": "28/11/2027",
+            "mahadasha_start_time": "22/12/2020",
+            "mahadasha_end_time": "22/12/2036",
+            "antardasha_start_time": "22/08/2025",
+            "antardasha_end_time": "28/11/2027",
             "planet_roles": [
                 {
                     "planet": "Mercury",
@@ -26858,11 +26620,11 @@
                     "hospitalization_12th_lord": "Unknown"
                 },
                 "vulnerability_score": 25,
-                "status_label": "🟢 SAFE HEALTH PERIOD: Active N/A/N/A period supports physical endurance.",
-                "active_mahadasha": "N/A",
-                "active_antardasha": "N/A",
-                "operating_window_start": null,
-                "operating_window_end": null,
+                "status_label": "🟢 SAFE HEALTH PERIOD: Active Jupiter/Mercury period supports physical endurance.",
+                "active_mahadasha": "Jupiter",
+                "active_antardasha": "Mercury",
+                "operating_window_start": "22/08/2025",
+                "operating_window_end": "28/11/2027",
                 "remedial_protocol": [
                     "Chant Maha Mrityunjaya Mantra 108 times daily during Maraka/Badhaka operating periods",
                     "Perform Rudrabhishekam on Mondays or Shivratri",
@@ -26875,179 +26637,242 @@
         "parents_health": {
             "mother": {
                 "score": 43,
+                "risk_level": "High",
+                "organs": "Chest, Lungs, Breast, Stomach, Blood circulation & Mental peace",
+                "lord_4": "Unknown",
                 "notes": [
                     "Moon weak -> Emotional/Mental stress for Mother",
                     "Venus weak -> Hormonal/Physical issues for Mother"
                 ],
+                "mantra": "Om Som Somaya Namah & Om Namah Shivaya",
                 "remedies": [
-                    "Respect mother",
-                    "Donate Milk, Rice, White clothes",
-                    "Peaceful home environment"
+                    "Respect Mother and seek her daily blessings.",
+                    "Donate Milk, Rice, White clothes on Mondays.",
+                    "Keep silver square piece in pocket or wear silver ring/chain.",
+                    "Chant Om Som Somaya Namah for her emotional & physical well-being."
                 ],
                 "planets": [
                     {
                         "name": "Moon",
-                        "role": "Mental Health",
+                        "role": "Matru Karaka (Emotional / Mental Health)",
                         "strength": "6/150"
                     },
                     {
                         "name": "Venus",
-                        "role": "Physical Comfort",
+                        "role": "Physical Comfort & Hormones",
                         "strength": "6/150"
+                    },
+                    {
+                        "name": "Unknown",
+                        "role": "4th Lord (Unknown)",
+                        "strength": "60/150"
                     }
                 ]
             },
             "father": {
-                "score": 43,
+                "score": 38,
+                "risk_level": "High",
+                "organs": "Hips, Thighs, Spine, Bones, Heart & General Vitality",
+                "lord_9": "Unknown",
                 "notes": [
                     "Sun weak -> Vitality/Heart risk for Father",
-                    "Jupiter weak -> Liver/Immunity issues for Father"
+                    "Jupiter weak -> Liver/Immunity issues for Father",
+                    "Dasha of Jupiter active -> Sensitive period for Father"
                 ],
+                "mantra": "Om Suryaya Namah & Gayatri Mantra",
                 "remedies": [
-                    "Respect father/guru",
-                    "Offer water to Sun daily",
-                    "Donate Wheat, Jaggery, Yellow items"
+                    "Respect Father/Gurus and touch their feet daily.",
+                    "Offer water (Arghya) to Sun in copper vessel every morning.",
+                    "Donate Wheat, Jaggery, Copper items, or Yellow grains on Sundays.",
+                    "Chant Aditya Hrudaya Stotram or Gayatri Mantra for Father's longevity."
                 ],
                 "planets": [
                     {
                         "name": "Sun",
-                        "role": "Vitality/Heart",
+                        "role": "Pitru Karaka (Vitality & Heart)",
                         "strength": "8/150"
                     },
                     {
                         "name": "Jupiter",
-                        "role": "Protection",
+                        "role": "Dharma & Protective Shield",
                         "strength": "8/150"
+                    },
+                    {
+                        "name": "Unknown",
+                        "role": "9th Lord (Unknown)",
+                        "strength": "60/150"
                     }
                 ]
             },
             "general_remedies": [
-                "Charity in parents' name",
-                "Avoid conflicts",
-                "Regular health checkups"
+                "Perform Maha Mrityunjaya Jaap or Pooja in parents' name.",
+                "Maintain a peaceful home atmosphere to reduce mental stress.",
+                "Ensure routine preventive medical checkups for senior parents.",
+                "Charity on Amavasya (New Moon) for ancestral peace (Pitra Kripa)."
             ],
-            "note": "Timing is driven by Dasha & Transit. Analysis uses 4th/9th houses and Longevity patterns."
+            "note": "Timing is driven by Dasha & Transit. Analysis incorporates 4th/9th houses, 11th/4th house longevity axes, and Karaka strengths."
         },
         "spouse_health": {
-            "score": 46,
+            "score": 41,
             "label": "Moderate Risk",
             "color": "average",
-            "notes": [],
+            "risk_level": "High",
+            "organs": "Kidneys, Lower Back, Reproductive Organs, Hormones & Fluid Balance",
+            "lord_7": "Unknown",
+            "notes": [
+                "Dasha of Jupiter active -> Watch spouse health"
+            ],
+            "mantra": "Om Shukraya Namah (for Wife) & Om Gram Greem Groum Sah Gurave Namah (for Husband)",
             "remedies": [
-                "Maintain harmony",
-                "Donate White items (for Wife) / Yellow (for Husband)",
-                "Discipline & Charity"
+                "Maintain deep mutual respect and avoid unnecessary domestic friction.",
+                "Donate White sweets, Milk, or Silver on Fridays for Venus (Wife's health).",
+                "Donate Yellow Chana Dal, Turmeric, or Gold/Copper items on Thursdays for Jupiter (Husband's health).",
+                "Chant Swayamvara Parvathi Mantra or Maha Mrityunjaya Jaap for partner's longevity.",
+                "Perform Gauri Shankar Pooja for long-term marital health & bliss."
             ],
             "planets": [
                 {
                     "name": "Venus",
-                    "role": "Wife/Comfort",
+                    "role": "Kalatra Karaka (Wife, Harmony & Hormones)",
                     "strength": "6/150"
                 },
                 {
                     "name": "Jupiter",
-                    "role": "Husband/Protection",
+                    "role": "Pati Karaka (Husband & Divine Protection)",
                     "strength": "8/150"
+                },
+                {
+                    "name": "Unknown",
+                    "role": "7th Lord (Unknown)",
+                    "strength": "60/150"
                 }
             ],
-            "note": "Spouse health is analyzed via 7th house (Body), 12th (Disease) and 2nd (Longevity)."
+            "note": "Spouse health is analyzed via 7th house (Body), 12th house (Disease - 6th from 7th), and 2nd house (Longevity - 8th from 7th)."
         },
         "children_health": {
-            "score": 43,
-            "label": "Attention Needed",
-            "color": "average",
+            "score": 39,
+            "label": "High Risk",
+            "color": "risk",
+            "risk_level": "High",
+            "organs": "Stomach, Digestion, Solar Plexus, Liver, Brain/Intellect & Nervous System",
+            "lord_5": "Unknown",
             "notes": [
                 "Jupiter weak -> Protection for children is low",
-                "Mercury weak -> Nervous/Growth issues for children"
+                "Mercury weak -> Nervous/Growth issues for children",
+                "Dasha of Jupiter active -> Sensitive phase for children"
             ],
+            "mantra": "Santana Gopala Mantra & Om Gam Ganapataye Namah",
             "remedies": [
-                "Worship Lord Ganesha",
-                "Donate Green items (Mercury)",
-                "Respect Guru/Elders (Jupiter)",
-                "Regular health checkups"
+                "Recite Santana Gopala Mantra or Gayatri Mantra daily for children's well-being & intelligence.",
+                "Perform Ganesha Puja & offer Durva grass on Wednesdays for Mercury strength.",
+                "Donate Yellow fruits, Books, or Chana Dal on Thursdays for Jupiter (Putrakaraka).",
+                "Ensure nutritious diet and routine digestion/growth checkups for children.",
+                "Maintain a peaceful learning environment at home to reduce academic stress."
             ],
             "planets": [
                 {
                     "name": "Jupiter",
-                    "role": "Primary Karaka",
+                    "role": "Putrakaraka (Growth, Immunity & Wisdom)",
                     "strength": "8/150"
                 },
                 {
                     "name": "Mercury",
-                    "role": "Growth/Intelligence",
+                    "role": "Intellect, Nervous System & Communication",
                     "strength": "7/150"
+                },
+                {
+                    "name": "Unknown",
+                    "role": "5th Lord (Unknown)",
+                    "strength": "60/150"
                 }
             ],
-            "note": "Children health is analyzed via 5th house (Body), 10th (Disease) and 12th (Longevity)."
+            "note": "Children health is analyzed via 5th house (Body), 10th house (Disease - 6th from 5th), and 12th house (Longevity - 8th from 5th)."
         },
         "mental_peace": {
             "score": 41,
             "label": "Unrest",
             "color": "average",
+            "risk_level": "High",
+            "organs": "Brain, Nervous System, Subconscious Mind & Sleep Quality (12th House)",
+            "yoga_alerts": [],
             "notes": [
                 "Moon weak -> Vulnerable to anxiety/mood swings",
                 "Mercury afflicted -> Nervous stress/Overthinking"
             ],
-            "dasha_note": "Emotional cycles are currently stable.",
+            "dasha_note": "Active Mahadasha (Jupiter) promotes emotional peace and mental resilience.",
+            "mantra": "Om Shram Shreem Shroum Sah Chandramase Namah & Om Namah Shivaya",
             "remedies": [
-                "Daily Meditation (mandatory)",
-                "Stay near water/nature",
-                "Donate Milk/Rice (Moon)",
-                "Digital Detox (Rahu)",
-                "Grounding/Barefoot walking (Ketu)"
+                "Practice Anulom Vilom Pranayama & 15 minutes of daily mindfulness meditation.",
+                "Drink water stored in a clean Silver Cup to strengthen Moon's calming water element.",
+                "Chant Om Namah Shivaya or Chandra Beej Mantra during evening hours.",
+                "Donate Milk, White Sweets, Rice, or Silver items on Mondays.",
+                "Practice a strict digital detox 1 hour before sleep to calm Rahu overstimulation."
             ],
             "lifestyle": [
-                "Wake up early",
-                "Sunlight exposure",
-                "Yoga/Pranayama",
-                "Avoid isolation"
+                "Early morning sunlight exposure to harmonize Sun-Moon circadian rhythm.",
+                "Barefoot walking on grass (Grounding) to pacify Ketu detachment.",
+                "Maintain a soothing bedroom environment free of clutter for sound sleep."
             ],
             "planets": [
                 {
                     "name": "Moon",
-                    "role": "Mind & Emotions",
+                    "role": "Manas Karaka (Mind, Emotions & Serenity)",
                     "strength": "6/150"
                 },
                 {
                     "name": "Mercury",
-                    "role": "Thought Process",
+                    "role": "Buddhi Karaka (Intellect & Nervous Balance)",
                     "strength": "7/150"
                 }
             ],
-            "note": "Mental peace is the foundation of all success. Discipline + Meditation = Real Cure."
+            "note": "Mental peace is analyzed via Moon (Mind), 4th House (Heart/Emotional Base), 5th House (Mindset), and 12th House (Subconscious & Sleep)."
         },
         "home_peace": {
-            "score": 37,
-            "label": "Grah Kalesh",
-            "color": "risk",
+            "score": 40,
+            "label": "Moderate Unrest",
+            "color": "average",
+            "risk_level": "High",
+            "lord_4": "Unknown",
             "notes": [
-                "Weak Moon -> Emotional instability at home"
+                "Weak Moon -> Emotional instability at home",
+                "Jupiter Dasha -> Time for home happiness"
             ],
+            "mantra": "Om Namo Bhagavate Vasudevaya & Shri Suktam",
             "remedies": [
-                "Ghee lamp in North-East (Ishaan Kon)",
-                "Respect parents/elders daily",
-                "Recite Satyanarayan Katha",
-                "Spray Ganga-jal in rooms",
-                "Keep North-East clutter-free"
+                "Light a pure Cow Ghee lamp in North-East (Ishaan Kon) every evening during dusk.",
+                "Sprinkle Ganga-jal with Camphor (Kapoor) water in all rooms to remove domestic tension.",
+                "Recite Satyanarayan Katha or Vishnu Sahasranama on Purnima (Full Moon) days.",
+                "Touch the feet of parents & household elders daily to seek divine domestic blessings.",
+                "Avoid intense arguments or loud shouting in the dining space & central hall."
             ],
             "vastu_tips": [
-                "Place a small water fountain in NE",
-                "Avoid heavy furniture in center (Brahmasthan)",
-                "Worship Lord Vishnu & Lakshmi"
+                "North-East (Ishaan Kon): Keep light, clean & dedicated for water fountain or altar.",
+                "South-East (Agneya Kon): Maintain kitchen fire element balance; avoid water leakage here.",
+                "Brahmasthan (Center): Keep central room space completely clutter-free and open."
             ],
             "planets": [
                 {
+                    "name": "Venus",
+                    "role": "Griha Sukha (Domestic Comfort & Luxury)",
+                    "strength": "6/150"
+                },
+                {
                     "name": "Jupiter",
-                    "role": "Blessing/Elders",
+                    "role": "Guru Kripa (Elder Blessings & Harmony)",
                     "strength": "8/150"
                 },
                 {
-                    "name": "Venus",
-                    "role": "Luxury/Comfort",
+                    "name": "Moon",
+                    "role": "Manas (Emotional Environment at Home)",
                     "strength": "6/150"
+                },
+                {
+                    "name": "Unknown",
+                    "role": "4th Lord (Unknown)",
+                    "strength": "60/150"
                 }
             ],
-            "note": "4th house is the seat of happiness. Peace at home leads to progress in the world."
+            "note": "4th house is the seat of domestic happiness (Griha Sukha). Peace at home leads to peace in the soul."
         },
         "manglik": {
             "present": false,
@@ -27245,64 +27070,8 @@
         "score": 54,
         "income_type": "Mixed",
         "yogas": [],
-        "timeline": [
-            {
-                "year": 2025,
-                "score": 80,
-                "label": "High Gain"
-            },
-            {
-                "year": 2026,
-                "score": 80,
-                "label": "High Gain"
-            },
-            {
-                "year": 2027,
-                "score": 80,
-                "label": "High Gain"
-            },
-            {
-                "year": 2028,
-                "score": 80,
-                "label": "High Gain"
-            },
-            {
-                "year": 2029,
-                "score": 80,
-                "label": "High Gain"
-            },
-            {
-                "year": 2030,
-                "score": 80,
-                "label": "High Gain"
-            },
-            {
-                "year": 2031,
-                "score": 80,
-                "label": "High Gain"
-            },
-            {
-                "year": 2032,
-                "score": 80,
-                "label": "High Gain"
-            },
-            {
-                "year": 2033,
-                "score": 80,
-                "label": "High Gain"
-            },
-            {
-                "year": 2034,
-                "score": 80,
-                "label": "High Gain"
-            },
-            {
-                "year": 2035,
-                "score": 80,
-                "label": "High Gain"
-            }
-        ],
-        "analysis": "Financial growth for you is characterized by steady progress. While you may not see overnight windfalls, your long-term asset building potential is solid.\n\nThe planetary alignment suggests that your wealth is most effectively generated through a hybrid path combining stable employment with independent income streams.\n\nStrategic expansion is highly favored during 2025, 2026, 2027."
+        "timeline": [],
+        "analysis": "Financial growth for you is characterized by steady progress. While you may not see overnight windfalls, your long-term asset building potential is solid.\n\nThe planetary alignment suggests that your wealth is most effectively generated through a hybrid path combining stable employment with independent income streams."
     },
     "lalkitab": {
         "chart": {

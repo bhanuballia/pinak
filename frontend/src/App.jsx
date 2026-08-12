@@ -58,6 +58,7 @@ import AyanamshaDashboard from './components/AyanamshaDashboard';
 import SanghattaDashboard from './components/SanghattaDashboard';
 import KotaChakraViewer from './components/KotaChakraViewer';
 import KurmaChakraViewer from './components/KurmaChakraViewer';
+import SudarshanChakraViewer from './components/SudarshanChakraViewer';
 import ChaitraChartViewer from './components/ChaitraChartViewer';
 import MedicalAstrologyDashboard from './components/MedicalAstrologyDashboard';
 import DoshaDashboard from './components/DoshaDashboard';
@@ -99,6 +100,13 @@ import AdvancedJaiminiDashboard from './components/AdvancedJaiminiDashboard';
 import AyurdayaViewer from './components/AyurdayaViewer';
 import VastuAnalyzer from './pages/VastuAnalyzer';
 import NumerologyDashboard from './pages/NumerologyDashboard';
+import PredictionNumerology from './pages/predictionNumerology';
+import DailyNumerology from './pages/dailyNumerology';
+import RemedyNumerology from './pages/remedyNumerology';
+import MedicalNumerology from './pages/medicalNumerology';
+import PersonalityNumerology from './pages/personalityNumerology';
+import MarriageNumerology from './pages/marriageNumerology';
+import CarrierNumerology from './pages/carrierNumerology';
 import VimshottariExplanation from './components/VimshottariExplanation';
 
 function App() {
@@ -158,6 +166,7 @@ function App() {
     const [ayanamshaMode, setAyanamshaMode] = useState(false);
     const [kotaChakraMode, setKotaChakraMode] = useState(false);
     const [kurmaChakraMode, setKurmaChakraMode] = useState(false);
+    const [sudarshanChakraMode, setSudarshanChakraMode] = useState(false);
     const [chaitraChartMode, setChaitraChartMode] = useState(false);
     const [medicalAstrologyMode, setMedicalAstrologyMode] = useState(false);
     const [doshaMode, setDoshaMode] = useState(false);
@@ -198,6 +207,13 @@ function App() {
     const [ayurdayaMode, setAyurdayaMode] = useState(false);
     const [vastuMode, setVastuMode] = useState(false);
     const [numerologyMode, setNumerologyMode] = useState(false);
+    const [predictionNumerologyMode, setPredictionNumerologyMode] = useState(false);
+    const [dailyNumerologyMode, setDailyNumerologyMode] = useState(false);
+    const [remedyNumerologyMode, setRemedyNumerologyMode] = useState(false);
+    const [medicalNumerologyMode, setMedicalNumerologyMode] = useState(false);
+    const [personalityNumerologyMode, setPersonalityNumerologyMode] = useState(false);
+    const [marriageNumerologyMode, setMarriageNumerologyMode] = useState(false);
+    const [carrierNumerologyMode, setCarrierNumerologyMode] = useState(false);
     const [remedyMode, setRemedyMode] = useState(false);
 
     useEffect(() => {
@@ -577,6 +593,8 @@ function App() {
             setKotaChakraMode(true);
         } else if (params.get('kurma_chakra') === 'true') {
             setKurmaChakraMode(true);
+        } else if (params.get('sudarshan_chakra') === 'true') {
+            setSudarshanChakraMode(true);
         } else if (params.get('chaitra_chart') === 'true') {
             setChaitraChartMode(true);
         } else if (params.get('medical_astrology') === 'true') {
@@ -636,6 +654,20 @@ function App() {
             setVastuMode(true);
         } else if (params.get('numerology') === 'true') {
             setNumerologyMode(true);
+        } else if (params.get('prediction_numerology') === 'true') {
+            setPredictionNumerologyMode(true);
+        } else if (params.get('daily_numerology') === 'true') {
+            setDailyNumerologyMode(true);
+        } else if (params.get('remedy_numerology') === 'true') {
+            setRemedyNumerologyMode(true);
+        } else if (params.get('medical_numerology') === 'true') {
+            setMedicalNumerologyMode(true);
+        } else if (params.get('personality_numerology') === 'true') {
+            setPersonalityNumerologyMode(true);
+        } else if (params.get('marriage_numerology') === 'true') {
+            setMarriageNumerologyMode(true);
+        } else if (params.get('carrier_numerology') === 'true') {
+            setCarrierNumerologyMode(true);
         } else if (params.get('remedy') === 'true') {
             setRemedyMode(true);
         } else if (params.get('solar_return') === 'true') {
@@ -700,11 +732,46 @@ function App() {
             }
         } else if (params.get('html_report') === 'true') {
             setHtmlReportMode(true);
-            const savedData = localStorage.getItem('htmlReportData');
-            if (savedData) {
-                try {
-                    setWorksheetData(JSON.parse(savedData));
-                } catch (e) { }
+            const urlDate = params.get("date");
+            const urlTime = params.get("time");
+            const urlLat = params.get("lat");
+            const urlLon = params.get("lon");
+            const urlName = params.get("name") || "";
+            const urlTz = params.get("tz_offset");
+            const urlLocName = params.get("location_name") || "Birth Place";
+            const urlGender = params.get("gender") || "Male";
+
+            if (urlDate && urlTime && urlLat && urlLon) {
+                const tzVal = urlTz ? parseFloat(urlTz) : 5.5;
+                const payload = {
+                    name: urlName,
+                    date: urlDate,
+                    time: urlTime,
+                    tz_offset: tzVal,
+                    lat: parseFloat(urlLat),
+                    lon: parseFloat(urlLon),
+                    style: "minimal",
+                    language: "english",
+                    gender: urlGender,
+                    location_name: urlLocName,
+                };
+
+                (async () => {
+                    try {
+                        const detailedData = await fetchReportData(payload);
+                        localStorage.setItem('htmlReportData', JSON.stringify(detailedData));
+                        setWorksheetData(detailedData);
+                    } catch (e) {
+                        console.error("Failed to dynamically fetch html report data:", e);
+                    }
+                })();
+            } else {
+                const savedData = localStorage.getItem('htmlReportData');
+                if (savedData) {
+                    try {
+                        setWorksheetData(JSON.parse(savedData));
+                    } catch (e) { }
+                }
             }
         } else if (params.get('blank_sheet') === 'true') {
             setIsBlankSheetMode(true);
@@ -1067,6 +1134,12 @@ function App() {
         );
     }
 
+    if (sudarshanChakraMode) {
+        return (
+            <SudarshanChakraViewer />
+        );
+    }
+
     if (chaitraChartMode) {
         return (
             <ChaitraChartViewer />
@@ -1108,6 +1181,48 @@ function App() {
     if (numerologyMode) {
         return (
             <NumerologyDashboard />
+        );
+    }
+
+    if (predictionNumerologyMode) {
+        return (
+            <PredictionNumerology />
+        );
+    }
+
+    if (dailyNumerologyMode) {
+        return (
+            <DailyNumerology />
+        );
+    }
+
+    if (remedyNumerologyMode) {
+        return (
+            <RemedyNumerology />
+        );
+    }
+
+    if (medicalNumerologyMode) {
+        return (
+            <MedicalNumerology />
+        );
+    }
+
+    if (personalityNumerologyMode) {
+        return (
+            <PersonalityNumerology />
+        );
+    }
+
+    if (marriageNumerologyMode) {
+        return (
+            <MarriageNumerology />
+        );
+    }
+
+    if (carrierNumerologyMode) {
+        return (
+            <CarrierNumerology />
         );
     }
 
@@ -1231,7 +1346,7 @@ function App() {
 
     if (htmlReportMode) {
         return (
-            <div className="bg-white">
+            <div className="bg-rose-50 min-h-screen">
                 <NotificationManager />
                 {worksheetData ? (
                     <KundaliReportView data={worksheetData} />

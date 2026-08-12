@@ -375,7 +375,20 @@ export async function fetchAISectionInsight(payload) {
   });
   if (!res.ok) {
     const errorText = await res.text();
-    throw new Error(errorText || "Failed to fetch AI section insights");
+    if (res.status === 429 || (errorText && (errorText.includes('rate limit') || errorText.includes('daily rate limit') || errorText.includes('exceeded')))) {
+      throw new Error("Number of Request on Server is High. Please Wait for Sometime. We will Display Your Content in Few Minutes.");
+    }
+    try {
+      const parsed = JSON.parse(errorText);
+      if (parsed.detail) {
+        if (typeof parsed.detail === 'string' && (parsed.detail.includes('rate limit') || parsed.detail.includes('exceeded'))) {
+          throw new Error("Number of Request on Server is High. Please Wait for Sometime. We will Display Your Content in Few Minutes.");
+        }
+      }
+    } catch (e) {
+      if (e.message.includes("Number of Request on Server")) throw e;
+    }
+    throw new Error("Number of Request on Server is High. Please Wait for Sometime. We will Display Your Content in Few Minutes.");
   }
   return res.json();
 }

@@ -3,2050 +3,6 @@
     "lagna": null,
     "dosha": {
       "manglik": {
-        "present": false,
-        "house": 6,
-        "summary": "No Manglik Dosha detected.",
-        "details": [
-          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
-          "Mars is favorably placed."
-        ],
-        "dosha": "Manglik",
-        "severity": "moderate"
-      },
-      "kalsarp": {
-        "present": false,
-        "rahu_house": 9,
-        "ketu_house": 3,
-        "summary": "No Kalsarpa Dosha detected.",
-        "details": [
-          "Planets are distributed across the chart.",
-          "Soul energy flows freely."
-        ],
-        "dosha": "Kalsarpa",
-        "severity": "high"
-      },
-      "pitra": {
-        "present": false,
-        "summary": "Pitra Dosha not observed.",
-        "details": [
-          "Sun is well placed.",
-          "Ancestral blessings are strong."
-        ],
-        "dosha": "Pitra",
-        "severity": "moderate"
-      },
-      "sadesati": {
-        "present": false,
-        "phase": "none",
-        "summary": "Sade Sati not currently active.",
-        "all_cycles": [
-          {
-            "cycle": 1,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 1978,
-                "end": 1981,
-                "age": -9
-              },
-              {
-                "phase": "Peak",
-                "start": 1981,
-                "end": 1983,
-                "age": -6
-              },
-              {
-                "phase": "Setting",
-                "start": 1983,
-                "end": 1986,
-                "age": -4
-              }
-            ],
-            "summary": "1978 \u2014 1986"
-          },
-          {
-            "cycle": 2,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2008,
-                "end": 2010,
-                "age": 20
-              },
-              {
-                "phase": "Peak",
-                "start": 2010,
-                "end": 2013,
-                "age": 22
-              },
-              {
-                "phase": "Setting",
-                "start": 2013,
-                "end": 2015,
-                "age": 25
-              }
-            ],
-            "summary": "2008 \u2014 2015"
-          },
-          {
-            "cycle": 3,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2037,
-                "end": 2040,
-                "age": 49
-              },
-              {
-                "phase": "Peak",
-                "start": 2040,
-                "end": 2042,
-                "age": 52
-              },
-              {
-                "phase": "Setting",
-                "start": 2042,
-                "end": 2045,
-                "age": 54
-              }
-            ],
-            "summary": "2037 \u2014 2045"
-          }
-        ],
-        "details": [
-          "Saturn is in a safe distance from Moon.",
-          "Emotional cycles are stable."
-        ],
-        "dosha": "SadeSati",
-        "severity": "moderate"
-      },
-      "rahu": {
-        "present": false,
-        "house": 9,
-        "summary": "No significant Rahu Dosha found.",
-        "details": [
-          "Rahu is in a non-afflicting house.",
-          "Shadow cycles are balanced."
-        ],
-        "dosha": "Rahu",
-        "severity": "moderate"
-      },
-      "ketu": {
-        "present": false,
-        "house": 3,
-        "summary": "No significant Ketu Dosha found.",
-        "details": [
-          "Ketu is well placed for detachment.",
-          "Planetary focus is clear."
-        ],
-        "dosha": "Ketu",
-        "severity": "moderate"
-      }
-    },
-    "profession": "Multiple career paths indicated"
-  },
-  {
-    "lagna": null,
-    "dosha": {
-      "manglik": {
-        "present": false,
-        "house": 6,
-        "summary": "No Manglik Dosha detected.",
-        "details": [
-          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
-          "Mars is favorably placed."
-        ],
-        "dosha": "Manglik",
-        "severity": "moderate"
-      },
-      "kalsarp": {
-        "present": false,
-        "rahu_house": 9,
-        "ketu_house": 3,
-        "summary": "No Kalsarpa Dosha detected.",
-        "details": [
-          "Planets are distributed across the chart.",
-          "Soul energy flows freely."
-        ],
-        "dosha": "Kalsarpa",
-        "severity": "high"
-      },
-      "pitra": {
-        "present": false,
-        "summary": "Pitra Dosha not observed.",
-        "details": [
-          "Sun is well placed.",
-          "Ancestral blessings are strong."
-        ],
-        "dosha": "Pitra",
-        "severity": "moderate"
-      },
-      "sadesati": {
-        "present": false,
-        "phase": "none",
-        "summary": "Sade Sati not currently active.",
-        "all_cycles": [
-          {
-            "cycle": 1,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 1978,
-                "end": 1981,
-                "age": -9
-              },
-              {
-                "phase": "Peak",
-                "start": 1981,
-                "end": 1983,
-                "age": -6
-              },
-              {
-                "phase": "Setting",
-                "start": 1983,
-                "end": 1986,
-                "age": -4
-              }
-            ],
-            "summary": "1978 \u2014 1986"
-          },
-          {
-            "cycle": 2,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2008,
-                "end": 2010,
-                "age": 20
-              },
-              {
-                "phase": "Peak",
-                "start": 2010,
-                "end": 2013,
-                "age": 22
-              },
-              {
-                "phase": "Setting",
-                "start": 2013,
-                "end": 2015,
-                "age": 25
-              }
-            ],
-            "summary": "2008 \u2014 2015"
-          },
-          {
-            "cycle": 3,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2037,
-                "end": 2040,
-                "age": 49
-              },
-              {
-                "phase": "Peak",
-                "start": 2040,
-                "end": 2042,
-                "age": 52
-              },
-              {
-                "phase": "Setting",
-                "start": 2042,
-                "end": 2045,
-                "age": 54
-              }
-            ],
-            "summary": "2037 \u2014 2045"
-          }
-        ],
-        "details": [
-          "Saturn is in a safe distance from Moon.",
-          "Emotional cycles are stable."
-        ],
-        "dosha": "SadeSati",
-        "severity": "moderate"
-      },
-      "rahu": {
-        "present": false,
-        "house": 9,
-        "summary": "No significant Rahu Dosha found.",
-        "details": [
-          "Rahu is in a non-afflicting house.",
-          "Shadow cycles are balanced."
-        ],
-        "dosha": "Rahu",
-        "severity": "moderate"
-      },
-      "ketu": {
-        "present": false,
-        "house": 3,
-        "summary": "No significant Ketu Dosha found.",
-        "details": [
-          "Ketu is well placed for detachment.",
-          "Planetary focus is clear."
-        ],
-        "dosha": "Ketu",
-        "severity": "moderate"
-      }
-    },
-    "profession": "Multiple career paths indicated"
-  },
-  {
-    "lagna": null,
-    "dosha": {
-      "manglik": {
-        "present": false,
-        "house": 6,
-        "summary": "No Manglik Dosha detected.",
-        "details": [
-          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
-          "Mars is favorably placed."
-        ],
-        "dosha": "Manglik",
-        "severity": "moderate"
-      },
-      "kalsarp": {
-        "present": false,
-        "rahu_house": 9,
-        "ketu_house": 3,
-        "summary": "No Kalsarpa Dosha detected.",
-        "details": [
-          "Planets are distributed across the chart.",
-          "Soul energy flows freely."
-        ],
-        "dosha": "Kalsarpa",
-        "severity": "high"
-      },
-      "pitra": {
-        "present": false,
-        "summary": "Pitra Dosha not observed.",
-        "details": [
-          "Sun is well placed.",
-          "Ancestral blessings are strong."
-        ],
-        "dosha": "Pitra",
-        "severity": "moderate"
-      },
-      "sadesati": {
-        "present": false,
-        "phase": "none",
-        "summary": "Sade Sati not currently active.",
-        "all_cycles": [
-          {
-            "cycle": 1,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 1978,
-                "end": 1981,
-                "age": -9
-              },
-              {
-                "phase": "Peak",
-                "start": 1981,
-                "end": 1983,
-                "age": -6
-              },
-              {
-                "phase": "Setting",
-                "start": 1983,
-                "end": 1986,
-                "age": -4
-              }
-            ],
-            "summary": "1978 \u2014 1986"
-          },
-          {
-            "cycle": 2,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2008,
-                "end": 2010,
-                "age": 20
-              },
-              {
-                "phase": "Peak",
-                "start": 2010,
-                "end": 2013,
-                "age": 22
-              },
-              {
-                "phase": "Setting",
-                "start": 2013,
-                "end": 2015,
-                "age": 25
-              }
-            ],
-            "summary": "2008 \u2014 2015"
-          },
-          {
-            "cycle": 3,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2037,
-                "end": 2040,
-                "age": 49
-              },
-              {
-                "phase": "Peak",
-                "start": 2040,
-                "end": 2042,
-                "age": 52
-              },
-              {
-                "phase": "Setting",
-                "start": 2042,
-                "end": 2045,
-                "age": 54
-              }
-            ],
-            "summary": "2037 \u2014 2045"
-          }
-        ],
-        "details": [
-          "Saturn is in a safe distance from Moon.",
-          "Emotional cycles are stable."
-        ],
-        "dosha": "SadeSati",
-        "severity": "moderate"
-      },
-      "rahu": {
-        "present": false,
-        "house": 9,
-        "summary": "No significant Rahu Dosha found.",
-        "details": [
-          "Rahu is in a non-afflicting house.",
-          "Shadow cycles are balanced."
-        ],
-        "dosha": "Rahu",
-        "severity": "moderate"
-      },
-      "ketu": {
-        "present": false,
-        "house": 3,
-        "summary": "No significant Ketu Dosha found.",
-        "details": [
-          "Ketu is well placed for detachment.",
-          "Planetary focus is clear."
-        ],
-        "dosha": "Ketu",
-        "severity": "moderate"
-      }
-    },
-    "profession": "Multiple career paths indicated"
-  },
-  {
-    "lagna": null,
-    "dosha": {
-      "manglik": {
-        "present": false,
-        "house": 6,
-        "summary": "No Manglik Dosha detected.",
-        "details": [
-          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
-          "Mars is favorably placed."
-        ],
-        "dosha": "Manglik",
-        "severity": "moderate"
-      },
-      "kalsarp": {
-        "present": false,
-        "rahu_house": 9,
-        "ketu_house": 3,
-        "summary": "No Kalsarpa Dosha detected.",
-        "details": [
-          "Planets are distributed across the chart.",
-          "Soul energy flows freely."
-        ],
-        "dosha": "Kalsarpa",
-        "severity": "high"
-      },
-      "pitra": {
-        "present": false,
-        "summary": "Pitra Dosha not observed.",
-        "details": [
-          "Sun is well placed.",
-          "Ancestral blessings are strong."
-        ],
-        "dosha": "Pitra",
-        "severity": "moderate"
-      },
-      "sadesati": {
-        "present": false,
-        "phase": "none",
-        "summary": "Sade Sati not currently active.",
-        "all_cycles": [
-          {
-            "cycle": 1,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 1978,
-                "end": 1981,
-                "age": -9
-              },
-              {
-                "phase": "Peak",
-                "start": 1981,
-                "end": 1983,
-                "age": -6
-              },
-              {
-                "phase": "Setting",
-                "start": 1983,
-                "end": 1986,
-                "age": -4
-              }
-            ],
-            "summary": "1978 \u2014 1986"
-          },
-          {
-            "cycle": 2,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2008,
-                "end": 2010,
-                "age": 20
-              },
-              {
-                "phase": "Peak",
-                "start": 2010,
-                "end": 2013,
-                "age": 22
-              },
-              {
-                "phase": "Setting",
-                "start": 2013,
-                "end": 2015,
-                "age": 25
-              }
-            ],
-            "summary": "2008 \u2014 2015"
-          },
-          {
-            "cycle": 3,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2037,
-                "end": 2040,
-                "age": 49
-              },
-              {
-                "phase": "Peak",
-                "start": 2040,
-                "end": 2042,
-                "age": 52
-              },
-              {
-                "phase": "Setting",
-                "start": 2042,
-                "end": 2045,
-                "age": 54
-              }
-            ],
-            "summary": "2037 \u2014 2045"
-          }
-        ],
-        "details": [
-          "Saturn is in a safe distance from Moon.",
-          "Emotional cycles are stable."
-        ],
-        "dosha": "SadeSati",
-        "severity": "moderate"
-      },
-      "rahu": {
-        "present": false,
-        "house": 9,
-        "summary": "No significant Rahu Dosha found.",
-        "details": [
-          "Rahu is in a non-afflicting house.",
-          "Shadow cycles are balanced."
-        ],
-        "dosha": "Rahu",
-        "severity": "moderate"
-      },
-      "ketu": {
-        "present": false,
-        "house": 3,
-        "summary": "No significant Ketu Dosha found.",
-        "details": [
-          "Ketu is well placed for detachment.",
-          "Planetary focus is clear."
-        ],
-        "dosha": "Ketu",
-        "severity": "moderate"
-      }
-    },
-    "profession": "Multiple career paths indicated"
-  },
-  {
-    "lagna": null,
-    "dosha": {
-      "manglik": {
-        "present": false,
-        "house": 6,
-        "summary": "No Manglik Dosha detected.",
-        "details": [
-          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
-          "Mars is favorably placed."
-        ],
-        "dosha": "Manglik",
-        "severity": "moderate"
-      },
-      "kalsarp": {
-        "present": false,
-        "rahu_house": 9,
-        "ketu_house": 3,
-        "summary": "No Kalsarpa Dosha detected.",
-        "details": [
-          "Planets are distributed across the chart.",
-          "Soul energy flows freely."
-        ],
-        "dosha": "Kalsarpa",
-        "severity": "high"
-      },
-      "pitra": {
-        "present": false,
-        "summary": "Pitra Dosha not observed.",
-        "details": [
-          "Sun is well placed.",
-          "Ancestral blessings are strong."
-        ],
-        "dosha": "Pitra",
-        "severity": "moderate"
-      },
-      "sadesati": {
-        "present": false,
-        "phase": "none",
-        "summary": "Sade Sati not currently active.",
-        "all_cycles": [
-          {
-            "cycle": 1,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 1978,
-                "end": 1981,
-                "age": -9
-              },
-              {
-                "phase": "Peak",
-                "start": 1981,
-                "end": 1983,
-                "age": -6
-              },
-              {
-                "phase": "Setting",
-                "start": 1983,
-                "end": 1986,
-                "age": -4
-              }
-            ],
-            "summary": "1978 \u2014 1986"
-          },
-          {
-            "cycle": 2,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2008,
-                "end": 2010,
-                "age": 20
-              },
-              {
-                "phase": "Peak",
-                "start": 2010,
-                "end": 2013,
-                "age": 22
-              },
-              {
-                "phase": "Setting",
-                "start": 2013,
-                "end": 2015,
-                "age": 25
-              }
-            ],
-            "summary": "2008 \u2014 2015"
-          },
-          {
-            "cycle": 3,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2037,
-                "end": 2040,
-                "age": 49
-              },
-              {
-                "phase": "Peak",
-                "start": 2040,
-                "end": 2042,
-                "age": 52
-              },
-              {
-                "phase": "Setting",
-                "start": 2042,
-                "end": 2045,
-                "age": 54
-              }
-            ],
-            "summary": "2037 \u2014 2045"
-          }
-        ],
-        "details": [
-          "Saturn is in a safe distance from Moon.",
-          "Emotional cycles are stable."
-        ],
-        "dosha": "SadeSati",
-        "severity": "moderate"
-      },
-      "rahu": {
-        "present": false,
-        "house": 9,
-        "summary": "No significant Rahu Dosha found.",
-        "details": [
-          "Rahu is in a non-afflicting house.",
-          "Shadow cycles are balanced."
-        ],
-        "dosha": "Rahu",
-        "severity": "moderate"
-      },
-      "ketu": {
-        "present": false,
-        "house": 3,
-        "summary": "No significant Ketu Dosha found.",
-        "details": [
-          "Ketu is well placed for detachment.",
-          "Planetary focus is clear."
-        ],
-        "dosha": "Ketu",
-        "severity": "moderate"
-      }
-    },
-    "profession": "Multiple career paths indicated"
-  },
-  {
-    "lagna": null,
-    "dosha": {
-      "manglik": {
-        "present": false,
-        "house": 6,
-        "summary": "No Manglik Dosha detected.",
-        "details": [
-          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
-          "Mars is favorably placed."
-        ],
-        "dosha": "Manglik",
-        "severity": "moderate"
-      },
-      "kalsarp": {
-        "present": false,
-        "rahu_house": 9,
-        "ketu_house": 3,
-        "summary": "No Kalsarpa Dosha detected.",
-        "details": [
-          "Planets are distributed across the chart.",
-          "Soul energy flows freely."
-        ],
-        "dosha": "Kalsarpa",
-        "severity": "high"
-      },
-      "pitra": {
-        "present": false,
-        "summary": "Pitra Dosha not observed.",
-        "details": [
-          "Sun is well placed.",
-          "Ancestral blessings are strong."
-        ],
-        "dosha": "Pitra",
-        "severity": "moderate"
-      },
-      "sadesati": {
-        "present": false,
-        "phase": "none",
-        "summary": "Sade Sati not currently active.",
-        "all_cycles": [
-          {
-            "cycle": 1,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 1978,
-                "end": 1981,
-                "age": -9
-              },
-              {
-                "phase": "Peak",
-                "start": 1981,
-                "end": 1983,
-                "age": -6
-              },
-              {
-                "phase": "Setting",
-                "start": 1983,
-                "end": 1986,
-                "age": -4
-              }
-            ],
-            "summary": "1978 \u2014 1986"
-          },
-          {
-            "cycle": 2,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2008,
-                "end": 2010,
-                "age": 20
-              },
-              {
-                "phase": "Peak",
-                "start": 2010,
-                "end": 2013,
-                "age": 22
-              },
-              {
-                "phase": "Setting",
-                "start": 2013,
-                "end": 2015,
-                "age": 25
-              }
-            ],
-            "summary": "2008 \u2014 2015"
-          },
-          {
-            "cycle": 3,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2037,
-                "end": 2040,
-                "age": 49
-              },
-              {
-                "phase": "Peak",
-                "start": 2040,
-                "end": 2042,
-                "age": 52
-              },
-              {
-                "phase": "Setting",
-                "start": 2042,
-                "end": 2045,
-                "age": 54
-              }
-            ],
-            "summary": "2037 \u2014 2045"
-          }
-        ],
-        "details": [
-          "Saturn is in a safe distance from Moon.",
-          "Emotional cycles are stable."
-        ],
-        "dosha": "SadeSati",
-        "severity": "moderate"
-      },
-      "rahu": {
-        "present": false,
-        "house": 9,
-        "summary": "No significant Rahu Dosha found.",
-        "details": [
-          "Rahu is in a non-afflicting house.",
-          "Shadow cycles are balanced."
-        ],
-        "dosha": "Rahu",
-        "severity": "moderate"
-      },
-      "ketu": {
-        "present": false,
-        "house": 3,
-        "summary": "No significant Ketu Dosha found.",
-        "details": [
-          "Ketu is well placed for detachment.",
-          "Planetary focus is clear."
-        ],
-        "dosha": "Ketu",
-        "severity": "moderate"
-      }
-    },
-    "profession": "Multiple career paths indicated"
-  },
-  {
-    "lagna": null,
-    "dosha": {
-      "manglik": {
-        "present": false,
-        "house": 6,
-        "summary": "No Manglik Dosha detected.",
-        "details": [
-          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
-          "Mars is favorably placed."
-        ],
-        "dosha": "Manglik",
-        "severity": "moderate"
-      },
-      "kalsarp": {
-        "present": false,
-        "rahu_house": 9,
-        "ketu_house": 3,
-        "summary": "No Kalsarpa Dosha detected.",
-        "details": [
-          "Planets are distributed across the chart.",
-          "Soul energy flows freely."
-        ],
-        "dosha": "Kalsarpa",
-        "severity": "high"
-      },
-      "pitra": {
-        "present": false,
-        "summary": "Pitra Dosha not observed.",
-        "details": [
-          "Sun is well placed.",
-          "Ancestral blessings are strong."
-        ],
-        "dosha": "Pitra",
-        "severity": "moderate"
-      },
-      "sadesati": {
-        "present": false,
-        "phase": "none",
-        "summary": "Sade Sati not currently active.",
-        "all_cycles": [
-          {
-            "cycle": 1,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 1978,
-                "end": 1981,
-                "age": -9
-              },
-              {
-                "phase": "Peak",
-                "start": 1981,
-                "end": 1983,
-                "age": -6
-              },
-              {
-                "phase": "Setting",
-                "start": 1983,
-                "end": 1986,
-                "age": -4
-              }
-            ],
-            "summary": "1978 \u2014 1986"
-          },
-          {
-            "cycle": 2,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2008,
-                "end": 2010,
-                "age": 20
-              },
-              {
-                "phase": "Peak",
-                "start": 2010,
-                "end": 2013,
-                "age": 22
-              },
-              {
-                "phase": "Setting",
-                "start": 2013,
-                "end": 2015,
-                "age": 25
-              }
-            ],
-            "summary": "2008 \u2014 2015"
-          },
-          {
-            "cycle": 3,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2037,
-                "end": 2040,
-                "age": 49
-              },
-              {
-                "phase": "Peak",
-                "start": 2040,
-                "end": 2042,
-                "age": 52
-              },
-              {
-                "phase": "Setting",
-                "start": 2042,
-                "end": 2045,
-                "age": 54
-              }
-            ],
-            "summary": "2037 \u2014 2045"
-          }
-        ],
-        "details": [
-          "Saturn is in a safe distance from Moon.",
-          "Emotional cycles are stable."
-        ],
-        "dosha": "SadeSati",
-        "severity": "moderate"
-      },
-      "rahu": {
-        "present": false,
-        "house": 9,
-        "summary": "No significant Rahu Dosha found.",
-        "details": [
-          "Rahu is in a non-afflicting house.",
-          "Shadow cycles are balanced."
-        ],
-        "dosha": "Rahu",
-        "severity": "moderate"
-      },
-      "ketu": {
-        "present": false,
-        "house": 3,
-        "summary": "No significant Ketu Dosha found.",
-        "details": [
-          "Ketu is well placed for detachment.",
-          "Planetary focus is clear."
-        ],
-        "dosha": "Ketu",
-        "severity": "moderate"
-      }
-    },
-    "profession": "Multiple career paths indicated"
-  },
-  {
-    "lagna": null,
-    "dosha": {
-      "manglik": {
-        "present": false,
-        "house": 6,
-        "summary": "No Manglik Dosha detected.",
-        "details": [
-          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
-          "Mars is favorably placed."
-        ],
-        "dosha": "Manglik",
-        "severity": "moderate"
-      },
-      "kalsarp": {
-        "present": false,
-        "rahu_house": 9,
-        "ketu_house": 3,
-        "summary": "No Kalsarpa Dosha detected.",
-        "details": [
-          "Planets are distributed across the chart.",
-          "Soul energy flows freely."
-        ],
-        "dosha": "Kalsarpa",
-        "severity": "high"
-      },
-      "pitra": {
-        "present": false,
-        "summary": "Pitra Dosha not observed.",
-        "details": [
-          "Sun is well placed.",
-          "Ancestral blessings are strong."
-        ],
-        "dosha": "Pitra",
-        "severity": "moderate"
-      },
-      "sadesati": {
-        "present": false,
-        "phase": "none",
-        "summary": "Sade Sati not currently active.",
-        "all_cycles": [
-          {
-            "cycle": 1,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 1978,
-                "end": 1981,
-                "age": -9
-              },
-              {
-                "phase": "Peak",
-                "start": 1981,
-                "end": 1983,
-                "age": -6
-              },
-              {
-                "phase": "Setting",
-                "start": 1983,
-                "end": 1986,
-                "age": -4
-              }
-            ],
-            "summary": "1978 \u2014 1986"
-          },
-          {
-            "cycle": 2,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2008,
-                "end": 2010,
-                "age": 20
-              },
-              {
-                "phase": "Peak",
-                "start": 2010,
-                "end": 2013,
-                "age": 22
-              },
-              {
-                "phase": "Setting",
-                "start": 2013,
-                "end": 2015,
-                "age": 25
-              }
-            ],
-            "summary": "2008 \u2014 2015"
-          },
-          {
-            "cycle": 3,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2037,
-                "end": 2040,
-                "age": 49
-              },
-              {
-                "phase": "Peak",
-                "start": 2040,
-                "end": 2042,
-                "age": 52
-              },
-              {
-                "phase": "Setting",
-                "start": 2042,
-                "end": 2045,
-                "age": 54
-              }
-            ],
-            "summary": "2037 \u2014 2045"
-          }
-        ],
-        "details": [
-          "Saturn is in a safe distance from Moon.",
-          "Emotional cycles are stable."
-        ],
-        "dosha": "SadeSati",
-        "severity": "moderate"
-      },
-      "rahu": {
-        "present": false,
-        "house": 9,
-        "summary": "No significant Rahu Dosha found.",
-        "details": [
-          "Rahu is in a non-afflicting house.",
-          "Shadow cycles are balanced."
-        ],
-        "dosha": "Rahu",
-        "severity": "moderate"
-      },
-      "ketu": {
-        "present": false,
-        "house": 3,
-        "summary": "No significant Ketu Dosha found.",
-        "details": [
-          "Ketu is well placed for detachment.",
-          "Planetary focus is clear."
-        ],
-        "dosha": "Ketu",
-        "severity": "moderate"
-      }
-    },
-    "profession": "Multiple career paths indicated"
-  },
-  {
-    "lagna": null,
-    "dosha": {
-      "manglik": {
-        "present": false,
-        "house": 3,
-        "summary": "No Manglik Dosha detected.",
-        "details": [
-          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
-          "Mars is favorably placed."
-        ],
-        "dosha": "Manglik",
-        "severity": "moderate"
-      },
-      "kalsarp": {
-        "present": false,
-        "rahu_house": 11,
-        "ketu_house": 5,
-        "summary": "No Kalsarpa Dosha detected.",
-        "details": [
-          "Planets are distributed across the chart.",
-          "Soul energy flows freely."
-        ],
-        "dosha": "Kalsarpa",
-        "severity": "high"
-      },
-      "pitra": {
-        "present": false,
-        "summary": "Pitra Dosha not observed.",
-        "details": [
-          "Sun is well placed.",
-          "Ancestral blessings are strong."
-        ],
-        "dosha": "Pitra",
-        "severity": "moderate"
-      },
-      "sadesati": {
-        "present": false,
-        "phase": "none",
-        "summary": "Sade Sati not currently active.",
-        "all_cycles": [
-          {
-            "cycle": 1,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 1991,
-                "end": 1993,
-                "age": 1
-              },
-              {
-                "phase": "Peak",
-                "start": 1993,
-                "end": 1996,
-                "age": 3
-              },
-              {
-                "phase": "Setting",
-                "start": 1995,
-                "end": 1998,
-                "age": 5
-              }
-            ],
-            "summary": "1991 \u2014 1998"
-          },
-          {
-            "cycle": 2,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2020,
-                "end": 2023,
-                "age": 30
-              },
-              {
-                "phase": "Peak",
-                "start": 2023,
-                "end": 2025,
-                "age": 33
-              },
-              {
-                "phase": "Setting",
-                "start": 2025,
-                "end": 2027,
-                "age": 35
-              }
-            ],
-            "summary": "2020 \u2014 2027"
-          },
-          {
-            "cycle": 3,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2050,
-                "end": 2052,
-                "age": 60
-              },
-              {
-                "phase": "Peak",
-                "start": 2052,
-                "end": 2055,
-                "age": 62
-              },
-              {
-                "phase": "Setting",
-                "start": 2054,
-                "end": 2057,
-                "age": 64
-              }
-            ],
-            "summary": "2050 \u2014 2057"
-          }
-        ],
-        "details": [
-          "Saturn is in a safe distance from Moon.",
-          "Emotional cycles are stable."
-        ],
-        "dosha": "SadeSati",
-        "severity": "moderate"
-      },
-      "rahu": {
-        "present": false,
-        "house": 11,
-        "summary": "No significant Rahu Dosha found.",
-        "details": [
-          "Rahu is in a non-afflicting house.",
-          "Shadow cycles are balanced."
-        ],
-        "dosha": "Rahu",
-        "severity": "moderate"
-      },
-      "ketu": {
-        "present": false,
-        "house": 5,
-        "summary": "No significant Ketu Dosha found.",
-        "details": [
-          "Ketu is well placed for detachment.",
-          "Planetary focus is clear."
-        ],
-        "dosha": "Ketu",
-        "severity": "moderate"
-      }
-    },
-    "profession": "Multiple career paths indicated"
-  },
-  {
-    "lagna": null,
-    "dosha": {
-      "manglik": {
-        "present": false,
-        "house": 6,
-        "summary": "No Manglik Dosha detected.",
-        "details": [
-          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
-          "Mars is favorably placed."
-        ],
-        "dosha": "Manglik",
-        "severity": "moderate"
-      },
-      "kalsarp": {
-        "present": false,
-        "rahu_house": 9,
-        "ketu_house": 3,
-        "summary": "No Kalsarpa Dosha detected.",
-        "details": [
-          "Planets are distributed across the chart.",
-          "Soul energy flows freely."
-        ],
-        "dosha": "Kalsarpa",
-        "severity": "high"
-      },
-      "pitra": {
-        "present": false,
-        "summary": "Pitra Dosha not observed.",
-        "details": [
-          "Sun is well placed.",
-          "Ancestral blessings are strong."
-        ],
-        "dosha": "Pitra",
-        "severity": "moderate"
-      },
-      "sadesati": {
-        "present": false,
-        "phase": "none",
-        "summary": "Sade Sati not currently active.",
-        "all_cycles": [
-          {
-            "cycle": 1,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 1978,
-                "end": 1981,
-                "age": -9
-              },
-              {
-                "phase": "Peak",
-                "start": 1981,
-                "end": 1983,
-                "age": -6
-              },
-              {
-                "phase": "Setting",
-                "start": 1983,
-                "end": 1986,
-                "age": -4
-              }
-            ],
-            "summary": "1978 \u2014 1986"
-          },
-          {
-            "cycle": 2,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2008,
-                "end": 2010,
-                "age": 20
-              },
-              {
-                "phase": "Peak",
-                "start": 2010,
-                "end": 2013,
-                "age": 22
-              },
-              {
-                "phase": "Setting",
-                "start": 2013,
-                "end": 2015,
-                "age": 25
-              }
-            ],
-            "summary": "2008 \u2014 2015"
-          },
-          {
-            "cycle": 3,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2037,
-                "end": 2040,
-                "age": 49
-              },
-              {
-                "phase": "Peak",
-                "start": 2040,
-                "end": 2042,
-                "age": 52
-              },
-              {
-                "phase": "Setting",
-                "start": 2042,
-                "end": 2045,
-                "age": 54
-              }
-            ],
-            "summary": "2037 \u2014 2045"
-          }
-        ],
-        "details": [
-          "Saturn is in a safe distance from Moon.",
-          "Emotional cycles are stable."
-        ],
-        "dosha": "SadeSati",
-        "severity": "moderate"
-      },
-      "rahu": {
-        "present": false,
-        "house": 9,
-        "summary": "No significant Rahu Dosha found.",
-        "details": [
-          "Rahu is in a non-afflicting house.",
-          "Shadow cycles are balanced."
-        ],
-        "dosha": "Rahu",
-        "severity": "moderate"
-      },
-      "ketu": {
-        "present": false,
-        "house": 3,
-        "summary": "No significant Ketu Dosha found.",
-        "details": [
-          "Ketu is well placed for detachment.",
-          "Planetary focus is clear."
-        ],
-        "dosha": "Ketu",
-        "severity": "moderate"
-      }
-    },
-    "profession": "Multiple career paths indicated"
-  },
-  {
-    "lagna": null,
-    "dosha": {
-      "manglik": {
-        "present": true,
-        "house": 12,
-        "summary": "Manglik influence from Mars in house 12.",
-        "details": [
-          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
-          "Hanuman Chalisa and Tuesday fasts are recommended for Mars stability."
-        ],
-        "dosha": "Manglik",
-        "severity": "moderate"
-      },
-      "kalsarp": {
-        "present": false,
-        "rahu_house": 5,
-        "ketu_house": 11,
-        "summary": "No Kalsarpa Dosha detected.",
-        "details": [
-          "Planets are distributed across the chart.",
-          "Soul energy flows freely."
-        ],
-        "dosha": "Kalsarpa",
-        "severity": "high"
-      },
-      "pitra": {
-        "present": false,
-        "summary": "Pitra Dosha not observed.",
-        "details": [
-          "Sun is well placed.",
-          "Ancestral blessings are strong."
-        ],
-        "dosha": "Pitra",
-        "severity": "moderate"
-      },
-      "sadesati": {
-        "present": false,
-        "phase": "none",
-        "summary": "Sade Sati not currently active.",
-        "all_cycles": [
-          {
-            "cycle": 1,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2010,
-                "end": 2013,
-                "age": 10
-              },
-              {
-                "phase": "Peak",
-                "start": 2013,
-                "end": 2015,
-                "age": 13
-              },
-              {
-                "phase": "Setting",
-                "start": 2015,
-                "end": 2018,
-                "age": 15
-              }
-            ],
-            "summary": "2010 \u2014 2018"
-          },
-          {
-            "cycle": 2,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2040,
-                "end": 2042,
-                "age": 40
-              },
-              {
-                "phase": "Peak",
-                "start": 2042,
-                "end": 2045,
-                "age": 42
-              },
-              {
-                "phase": "Setting",
-                "start": 2045,
-                "end": 2047,
-                "age": 45
-              }
-            ],
-            "summary": "2040 \u2014 2047"
-          },
-          {
-            "cycle": 3,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2069,
-                "end": 2072,
-                "age": 69
-              },
-              {
-                "phase": "Peak",
-                "start": 2072,
-                "end": 2074,
-                "age": 72
-              },
-              {
-                "phase": "Setting",
-                "start": 2074,
-                "end": 2077,
-                "age": 74
-              }
-            ],
-            "summary": "2069 \u2014 2077"
-          }
-        ],
-        "details": [
-          "Saturn is in a safe distance from Moon.",
-          "Emotional cycles are stable."
-        ],
-        "dosha": "SadeSati",
-        "severity": "moderate"
-      },
-      "rahu": {
-        "present": false,
-        "house": 5,
-        "summary": "No significant Rahu Dosha found.",
-        "details": [
-          "Rahu is in a non-afflicting house.",
-          "Shadow cycles are balanced."
-        ],
-        "dosha": "Rahu",
-        "severity": "moderate"
-      },
-      "ketu": {
-        "present": false,
-        "house": 11,
-        "summary": "No significant Ketu Dosha found.",
-        "details": [
-          "Ketu is well placed for detachment.",
-          "Planetary focus is clear."
-        ],
-        "dosha": "Ketu",
-        "severity": "moderate"
-      }
-    },
-    "profession": "Multiple career paths indicated"
-  },
-  {
-    "lagna": null,
-    "dosha": {
-      "manglik": {
-        "present": true,
-        "house": 12,
-        "summary": "Manglik influence from Mars in house 12.",
-        "details": [
-          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
-          "Hanuman Chalisa and Tuesday fasts are recommended for Mars stability."
-        ],
-        "dosha": "Manglik",
-        "severity": "moderate"
-      },
-      "kalsarp": {
-        "present": false,
-        "rahu_house": 5,
-        "ketu_house": 11,
-        "summary": "No Kalsarpa Dosha detected.",
-        "details": [
-          "Planets are distributed across the chart.",
-          "Soul energy flows freely."
-        ],
-        "dosha": "Kalsarpa",
-        "severity": "high"
-      },
-      "pitra": {
-        "present": false,
-        "summary": "Pitra Dosha not observed.",
-        "details": [
-          "Sun is well placed.",
-          "Ancestral blessings are strong."
-        ],
-        "dosha": "Pitra",
-        "severity": "moderate"
-      },
-      "sadesati": {
-        "present": false,
-        "phase": "none",
-        "summary": "Sade Sati not currently active.",
-        "all_cycles": [
-          {
-            "cycle": 1,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2010,
-                "end": 2013,
-                "age": 10
-              },
-              {
-                "phase": "Peak",
-                "start": 2013,
-                "end": 2015,
-                "age": 13
-              },
-              {
-                "phase": "Setting",
-                "start": 2015,
-                "end": 2018,
-                "age": 15
-              }
-            ],
-            "summary": "2010 \u2014 2018"
-          },
-          {
-            "cycle": 2,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2040,
-                "end": 2042,
-                "age": 40
-              },
-              {
-                "phase": "Peak",
-                "start": 2042,
-                "end": 2045,
-                "age": 42
-              },
-              {
-                "phase": "Setting",
-                "start": 2045,
-                "end": 2047,
-                "age": 45
-              }
-            ],
-            "summary": "2040 \u2014 2047"
-          },
-          {
-            "cycle": 3,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2069,
-                "end": 2072,
-                "age": 69
-              },
-              {
-                "phase": "Peak",
-                "start": 2072,
-                "end": 2074,
-                "age": 72
-              },
-              {
-                "phase": "Setting",
-                "start": 2074,
-                "end": 2077,
-                "age": 74
-              }
-            ],
-            "summary": "2069 \u2014 2077"
-          }
-        ],
-        "details": [
-          "Saturn is in a safe distance from Moon.",
-          "Emotional cycles are stable."
-        ],
-        "dosha": "SadeSati",
-        "severity": "moderate"
-      },
-      "rahu": {
-        "present": false,
-        "house": 5,
-        "summary": "No significant Rahu Dosha found.",
-        "details": [
-          "Rahu is in a non-afflicting house.",
-          "Shadow cycles are balanced."
-        ],
-        "dosha": "Rahu",
-        "severity": "moderate"
-      },
-      "ketu": {
-        "present": false,
-        "house": 11,
-        "summary": "No significant Ketu Dosha found.",
-        "details": [
-          "Ketu is well placed for detachment.",
-          "Planetary focus is clear."
-        ],
-        "dosha": "Ketu",
-        "severity": "moderate"
-      }
-    },
-    "profession": "Multiple career paths indicated"
-  },
-  {
-    "lagna": null,
-    "dosha": {
-      "manglik": {
-        "present": true,
-        "house": 12,
-        "summary": "Manglik influence from Mars in house 12.",
-        "details": [
-          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
-          "Hanuman Chalisa and Tuesday fasts are recommended for Mars stability."
-        ],
-        "dosha": "Manglik",
-        "severity": "moderate"
-      },
-      "kalsarp": {
-        "present": false,
-        "rahu_house": 5,
-        "ketu_house": 11,
-        "summary": "No Kalsarpa Dosha detected.",
-        "details": [
-          "Planets are distributed across the chart.",
-          "Soul energy flows freely."
-        ],
-        "dosha": "Kalsarpa",
-        "severity": "high"
-      },
-      "pitra": {
-        "present": false,
-        "summary": "Pitra Dosha not observed.",
-        "details": [
-          "Sun is well placed.",
-          "Ancestral blessings are strong."
-        ],
-        "dosha": "Pitra",
-        "severity": "moderate"
-      },
-      "sadesati": {
-        "present": false,
-        "phase": "none",
-        "summary": "Sade Sati not currently active.",
-        "all_cycles": [
-          {
-            "cycle": 1,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2010,
-                "end": 2013,
-                "age": 10
-              },
-              {
-                "phase": "Peak",
-                "start": 2013,
-                "end": 2015,
-                "age": 13
-              },
-              {
-                "phase": "Setting",
-                "start": 2015,
-                "end": 2018,
-                "age": 15
-              }
-            ],
-            "summary": "2010 \u2014 2018"
-          },
-          {
-            "cycle": 2,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2040,
-                "end": 2042,
-                "age": 40
-              },
-              {
-                "phase": "Peak",
-                "start": 2042,
-                "end": 2045,
-                "age": 42
-              },
-              {
-                "phase": "Setting",
-                "start": 2045,
-                "end": 2047,
-                "age": 45
-              }
-            ],
-            "summary": "2040 \u2014 2047"
-          },
-          {
-            "cycle": 3,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2069,
-                "end": 2072,
-                "age": 69
-              },
-              {
-                "phase": "Peak",
-                "start": 2072,
-                "end": 2074,
-                "age": 72
-              },
-              {
-                "phase": "Setting",
-                "start": 2074,
-                "end": 2077,
-                "age": 74
-              }
-            ],
-            "summary": "2069 \u2014 2077"
-          }
-        ],
-        "details": [
-          "Saturn is in a safe distance from Moon.",
-          "Emotional cycles are stable."
-        ],
-        "dosha": "SadeSati",
-        "severity": "moderate"
-      },
-      "rahu": {
-        "present": false,
-        "house": 5,
-        "summary": "No significant Rahu Dosha found.",
-        "details": [
-          "Rahu is in a non-afflicting house.",
-          "Shadow cycles are balanced."
-        ],
-        "dosha": "Rahu",
-        "severity": "moderate"
-      },
-      "ketu": {
-        "present": false,
-        "house": 11,
-        "summary": "No significant Ketu Dosha found.",
-        "details": [
-          "Ketu is well placed for detachment.",
-          "Planetary focus is clear."
-        ],
-        "dosha": "Ketu",
-        "severity": "moderate"
-      }
-    },
-    "profession": "Multiple career paths indicated"
-  },
-  {
-    "lagna": null,
-    "dosha": {
-      "manglik": {
-        "present": true,
-        "house": 12,
-        "summary": "Manglik influence from Mars in house 12.",
-        "details": [
-          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
-          "Hanuman Chalisa and Tuesday fasts are recommended for Mars stability."
-        ],
-        "dosha": "Manglik",
-        "severity": "moderate"
-      },
-      "kalsarp": {
-        "present": false,
-        "rahu_house": 5,
-        "ketu_house": 11,
-        "summary": "No Kalsarpa Dosha detected.",
-        "details": [
-          "Planets are distributed across the chart.",
-          "Soul energy flows freely."
-        ],
-        "dosha": "Kalsarpa",
-        "severity": "high"
-      },
-      "pitra": {
-        "present": false,
-        "summary": "Pitra Dosha not observed.",
-        "details": [
-          "Sun is well placed.",
-          "Ancestral blessings are strong."
-        ],
-        "dosha": "Pitra",
-        "severity": "moderate"
-      },
-      "sadesati": {
-        "present": false,
-        "phase": "none",
-        "summary": "Sade Sati not currently active.",
-        "all_cycles": [
-          {
-            "cycle": 1,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2010,
-                "end": 2013,
-                "age": 10
-              },
-              {
-                "phase": "Peak",
-                "start": 2013,
-                "end": 2015,
-                "age": 13
-              },
-              {
-                "phase": "Setting",
-                "start": 2015,
-                "end": 2018,
-                "age": 15
-              }
-            ],
-            "summary": "2010 \u2014 2018"
-          },
-          {
-            "cycle": 2,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2040,
-                "end": 2042,
-                "age": 40
-              },
-              {
-                "phase": "Peak",
-                "start": 2042,
-                "end": 2045,
-                "age": 42
-              },
-              {
-                "phase": "Setting",
-                "start": 2045,
-                "end": 2047,
-                "age": 45
-              }
-            ],
-            "summary": "2040 \u2014 2047"
-          },
-          {
-            "cycle": 3,
-            "phases": [
-              {
-                "phase": "Rising",
-                "start": 2069,
-                "end": 2072,
-                "age": 69
-              },
-              {
-                "phase": "Peak",
-                "start": 2072,
-                "end": 2074,
-                "age": 72
-              },
-              {
-                "phase": "Setting",
-                "start": 2074,
-                "end": 2077,
-                "age": 74
-              }
-            ],
-            "summary": "2069 \u2014 2077"
-          }
-        ],
-        "details": [
-          "Saturn is in a safe distance from Moon.",
-          "Emotional cycles are stable."
-        ],
-        "dosha": "SadeSati",
-        "severity": "moderate"
-      },
-      "rahu": {
-        "present": false,
-        "house": 5,
-        "summary": "No significant Rahu Dosha found.",
-        "details": [
-          "Rahu is in a non-afflicting house.",
-          "Shadow cycles are balanced."
-        ],
-        "dosha": "Rahu",
-        "severity": "moderate"
-      },
-      "ketu": {
-        "present": false,
-        "house": 11,
-        "summary": "No significant Ketu Dosha found.",
-        "details": [
-          "Ketu is well placed for detachment.",
-          "Planetary focus is clear."
-        ],
-        "dosha": "Ketu",
-        "severity": "moderate"
-      }
-    },
-    "profession": "Multiple career paths indicated"
-  },
-  {
-    "lagna": null,
-    "dosha": {
-      "manglik": {
         "present": true,
         "house": 12,
         "summary": "Manglik influence from Mars in house 12.",
@@ -29192,6 +27148,2050 @@
         "details": [
           "Ketu in sensitive houses can cause isolation or confusion.",
           "Worship Lord Ganesha and offer grass (durva) to resolve Ketu issues."
+        ],
+        "dosha": "Ketu",
+        "severity": "moderate"
+      }
+    },
+    "profession": "Multiple career paths indicated"
+  },
+  {
+    "lagna": null,
+    "dosha": {
+      "manglik": {
+        "present": false,
+        "house": 6,
+        "summary": "No Manglik Dosha detected.",
+        "details": [
+          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
+          "Mars is favorably placed."
+        ],
+        "dosha": "Manglik",
+        "severity": "moderate"
+      },
+      "kalsarp": {
+        "present": false,
+        "rahu_house": 9,
+        "ketu_house": 3,
+        "summary": "No Kalsarpa Dosha detected.",
+        "details": [
+          "Planets are distributed across the chart.",
+          "Soul energy flows freely."
+        ],
+        "dosha": "Kalsarpa",
+        "severity": "high"
+      },
+      "pitra": {
+        "present": false,
+        "summary": "Pitra Dosha not observed.",
+        "details": [
+          "Sun is well placed.",
+          "Ancestral blessings are strong."
+        ],
+        "dosha": "Pitra",
+        "severity": "moderate"
+      },
+      "sadesati": {
+        "present": false,
+        "phase": "none",
+        "summary": "Sade Sati not currently active.",
+        "all_cycles": [
+          {
+            "cycle": 1,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 1978,
+                "end": 1981,
+                "age": -9
+              },
+              {
+                "phase": "Peak",
+                "start": 1981,
+                "end": 1983,
+                "age": -6
+              },
+              {
+                "phase": "Setting",
+                "start": 1983,
+                "end": 1986,
+                "age": -4
+              }
+            ],
+            "summary": "1978 \u2014 1986"
+          },
+          {
+            "cycle": 2,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2008,
+                "end": 2010,
+                "age": 20
+              },
+              {
+                "phase": "Peak",
+                "start": 2010,
+                "end": 2013,
+                "age": 22
+              },
+              {
+                "phase": "Setting",
+                "start": 2013,
+                "end": 2015,
+                "age": 25
+              }
+            ],
+            "summary": "2008 \u2014 2015"
+          },
+          {
+            "cycle": 3,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2037,
+                "end": 2040,
+                "age": 49
+              },
+              {
+                "phase": "Peak",
+                "start": 2040,
+                "end": 2042,
+                "age": 52
+              },
+              {
+                "phase": "Setting",
+                "start": 2042,
+                "end": 2045,
+                "age": 54
+              }
+            ],
+            "summary": "2037 \u2014 2045"
+          }
+        ],
+        "details": [
+          "Saturn is in a safe distance from Moon.",
+          "Emotional cycles are stable."
+        ],
+        "dosha": "SadeSati",
+        "severity": "moderate"
+      },
+      "rahu": {
+        "present": false,
+        "house": 9,
+        "summary": "No significant Rahu Dosha found.",
+        "details": [
+          "Rahu is in a non-afflicting house.",
+          "Shadow cycles are balanced."
+        ],
+        "dosha": "Rahu",
+        "severity": "moderate"
+      },
+      "ketu": {
+        "present": false,
+        "house": 3,
+        "summary": "No significant Ketu Dosha found.",
+        "details": [
+          "Ketu is well placed for detachment.",
+          "Planetary focus is clear."
+        ],
+        "dosha": "Ketu",
+        "severity": "moderate"
+      }
+    },
+    "profession": "Multiple career paths indicated"
+  },
+  {
+    "lagna": null,
+    "dosha": {
+      "manglik": {
+        "present": false,
+        "house": 6,
+        "summary": "No Manglik Dosha detected.",
+        "details": [
+          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
+          "Mars is favorably placed."
+        ],
+        "dosha": "Manglik",
+        "severity": "moderate"
+      },
+      "kalsarp": {
+        "present": false,
+        "rahu_house": 9,
+        "ketu_house": 3,
+        "summary": "No Kalsarpa Dosha detected.",
+        "details": [
+          "Planets are distributed across the chart.",
+          "Soul energy flows freely."
+        ],
+        "dosha": "Kalsarpa",
+        "severity": "high"
+      },
+      "pitra": {
+        "present": false,
+        "summary": "Pitra Dosha not observed.",
+        "details": [
+          "Sun is well placed.",
+          "Ancestral blessings are strong."
+        ],
+        "dosha": "Pitra",
+        "severity": "moderate"
+      },
+      "sadesati": {
+        "present": false,
+        "phase": "none",
+        "summary": "Sade Sati not currently active.",
+        "all_cycles": [
+          {
+            "cycle": 1,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 1978,
+                "end": 1981,
+                "age": -9
+              },
+              {
+                "phase": "Peak",
+                "start": 1981,
+                "end": 1983,
+                "age": -6
+              },
+              {
+                "phase": "Setting",
+                "start": 1983,
+                "end": 1986,
+                "age": -4
+              }
+            ],
+            "summary": "1978 \u2014 1986"
+          },
+          {
+            "cycle": 2,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2008,
+                "end": 2010,
+                "age": 20
+              },
+              {
+                "phase": "Peak",
+                "start": 2010,
+                "end": 2013,
+                "age": 22
+              },
+              {
+                "phase": "Setting",
+                "start": 2013,
+                "end": 2015,
+                "age": 25
+              }
+            ],
+            "summary": "2008 \u2014 2015"
+          },
+          {
+            "cycle": 3,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2037,
+                "end": 2040,
+                "age": 49
+              },
+              {
+                "phase": "Peak",
+                "start": 2040,
+                "end": 2042,
+                "age": 52
+              },
+              {
+                "phase": "Setting",
+                "start": 2042,
+                "end": 2045,
+                "age": 54
+              }
+            ],
+            "summary": "2037 \u2014 2045"
+          }
+        ],
+        "details": [
+          "Saturn is in a safe distance from Moon.",
+          "Emotional cycles are stable."
+        ],
+        "dosha": "SadeSati",
+        "severity": "moderate"
+      },
+      "rahu": {
+        "present": false,
+        "house": 9,
+        "summary": "No significant Rahu Dosha found.",
+        "details": [
+          "Rahu is in a non-afflicting house.",
+          "Shadow cycles are balanced."
+        ],
+        "dosha": "Rahu",
+        "severity": "moderate"
+      },
+      "ketu": {
+        "present": false,
+        "house": 3,
+        "summary": "No significant Ketu Dosha found.",
+        "details": [
+          "Ketu is well placed for detachment.",
+          "Planetary focus is clear."
+        ],
+        "dosha": "Ketu",
+        "severity": "moderate"
+      }
+    },
+    "profession": "Multiple career paths indicated"
+  },
+  {
+    "lagna": null,
+    "dosha": {
+      "manglik": {
+        "present": false,
+        "house": 6,
+        "summary": "No Manglik Dosha detected.",
+        "details": [
+          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
+          "Mars is favorably placed."
+        ],
+        "dosha": "Manglik",
+        "severity": "moderate"
+      },
+      "kalsarp": {
+        "present": false,
+        "rahu_house": 9,
+        "ketu_house": 3,
+        "summary": "No Kalsarpa Dosha detected.",
+        "details": [
+          "Planets are distributed across the chart.",
+          "Soul energy flows freely."
+        ],
+        "dosha": "Kalsarpa",
+        "severity": "high"
+      },
+      "pitra": {
+        "present": false,
+        "summary": "Pitra Dosha not observed.",
+        "details": [
+          "Sun is well placed.",
+          "Ancestral blessings are strong."
+        ],
+        "dosha": "Pitra",
+        "severity": "moderate"
+      },
+      "sadesati": {
+        "present": false,
+        "phase": "none",
+        "summary": "Sade Sati not currently active.",
+        "all_cycles": [
+          {
+            "cycle": 1,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 1978,
+                "end": 1981,
+                "age": -9
+              },
+              {
+                "phase": "Peak",
+                "start": 1981,
+                "end": 1983,
+                "age": -6
+              },
+              {
+                "phase": "Setting",
+                "start": 1983,
+                "end": 1986,
+                "age": -4
+              }
+            ],
+            "summary": "1978 \u2014 1986"
+          },
+          {
+            "cycle": 2,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2008,
+                "end": 2010,
+                "age": 20
+              },
+              {
+                "phase": "Peak",
+                "start": 2010,
+                "end": 2013,
+                "age": 22
+              },
+              {
+                "phase": "Setting",
+                "start": 2013,
+                "end": 2015,
+                "age": 25
+              }
+            ],
+            "summary": "2008 \u2014 2015"
+          },
+          {
+            "cycle": 3,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2037,
+                "end": 2040,
+                "age": 49
+              },
+              {
+                "phase": "Peak",
+                "start": 2040,
+                "end": 2042,
+                "age": 52
+              },
+              {
+                "phase": "Setting",
+                "start": 2042,
+                "end": 2045,
+                "age": 54
+              }
+            ],
+            "summary": "2037 \u2014 2045"
+          }
+        ],
+        "details": [
+          "Saturn is in a safe distance from Moon.",
+          "Emotional cycles are stable."
+        ],
+        "dosha": "SadeSati",
+        "severity": "moderate"
+      },
+      "rahu": {
+        "present": false,
+        "house": 9,
+        "summary": "No significant Rahu Dosha found.",
+        "details": [
+          "Rahu is in a non-afflicting house.",
+          "Shadow cycles are balanced."
+        ],
+        "dosha": "Rahu",
+        "severity": "moderate"
+      },
+      "ketu": {
+        "present": false,
+        "house": 3,
+        "summary": "No significant Ketu Dosha found.",
+        "details": [
+          "Ketu is well placed for detachment.",
+          "Planetary focus is clear."
+        ],
+        "dosha": "Ketu",
+        "severity": "moderate"
+      }
+    },
+    "profession": "Multiple career paths indicated"
+  },
+  {
+    "lagna": null,
+    "dosha": {
+      "manglik": {
+        "present": false,
+        "house": 6,
+        "summary": "No Manglik Dosha detected.",
+        "details": [
+          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
+          "Mars is favorably placed."
+        ],
+        "dosha": "Manglik",
+        "severity": "moderate"
+      },
+      "kalsarp": {
+        "present": false,
+        "rahu_house": 9,
+        "ketu_house": 3,
+        "summary": "No Kalsarpa Dosha detected.",
+        "details": [
+          "Planets are distributed across the chart.",
+          "Soul energy flows freely."
+        ],
+        "dosha": "Kalsarpa",
+        "severity": "high"
+      },
+      "pitra": {
+        "present": false,
+        "summary": "Pitra Dosha not observed.",
+        "details": [
+          "Sun is well placed.",
+          "Ancestral blessings are strong."
+        ],
+        "dosha": "Pitra",
+        "severity": "moderate"
+      },
+      "sadesati": {
+        "present": false,
+        "phase": "none",
+        "summary": "Sade Sati not currently active.",
+        "all_cycles": [
+          {
+            "cycle": 1,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 1978,
+                "end": 1981,
+                "age": -9
+              },
+              {
+                "phase": "Peak",
+                "start": 1981,
+                "end": 1983,
+                "age": -6
+              },
+              {
+                "phase": "Setting",
+                "start": 1983,
+                "end": 1986,
+                "age": -4
+              }
+            ],
+            "summary": "1978 \u2014 1986"
+          },
+          {
+            "cycle": 2,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2008,
+                "end": 2010,
+                "age": 20
+              },
+              {
+                "phase": "Peak",
+                "start": 2010,
+                "end": 2013,
+                "age": 22
+              },
+              {
+                "phase": "Setting",
+                "start": 2013,
+                "end": 2015,
+                "age": 25
+              }
+            ],
+            "summary": "2008 \u2014 2015"
+          },
+          {
+            "cycle": 3,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2037,
+                "end": 2040,
+                "age": 49
+              },
+              {
+                "phase": "Peak",
+                "start": 2040,
+                "end": 2042,
+                "age": 52
+              },
+              {
+                "phase": "Setting",
+                "start": 2042,
+                "end": 2045,
+                "age": 54
+              }
+            ],
+            "summary": "2037 \u2014 2045"
+          }
+        ],
+        "details": [
+          "Saturn is in a safe distance from Moon.",
+          "Emotional cycles are stable."
+        ],
+        "dosha": "SadeSati",
+        "severity": "moderate"
+      },
+      "rahu": {
+        "present": false,
+        "house": 9,
+        "summary": "No significant Rahu Dosha found.",
+        "details": [
+          "Rahu is in a non-afflicting house.",
+          "Shadow cycles are balanced."
+        ],
+        "dosha": "Rahu",
+        "severity": "moderate"
+      },
+      "ketu": {
+        "present": false,
+        "house": 3,
+        "summary": "No significant Ketu Dosha found.",
+        "details": [
+          "Ketu is well placed for detachment.",
+          "Planetary focus is clear."
+        ],
+        "dosha": "Ketu",
+        "severity": "moderate"
+      }
+    },
+    "profession": "Multiple career paths indicated"
+  },
+  {
+    "lagna": null,
+    "dosha": {
+      "manglik": {
+        "present": false,
+        "house": 6,
+        "summary": "No Manglik Dosha detected.",
+        "details": [
+          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
+          "Mars is favorably placed."
+        ],
+        "dosha": "Manglik",
+        "severity": "moderate"
+      },
+      "kalsarp": {
+        "present": false,
+        "rahu_house": 9,
+        "ketu_house": 3,
+        "summary": "No Kalsarpa Dosha detected.",
+        "details": [
+          "Planets are distributed across the chart.",
+          "Soul energy flows freely."
+        ],
+        "dosha": "Kalsarpa",
+        "severity": "high"
+      },
+      "pitra": {
+        "present": false,
+        "summary": "Pitra Dosha not observed.",
+        "details": [
+          "Sun is well placed.",
+          "Ancestral blessings are strong."
+        ],
+        "dosha": "Pitra",
+        "severity": "moderate"
+      },
+      "sadesati": {
+        "present": false,
+        "phase": "none",
+        "summary": "Sade Sati not currently active.",
+        "all_cycles": [
+          {
+            "cycle": 1,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 1978,
+                "end": 1981,
+                "age": -9
+              },
+              {
+                "phase": "Peak",
+                "start": 1981,
+                "end": 1983,
+                "age": -6
+              },
+              {
+                "phase": "Setting",
+                "start": 1983,
+                "end": 1986,
+                "age": -4
+              }
+            ],
+            "summary": "1978 \u2014 1986"
+          },
+          {
+            "cycle": 2,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2008,
+                "end": 2010,
+                "age": 20
+              },
+              {
+                "phase": "Peak",
+                "start": 2010,
+                "end": 2013,
+                "age": 22
+              },
+              {
+                "phase": "Setting",
+                "start": 2013,
+                "end": 2015,
+                "age": 25
+              }
+            ],
+            "summary": "2008 \u2014 2015"
+          },
+          {
+            "cycle": 3,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2037,
+                "end": 2040,
+                "age": 49
+              },
+              {
+                "phase": "Peak",
+                "start": 2040,
+                "end": 2042,
+                "age": 52
+              },
+              {
+                "phase": "Setting",
+                "start": 2042,
+                "end": 2045,
+                "age": 54
+              }
+            ],
+            "summary": "2037 \u2014 2045"
+          }
+        ],
+        "details": [
+          "Saturn is in a safe distance from Moon.",
+          "Emotional cycles are stable."
+        ],
+        "dosha": "SadeSati",
+        "severity": "moderate"
+      },
+      "rahu": {
+        "present": false,
+        "house": 9,
+        "summary": "No significant Rahu Dosha found.",
+        "details": [
+          "Rahu is in a non-afflicting house.",
+          "Shadow cycles are balanced."
+        ],
+        "dosha": "Rahu",
+        "severity": "moderate"
+      },
+      "ketu": {
+        "present": false,
+        "house": 3,
+        "summary": "No significant Ketu Dosha found.",
+        "details": [
+          "Ketu is well placed for detachment.",
+          "Planetary focus is clear."
+        ],
+        "dosha": "Ketu",
+        "severity": "moderate"
+      }
+    },
+    "profession": "Multiple career paths indicated"
+  },
+  {
+    "lagna": null,
+    "dosha": {
+      "manglik": {
+        "present": false,
+        "house": 6,
+        "summary": "No Manglik Dosha detected.",
+        "details": [
+          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
+          "Mars is favorably placed."
+        ],
+        "dosha": "Manglik",
+        "severity": "moderate"
+      },
+      "kalsarp": {
+        "present": false,
+        "rahu_house": 9,
+        "ketu_house": 3,
+        "summary": "No Kalsarpa Dosha detected.",
+        "details": [
+          "Planets are distributed across the chart.",
+          "Soul energy flows freely."
+        ],
+        "dosha": "Kalsarpa",
+        "severity": "high"
+      },
+      "pitra": {
+        "present": false,
+        "summary": "Pitra Dosha not observed.",
+        "details": [
+          "Sun is well placed.",
+          "Ancestral blessings are strong."
+        ],
+        "dosha": "Pitra",
+        "severity": "moderate"
+      },
+      "sadesati": {
+        "present": false,
+        "phase": "none",
+        "summary": "Sade Sati not currently active.",
+        "all_cycles": [
+          {
+            "cycle": 1,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 1978,
+                "end": 1981,
+                "age": -9
+              },
+              {
+                "phase": "Peak",
+                "start": 1981,
+                "end": 1983,
+                "age": -6
+              },
+              {
+                "phase": "Setting",
+                "start": 1983,
+                "end": 1986,
+                "age": -4
+              }
+            ],
+            "summary": "1978 \u2014 1986"
+          },
+          {
+            "cycle": 2,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2008,
+                "end": 2010,
+                "age": 20
+              },
+              {
+                "phase": "Peak",
+                "start": 2010,
+                "end": 2013,
+                "age": 22
+              },
+              {
+                "phase": "Setting",
+                "start": 2013,
+                "end": 2015,
+                "age": 25
+              }
+            ],
+            "summary": "2008 \u2014 2015"
+          },
+          {
+            "cycle": 3,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2037,
+                "end": 2040,
+                "age": 49
+              },
+              {
+                "phase": "Peak",
+                "start": 2040,
+                "end": 2042,
+                "age": 52
+              },
+              {
+                "phase": "Setting",
+                "start": 2042,
+                "end": 2045,
+                "age": 54
+              }
+            ],
+            "summary": "2037 \u2014 2045"
+          }
+        ],
+        "details": [
+          "Saturn is in a safe distance from Moon.",
+          "Emotional cycles are stable."
+        ],
+        "dosha": "SadeSati",
+        "severity": "moderate"
+      },
+      "rahu": {
+        "present": false,
+        "house": 9,
+        "summary": "No significant Rahu Dosha found.",
+        "details": [
+          "Rahu is in a non-afflicting house.",
+          "Shadow cycles are balanced."
+        ],
+        "dosha": "Rahu",
+        "severity": "moderate"
+      },
+      "ketu": {
+        "present": false,
+        "house": 3,
+        "summary": "No significant Ketu Dosha found.",
+        "details": [
+          "Ketu is well placed for detachment.",
+          "Planetary focus is clear."
+        ],
+        "dosha": "Ketu",
+        "severity": "moderate"
+      }
+    },
+    "profession": "Multiple career paths indicated"
+  },
+  {
+    "lagna": null,
+    "dosha": {
+      "manglik": {
+        "present": false,
+        "house": 6,
+        "summary": "No Manglik Dosha detected.",
+        "details": [
+          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
+          "Mars is favorably placed."
+        ],
+        "dosha": "Manglik",
+        "severity": "moderate"
+      },
+      "kalsarp": {
+        "present": false,
+        "rahu_house": 9,
+        "ketu_house": 3,
+        "summary": "No Kalsarpa Dosha detected.",
+        "details": [
+          "Planets are distributed across the chart.",
+          "Soul energy flows freely."
+        ],
+        "dosha": "Kalsarpa",
+        "severity": "high"
+      },
+      "pitra": {
+        "present": false,
+        "summary": "Pitra Dosha not observed.",
+        "details": [
+          "Sun is well placed.",
+          "Ancestral blessings are strong."
+        ],
+        "dosha": "Pitra",
+        "severity": "moderate"
+      },
+      "sadesati": {
+        "present": false,
+        "phase": "none",
+        "summary": "Sade Sati not currently active.",
+        "all_cycles": [
+          {
+            "cycle": 1,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 1978,
+                "end": 1981,
+                "age": -9
+              },
+              {
+                "phase": "Peak",
+                "start": 1981,
+                "end": 1983,
+                "age": -6
+              },
+              {
+                "phase": "Setting",
+                "start": 1983,
+                "end": 1986,
+                "age": -4
+              }
+            ],
+            "summary": "1978 \u2014 1986"
+          },
+          {
+            "cycle": 2,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2008,
+                "end": 2010,
+                "age": 20
+              },
+              {
+                "phase": "Peak",
+                "start": 2010,
+                "end": 2013,
+                "age": 22
+              },
+              {
+                "phase": "Setting",
+                "start": 2013,
+                "end": 2015,
+                "age": 25
+              }
+            ],
+            "summary": "2008 \u2014 2015"
+          },
+          {
+            "cycle": 3,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2037,
+                "end": 2040,
+                "age": 49
+              },
+              {
+                "phase": "Peak",
+                "start": 2040,
+                "end": 2042,
+                "age": 52
+              },
+              {
+                "phase": "Setting",
+                "start": 2042,
+                "end": 2045,
+                "age": 54
+              }
+            ],
+            "summary": "2037 \u2014 2045"
+          }
+        ],
+        "details": [
+          "Saturn is in a safe distance from Moon.",
+          "Emotional cycles are stable."
+        ],
+        "dosha": "SadeSati",
+        "severity": "moderate"
+      },
+      "rahu": {
+        "present": false,
+        "house": 9,
+        "summary": "No significant Rahu Dosha found.",
+        "details": [
+          "Rahu is in a non-afflicting house.",
+          "Shadow cycles are balanced."
+        ],
+        "dosha": "Rahu",
+        "severity": "moderate"
+      },
+      "ketu": {
+        "present": false,
+        "house": 3,
+        "summary": "No significant Ketu Dosha found.",
+        "details": [
+          "Ketu is well placed for detachment.",
+          "Planetary focus is clear."
+        ],
+        "dosha": "Ketu",
+        "severity": "moderate"
+      }
+    },
+    "profession": "Multiple career paths indicated"
+  },
+  {
+    "lagna": null,
+    "dosha": {
+      "manglik": {
+        "present": true,
+        "house": 2,
+        "summary": "Manglik influence from Mars in house 2.",
+        "details": [
+          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
+          "Hanuman Chalisa and Tuesday fasts are recommended for Mars stability."
+        ],
+        "dosha": "Manglik",
+        "severity": "moderate"
+      },
+      "kalsarp": {
+        "present": false,
+        "rahu_house": 4,
+        "ketu_house": 10,
+        "summary": "No Kalsarpa Dosha detected.",
+        "details": [
+          "Planets are distributed across the chart.",
+          "Soul energy flows freely."
+        ],
+        "dosha": "Kalsarpa",
+        "severity": "high"
+      },
+      "pitra": {
+        "present": false,
+        "summary": "Pitra Dosha not observed.",
+        "details": [
+          "Sun is well placed.",
+          "Ancestral blessings are strong."
+        ],
+        "dosha": "Pitra",
+        "severity": "moderate"
+      },
+      "sadesati": {
+        "present": false,
+        "phase": "none",
+        "summary": "Sade Sati not currently active.",
+        "all_cycles": [
+          {
+            "cycle": 1,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 1981,
+                "end": 1983,
+                "age": -13
+              },
+              {
+                "phase": "Peak",
+                "start": 1983,
+                "end": 1986,
+                "age": -11
+              },
+              {
+                "phase": "Setting",
+                "start": 1986,
+                "end": 1988,
+                "age": -8
+              }
+            ],
+            "summary": "1981 \u2014 1988"
+          },
+          {
+            "cycle": 2,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2010,
+                "end": 2013,
+                "age": 15
+              },
+              {
+                "phase": "Peak",
+                "start": 2013,
+                "end": 2015,
+                "age": 18
+              },
+              {
+                "phase": "Setting",
+                "start": 2015,
+                "end": 2018,
+                "age": 20
+              }
+            ],
+            "summary": "2010 \u2014 2018"
+          },
+          {
+            "cycle": 3,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2040,
+                "end": 2042,
+                "age": 45
+              },
+              {
+                "phase": "Peak",
+                "start": 2042,
+                "end": 2045,
+                "age": 47
+              },
+              {
+                "phase": "Setting",
+                "start": 2045,
+                "end": 2047,
+                "age": 50
+              }
+            ],
+            "summary": "2040 \u2014 2047"
+          }
+        ],
+        "details": [
+          "Saturn is in a safe distance from Moon.",
+          "Emotional cycles are stable."
+        ],
+        "dosha": "SadeSati",
+        "severity": "moderate"
+      },
+      "rahu": {
+        "present": false,
+        "house": 4,
+        "summary": "No significant Rahu Dosha found.",
+        "details": [
+          "Rahu is in a non-afflicting house.",
+          "Shadow cycles are balanced."
+        ],
+        "dosha": "Rahu",
+        "severity": "moderate"
+      },
+      "ketu": {
+        "present": false,
+        "house": 10,
+        "summary": "No significant Ketu Dosha found.",
+        "details": [
+          "Ketu is well placed for detachment.",
+          "Planetary focus is clear."
+        ],
+        "dosha": "Ketu",
+        "severity": "moderate"
+      }
+    },
+    "profession": "Multiple career paths indicated"
+  },
+  {
+    "lagna": null,
+    "dosha": {
+      "manglik": {
+        "present": true,
+        "house": 2,
+        "summary": "Manglik influence from Mars in house 2.",
+        "details": [
+          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
+          "Hanuman Chalisa and Tuesday fasts are recommended for Mars stability."
+        ],
+        "dosha": "Manglik",
+        "severity": "moderate"
+      },
+      "kalsarp": {
+        "present": false,
+        "rahu_house": 4,
+        "ketu_house": 10,
+        "summary": "No Kalsarpa Dosha detected.",
+        "details": [
+          "Planets are distributed across the chart.",
+          "Soul energy flows freely."
+        ],
+        "dosha": "Kalsarpa",
+        "severity": "high"
+      },
+      "pitra": {
+        "present": false,
+        "summary": "Pitra Dosha not observed.",
+        "details": [
+          "Sun is well placed.",
+          "Ancestral blessings are strong."
+        ],
+        "dosha": "Pitra",
+        "severity": "moderate"
+      },
+      "sadesati": {
+        "present": false,
+        "phase": "none",
+        "summary": "Sade Sati not currently active.",
+        "all_cycles": [
+          {
+            "cycle": 1,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 1981,
+                "end": 1983,
+                "age": -13
+              },
+              {
+                "phase": "Peak",
+                "start": 1983,
+                "end": 1986,
+                "age": -11
+              },
+              {
+                "phase": "Setting",
+                "start": 1986,
+                "end": 1988,
+                "age": -8
+              }
+            ],
+            "summary": "1981 \u2014 1988"
+          },
+          {
+            "cycle": 2,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2010,
+                "end": 2013,
+                "age": 15
+              },
+              {
+                "phase": "Peak",
+                "start": 2013,
+                "end": 2015,
+                "age": 18
+              },
+              {
+                "phase": "Setting",
+                "start": 2015,
+                "end": 2018,
+                "age": 20
+              }
+            ],
+            "summary": "2010 \u2014 2018"
+          },
+          {
+            "cycle": 3,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2040,
+                "end": 2042,
+                "age": 45
+              },
+              {
+                "phase": "Peak",
+                "start": 2042,
+                "end": 2045,
+                "age": 47
+              },
+              {
+                "phase": "Setting",
+                "start": 2045,
+                "end": 2047,
+                "age": 50
+              }
+            ],
+            "summary": "2040 \u2014 2047"
+          }
+        ],
+        "details": [
+          "Saturn is in a safe distance from Moon.",
+          "Emotional cycles are stable."
+        ],
+        "dosha": "SadeSati",
+        "severity": "moderate"
+      },
+      "rahu": {
+        "present": false,
+        "house": 4,
+        "summary": "No significant Rahu Dosha found.",
+        "details": [
+          "Rahu is in a non-afflicting house.",
+          "Shadow cycles are balanced."
+        ],
+        "dosha": "Rahu",
+        "severity": "moderate"
+      },
+      "ketu": {
+        "present": false,
+        "house": 10,
+        "summary": "No significant Ketu Dosha found.",
+        "details": [
+          "Ketu is well placed for detachment.",
+          "Planetary focus is clear."
+        ],
+        "dosha": "Ketu",
+        "severity": "moderate"
+      }
+    },
+    "profession": "Multiple career paths indicated"
+  },
+  {
+    "lagna": null,
+    "dosha": {
+      "manglik": {
+        "present": true,
+        "house": 2,
+        "summary": "Manglik influence from Mars in house 2.",
+        "details": [
+          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
+          "Hanuman Chalisa and Tuesday fasts are recommended for Mars stability."
+        ],
+        "dosha": "Manglik",
+        "severity": "moderate"
+      },
+      "kalsarp": {
+        "present": false,
+        "rahu_house": 4,
+        "ketu_house": 10,
+        "summary": "No Kalsarpa Dosha detected.",
+        "details": [
+          "Planets are distributed across the chart.",
+          "Soul energy flows freely."
+        ],
+        "dosha": "Kalsarpa",
+        "severity": "high"
+      },
+      "pitra": {
+        "present": false,
+        "summary": "Pitra Dosha not observed.",
+        "details": [
+          "Sun is well placed.",
+          "Ancestral blessings are strong."
+        ],
+        "dosha": "Pitra",
+        "severity": "moderate"
+      },
+      "sadesati": {
+        "present": false,
+        "phase": "none",
+        "summary": "Sade Sati not currently active.",
+        "all_cycles": [
+          {
+            "cycle": 1,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 1981,
+                "end": 1983,
+                "age": -13
+              },
+              {
+                "phase": "Peak",
+                "start": 1983,
+                "end": 1986,
+                "age": -11
+              },
+              {
+                "phase": "Setting",
+                "start": 1986,
+                "end": 1988,
+                "age": -8
+              }
+            ],
+            "summary": "1981 \u2014 1988"
+          },
+          {
+            "cycle": 2,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2010,
+                "end": 2013,
+                "age": 15
+              },
+              {
+                "phase": "Peak",
+                "start": 2013,
+                "end": 2015,
+                "age": 18
+              },
+              {
+                "phase": "Setting",
+                "start": 2015,
+                "end": 2018,
+                "age": 20
+              }
+            ],
+            "summary": "2010 \u2014 2018"
+          },
+          {
+            "cycle": 3,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2040,
+                "end": 2042,
+                "age": 45
+              },
+              {
+                "phase": "Peak",
+                "start": 2042,
+                "end": 2045,
+                "age": 47
+              },
+              {
+                "phase": "Setting",
+                "start": 2045,
+                "end": 2047,
+                "age": 50
+              }
+            ],
+            "summary": "2040 \u2014 2047"
+          }
+        ],
+        "details": [
+          "Saturn is in a safe distance from Moon.",
+          "Emotional cycles are stable."
+        ],
+        "dosha": "SadeSati",
+        "severity": "moderate"
+      },
+      "rahu": {
+        "present": false,
+        "house": 4,
+        "summary": "No significant Rahu Dosha found.",
+        "details": [
+          "Rahu is in a non-afflicting house.",
+          "Shadow cycles are balanced."
+        ],
+        "dosha": "Rahu",
+        "severity": "moderate"
+      },
+      "ketu": {
+        "present": false,
+        "house": 10,
+        "summary": "No significant Ketu Dosha found.",
+        "details": [
+          "Ketu is well placed for detachment.",
+          "Planetary focus is clear."
+        ],
+        "dosha": "Ketu",
+        "severity": "moderate"
+      }
+    },
+    "profession": "Multiple career paths indicated"
+  },
+  {
+    "lagna": null,
+    "dosha": {
+      "manglik": {
+        "present": true,
+        "house": 2,
+        "summary": "Manglik influence from Mars in house 2.",
+        "details": [
+          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
+          "Hanuman Chalisa and Tuesday fasts are recommended for Mars stability."
+        ],
+        "dosha": "Manglik",
+        "severity": "moderate"
+      },
+      "kalsarp": {
+        "present": false,
+        "rahu_house": 4,
+        "ketu_house": 10,
+        "summary": "No Kalsarpa Dosha detected.",
+        "details": [
+          "Planets are distributed across the chart.",
+          "Soul energy flows freely."
+        ],
+        "dosha": "Kalsarpa",
+        "severity": "high"
+      },
+      "pitra": {
+        "present": false,
+        "summary": "Pitra Dosha not observed.",
+        "details": [
+          "Sun is well placed.",
+          "Ancestral blessings are strong."
+        ],
+        "dosha": "Pitra",
+        "severity": "moderate"
+      },
+      "sadesati": {
+        "present": false,
+        "phase": "none",
+        "summary": "Sade Sati not currently active.",
+        "all_cycles": [
+          {
+            "cycle": 1,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 1981,
+                "end": 1983,
+                "age": -13
+              },
+              {
+                "phase": "Peak",
+                "start": 1983,
+                "end": 1986,
+                "age": -11
+              },
+              {
+                "phase": "Setting",
+                "start": 1986,
+                "end": 1988,
+                "age": -8
+              }
+            ],
+            "summary": "1981 \u2014 1988"
+          },
+          {
+            "cycle": 2,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2010,
+                "end": 2013,
+                "age": 15
+              },
+              {
+                "phase": "Peak",
+                "start": 2013,
+                "end": 2015,
+                "age": 18
+              },
+              {
+                "phase": "Setting",
+                "start": 2015,
+                "end": 2018,
+                "age": 20
+              }
+            ],
+            "summary": "2010 \u2014 2018"
+          },
+          {
+            "cycle": 3,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2040,
+                "end": 2042,
+                "age": 45
+              },
+              {
+                "phase": "Peak",
+                "start": 2042,
+                "end": 2045,
+                "age": 47
+              },
+              {
+                "phase": "Setting",
+                "start": 2045,
+                "end": 2047,
+                "age": 50
+              }
+            ],
+            "summary": "2040 \u2014 2047"
+          }
+        ],
+        "details": [
+          "Saturn is in a safe distance from Moon.",
+          "Emotional cycles are stable."
+        ],
+        "dosha": "SadeSati",
+        "severity": "moderate"
+      },
+      "rahu": {
+        "present": false,
+        "house": 4,
+        "summary": "No significant Rahu Dosha found.",
+        "details": [
+          "Rahu is in a non-afflicting house.",
+          "Shadow cycles are balanced."
+        ],
+        "dosha": "Rahu",
+        "severity": "moderate"
+      },
+      "ketu": {
+        "present": false,
+        "house": 10,
+        "summary": "No significant Ketu Dosha found.",
+        "details": [
+          "Ketu is well placed for detachment.",
+          "Planetary focus is clear."
+        ],
+        "dosha": "Ketu",
+        "severity": "moderate"
+      }
+    },
+    "profession": "Multiple career paths indicated"
+  },
+  {
+    "lagna": null,
+    "dosha": {
+      "manglik": {
+        "present": true,
+        "house": 2,
+        "summary": "Manglik influence from Mars in house 2.",
+        "details": [
+          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
+          "Hanuman Chalisa and Tuesday fasts are recommended for Mars stability."
+        ],
+        "dosha": "Manglik",
+        "severity": "moderate"
+      },
+      "kalsarp": {
+        "present": true,
+        "rahu_house": 6,
+        "ketu_house": 12,
+        "summary": "Kalsarpa Dosha active - planets hemmed between nodes.",
+        "details": [
+          "Planets are bounded by Rahu and Ketu.",
+          "Remedies: Maha Mrityunjaya mantra and Rahu-Ketu shanti."
+        ],
+        "dosha": "Kalsarpa",
+        "severity": "high"
+      },
+      "pitra": {
+        "present": false,
+        "summary": "Pitra Dosha not observed.",
+        "details": [
+          "Sun is well placed.",
+          "Ancestral blessings are strong."
+        ],
+        "dosha": "Pitra",
+        "severity": "moderate"
+      },
+      "sadesati": {
+        "present": false,
+        "phase": "none",
+        "summary": "Sade Sati not currently active.",
+        "all_cycles": [
+          {
+            "cycle": 1,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2003,
+                "end": 2005,
+                "age": 5
+              },
+              {
+                "phase": "Peak",
+                "start": 2005,
+                "end": 2008,
+                "age": 7
+              },
+              {
+                "phase": "Setting",
+                "start": 2008,
+                "end": 2010,
+                "age": 10
+              }
+            ],
+            "summary": "2003 \u2014 2010"
+          },
+          {
+            "cycle": 2,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2032,
+                "end": 2035,
+                "age": 34
+              },
+              {
+                "phase": "Peak",
+                "start": 2035,
+                "end": 2037,
+                "age": 37
+              },
+              {
+                "phase": "Setting",
+                "start": 2037,
+                "end": 2040,
+                "age": 39
+              }
+            ],
+            "summary": "2032 \u2014 2040"
+          },
+          {
+            "cycle": 3,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2062,
+                "end": 2064,
+                "age": 64
+              },
+              {
+                "phase": "Peak",
+                "start": 2064,
+                "end": 2067,
+                "age": 66
+              },
+              {
+                "phase": "Setting",
+                "start": 2067,
+                "end": 2069,
+                "age": 69
+              }
+            ],
+            "summary": "2062 \u2014 2069"
+          }
+        ],
+        "details": [
+          "Saturn is in a safe distance from Moon.",
+          "Emotional cycles are stable."
+        ],
+        "dosha": "SadeSati",
+        "severity": "moderate"
+      },
+      "rahu": {
+        "present": false,
+        "house": 6,
+        "summary": "No significant Rahu Dosha found.",
+        "details": [
+          "Rahu is in a non-afflicting house.",
+          "Shadow cycles are balanced."
+        ],
+        "dosha": "Rahu",
+        "severity": "moderate"
+      },
+      "ketu": {
+        "present": false,
+        "house": 12,
+        "summary": "No significant Ketu Dosha found.",
+        "details": [
+          "Ketu is well placed for detachment.",
+          "Planetary focus is clear."
+        ],
+        "dosha": "Ketu",
+        "severity": "moderate"
+      }
+    },
+    "profession": "Multiple career paths indicated"
+  },
+  {
+    "lagna": null,
+    "dosha": {
+      "manglik": {
+        "present": true,
+        "house": 2,
+        "summary": "Manglik influence from Mars in house 2.",
+        "details": [
+          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
+          "Hanuman Chalisa and Tuesday fasts are recommended for Mars stability."
+        ],
+        "dosha": "Manglik",
+        "severity": "moderate"
+      },
+      "kalsarp": {
+        "present": true,
+        "rahu_house": 6,
+        "ketu_house": 12,
+        "summary": "Kalsarpa Dosha active - planets hemmed between nodes.",
+        "details": [
+          "Planets are bounded by Rahu and Ketu.",
+          "Remedies: Maha Mrityunjaya mantra and Rahu-Ketu shanti."
+        ],
+        "dosha": "Kalsarpa",
+        "severity": "high"
+      },
+      "pitra": {
+        "present": false,
+        "summary": "Pitra Dosha not observed.",
+        "details": [
+          "Sun is well placed.",
+          "Ancestral blessings are strong."
+        ],
+        "dosha": "Pitra",
+        "severity": "moderate"
+      },
+      "sadesati": {
+        "present": false,
+        "phase": "none",
+        "summary": "Sade Sati not currently active.",
+        "all_cycles": [
+          {
+            "cycle": 1,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2003,
+                "end": 2005,
+                "age": 5
+              },
+              {
+                "phase": "Peak",
+                "start": 2005,
+                "end": 2008,
+                "age": 7
+              },
+              {
+                "phase": "Setting",
+                "start": 2008,
+                "end": 2010,
+                "age": 10
+              }
+            ],
+            "summary": "2003 \u2014 2010"
+          },
+          {
+            "cycle": 2,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2032,
+                "end": 2035,
+                "age": 34
+              },
+              {
+                "phase": "Peak",
+                "start": 2035,
+                "end": 2037,
+                "age": 37
+              },
+              {
+                "phase": "Setting",
+                "start": 2037,
+                "end": 2040,
+                "age": 39
+              }
+            ],
+            "summary": "2032 \u2014 2040"
+          },
+          {
+            "cycle": 3,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2062,
+                "end": 2064,
+                "age": 64
+              },
+              {
+                "phase": "Peak",
+                "start": 2064,
+                "end": 2067,
+                "age": 66
+              },
+              {
+                "phase": "Setting",
+                "start": 2067,
+                "end": 2069,
+                "age": 69
+              }
+            ],
+            "summary": "2062 \u2014 2069"
+          }
+        ],
+        "details": [
+          "Saturn is in a safe distance from Moon.",
+          "Emotional cycles are stable."
+        ],
+        "dosha": "SadeSati",
+        "severity": "moderate"
+      },
+      "rahu": {
+        "present": false,
+        "house": 6,
+        "summary": "No significant Rahu Dosha found.",
+        "details": [
+          "Rahu is in a non-afflicting house.",
+          "Shadow cycles are balanced."
+        ],
+        "dosha": "Rahu",
+        "severity": "moderate"
+      },
+      "ketu": {
+        "present": false,
+        "house": 12,
+        "summary": "No significant Ketu Dosha found.",
+        "details": [
+          "Ketu is well placed for detachment.",
+          "Planetary focus is clear."
+        ],
+        "dosha": "Ketu",
+        "severity": "moderate"
+      }
+    },
+    "profession": "Multiple career paths indicated"
+  },
+  {
+    "lagna": null,
+    "dosha": {
+      "manglik": {
+        "present": false,
+        "house": 6,
+        "summary": "No Manglik Dosha detected.",
+        "details": [
+          "Mars in houses 1, 2, 4, 7, 8, or 12 creates Manglik Dosha.",
+          "Mars is favorably placed."
+        ],
+        "dosha": "Manglik",
+        "severity": "moderate"
+      },
+      "kalsarp": {
+        "present": false,
+        "rahu_house": 9,
+        "ketu_house": 3,
+        "summary": "No Kalsarpa Dosha detected.",
+        "details": [
+          "Planets are distributed across the chart.",
+          "Soul energy flows freely."
+        ],
+        "dosha": "Kalsarpa",
+        "severity": "high"
+      },
+      "pitra": {
+        "present": false,
+        "summary": "Pitra Dosha not observed.",
+        "details": [
+          "Sun is well placed.",
+          "Ancestral blessings are strong."
+        ],
+        "dosha": "Pitra",
+        "severity": "moderate"
+      },
+      "sadesati": {
+        "present": false,
+        "phase": "none",
+        "summary": "Sade Sati not currently active.",
+        "all_cycles": [
+          {
+            "cycle": 1,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 1978,
+                "end": 1981,
+                "age": -9
+              },
+              {
+                "phase": "Peak",
+                "start": 1981,
+                "end": 1983,
+                "age": -6
+              },
+              {
+                "phase": "Setting",
+                "start": 1983,
+                "end": 1986,
+                "age": -4
+              }
+            ],
+            "summary": "1978 \u2014 1986"
+          },
+          {
+            "cycle": 2,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2008,
+                "end": 2010,
+                "age": 20
+              },
+              {
+                "phase": "Peak",
+                "start": 2010,
+                "end": 2013,
+                "age": 22
+              },
+              {
+                "phase": "Setting",
+                "start": 2013,
+                "end": 2015,
+                "age": 25
+              }
+            ],
+            "summary": "2008 \u2014 2015"
+          },
+          {
+            "cycle": 3,
+            "phases": [
+              {
+                "phase": "Rising",
+                "start": 2037,
+                "end": 2040,
+                "age": 49
+              },
+              {
+                "phase": "Peak",
+                "start": 2040,
+                "end": 2042,
+                "age": 52
+              },
+              {
+                "phase": "Setting",
+                "start": 2042,
+                "end": 2045,
+                "age": 54
+              }
+            ],
+            "summary": "2037 \u2014 2045"
+          }
+        ],
+        "details": [
+          "Saturn is in a safe distance from Moon.",
+          "Emotional cycles are stable."
+        ],
+        "dosha": "SadeSati",
+        "severity": "moderate"
+      },
+      "rahu": {
+        "present": false,
+        "house": 9,
+        "summary": "No significant Rahu Dosha found.",
+        "details": [
+          "Rahu is in a non-afflicting house.",
+          "Shadow cycles are balanced."
+        ],
+        "dosha": "Rahu",
+        "severity": "moderate"
+      },
+      "ketu": {
+        "present": false,
+        "house": 3,
+        "summary": "No significant Ketu Dosha found.",
+        "details": [
+          "Ketu is well placed for detachment.",
+          "Planetary focus is clear."
         ],
         "dosha": "Ketu",
         "severity": "moderate"

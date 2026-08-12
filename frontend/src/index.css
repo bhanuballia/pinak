@@ -57,3 +57,102 @@
   scrollbar-width: thin;
   scrollbar-color: #461ae6 rgba(0, 0, 0, 0.1);
 }
+
+/* ==========================================================================
+   Print & PDF Generation Styling Rules
+   ========================================================================== */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin-top: 0.75in !important;
+    margin-bottom: 0.75in !important;
+    margin-left: 0.5in !important;
+    margin-right: 0.5in !important;
+  }
+
+  body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    background-color: #fff1f2 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .a4-page {
+    width: 100% !important;
+    min-height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Ensure continued section headings & topics start cleanly after the 0.75in top margin */
+  .a4-page > *:first-child,
+  .a4-page > header:first-child,
+  .a4-page > div:first-child > h1:first-child,
+  .a4-page > div:first-child > h2:first-child,
+  .a4-page > div:first-child > .section-heading:first-child {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+  }
+
+  /* Prevent elements from cutting across page boundaries */
+  .print-avoid-break,
+  table,
+  tr,
+  p,
+  li,
+  .rounded-2xl,
+  .rounded-xl,
+  .prose p,
+  .prose h3 {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Prevent section titles & headings from stranding on a page without their content */
+  h1, h2, h3, h4, h5, .section-heading {
+    break-after: avoid !important;
+    page-break-after: avoid !important;
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  /* Style AI Insight subheadings (Emotion, Luck, Career, Marriage, etc.) in rich brown & larger font */
+  .ai-insight-container h1,
+  .ai-insight-container h2,
+  .ai-insight-container h3,
+  .ai-insight-container h4,
+  .ai-insight-container h5,
+  .ai-insight-container strong {
+    color: #78350f !important;
+    font-size: 1.25rem !important;
+    font-weight: 900 !important;
+    margin-top: 0.75rem !important;
+    margin-bottom: 0.25rem !important;
+  }
+
+  /* Hide interactive chart buttons and header toolbars in print mode */
+  .print-hidden-toolbar,
+  .print-hidden-toolbar *,
+  .chart-header-bar,
+  .a4-page button {
+    display: none !important;
+  }
+
+  /* Keep table headers with table body on print */
+  thead {
+    display: table-header-group !important;
+  }
+
+  /* Ensure text colors & backgrounds remain rich in print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

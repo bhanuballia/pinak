@@ -84,7 +84,7 @@ export default function VimshottariGridTimeline({ data }) {
           const endAge = computeAge(birthDateStr, endDate) || '';
 
           return (
-            <div key={i} className="flex flex-col">
+            <div key={i} className="flex flex-col print-avoid-break break-inside-avoid print:break-inside-avoid">
               <div className="mb-2">
                 <h3 className="font-bold text-base print:text-sm" style={{ color: metaInfo.color }}>
                   <span className="text-black">{md.lord}</span> ({metaInfo.years}y)

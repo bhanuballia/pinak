@@ -142,7 +142,7 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
             boxShadow: zoom > 1 ? '0 25px 50px -12px rgba(0, 0, 0, 0.25)' : 'none'
         }}>
             {(title || setIsRect) && (
-                <div style={{
+                <div className="chart-header-bar print:hidden" style={{
                     display: 'flex',
                     justifyContent: 'space-between',
                     alignItems: 'center',
@@ -159,7 +159,7 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
                         {title}
                     </div>
 
-                    <div style={{ display: 'flex', gap: '4px' }}>
+                    <div className="print:hidden" style={{ display: 'flex', gap: '4px' }}>
                         <button
                             onClick={(e) => { e.stopPropagation(); setLang(lang === 'en' ? 'hi' : 'en'); }}
                             style={{

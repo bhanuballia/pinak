@@ -591,6 +591,111 @@ export default function GenerateReport() {
     if (win) win.focus();
   };
 
+  const handleOpenPredictionNumerology = () => {
+    const params = new URLSearchParams({
+      prediction_numerology: 'true',
+      name: name || '',
+      date: date || '',
+      time: time || '',
+      lat: latLon?.lat || '',
+      lon: latLon?.lon || '',
+      tz: tzOffset || '5.5',
+      loc: latLon?.display_name || ''
+    });
+    const win = window.open(`/?${params.toString()}`, 'PredictionNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenDailyNumerology = () => {
+    const params = new URLSearchParams({
+      daily_numerology: 'true',
+      name: name || '',
+      date: date || '',
+      time: time || '',
+      lat: latLon?.lat || '',
+      lon: latLon?.lon || '',
+      tz: tzOffset || '5.5',
+      loc: latLon?.display_name || ''
+    });
+    const win = window.open(`/?${params.toString()}`, 'DailyNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenRemedyNumerology = () => {
+    const params = new URLSearchParams({
+      remedy_numerology: 'true',
+      name: name || '',
+      date: date || '',
+      time: time || '',
+      lat: latLon?.lat || '',
+      lon: latLon?.lon || '',
+      tz: tzOffset || '5.5',
+      loc: latLon?.display_name || ''
+    });
+    const win = window.open(`/?${params.toString()}`, 'RemedyNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenMedicalNumerology = () => {
+    const params = new URLSearchParams({
+      medical_numerology: 'true',
+      name: name || '',
+      date: date || '',
+      time: time || '',
+      lat: latLon?.lat || '',
+      lon: latLon?.lon || '',
+      tz: tzOffset || '5.5',
+      loc: latLon?.display_name || ''
+    });
+    const win = window.open(`/?${params.toString()}`, 'MedicalNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenPersonalityNumerology = () => {
+    const params = new URLSearchParams({
+      personality_numerology: 'true',
+      name: name || '',
+      date: date || '',
+      time: time || '',
+      lat: latLon?.lat || '',
+      lon: latLon?.lon || '',
+      tz: tzOffset || '5.5',
+      loc: latLon?.display_name || ''
+    });
+    const win = window.open(`/?${params.toString()}`, 'PersonalityNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenMarriageNumerology = () => {
+    const params = new URLSearchParams({
+      marriage_numerology: 'true',
+      name: name || '',
+      date: date || '',
+      time: time || '',
+      lat: latLon?.lat || '',
+      lon: latLon?.lon || '',
+      tz: tzOffset || '5.5',
+      loc: latLon?.display_name || ''
+    });
+    const win = window.open(`/?${params.toString()}`, 'MarriageNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenCarrierNumerology = () => {
+    const params = new URLSearchParams({
+      carrier_numerology: 'true',
+      name: name || '',
+      date: date || '',
+      time: time || '',
+      lat: latLon?.lat || '',
+      lon: latLon?.lon || '',
+      tz: tzOffset || '5.5',
+      loc: latLon?.display_name || ''
+    });
+    const win = window.open(`/?${params.toString()}`, 'CarrierNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
   const handleOpenRemedies = () => {
     if (reportData) {
       try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch (e) { }
@@ -889,7 +994,7 @@ export default function GenerateReport() {
                 </button>
                 <button
                   onClick={handleOpenHTMLReport}
-                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-blue-100 text-black shadow hover:bg-blue-700 flex items-center gap-2"
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-50 text-rose-950 border border-rose-200 shadow hover:bg-rose-600 hover:text-white flex items-center gap-2"
                 >
                   <span>🌐</span> {t('detailed_report')}
                 </button>
@@ -1043,6 +1148,48 @@ export default function GenerateReport() {
                 <span>🔮</span> Numerology
               </button>
               <button
+                onClick={handleOpenPredictionNumerology}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-amber-100 text-amber-950 shadow hover:bg-amber-600 hover:text-white flex items-center gap-2 border border-amber-300"
+              >
+                <span>⭐</span> Special Yogas & Numerology Prediction Page
+              </button>
+              <button
+                onClick={handleOpenDailyNumerology}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-100 text-rose-950 shadow hover:bg-rose-600 hover:text-white flex items-center gap-2 border border-rose-300"
+              >
+                <span>☀️</span> Daily Numerology Forecast
+              </button>
+              <button
+                onClick={handleOpenRemedyNumerology}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-purple-100 text-purple-950 shadow hover:bg-purple-600 hover:text-white flex items-center gap-2 border border-purple-300"
+              >
+                <span>💎</span> Powerful Numerology Remedies
+              </button>
+              <button
+                onClick={handleOpenMedicalNumerology}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-emerald-100 text-emerald-950 shadow hover:bg-emerald-600 hover:text-white flex items-center gap-2 border border-emerald-300"
+              >
+                <span>🏥</span> Medical Numerology Diagnostics
+              </button>
+              <button
+                onClick={handleOpenPersonalityNumerology}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-sky-100 text-sky-950 shadow hover:bg-sky-600 hover:text-white flex items-center gap-2 border border-sky-300"
+              >
+                <span>🧠</span> Personality & Decision Numerology Matrix
+              </button>
+              <button
+                onClick={handleOpenMarriageNumerology}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-pink-100 text-pink-950 shadow hover:bg-pink-600 hover:text-white flex items-center gap-2 border border-pink-300"
+              >
+                <span>💖</span> Marriage & Love Numerology Prediction
+              </button>
+              <button
+                onClick={handleOpenCarrierNumerology}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-blue-100 text-blue-950 shadow hover:bg-blue-600 hover:text-white flex items-center gap-2 border border-blue-300"
+              >
+                <span>💼</span> Career & Wealth Numerology Prediction
+              </button>
+              <button
                 onClick={() => {
                   const params = new URLSearchParams({
                     numerology: 'true',
@@ -1061,6 +1208,26 @@ export default function GenerateReport() {
                 className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-purple-100 text-purple-950 shadow hover:bg-purple-600 hover:text-white flex items-center gap-2 border border-purple-300"
               >
                 <span>⚛️</span> Quantum Numerology
+              </button>
+              <button
+                onClick={() => {
+                  const params = new URLSearchParams({
+                    numerology: 'true',
+                    tab: 'mobile',
+                    name: name || '',
+                    date: date || '',
+                    time: time || '',
+                    lat: latLon?.lat || '',
+                    lon: latLon?.lon || '',
+                    tz: tzOffset || '5.5',
+                    loc: latLon?.display_name || ''
+                  });
+                  const win = window.open(`/?${params.toString()}`, 'MobileNumerologyDashboard', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+                  if (win) win.focus();
+                }}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-emerald-100 text-emerald-950 shadow hover:bg-emerald-600 hover:text-white flex items-center gap-2 border border-emerald-300"
+              >
+                <span>📱</span> Mobile Numerology
               </button>
 
             </div>

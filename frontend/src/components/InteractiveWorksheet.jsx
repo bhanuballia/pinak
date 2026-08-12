@@ -6705,6 +6705,12 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                   localStorage.setItem('worksheetData', JSON.stringify(data));
                   window.open('/?kota_chakra=true', '_blank');
                 }} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Kota Chakra</button>
+                <button onClick={() => {
+                  localStorage.setItem('worksheetData', JSON.stringify(data));
+                  window.open('/?sudarshan_chakra=true', '_blank');
+                }} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight text-amber-600 font-extrabold flex items-center justify-between">
+                  <span>Sudarshan Chakra</span> <span>☸️</span>
+                </button>
               </div>
             </div>
 
@@ -7130,6 +7136,12 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                     window.open('/?kota_chakra=true', '_blank');
                   }} className="shrink-0 bg-indigo-900 hover:bg-orange-400 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-indigo-700">
                     <span className="text-base leading-none">🏰</span> Kota Chakra
+                  </button>
+                  <button onClick={() => {
+                    localStorage.setItem('worksheetData', JSON.stringify(data));
+                    window.open('/?sudarshan_chakra=true', '_blank');
+                  }} className="shrink-0 bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-500 hover:to-orange-500 text-white px-4 py-1.5 rounded-lg text-xs font-bold shadow-md transition-all flex items-center gap-1.5 border border-amber-400">
+                    <span className="text-base leading-none">☸️</span> Sudarshan Chakra
                   </button>
                 </div>
 

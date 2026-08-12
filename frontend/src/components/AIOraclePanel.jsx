@@ -188,7 +188,7 @@ const AIOraclePanel = ({ data }) => {
       <div className="flex items-center justify-between mb-8 pb-4 border-b border-indigo-500/30">
         <div>
           <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-orange-800 tracking-widest uppercase font-serif animate-pulse">
-            ✨ AI Astro Analysis
+            ✨Vedic Astro Analysis
           </h2>
           <p className="text-[14px] text-black mt-1 uppercase tracking-widest">Powered by Vedic Astrology</p>
         </div>

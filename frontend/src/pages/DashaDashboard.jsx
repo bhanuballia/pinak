@@ -11,7 +11,7 @@ export default function DashaDashboard({ data: worksheetData }) {
     // Determine birth details from worksheet data
     const basic = worksheetData?.basic_details || {};
     const meta = worksheetData?.meta || {};
-    
+
     const birthDate = basic.birth_date || meta.date || '1990-10-01';
     const birthTime = basic.birth_time || meta.time || '12:00:00';
     const name = meta.name || basic.name || 'User';
@@ -25,15 +25,15 @@ export default function DashaDashboard({ data: worksheetData }) {
       lon: basic.lon || 77.2,
       tz: basic.tz_offset || 5.5
     })
-    .then(res => {
-      setData(res.data);
-      setLoading(false);
-    })
-    .catch(err => {
-      console.error(err);
-      setError("Failed to load AI Dasha Intelligence. Please check backend connectivity.");
-      setLoading(false);
-    });
+      .then(res => {
+        setData(res.data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setError("Failed to load AI Dasha Intelligence. Please check backend connectivity.");
+        setLoading(false);
+      });
   }, [worksheetData]);
 
   if (loading) {
@@ -58,12 +58,12 @@ export default function DashaDashboard({ data: worksheetData }) {
         <header className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
             <h1 className="text-4xl font-extrabold text-slate-900 tracking-tight">
-              AI Dasha <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Intelligence</span>
+              Dasha <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Intelligence</span>
             </h1>
-            <p className="text-slate-500 mt-2">Enterprise-grade astrological forecasting powered by Swiss Ephemeris</p>
+            <p className="text-slate-500 mt-2">Enterprise-grade astrological forecasting powered by Bhrigu Software</p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <button 
+            <button
               onClick={() => window.open('/?vimshottari_ref=true', 'VimshottariReference', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no')}
               className="px-5 py-2.5 bg-white border border-slate-200 text-slate-700 rounded-xl font-medium shadow-sm hover:bg-slate-50 transition-all"
             >
@@ -96,39 +96,39 @@ export default function DashaDashboard({ data: worksheetData }) {
               {/* Sidebar / AI Scores */}
               <div className="space-y-6">
                 <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-100">
-                  <h3 className="text-lg font-bold text-slate-800 mb-4">AI Probability Scores</h3>
+                  <h3 className="text-lg font-bold text-slate-800 mb-4">Astrological Potential Index</h3>
                   <div className="space-y-4">
-                    <ScoreCard 
-                      label="Marriage Timing" 
-                      score={data.marriage_ai?.probability} 
+                    <ScoreCard
+                      label="Marriage Timing"
+                      score={data.marriage_ai?.probability}
                       result={data.marriage_ai?.result}
                       color="rose"
                     />
-                    <ScoreCard 
-                      label="Wealth Probability" 
-                      score={data.wealth_ai?.wealth_probability} 
+                    <ScoreCard
+                      label="Wealth Probability"
+                      score={data.wealth_ai?.wealth_probability}
                       result={data.wealth_ai?.wealth_period ? "High Opportunity" : "Steady"}
                       color="emerald"
                     />
-                    <ScoreCard 
-                      label="Health Risk" 
-                      score={data.health_ai?.risk_score} 
+                    <ScoreCard
+                      label="Health Risk"
+                      score={data.health_ai?.risk_score}
                       result={`${data.health_ai?.risk_level} Risk`}
                       color="amber"
                     />
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-br from-indigo-600 to-purple-700 p-6 rounded-3xl shadow-xl text-white">
+                <div className="bg-rose-50 p-6 rounded-3xl shadow-xl text-black">
                   <h3 className="text-lg font-bold mb-2">Nakshatra Detail</h3>
                   <div className="flex items-center gap-3 mt-4">
-                     <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
-                        <span className="text-2xl font-bold">{data.nakshatra?.pada}</span>
-                     </div>
-                     <div>
-                        <div className="text-sm opacity-80">Moon Nakshatra</div>
-                        <div className="text-xl font-bold">{data.nakshatra?.nakshatra}</div>
-                     </div>
+                    <div className="bg-white/20 p-3 rounded-2xl backdrop-blur-sm">
+                      <span className="text-[22px] font-bold">{data.nakshatra?.pada}</span>
+                    </div>
+                    <div>
+                      <div className="text-[22px] opacity-80">Moon Nakshatra</div>
+                      <div className="text-[22px] font-bold">{data.nakshatra?.nakshatra}</div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -166,7 +166,7 @@ function ScoreCard({ label, score, result, color }) {
     amber: "bg-amber-500",
     indigo: "bg-indigo-500"
   };
-  
+
   const explanation = getExplanation(label, score);
 
   return (
@@ -178,8 +178,8 @@ function ScoreCard({ label, score, result, color }) {
         </span>
       </div>
       <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden mb-2">
-        <div 
-          className={`${colors[color]} h-full transition-all duration-1000`} 
+        <div
+          className={`${colors[color]} h-full transition-all duration-1000`}
           style={{ width: `${score}%` }}
         ></div>
       </div>

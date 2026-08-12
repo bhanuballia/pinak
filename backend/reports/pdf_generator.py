@@ -133,12 +133,12 @@ def _add_destiny_matrix_page(story, report_data, styles):
 # ------------------------
 THEMES = {
     "light": {
-        "background": colors.white,
+        "background": colors.HexColor("#fff1f2"),
         "text": colors.black,
         "header": colors.HexColor("#1a237e"),
         "accent": colors.HexColor("#3949ab"),
-        "watermark": colors.lightgrey,
-        "table_header": colors.HexColor("#eeeeee"),
+        "watermark": colors.HexColor("#fce7f3"),
+        "table_header": colors.HexColor("#ffe4e6"),
     },
     "dark": {
         "background": colors.HexColor("#121212"),
@@ -149,12 +149,12 @@ THEMES = {
         "table_header": colors.HexColor("#1e1e1e"),
     },
     "gold": {
-        "background": colors.white,
+        "background": colors.HexColor("#fff1f2"),
         "text": colors.HexColor("#334155"), 
         "header": colors.HexColor("#4f46e5"), 
         "accent": colors.HexColor("#6366f1"), 
-        "watermark": colors.HexColor("#f8fafc"), 
-        "table_header": colors.HexColor("#f1f5f9"), 
+        "watermark": colors.HexColor("#fce7f3"), 
+        "table_header": colors.HexColor("#ffe4e6"), 
     },
 }
 
@@ -725,12 +725,26 @@ def _draw_watermark(canvas_obj, doc, theme_palette):
     canvas_obj.restoreState()
 
 
+def _draw_page_frame(canvas_obj, doc, theme_palette):
+    """Draws a frame box at 0.5 inch margins."""
+    canvas_obj.saveState()
+    margin = 0.5 * inch
+    width = doc.pagesize[0] - (2 * margin)
+    height = doc.pagesize[1] - (2 * margin)
+    
+    frame_color = theme_palette.get("header", colors.HexColor("#1a237e"))
+    canvas_obj.setStrokeColor(frame_color)
+    canvas_obj.setLineWidth(1)
+    canvas_obj.rect(margin, margin, width, height, fill=0, stroke=1)
+    canvas_obj.restoreState()
+
+
 def _draw_footer(canvas_obj, doc, theme_palette):
     import random
     canvas_obj.saveState()
     canvas_obj.setStrokeColor(theme_palette.get("primary", colors.HexColor("#1a237e")))
     canvas_obj.setLineWidth(0.5)
-    canvas_obj.line(18 * mm, 18 * mm, doc.pagesize[0] - 18 * mm, 18 * mm)
+    canvas_obj.line(0.5 * inch, 0.5 * inch, doc.pagesize[0] - 0.5 * inch, 0.5 * inch)
     
     quotes = [
         '"The Lagna is not just a rising sign. It is your arrival, your Introduction, the lens through which God sees Himself in you. The Point of Lagna is the exact moment your soul steps into karma bhoomi, claiming a body, a breath and a destiny."',
@@ -743,12 +757,12 @@ def _draw_footer(canvas_obj, doc, theme_palette):
     
     canvas_obj.setFont(BASE_FONT, 7.5)
     canvas_obj.setFillColor(colors.HexColor("#6b7280"))
-    canvas_obj.drawCentredString(doc.pagesize[0] / 2, 21 * mm, quote)
+    canvas_obj.drawCentredString(doc.pagesize[0] / 2, 0.6 * inch, quote)
     
     canvas_obj.setFont(BASE_FONT, 8)
     canvas_obj.setFillColor(colors.grey)
     footer_text = f"CONFIDENTIAL | {BRAND_NAME} — {BRAND_URL}"
-    canvas_obj.drawString(18 * mm, 12 * mm, footer_text)
+    canvas_obj.drawString(0.5 * inch, 0.35 * inch, footer_text)
     canvas_obj.restoreState()
 
 
@@ -756,19 +770,19 @@ def _add_page_number(canvas_obj, doc):
     page_num = canvas_obj.getPageNumber()
     canvas_obj.setFont(BASE_FONT, 9)
     canvas_obj.setFillColor(colors.grey)
-    canvas_obj.drawRightString((doc.pagesize[0] - 18 * mm), 12 * mm, f"Page {page_num}")
+    canvas_obj.drawRightString((doc.pagesize[0] - 0.5 * inch), 0.35 * inch, f"Page {page_num}")
 
 
 def _draw_header(canvas_obj, doc, theme_palette):
     canvas_obj.saveState()
     canvas_obj.setStrokeColor(theme_palette.get("primary", colors.HexColor("#1a237e")))
     canvas_obj.setLineWidth(0.5)
-    canvas_obj.line(18 * mm, doc.pagesize[1] - 18 * mm, doc.pagesize[0] - 18 * mm, doc.pagesize[1] - 18 * mm)
+    canvas_obj.line(0.5 * inch, doc.pagesize[1] - 0.5 * inch, doc.pagesize[0] - 0.5 * inch, doc.pagesize[1] - 0.5 * inch)
     
     canvas_obj.setFont(BASE_FONT, 8)
     canvas_obj.setFillColor(colors.grey)
-    canvas_obj.drawString(18 * mm, doc.pagesize[1] - 15 * mm, "Vedic Astrology Analysis Report")
-    canvas_obj.drawRightString(doc.pagesize[0] - 18 * mm, doc.pagesize[1] - 15 * mm, "Generated based on Classical Sutras")
+    canvas_obj.drawString(0.5 * inch, doc.pagesize[1] - 0.4 * inch, "Vedic Astrology Analysis Report")
+    canvas_obj.drawRightString(doc.pagesize[0] - 0.5 * inch, doc.pagesize[1] - 0.4 * inch, "Generated based on Classical Sutras")
     canvas_obj.restoreState()
 
 def _decorate_page(canvas_obj, doc, theme_palette):
@@ -776,7 +790,8 @@ def _decorate_page(canvas_obj, doc, theme_palette):
     if theme_palette.get("background") != colors.white:
         canvas_obj.setFillColor(theme_palette["background"])
         canvas_obj.rect(0, 0, doc.pagesize[0], doc.pagesize[1], fill=1, stroke=0)
-    
+
+    _draw_page_frame(canvas_obj, doc, theme_palette)
     _draw_header(canvas_obj, doc, theme_palette)
     _draw_watermark(canvas_obj, doc, theme_palette)
     _add_page_number(canvas_obj, doc)
@@ -1468,6 +1483,7 @@ def _render_life_cycle_overview(story, styles, theme_palette, is_bilingual, is_h
         story.append(PageBreak())
 
 def _render_remedy_deep_dive(story, styles, theme_palette, is_bilingual, is_hindi_only, is_english_only):
+    story.append(PageBreak())
     title = _get_text("Detailed Remedial Rituals & Cosmic Tuning", "विस्तृत उपचारात्मक अनुष्ठान और ब्रह्मांडीय ट्यूनिंग", is_bilingual, is_hindi_only, is_english_only)
     story.append(Paragraph(f'<bookmark name="rituals" />{title}', styles["Section"]))
     story.append(Spacer(1, 15))
@@ -1997,10 +2013,10 @@ def render_detailed_pdf(report_data: Dict[str, Any], output_path: str, theme_nam
     doc = SimpleDocTemplate(
         output_path,
         pagesize=A4,
-        rightMargin=18 * mm,
-        leftMargin=18 * mm,
-        topMargin=18 * mm,
-        bottomMargin=18 * mm,
+        rightMargin=0.5 * inch,
+        leftMargin=0.5 * inch,
+        topMargin=0.75 * inch,
+        bottomMargin=0.75 * inch,
         encrypt=encrypt_obj,
     )
 
@@ -2715,6 +2731,69 @@ def render_detailed_pdf(report_data: Dict[str, Any], output_path: str, theme_nam
         story.append(Spacer(1, 12))
         story.append(PageBreak())
 
+    # --- MASTER ENGINE RESULTS ---
+    master = report_data.get("master_engine", {})
+    if master and should_render("yogas"):
+        master_title = _get_text("Master Vedic Analysis", "मास्टर वैदिक विश्लेषण", is_bilingual, is_hindi_only, is_english_only)
+        story.append(Paragraph(f'<bookmark name="master_analysis" />{master_title}', styles["Section"]))
+        
+        # Major Yogas
+        yogas = master.get("yogas", [])
+        if yogas:
+            yoga_title = _get_text("Major Yogas Identified", "प्रमुख योग", is_bilingual, is_hindi_only, is_english_only)
+            story.append(Paragraph(yoga_title, styles["SubSection"]))
+            for y in yogas:
+                y_name = y.get("name", "Unknown Yoga")
+                story.append(Paragraph(f"• {y_name}", styles["BodyText"]))
+            story.append(Spacer(1, 10))
+            
+        # Profession Indications
+        prof = master.get("profession", "")
+        if prof:
+            prof_title = _get_text("Profession & Career Indications", "व्यवसाय और करियर संकेत", is_bilingual, is_hindi_only, is_english_only)
+            story.append(Paragraph(prof_title, styles["SubSection"]))
+            story.append(Paragraph(prof, styles["BodyText"]))
+            story.append(Spacer(1, 12))
+        
+        story.append(Spacer(1, 10))
+
+
+    # Planet positions
+    if should_render("planet_positions"):
+        planet_title = _get_text("Position of Planets", "ग्रह स्थिति", is_bilingual, is_hindi_only, is_english_only)
+        story.append(Paragraph(f'<bookmark name="planet_positions" />{planet_title}', styles["Section"]))
+        story.append(_planet_table(report_data.get("planet_positions", []), theme_palette=theme_palette))
+        story.append(Spacer(1, 8))
+
+    # Shadbala / Strengths
+    if should_render("strengths"):
+        strength_data = report_data.get("strength", {}).get("planets", {})
+        if strength_data:
+            shadbala_title = _get_text("Shadbala (Planetary Strengths)", "षड्बल (ग्रहीय बल)", is_bilingual, is_hindi_only, is_english_only)
+            story.append(Paragraph(f'<bookmark name="strengths" />{shadbala_title}', styles["Section"]))
+            
+            headers = [_get_text("Planet", "ग्रह", is_bilingual, is_hindi_only, is_english_only),
+                       _get_text("Total Strength", "कुल बल", is_bilingual, is_hindi_only, is_english_only),
+                       _get_text("Status", "स्थिति", is_bilingual, is_hindi_only, is_english_only)]
+            table_data = [headers]
+            
+            for p, p_data in strength_data.items():
+                total = p_data.get("total", 0)
+                # Assign simple text status based on total score (typical Shadbala ~100 is average)
+                status = "Strong" if total >= 120 else ("Average" if total >= 90 else "Weak")
+                table_data.append([p, f"{total:.2f}", status])
+                
+            tbl = Table(table_data, colWidths=[140, 140, 140])
+            header_color = theme_palette["table_header"] if theme_palette else colors.lightgrey
+            text_color = theme_palette["text"] if theme_palette else colors.black
+            tbl.setStyle(TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), header_color),
+                ('TEXTCOLOR', (0, 0), (-1, -1), text_color),
+                ('GRID', (0, 0), (-1, -1), 0.5, colors.grey),
+            ]))
+            story.append(tbl)
+            story.append(Spacer(1, 12))
+
     # Dosha
     if should_render("dosha"):
         dosha_title = _get_text("Dosha Summary", "दोष सारांश", is_bilingual, is_hindi_only, is_english_only)
@@ -2754,112 +2833,118 @@ def render_detailed_pdf(report_data: Dict[str, Any], output_path: str, theme_nam
     story.append(Spacer(1, 8))
 
     # --- Sentient Soul Archetype & Destiny Section ---
-    sentient = report_data.get("sentient", {})
-    if sentient and sentient.get("sentient_story"):
-        sentient_title = _get_text("Soul Archetype & Destiny", "आत्मा का स्वरूप और भाग्य", is_bilingual, is_hindi_only, is_english_only)
-        story.append(Paragraph(f'<bookmark name="sentient" />{sentient_title}', styles["Section"]))
-        story.append(Paragraph(sentient.get("sentient_story", ""), styles["BodyText"]))
-        story.append(Spacer(1, 10))
+    if should_render("sentient"):
+        sentient = report_data.get("sentient", {})
+        if sentient and sentient.get("sentient_story"):
+            sentient_title = _get_text("Soul Archetype & Destiny", "आत्मा का स्वरूप और भाग्य", is_bilingual, is_hindi_only, is_english_only)
+            story.append(Paragraph(f'<bookmark name="sentient" />{sentient_title}', styles["Section"]))
+            story.append(Paragraph(sentient.get("sentient_story", ""), styles["BodyText"]))
+            story.append(Spacer(1, 10))
 
     # --- Akashic Soul Record Section ---
-    akashic = report_data.get("akashic", {})
-    if akashic and akashic.get("akashic_story"):
-        akashic_title = _get_text("Akashic Soul Record", "आत्मिक यात्रा", is_bilingual, is_hindi_only, is_english_only)
-        story.append(Paragraph(f'<bookmark name="akashic" />{akashic_title}', styles["Section"]))
-        story.append(Paragraph(akashic.get("akashic_story", ""), styles["BodyText"]))
-        story.append(Spacer(1, 10))
+    if should_render("akashic"):
+        akashic = report_data.get("akashic", {})
+        if akashic and akashic.get("akashic_story"):
+            akashic_title = _get_text("Akashic Soul Record", "आत्मिक यात्रा", is_bilingual, is_hindi_only, is_english_only)
+            story.append(Paragraph(f'<bookmark name="akashic" />{akashic_title}', styles["Section"]))
+            story.append(Paragraph(akashic.get("akashic_story", ""), styles["BodyText"]))
+            story.append(Spacer(1, 10))
 
     # --- Omniscient Analysis Section ---
-    omniscient = report_data.get("omniscient", {})
-    if omniscient:
-        omni_title = _get_text("Omniscient Analysis", "परम ज्योतिष दृष्टि", is_bilingual, is_hindi_only, is_english_only)
-        story.append(Paragraph(f'<bookmark name="omniscient" />{omni_title}', styles["Section"]))
-        
-        omni_archetype = omniscient.get('personality', {}).get('archetype', '')
-        if omni_archetype:
-            story.append(Paragraph(f"<b>Archetype:</b> {omni_archetype}", styles["BodyText"]))
-        
-        omni_conf = omniscient.get('confidence_score', '')
-        if omni_conf:
-            story.append(Paragraph(f"<b>Confidence Score:</b> {omni_conf}", styles["BodyText"]))
+    if should_render("omniscient"):
+        omniscient = report_data.get("omniscient", {})
+        if omniscient:
+            omni_title = _get_text("Omniscient Analysis", "परम ज्योतिष दृष्टि", is_bilingual, is_hindi_only, is_english_only)
+            story.append(Paragraph(f'<bookmark name="omniscient" />{omni_title}', styles["Section"]))
             
-        omni_emotion = omniscient.get("emotion_model", "")
-        if omni_emotion:
-            story.append(Paragraph(str(omni_emotion), styles["BodyText"]))
+            omni_archetype = omniscient.get('personality', {}).get('archetype', '')
+            if omni_archetype:
+                story.append(Paragraph(f"<b>Archetype:</b> {omni_archetype}", styles["BodyText"]))
             
-        story.append(Spacer(1, 12))
+            omni_conf = omniscient.get('confidence_score', '')
+            if omni_conf:
+                story.append(Paragraph(f"<b>Confidence Score:</b> {omni_conf}", styles["BodyText"]))
+                
+            omni_emotion = omniscient.get("emotion_model", "")
+            if omni_emotion:
+                story.append(Paragraph(str(omni_emotion), styles["BodyText"]))
+                
+            story.append(Spacer(1, 12))
 
     # --- Quantum Forecast Analysis Section ---
-    quantum = report_data.get("quantum", {})
-    if quantum and quantum.get("narrative"):
-        quantum_title = _get_text("Quantum Forecast Analysis", "क्वांटम भविष्य दृष्टि", is_bilingual, is_hindi_only, is_english_only)
-        story.append(Paragraph(f'<bookmark name="quantum" />{quantum_title}', styles["Section"]))
-        story.append(Paragraph(quantum.get("narrative", ""), styles["BodyText"]))
-        story.append(Spacer(1, 12))
+    if should_render("quantum"):
+        quantum = report_data.get("quantum", {})
+        if quantum and quantum.get("narrative"):
+            quantum_title = _get_text("Quantum Forecast Analysis", "क्वांटम भविष्य दृष्टि", is_bilingual, is_hindi_only, is_english_only)
+            story.append(Paragraph(f'<bookmark name="quantum" />{quantum_title}', styles["Section"]))
+            story.append(Paragraph(quantum.get("narrative", ""), styles["BodyText"]))
+            story.append(Spacer(1, 12))
 
     # --- Dimensional Destiny Analysis Section ---
-    dim = report_data.get("dimensional", {})
-    if dim and dim.get("narrative"):
-        dim_title = _get_text("Dimensional Destiny Analysis", "बहुआयामी भाग्य विश्लेषण", is_bilingual, is_hindi_only, is_english_only)
-        story.append(Paragraph(f'<bookmark name="dimensional" />{dim_title}', styles["Section"]))
-        story.append(Paragraph(dim.get("narrative", ""), styles["BodyText"]))
-        story.append(Spacer(1, 12))
+    if should_render("dimensional"):
+        dim = report_data.get("dimensional", {})
+        if dim and dim.get("narrative"):
+            dim_title = _get_text("Dimensional Destiny Analysis", "बहुआयामी भाग्य विश्लेषण", is_bilingual, is_hindi_only, is_english_only)
+            story.append(Paragraph(f'<bookmark name="dimensional" />{dim_title}', styles["Section"]))
+            story.append(Paragraph(dim.get("narrative", ""), styles["BodyText"]))
+            story.append(Spacer(1, 12))
 
     # --- Astral Matrix Destiny Analysis Section ---
-    astral = report_data.get("astral_matrix", {})
-    if astral and astral.get("astral_narrative"):
-        astral_title = _get_text("Astral Matrix Destiny Analysis", "सूक्ष्म भाग्य विश्लेषण", is_bilingual, is_hindi_only, is_english_only)
-        story.append(Paragraph(f'<bookmark name="astral_matrix" />{astral_title}', styles["Section"]))
-        story.append(Paragraph(astral.get("astral_narrative", ""), styles["BodyText"]))
-        story.append(Spacer(1, 12))
+    if should_render("astral_matrix"):
+        astral = report_data.get("astral_matrix", {})
+        if astral and astral.get("astral_narrative"):
+            astral_title = _get_text("Astral Matrix Destiny Analysis", "सूक्ष्म भाग्य विश्लेषण", is_bilingual, is_hindi_only, is_english_only)
+            story.append(Paragraph(f'<bookmark name="astral_matrix" />{astral_title}', styles["Section"]))
+            story.append(Paragraph(astral.get("astral_narrative", ""), styles["BodyText"]))
+            story.append(Spacer(1, 12))
 
     # --- Cosmic Destiny Analysis Section ---
-    cosmic_core = report_data.get("cosmic_core", {})
-    if cosmic_core and cosmic_core.get("cosmic_narrative"):
-        cosmic_title = _get_text("Cosmic Destiny Analysis", "ब्रह्मांडीय भाग्य विश्लेषण", is_bilingual, is_hindi_only, is_english_only)
-        story.append(Paragraph(f'<bookmark name="cosmic_core" />{cosmic_title}', styles["Section"]))
-        story.append(Paragraph(cosmic_core.get("cosmic_narrative", ""), styles["BodyText"]))
-        story.append(Spacer(1, 12))
-
-        story.append(Spacer(1, 12))
+    if should_render("cosmic_core"):
+        cosmic_core = report_data.get("cosmic_core", {})
+        if cosmic_core and cosmic_core.get("cosmic_narrative"):
+            cosmic_title = _get_text("Cosmic Destiny Analysis", "ब्रह्मांडीय भाग्य विश्लेषण", is_bilingual, is_hindi_only, is_english_only)
+            story.append(Paragraph(f'<bookmark name="cosmic_core" />{cosmic_title}', styles["Section"]))
+            story.append(Paragraph(cosmic_core.get("cosmic_narrative", ""), styles["BodyText"]))
+            story.append(Spacer(1, 12))
 
     # --- Maharishi Destiny Analysis Section ---
-    maharishi = report_data.get("maharishi", {})
-    if maharishi and maharishi.get("maharishi_text"):
-        maharishi_title = _get_text("Maharishi Destiny Analysis", "महर्षि विश्लेषण", is_bilingual, is_hindi_only, is_english_only)
-        story.append(Paragraph(f'<bookmark name="maharishi" />{maharishi_title}', styles["Section"]))
-        story.append(Paragraph(maharishi.get("maharishi_text", ""), styles["BodyText"]))
-        story.append(Spacer(1, 12))
-
-        story.append(Spacer(1, 12))
+    if should_render("maharishi"):
+        maharishi = report_data.get("maharishi", {})
+        if maharishi and maharishi.get("maharishi_text"):
+            maharishi_title = _get_text("Maharishi Destiny Analysis", "महर्षि विश्लेषण", is_bilingual, is_hindi_only, is_english_only)
+            story.append(Paragraph(f'<bookmark name="maharishi" />{maharishi_title}', styles["Section"]))
+            story.append(Paragraph(maharishi.get("maharishi_text", ""), styles["BodyText"]))
+            story.append(Spacer(1, 12))
 
     # --- Brahma Destiny Analysis Section ---
-    brahma = report_data.get("brahma", {})
-    if brahma and brahma.get("brahma_text"):
-        brahma_title = _get_text("Brahma Destiny Analysis", "ब्रह्मा विश्लेषण", is_bilingual, is_hindi_only, is_english_only)
-        story.append(Paragraph(f'<bookmark name="brahma" />{brahma_title}', styles["Section"]))
-        story.append(Paragraph(brahma.get("brahma_text", ""), styles["BodyText"]))
-        story.append(Spacer(1, 12))
-
-        story.append(Spacer(1, 12))
+    if should_render("brahma"):
+        brahma = report_data.get("brahma", {})
+        if brahma and brahma.get("brahma_text"):
+            brahma_title = _get_text("Brahma Destiny Analysis", "ब्रह्मा विश्लेषण", is_bilingual, is_hindi_only, is_english_only)
+            story.append(Paragraph(f'<bookmark name="brahma" />{brahma_title}', styles["Section"]))
+            story.append(Paragraph(brahma.get("brahma_text", ""), styles["BodyText"]))
+            story.append(Spacer(1, 12))
 
     # --- Paramarshi Advisor Analysis Section ---
-    paramarshi = report_data.get("paramarshi", {})
-    if paramarshi and paramarshi.get("answer"):
-        para_title = _get_text("Paramarshi Advisor Analysis", "परमर्षि सलाह", is_bilingual, is_hindi_only, is_english_only)
-        story.append(Paragraph(f'<bookmark name="paramarshi" />{para_title}', styles["Section"]))
-        story.append(Paragraph(paramarshi.get("answer", ""), styles["BodyText"]))
-        story.append(Spacer(1, 12))
+    if should_render("paramarshi"):
+        paramarshi = report_data.get("paramarshi", {})
+        if paramarshi and paramarshi.get("answer"):
+            para_title = _get_text("Paramarshi Advisor Analysis", "परमर्षि सलाह", is_bilingual, is_hindi_only, is_english_only)
+            story.append(Paragraph(f'<bookmark name="paramarshi" />{para_title}', styles["Section"]))
+            story.append(Paragraph(paramarshi.get("answer", ""), styles["BodyText"]))
+            story.append(Spacer(1, 12))
 
     # --- Planetary Wisdom Section (Phase 2) ---
-    _render_planetary_wisdom(story, report_data, styles, theme_palette, is_bilingual, is_hindi_only, is_english_only)
+    if should_render("planetary_wisdom"):
+        _render_planetary_wisdom(story, report_data, styles, theme_palette, is_bilingual, is_hindi_only, is_english_only)
 
     # --- Oracle (Sage Insights) Section ---
-    oracle_insights = report_data.get("oracle_insights", [])
-    if oracle_insights:
-        oracle_title = _get_text("Sage Insights & Divine Oracle", "ऋषि वाणी और दैवीय परामर्श", is_bilingual, is_hindi_only, is_english_only)
-        story.append(Paragraph(f'<bookmark name="oracle" />{oracle_title}', styles["Section"]))
-        story.append(Spacer(1, 12))
+    if should_render("oracle"):
+        oracle_insights = report_data.get("oracle_insights", [])
+        if oracle_insights:
+            oracle_title = _get_text("Sage Insights & Divine Oracle", "ऋषि वाणी और दैवीय परामर्श", is_bilingual, is_hindi_only, is_english_only)
+            story.append(Paragraph(f'<bookmark name="oracle" />{oracle_title}', styles["Section"]))
+            story.append(Spacer(1, 12))
         
         for i, item in enumerate(oracle_insights):
             q = item.get("question", "")
@@ -2937,35 +3022,48 @@ def render_detailed_pdf(report_data: Dict[str, Any], output_path: str, theme_nam
 
     timeline_title = _get_text("Vimshottari Timeline", "दशा टाइमलाइन", is_bilingual, is_hindi_only, is_english_only)
     if should_render("dasha_timeline"):
-        story.append(Paragraph(f'<bookmark name="dasha_timeline" />{timeline_title}', styles["SubSection"]))
-    dasha_rows = [[_get_text("Lord", "दशा", is_bilingual, is_hindi_only, is_english_only), 
-                   _get_text("Start Date", "आरंभ", is_bilingual, is_hindi_only, is_english_only), 
-                   _get_text("End Date", "समापन", is_bilingual, is_hindi_only, is_english_only), 
-                   _get_text("Duration", "अवधि", is_bilingual, is_hindi_only, is_english_only)]]
-    for row in dash.get("list", [])[:20]:
-        dasha_rows.append(
-            [
-                row.get("lord", ""),
-                row.get("start_date", row.get("start_jd", "")),
-                row.get("end_date", row.get("end_jd", "")),
-                f"{row.get('duration_years', 0.0):.2f} yrs",
-            ]
-        )
-    story.append(
-        Table(
-            dasha_rows,
-            repeatRows=1,
-            colWidths=[80, 120, 120, 80],
-            style=TableStyle(
-                [
-                    ("GRID", (0, 0), (-1, -1), 0.25, colors.grey),
-                    ("BACKGROUND", (0, 0), (-1, 0), theme_palette["table_header"]),
-                    ("TEXTCOLOR", (0, 0), (-1, -1), theme_palette["text"]),
-                ]
-            ),
-        )
-    )
-    story.append(PageBreak())
+        dasha_items = dash.get("list", [])
+        chunk_size = 5
+        for i in range(0, len(dasha_items), chunk_size):
+            chunk = dasha_items[i:i + chunk_size]
+            if not chunk:
+                break
+            
+            p_page = (i // chunk_size) + 1
+            tot_pages = (len(dasha_items) + chunk_size - 1) // chunk_size
+            
+            story.append(Paragraph(f'<bookmark name="dasha_timeline_{p_page}" />{timeline_title} (Page {p_page} of {tot_pages})', styles["SubSection"]))
+            
+            dasha_rows = [[_get_text("Lord", "दशा", is_bilingual, is_hindi_only, is_english_only), 
+                           _get_text("Start Date", "आरंभ", is_bilingual, is_hindi_only, is_english_only), 
+                           _get_text("End Date", "समापन", is_bilingual, is_hindi_only, is_english_only), 
+                           _get_text("Duration", "अवधि", is_bilingual, is_hindi_only, is_english_only)]]
+            
+            for row in chunk:
+                dasha_rows.append(
+                    [
+                        row.get("lord", ""),
+                        row.get("start_date", row.get("start_jd", "")),
+                        row.get("end_date", row.get("end_jd", "")),
+                        f"{row.get('duration_years', 0.0):.2f} yrs",
+                    ]
+                )
+            
+            story.append(
+                Table(
+                    dasha_rows,
+                    repeatRows=1,
+                    colWidths=[80, 120, 120, 80],
+                    style=TableStyle(
+                        [
+                            ("GRID", (0, 0), (-1, -1), 0.25, colors.grey),
+                            ("BACKGROUND", (0, 0), (-1, 0), theme_palette["table_header"]),
+                            ("TEXTCOLOR", (0, 0), (-1, -1), theme_palette["text"]),
+                        ]
+                    ),
+                )
+            )
+            story.append(PageBreak())
 
     # --- Remedies Section ---
     remedies = report_data.get("remedies", [])
