@@ -748,7 +748,7 @@ export default function GenerateReport() {
                 className="w-full h-auto object-contain"
               />
               <div className="w-full bg-amber-500 py-1 text-center text-black text-[20px] font-black uppercase tracking-widest border-t border-amber-600 shadow-inner">
-                " चंद्रशेखर "
+                " शेखर "
               </div>
               <div className="w-full bg-amber-500 py-1 text-center text-black text-[20px] font-black uppercase tracking-widest border-t border-amber-600 shadow-inner">
                 "ज्योतिषाचार्य"
