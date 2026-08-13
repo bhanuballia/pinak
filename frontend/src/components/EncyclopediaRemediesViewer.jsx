@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Sparkles, Gem, ShieldAlert, Heart, Sun, Flame, Droplets, Wind, Mountain, RefreshCw, Palette, Calendar, Layers, Compass, Triangle, Leaf, Moon, Printer, FileText } from 'lucide-react';
+import { BookOpen, Sparkles, Gem, ShieldAlert, Heart, Sun, Flame, Droplets, Wind, Mountain, RefreshCw, Palette, Calendar, Layers, Compass, Triangle, Leaf, Moon, Printer, FileText, Clock, CheckCircle } from 'lucide-react';
 import remediesData from '../data/encyclopediaRemedies.json';
 
 export default function EncyclopediaRemediesViewer() {
@@ -12,20 +12,168 @@ export default function EncyclopediaRemediesViewer() {
   const [transitList, setTransitList] = useState([]);
   const [transitLoading, setTransitLoading] = useState(false);
   const [transitError, setTransitError] = useState(null);
-  
+
   const [nakshatraRemedies, setNakshatraRemedies] = useState(null);
   const [nakshatraLoading, setNakshatraLoading] = useState(false);
   const [nakshatraError, setNakshatraError] = useState(null);
-  
+
   const [currentNakshatraRemedies, setCurrentNakshatraRemedies] = useState(null);
   const [currentNakshatraLoading, setCurrentNakshatraLoading] = useState(false);
 
+  const [userChartData, setUserChartData] = useState(null);
+
+  // --- Gemstone Compatibility, Consecration & Upratna Wizard State ---
+  const [selectedGemTest, setSelectedGemTest] = useState('Ruby');
+  const [bodyWeightKg, setBodyWeightKg] = useState(65);
+
+  const gemDetailsMaster = {
+    Ruby: { planet: 'Sun', mainGem: 'Ruby (Manik)', upratna: 'Red Garnet / Red Tourmaline', ratio: 12, metal: 'Copper / Gold (22K)', day: 'Sunday morning (Sunrise)', finger: 'Ring Finger (Right Hand)', mantra: 'Om Hram Hreem Hroum Sah Suryaya Namah', purification: 'Raw Milk, Honey, Ganga Jal, & Red Flowers' },
+    Pearl: { planet: 'Moon', mainGem: 'Pearl (Moti)', upratna: 'Moonstone / White Coral', ratio: 10, metal: 'Pure Silver (Chandi)', day: 'Monday evening or Sunrise', finger: 'Little Finger (Right Hand)', mantra: 'Om Shram Shreem Shroum Sah Chandraya Namah', purification: 'Raw Milk, Curd, Honey & White Lotus/Flowers' },
+    RedCoral: { planet: 'Mars', mainGem: 'Red Coral (Moonga)', upratna: 'Carnelian / Red Jasper', ratio: 10, metal: 'Copper / Silver-Gold alloy', day: 'Tuesday morning', finger: 'Ring Finger (Right Hand)', mantra: 'Om Kram Kreem Kroum Sah Bhaumaya Namah', purification: 'Ganga Jal, Raw Milk, & Saffron Water' },
+    Emerald: { planet: 'Mercury', mainGem: 'Emerald (Panna)', upratna: 'Peridot / Green Tourmaline', ratio: 12, metal: 'Gold / Brass', day: 'Wednesday morning', finger: 'Little Finger (Right Hand)', mantra: 'Om Bram Breem Broum Sah Budhaya Namah', purification: 'Raw Milk, Tulsi Leaves, & Ganga Jal' },
+    YellowSapphire: { planet: 'Jupiter', mainGem: 'Yellow Sapphire (Pukhraj)', upratna: 'Citrine (Sunela) / Yellow Topaz', ratio: 12, metal: 'Yellow Gold / Brass', day: 'Thursday morning', finger: 'Index Finger (Right Hand)', mantra: 'Om Gram Greem Graum Sah Gurave Namah', purification: 'Raw Milk, Honey, Turmeric & Yellow Flowers' },
+    Diamond: { planet: 'Venus', mainGem: 'Diamond (Heera)', upratna: 'White Zircon / Opal', ratio: 10, metal: 'Platinum / White Gold / Silver', day: 'Friday morning', finger: 'Middle Finger (Right Hand)', mantra: 'Om Dram Dreem Droum Sah Shukraya Namah', purification: 'Raw Milk, Scented Water, & White Flowers' },
+    BlueSapphire: { planet: 'Saturn', mainGem: 'Blue Sapphire (Neelam)', upratna: 'Amethyst (Jamuniya) / Blue Topaz', ratio: 12, metal: 'Panchdhatu / Silver / Iron Ring', day: 'Saturday evening', finger: 'Middle Finger (Right Hand)', mantra: 'Om Pram Preem Proum Sah Shaneshcharaya Namah', purification: 'Mustard Oil drop, Raw Milk & Ganga Jal' },
+    Hessonite: { planet: 'Rahu', mainGem: 'Hessonite (Gomed)', upratna: 'Orange Zircon / Spessartite', ratio: 12, metal: 'Panchdhatu / Silver', day: 'Saturday late evening', finger: 'Middle Finger (Right Hand)', mantra: 'Om Bhram Bhreem Bhroum Sah Rahave Namah', purification: 'Ganga Jal, Raw Milk & Black Sesame Seeds' },
+    CatEye: { planet: 'Ketu', mainGem: 'Cat\'s Eye (Lehsuniya)', upratna: 'Chrysoberyl / Turquoise', ratio: 12, metal: 'Panchdhatu / Silver', day: 'Tuesday midnight or early morning', finger: 'Ring Finger / Middle Finger', mantra: 'Om Stram Streem Stroum Sah Ketave Namah', purification: 'Ganga Jal, Raw Milk & Durva Grass' }
+  };
+
+  const getGemCompatibility = (gemKey) => {
+    const info = gemDetailsMaster[gemKey];
+    if (!info) return { status: 'Neutral', text: 'Evaluation unavailable' };
+
+    const planetName = info.planet;
+    const isAuspiciousInLagna = auspiciousPlanets.includes(planetName);
+    const incompList = lagnaInfo.incompatible || [];
+    const isIncompatible = incompList.some(i => i.toLowerCase().includes(planetName.toLowerCase()) || i.toLowerCase().includes(gemKey.toLowerCase()));
+
+    if (isIncompatible) {
+      return {
+        status: 'Conflict',
+        badge: '🚨 High Conflict / Prohibited',
+        bg: 'bg-rose-100 border-rose-300 text-rose-950',
+        reason: `This gemstone belongs to ${planetName}, which rules malefic houses for your ${selectedLagna} Ascendant. Wearing this could cause obstacles or energy imbalance.`
+      };
+    } else if (isAuspiciousInLagna) {
+      return {
+        status: 'Favorable',
+        badge: '🌟 Highly Compatible (Life/Karaka/Lucky)',
+        bg: 'bg-emerald-100 border-emerald-300 text-emerald-950',
+        reason: `This gemstone strengthens ${planetName}, a highly auspicious lord for your ${selectedLagna} Lagna chart. Excellent for personal vitality and fortune.`
+      };
+    } else {
+      return {
+        status: 'Neutral',
+        badge: '⚖️ Neutral / Conditional Wear',
+        bg: 'bg-amber-100 border-amber-300 text-amber-950',
+        reason: `This gemstone can be worn during specific Mahadasha or Antardasha periods of ${planetName}. Perform a 3-day trial under your pillow first.`
+      };
+    }
+  };
+
+  // --- 43-Day Remedy Commitment Tracker State ---
+  const [commitmentTitle, setCommitmentTitle] = useState('Lal Kitab Daily Mantra & Charity');
+  const [streakDays, setStreakDays] = useState(() => {
+    try {
+      const saved = localStorage.getItem('remedy_streak_count');
+      return saved ? parseInt(saved, 10) : 1;
+    } catch (e) {
+      return 1;
+    }
+  });
+  const [lastCheckIn, setLastCheckIn] = useState(() => {
+    try {
+      return localStorage.getItem('remedy_last_checkin') || '';
+    } catch (e) {
+      return '';
+    }
+  });
+
+  const handleCheckInToday = () => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (lastCheckIn === todayStr) return; // Already checked in today
+
+    const newStreak = Math.min(43, streakDays + 1);
+    setStreakDays(newStreak);
+    setLastCheckIn(todayStr);
+    try {
+      localStorage.setItem('remedy_streak_count', newStreak.toString());
+      localStorage.setItem('remedy_last_checkin', todayStr);
+    } catch (e) { }
+  };
+
+  const handleResetStreak = () => {
+    if (window.confirm("Are you sure you want to reset your 43-day remedy commitment streak?")) {
+      setStreakDays(0);
+      setLastCheckIn('');
+      try {
+        localStorage.removeItem('remedy_streak_count');
+        localStorage.removeItem('remedy_last_checkin');
+      } catch (e) { }
+    }
+  };
+
+  // --- Dynamic Hora Calculation Helper ---
+  const getDynamicHora = () => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const dayOfWeek = now.getDay(); // 0 = Sunday, 1 = Monday ... 6 = Saturday
+
+    // Vedic Hora sequence starts with the Lord of the Sunrise weekday
+    const dayLords = ['Sun', 'Moon', 'Mars', 'Mercury', 'Jupiter', 'Venus', 'Saturn'];
+    const horaOrder = ['Sun', 'Venus', 'Mercury', 'Moon', 'Saturn', 'Jupiter', 'Mars'];
+
+    const startLord = dayLords[dayOfWeek];
+    const startIndex = horaOrder.indexOf(startLord);
+    const currentHoraPlanet = horaOrder[(startIndex + (currentHour % 7)) % 7];
+
+    const horaRemedyMap = {
+      Sun: { name: 'Sun (Surya) Hora', quality: 'Highly Auspicious for Authority & Government', remedy: 'Chant Aditya Hridaya Stotra or offer water to Sun in a copper vessel.' },
+      Moon: { name: 'Moon (Chandra) Hora', quality: 'Auspicious for Mental Peace & Public Relations', remedy: 'Drink water from a silver cup; chant Om Som Somaya Namah.' },
+      Mars: { name: 'Mars (Mangal) Hora', quality: 'Vigorous Energy, Caution for Conflict', remedy: 'Recite Hanuman Chalisa; avoid hasty arguments.' },
+      Mercury: { name: 'Mercury (Budha) Hora', quality: 'Excellent for Business, Study & Trading', remedy: 'Chant Saraswati Vandana or feed green grass to cows.' },
+      Jupiter: { name: 'Jupiter (Guru) Hora', quality: 'Supreme Divine Grace & Financial Luck', remedy: 'Apply turmeric/saffron tilak; chant Om Gram Greem Graum Sah Gurave Namah.' },
+      Venus: { name: 'Venus (Shukra) Hora', quality: 'Auspicious for Harmony, Wealth & Romance', remedy: 'Offer white flowers or donate sweets to young girls.' },
+      Saturn: { name: 'Saturn (Shani) Hora', quality: 'Good for Discipline, Bad for Quick Deals', remedy: 'Light a mustard oil lamp or chant Om Sham Shaneshcharaya Namah.' }
+    };
+
+    return {
+      planet: currentHoraPlanet,
+      details: horaRemedyMap[currentHoraPlanet] || horaRemedyMap['Sun'],
+      hourDisplay: `${currentHour % 12 || 12}:00 ${currentHour >= 12 ? 'PM' : 'AM'}`
+    };
+  };
+
+  // --- Dynamic Choghadiya Calculation Helper ---
+  const getDynamicChoghadiya = () => {
+    const now = new Date();
+    const hour = now.getHours();
+    const isDay = hour >= 6 && hour < 18;
+    const dayOfWeek = now.getDay();
+
+    const dayChoghadiya = ['Amrit', 'Kaal', 'Shubh', 'Roga', 'Udveg', 'Chara', 'Labh'];
+    const choghadiyaMap = {
+      Amrit: { status: 'Highly Auspicious (अमृत)', color: 'text-emerald-700 bg-emerald-100 border-emerald-300', advice: 'Best for all holy work, gemstone activation, and starting remedies.' },
+      Shubh: { status: 'Auspicious (शुभ)', color: 'text-emerald-700 bg-emerald-100 border-emerald-300', advice: 'Excellent for ceremonies, prayers, and purchasing spiritual items.' },
+      Labh: { status: 'Profitable (लाभ)', color: 'text-blue-700 bg-blue-100 border-blue-300', advice: 'Best for business remedies, career mantras, and financial gains.' },
+      Chara: { status: 'Neutral / Dynamic (चर)', color: 'text-amber-700 bg-amber-100 border-amber-300', advice: 'Good for travel, movement, and dynamic remedies.' },
+      Udveg: { status: 'Inauspicious (उद्वेग)', color: 'text-rose-700 bg-rose-100 border-rose-300', advice: 'Avoid major decisions; recite Gayatri Mantra to stay grounded.' },
+      Roga: { status: 'Inauspicious / Afflicted (रोग)', color: 'text-rose-700 bg-rose-100 border-rose-300', advice: 'Focus on health mantras and Mahamrityunjay Japa.' },
+      Kaal: { status: 'Rahu Alignment (काल)', color: 'text-rose-800 bg-rose-100 border-rose-400', advice: 'Avoid starting new ventures. Perform Durga Saptashati chant.' }
+    };
+
+    const idx = (dayOfWeek + (hour % 7)) % 7;
+    const name = dayChoghadiya[idx];
+    return { name, ...choghadiyaMap[name] };
+  };
+
   useEffect(() => {
-    // Try auto-detecting user's Lagna/Ascendant from worksheetData
+    // Try auto-detecting user's Lagna/Ascendant, Planetary Positions, Dasha, and Strengths from worksheetData
     try {
       const savedData = localStorage.getItem('worksheetData');
       if (savedData) {
         const parsed = JSON.parse(savedData);
+        setUserChartData(parsed);
         const asc = parsed.chart?.ascendant_sign || parsed.basic?.ascendant || parsed.ascendant;
         if (asc && remediesData.lagnaGemMatrix[asc]) {
           setUserAscendant(asc);
@@ -33,7 +181,7 @@ export default function EncyclopediaRemediesViewer() {
         }
       }
     } catch (e) {
-      console.warn("Could not parse user ascendant:", e);
+      console.warn("Could not parse user chart data:", e);
     }
 
     const fetchTransitData = async () => {
@@ -112,7 +260,7 @@ export default function EncyclopediaRemediesViewer() {
             payload.tz_offset = Number(bd.tz_offset || parsed.tz_offset || 5.5);
           }
         }
-        
+
         if (!payload.nakshatra_name && !payload.birth_date) {
           payload.nakshatra_name = "Ashwini";
         }
@@ -194,55 +342,197 @@ export default function EncyclopediaRemediesViewer() {
     if (p3) auspiciousPlanets.push(p3);
   }
 
+  // Helper function to extract exact house number for a planet from user chart data
+  const getPlanetBirthHouse = (planetName) => {
+    if (!userChartData) return null;
+
+    // 1. Direct planets dictionary with house property
+    const directObj = userChartData.planets?.[planetName] || userChartData.chart?.planets?.[planetName] || userChartData.planet_positions?.[planetName];
+    if (directObj) {
+      const h = directObj.house || directObj.house_number || directObj.house_id;
+      if (h) return Number(h);
+    }
+
+    // 2. Lal Kitab chart houses structure (houses[1..12].planets)
+    const lkHouses = userChartData.lalkitab?.chart?.houses || userChartData.chart?.houses || userChartData.houses;
+    if (lkHouses) {
+      for (let i = 1; i <= 12; i++) {
+        const hData = lkHouses[i] || lkHouses[i.toString()];
+        if (hData?.planets) {
+          const found = hData.planets.find(p => (p.name || p.planet || '').toLowerCase() === planetName.toLowerCase());
+          if (found) return i;
+        }
+      }
+    }
+
+    // 3. Array of planets with house property
+    const pArray = userChartData.planets_list || userChartData.planet_details || userChartData.chart?.planets_list;
+    if (Array.isArray(pArray)) {
+      const found = pArray.find(p => (p.name || p.planet || '').toLowerCase() === planetName.toLowerCase());
+      if (found && (found.house || found.house_number)) {
+        return Number(found.house || found.house_number);
+      }
+    }
+
+    // 4. Fallback calculation via sign index & Lagna sign index
+    const signIdxMap = { Aries: 0, Taurus: 1, Gemini: 2, Cancer: 3, Leo: 4, Virgo: 5, Libra: 6, Scorpio: 7, Sagittarius: 8, Capricorn: 9, Aquarius: 10, Pisces: 11 };
+    const pSign = directObj?.sign || directObj?.rashi;
+    if (pSign && userAscendant && signIdxMap[pSign] !== undefined && signIdxMap[userAscendant] !== undefined) {
+      return ((signIdxMap[pSign] - signIdxMap[userAscendant] + 12) % 12) + 1;
+    }
+
+    return null;
+  };
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-4 md:p-8 font-sans">
+    <div className="min-h-screen bg-rose-50 text-rose-950 p-4 md:p-8 font-sans">
       <div className="max-w-7xl mx-auto space-y-6">
 
         {/* Header Banner */}
-        <div className="bg-gradient-to-r from-amber-950 via-slate-900 to-amber-900 border border-amber-500/40 rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
+        <div className="bg-gradient-to-r from-rose-900 via-rose-800 to-amber-900 border border-rose-300 rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden text-white">
           <div className="flex items-center justify-between relative z-10">
             <div className="flex items-center gap-4">
-              <div className="bg-amber-500/20 text-amber-400 p-3.5 rounded-2xl border border-amber-500/30">
+              <div className="bg-white/20 text-rose-100 p-3.5 rounded-2xl border border-white/30 backdrop-blur-sm">
                 <BookOpen className="w-8 h-8" />
               </div>
               <div>
-                <h1 className="text-2xl md:text-4xl font-extrabold text-amber-300 tracking-tight flex items-center gap-2">
+                <h1 className="text-2xl md:text-4xl font-extrabold text-amber-200 tracking-tight flex items-center gap-2">
                   Encyclopedia of Astrological Remedies
                 </h1>
-                <p className="text-xs md:text-sm text-slate-300 mt-1">
+                <p className="text-xs md:text-sm text-rose-100 mt-1">
                   Authentic Remedies from Maharishi Parasara, Jaimini, Lal Kitab & Tantra Shastra •
                 </p>
               </div>
             </div>
             {userAscendant && (
-              <div className="hidden lg:flex flex-col items-end bg-amber-500/10 border border-amber-500/30 px-4 py-2 rounded-2xl">
-                <span className="text-[16px] text-amber-400 font-semibold uppercase">Auto Detected Lagna</span>
-                <span className="text-[20px] font-bold text-amber-200">{userAscendant}</span>
+              <div className="hidden lg:flex flex-col items-end bg-white/10 border border-white/30 px-4 py-2 rounded-2xl backdrop-blur-sm">
+                <span className="text-[16px] text-amber-200 font-semibold uppercase">Auto Detected Lagna</span>
+                <span className="text-[20px] font-bold text-white">{userAscendant}</span>
               </div>
             )}
           </div>
         </div>
 
         {/* General Principles Alert */}
-        <div className="bg-slate-900/90 border border-amber-500/20 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 text-[20px] text-orange-300">
+        <div className="bg-white border border-rose-200 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4 text-[18px] text-rose-950 shadow-sm font-medium">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-4 h-4 text-[18px] text-amber-400 shrink-0" />
+            <Sparkles className="w-5 h-5 text-amber-600 shrink-0" />
             <span><strong>43-Day Rule:</strong> Pujas, Mantras, Gems & Rudrakshas show results after 43 days of continuous practice.</span>
           </div>
           <div className="flex items-center gap-2">
-            <Gem className="w-4 h-4 text-[18px] text-amber-400 shrink-0" />
+            <Gem className="w-5 h-5 text-rose-700 shrink-0" />
             <span><strong>Ring vs Locket:</strong> Rings touch skin nerves connected to brain. Lockets require 2x weight.</span>
           </div>
           <div className="flex items-center gap-2">
-            <RefreshCw className="w-4 h-4 text-[18px] text-amber-400 shrink-0" />
+            <RefreshCw className="w-5 h-5 text-amber-600 shrink-0" />
             <span><strong>3-Year Rule:</strong> Re-charge or replace gems every 3 years (except Diamond).</span>
           </div>
         </div>
 
+        {/* Dynamic Daily & Muhurat Remedy Tracker + 43-Day Commitment Bar */}
+        {(() => {
+          const hora = getDynamicHora();
+          const choghadiya = getDynamicChoghadiya();
+          const todayStr = new Date().toISOString().split('T')[0];
+          const checkedInToday = lastCheckIn === todayStr;
+          const progressPercent = Math.min(100, Math.round((streakDays / 43) * 100));
+
+          return (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Card 1: Today's Active Hora & Choghadiya Remedy */}
+              <div className="bg-white border border-amber-300 rounded-3xl p-6 shadow-md space-y-4 relative overflow-hidden">
+                <div className="flex justify-between items-center border-b border-rose-100 pb-3">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-6 h-6 text-amber-700" />
+                    <h3 className="text-[20px] font-bold text-rose-950">Dynamic Hora & Choghadiya Muhurat</h3>
+                  </div>
+                  <span className="text-[14px] bg-amber-100 text-amber-900 px-3 py-1 rounded-full font-mono font-bold border border-amber-300">
+                    Live: {hora.hourDisplay}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div className="bg-rose-50/60 p-3.5 rounded-2xl border border-rose-200 space-y-1">
+                    <span className="text-[13px] text-rose-800 font-bold uppercase tracking-wider block">Active Hora Lord</span>
+                    <strong className="text-[17px] text-rose-950 block">{hora.details.name}</strong>
+                    <p className="text-[13px] text-rose-900 font-medium">{hora.details.quality}</p>
+                  </div>
+
+                  <div className={`p-3.5 rounded-2xl border space-y-1 ${choghadiya.color}`}>
+                    <span className="text-[13px] font-bold uppercase tracking-wider block">Current Choghadiya</span>
+                    <strong className="text-[17px] block">{choghadiya.name} ({choghadiya.status})</strong>
+                    <p className="text-[13px] font-medium leading-snug">{choghadiya.advice}</p>
+                  </div>
+                </div>
+
+                <div className="bg-amber-50 p-3.5 rounded-2xl border border-amber-200 space-y-1">
+                  <span className="text-[13px] text-amber-900 font-extrabold uppercase tracking-wider block">⚡ Suggested Active Hour Remedy:</span>
+                  <p className="text-[15px] text-rose-950 font-bold leading-snug">{hora.details.remedy}</p>
+                </div>
+              </div>
+
+              {/* Card 2: 43-Day Remedy Commitment Counter */}
+              <div className="bg-gradient-to-br from-rose-900 to-amber-950 text-white rounded-3xl p-6 shadow-xl space-y-4 flex flex-col justify-between border border-rose-800">
+                <div>
+                  <div className="flex justify-between items-center border-b border-white/20 pb-3">
+                    <div className="flex items-center gap-2">
+                      <Flame className="w-6 h-6 text-amber-300" />
+                      <h3 className="text-[20px] font-bold text-amber-200">43-Day Remedy Commitment Streak</h3>
+                    </div>
+                    <span className="bg-amber-500 text-slate-950 text-[14px] px-3 py-1 rounded-full font-black uppercase">
+                      Day {streakDays} of 43
+                    </span>
+                  </div>
+
+                  <p className="text-[14px] text-rose-100 mt-3 leading-relaxed">
+                    According to Lal Kitab & Tantra Shastra, continuous daily practice for <strong>43 consecutive days</strong> is required to permanently align planetary energy channels.
+                  </p>
+
+                  {/* Progress Bar */}
+                  <div className="space-y-1.5 mt-4">
+                    <div className="flex justify-between text-[13px] font-mono">
+                      <span>Streak Completion</span>
+                      <span className="text-amber-300 font-bold">{progressPercent}%</span>
+                    </div>
+                    <div className="w-full bg-white/20 rounded-full h-3.5 overflow-hidden p-0.5 border border-white/30">
+                      <div
+                        className="bg-gradient-to-r from-amber-400 to-amber-500 h-full rounded-full transition-all duration-500 shadow-lg shadow-amber-500/50"
+                        style={{ width: `${progressPercent}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between gap-3 pt-2">
+                  <button
+                    onClick={handleCheckInToday}
+                    disabled={checkedInToday}
+                    className={`px-5 py-2.5 rounded-xl font-bold text-[15px] flex items-center gap-2 transition-all shadow-lg ${checkedInToday
+                      ? 'bg-emerald-600 text-white cursor-default border border-emerald-400'
+                      : 'bg-amber-400 hover:bg-amber-300 text-slate-950 hover:scale-[1.02] active:scale-[0.98]'
+                      }`}
+                  >
+                    <CheckCircle className="w-5 h-5" />
+                    <span>{checkedInToday ? '✅ Practice Completed Today!' : 'Mark Today\'s Practice Done (+1 Day)'}</span>
+                  </button>
+
+                  <button
+                    onClick={handleResetStreak}
+                    className="text-[13px] text-rose-200 hover:text-white underline font-mono"
+                  >
+                    Reset Streak
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
         {/* Navigation Tabs */}
-        <div className="flex flex-wrap gap-2 border-b border-slate-800 pb-3">
+        <div className="flex flex-wrap gap-2 border-b border-rose-200 pb-3">
           {[
             { id: 'personalizedReport', label: '📋 My Personalized Report', icon: FileText },
+            { id: 'gemWizard', label: '🔮 Gemstone Compatibility & Activation Wizard', icon: Gem },
             { id: 'lagnaGems', label: '👑 Ascendant Gem Matrix', icon: Gem },
             { id: 'allGems', label: '💎 9 Primary Gems & Substitutes', icon: Sparkles },
             { id: 'rudraksha', label: '📿 Rudraksha (1 to 21 Mukhi)', icon: Layers },
@@ -262,14 +552,151 @@ export default function EncyclopediaRemediesViewer() {
             <button
               key={tab.id}
               onClick={() => setSelectedTab(tab.id)}
-              className={`px-4 py-2 rounded-xl font-bold text-[20px] md:text-[20px] transition-all flex items-center gap-2 ${selectedTab === tab.id
-                ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20'
-                : 'bg-emerald-100 text-slate-900 hover:text-white hover:bg-slate-800 border border-slate-800'}`}
+              className={`px-4 py-2 rounded-xl font-bold text-[17px] md:text-[18px] transition-all flex items-center gap-2 border ${selectedTab === tab.id
+                ? 'bg-rose-700 text-white border-rose-800 shadow-md shadow-rose-900/20'
+                : 'bg-white text-rose-950 hover:bg-rose-100 border-rose-200 shadow-sm'}`}
             >
               <span>{tab.label}</span>
             </button>
           ))}
         </div>
+
+        {/* TAB: Gemstone Activation & Compatibility Wizard */}
+        {selectedTab === 'gemWizard' && (() => {
+          const comp = getGemCompatibility(selectedGemTest);
+          const gemData = gemDetailsMaster[selectedGemTest];
+          const calculatedMainCarat = (bodyWeightKg / gemData.ratio).toFixed(2);
+          const calculatedUpratnaCarat = ((bodyWeightKg / gemData.ratio) * 1.5).toFixed(2);
+
+          return (
+            <div className="space-y-8 bg-white p-6 md:p-8 rounded-3xl border border-rose-200 shadow-md text-rose-950">
+              {/* Header / Selector */}
+              <div className="flex flex-wrap items-center justify-between gap-4 border-b border-rose-200 pb-5">
+                <div>
+                  <h2 className="text-2xl font-bold text-rose-950 flex items-center gap-2">
+                    <Gem className="w-7 h-7 text-rose-700" /> Interactive Gemstone Compatibility & Consecration Wizard
+                  </h2>
+                  <p className="text-[15px] text-rose-900 mt-1">
+                    Evaluate gemstone compatibility against your <strong className="text-rose-950">{selectedLagna} Lagna</strong>, calculate exact carat weights by body weight, and view step-by-step Pran Pratishta rituals.
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-2 bg-rose-50 px-3 py-2 rounded-xl border border-rose-200">
+                    <label className="text-[14px] font-bold text-rose-900 uppercase">Body Weight:</label>
+                    <input
+                      type="number"
+                      value={bodyWeightKg}
+                      onChange={(e) => setBodyWeightKg(Math.max(20, Number(e.target.value)))}
+                      className="w-16 bg-white border border-rose-300 font-bold px-2 py-1 rounded text-[15px] text-rose-950 focus:outline-none focus:ring-2 focus:ring-rose-500"
+                    />
+                    <span className="text-[14px] text-rose-900 font-bold">Kg</span>
+                  </div>
+
+                  <select
+                    value={selectedGemTest}
+                    onChange={(e) => setSelectedGemTest(e.target.value)}
+                    className="bg-rose-700 text-white font-bold px-4 py-2.5 rounded-xl border border-rose-800 focus:outline-none focus:ring-2 focus:ring-rose-500 shadow-sm text-[16px]"
+                  >
+                    {Object.keys(gemDetailsMaster).map(gKey => (
+                      <option key={gKey} value={gKey} className="text-slate-900 bg-white">
+                        {gemDetailsMaster[gKey].mainGem} ({gemDetailsMaster[gKey].planet})
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* 1. Astrological Compatibility Status Banner */}
+              <div className={`p-5 rounded-2xl border ${comp.bg} space-y-2 shadow-sm`}>
+                <div className="flex justify-between items-center">
+                  <span className="text-[14px] font-extrabold uppercase tracking-wider block">Astrological Compatibility Status</span>
+                  <span className="text-[15px] font-black uppercase px-3 py-1 rounded-full bg-white/80 border border-current">
+                    {comp.badge}
+                  </span>
+                </div>
+                <p className="text-[16px] font-bold leading-relaxed">{comp.reason}</p>
+              </div>
+
+              {/* 2. Upratna (Substitute Gemstones) & Carat Weight Estimator */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="bg-rose-50/70 p-5 rounded-2xl border border-rose-200 space-y-3">
+                  <h3 className="text-[18px] font-bold text-rose-950 flex items-center gap-2 border-b border-rose-200 pb-2">
+                    <Sparkles className="w-5 h-5 text-amber-600" /> Primary Gemstone vs Upratna (Substitute)
+                  </h3>
+                  <div className="space-y-2 text-[15px]">
+                    <p><strong>Primary Gemstone (मुख्य रत्न):</strong> <span className="text-rose-950 font-bold">{gemData.mainGem}</span></p>
+                    <p><strong>Affordable Upratna (उपरत्न):</strong> <span className="text-rose-900 font-bold">{gemData.upratna}</span></p>
+                    <p><strong>Prescribed Metal:</strong> {gemData.metal}</p>
+                    <p><strong>Target Finger:</strong> {gemData.finger}</p>
+                    <p><strong>Optimal Day & Time:</strong> {gemData.day}</p>
+                  </div>
+                </div>
+
+                <div className="bg-rose-50/70 p-5 rounded-2xl border border-rose-200 space-y-3">
+                  <h3 className="text-[18px] font-bold text-rose-950 flex items-center gap-2 border-b border-rose-200 pb-2">
+                    <Layers className="w-5 h-5 text-rose-700" /> Carat Weight Dosage (Based on {bodyWeightKg} Kg)
+                  </h3>
+                  <div className="space-y-3 text-[15px]">
+                    <div className="bg-white p-3 rounded-xl border border-rose-200 flex justify-between items-center">
+                      <div>
+                        <strong className="block text-rose-950">Primary Gem Weight (Ratti/Carat)</strong>
+                        <span className="text-[12px] text-rose-800">Formula: Body Weight ÷ {gemData.ratio}</span>
+                      </div>
+                      <span className="text-[20px] font-black text-rose-950">{calculatedMainCarat} Carats ({Math.round(calculatedMainCarat * 1.1)} Ratti)</span>
+                    </div>
+
+                    <div className="bg-white p-3 rounded-xl border border-rose-200 flex justify-between items-center">
+                      <div>
+                        <strong className="block text-rose-950">Substitute (Upratna) Weight</strong>
+                        <span className="text-[12px] text-rose-800">Requires 1.5x weight to equal primary gem energy</span>
+                      </div>
+                      <span className="text-[20px] font-black text-amber-800">{calculatedUpratnaCarat} Carats ({Math.round(calculatedUpratnaCarat * 1.1)} Ratti)</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* 3. Step-by-Step Pran Pratishta (Consecration) Guide */}
+              <div className="bg-white border border-rose-200 p-6 rounded-2xl shadow-sm space-y-4">
+                <h3 className="text-[20px] font-bold text-rose-950 flex items-center gap-2 border-b border-rose-100 pb-3">
+                  <BookOpen className="w-6 h-6 text-amber-700" /> Step-by-Step Pran Pratishta (Consecration) Ritual Guide
+                </h3>
+
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                  <div className="bg-rose-50 p-4 rounded-xl border border-rose-200 space-y-1">
+                    <span className="text-[18px] bg-rose-700 text-white font-bold px-2 py-0.5 rounded">Step 1: Purification Mixture</span>
+                    <strong className="block text-[18px] text-rose-950 mt-1">Panchamrit Immersion</strong>
+                    <p className="text-[18px] text-rose-900 leading-snug">Dip ring/pendant overnight or 1 hour before wearing in: {gemData.purification}.</p>
+                  </div>
+
+                  <div className="bg-rose-50 p-4 rounded-xl border border-rose-200 space-y-1">
+                    <span className="text-[18px] bg-rose-700 text-white font-bold px-2 py-0.5 rounded">Step 2: Direction & Altar</span>
+                    <strong className="block text-[18px] text-rose-950 mt-1">East / North Facing</strong>
+                    <p className="text-[18px] text-rose-900 leading-snug">Sit on a clean wool mat facing East or North on a {gemData.day}. Place the ring on a clean cloth.</p>
+                  </div>
+
+                  <div className="bg-rose-50 p-4 rounded-xl border border-rose-200 space-y-1">
+                    <span className="text-[18px] bg-rose-700 text-white font-bold px-2 py-0.5 rounded">Step 3: Mantra Chanting</span>
+                    <strong className="block text-[18px] text-rose-950 mt-1">108 Japa Repetitions</strong>
+                    <p className="text-[18px] text-rose-900 leading-snug">Chant the planetary activation mantra 108 times with full devotion.</p>
+                  </div>
+
+                  <div className="bg-rose-50 p-4 rounded-xl border border-rose-200 space-y-1">
+                    <span className="text-[18px] bg-rose-700 text-white font-bold px-2 py-0.5 rounded">Step 4: Wear & Blessing</span>
+                    <strong className="block text-[18px] text-rose-950 mt-1">Wear on Specified Finger</strong>
+                    <p className="text-[18px] text-rose-900 leading-snug">Touch elder's feet for blessings and wear on your {gemData.finger}.</p>
+                  </div>
+                </div>
+
+                <div className="bg-amber-50 p-4 rounded-xl border border-amber-200 mt-2">
+                  <span className="text-[18px] text-amber-900 font-bold uppercase tracking-wider block">📿 Activation Beej Mantra to Chant (108 Times):</span>
+                  <p className="text-[22px] font-mono font-bold text-rose-950 mt-1">"{gemData.mantra}"</p>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* TAB 0: Personalized Remedies Report */}
         {selectedTab === 'personalizedReport' && (
@@ -310,29 +737,29 @@ export default function EncyclopediaRemediesViewer() {
               }
             `}</style>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-900 p-5 rounded-2xl border border-slate-800">
+            <div className="flex flex-wrap items-center justify-between gap-4 bg-white p-5 rounded-2xl border border-rose-200 shadow-sm">
               <div>
-                <h3 className="text-[22px] font-bold text-amber-300">📋 Personalized Kundali Remedies Report</h3>
-                <p className="text-[20px] text-slate-400 mt-1">
-                  Synthesized automatically based on your <strong>{selectedLagna}</strong> Ascendant (Lagna) and beneficial planetary rulers:
-                  <span className="text-amber-400 font-bold ml-1">{auspiciousPlanets.join(', ')}</span>.
+                <h3 className="text-[22px] font-bold text-rose-950">📋 Personalized Kundali Remedies Report</h3>
+                <p className="text-[18px] text-rose-900 mt-1">
+                  Synthesized automatically based on your <strong className="text-rose-950">{selectedLagna}</strong> Ascendant (Lagna) and beneficial planetary rulers:
+                  <span className="text-rose-700 font-bold ml-1">{auspiciousPlanets.join(', ')}</span>.
                 </p>
               </div>
               <div className="flex flex-wrap items-center gap-3">
                 {/* Font Size Adjuster Controls */}
-                <div className="flex items-center gap-2 bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700">
-                  <span className="text-[14px] text-slate-300 font-bold uppercase">Size:</span>
+                <div className="flex items-center gap-2 bg-rose-100 px-3 py-1.5 rounded-xl border border-rose-200">
+                  <span className="text-[14px] text-rose-900 font-bold uppercase">Size:</span>
                   <button
                     onClick={() => setReportFontSize(prev => Math.max(12, prev - 2))}
-                    className="bg-slate-700 hover:bg-slate-600 text-amber-300 px-2 py-0.5 rounded font-black text-[16px] transition-all"
+                    className="bg-white hover:bg-rose-200 text-rose-950 px-2 py-0.5 rounded font-black text-[16px] transition-all border border-rose-300"
                     title="Decrease Font Size"
                   >
                     A-
                   </button>
-                  <span className="text-white font-bold text-[15px] px-1">{reportFontSize}px</span>
+                  <span className="text-rose-950 font-bold text-[15px] px-1">{reportFontSize}px</span>
                   <button
                     onClick={() => setReportFontSize(prev => Math.min(28, prev + 2))}
-                    className="bg-slate-700 hover:bg-slate-600 text-amber-300 px-2 py-0.5 rounded font-black text-[16px] transition-all"
+                    className="bg-white hover:bg-rose-200 text-rose-950 px-2 py-0.5 rounded font-black text-[16px] transition-all border border-rose-300"
                     title="Increase Font Size"
                   >
                     A+
@@ -342,23 +769,23 @@ export default function EncyclopediaRemediesViewer() {
                 <select
                   value={selectedLagna}
                   onChange={(e) => setSelectedLagna(e.target.value)}
-                  className="bg-emerald-400 border border-amber-500/40 text-black px-4 py-2 rounded-xl text-[16px] font-bold focus:outline-none focus:ring-2 focus:ring-amber-500"
+                  className="bg-rose-700 border border-rose-800 text-white px-4 py-2 rounded-xl text-[16px] font-bold focus:outline-none focus:ring-2 focus:ring-rose-500 shadow-sm"
                 >
                   {Object.keys(remediesData.lagnaGemMatrix).map(lagna => (
-                    <option key={lagna} value={lagna} className="text-black bg-white">
+                    <option key={lagna} value={lagna} className="text-slate-900 bg-white">
                       {lagna} Lagna
                     </option>
                   ))}
                 </select>
                 <button
                   onClick={() => window.print()}
-                  className="bg-amber-500 hover:bg-amber-600 text-slate-950 px-4 py-2.5 rounded-xl text-[18px] font-bold flex items-center gap-2 transition-all shadow-lg shadow-amber-500/20"
+                  className="bg-rose-800 hover:bg-rose-900 text-white px-4 py-2.5 rounded-xl text-[17px] font-bold flex items-center gap-2 transition-all shadow-md shadow-rose-900/20"
                 >
                   <Printer className="w-5 h-5" /> Print Report
                 </button>
                 <button
                   onClick={() => window.print()}
-                  className="bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-4 py-2.5 rounded-xl text-[18px] font-bold flex items-center gap-2 transition-all shadow-lg shadow-emerald-500/20"
+                  className="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-xl text-[17px] font-bold flex items-center gap-2 transition-all shadow-md shadow-amber-900/20"
                 >
                   <FileText className="w-5 h-5" /> Export as PDF
                 </button>
@@ -366,12 +793,12 @@ export default function EncyclopediaRemediesViewer() {
             </div>
 
             {/* Printable Report Container */}
-            <div className="print-report-container space-y-8 bg-slate-900/40 p-6 md:p-8 rounded-3xl border border-slate-800" style={{ fontSize: `${reportFontSize}px` }}>
+            <div className="print-report-container space-y-8 bg-white p-6 md:p-8 rounded-3xl border border-rose-200 shadow-md text-rose-950" style={{ fontSize: `${reportFontSize}px` }}>
               {/* Header inside report */}
-              <div className="text-center pb-6 border-b border-slate-800 space-y-2">
-                <h2 className="text-[22px] font-bold text-amber-300 uppercase tracking-wider">Astro Remedies Prescription</h2>
-                <p className="text-[20px] text-slate-300">Customized for <strong>{selectedLagna} Lagna</strong> • Generated on {new Date().toLocaleDateString()}</p>
-                <div className="flex flex-wrap justify-center gap-4 text-[20px] font-mono pt-1 text-orange-400">
+              <div className="text-center pb-6 border-b border-rose-200 space-y-2">
+                <h2 className="text-[22px] font-bold text-rose-950 uppercase tracking-wider">Astro Remedies Prescription</h2>
+                <p className="text-[18px] text-rose-900">Customized for <strong className="text-rose-950">{selectedLagna} Lagna</strong> • Generated on {new Date().toLocaleDateString()}</p>
+                <div className="flex flex-wrap justify-center gap-4 text-[18px] font-mono pt-1 text-rose-800 font-bold">
                   <span>Life Lord Gem: {lagnaInfo.lifeStone}</span>
                   <span>•</span>
                   <span>Karaka Lord Gem: {lagnaInfo.karakaStone}</span>
@@ -382,10 +809,10 @@ export default function EncyclopediaRemediesViewer() {
 
               {/* 1. Auspicious Gemstones Section */}
               <div className="space-y-4">
-                <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
-                  <Gem className="w-5 h-5 text-amber-400" /> 1. Prescribed Auspicious Gemstones (Ratna)
+                <h3 className="text-[20px] font-bold text-amber-900 flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <Gem className="w-5 h-5 text-amber-900" /> 1. Prescribed Auspicious Gemstones (Ratna)
                 </h3>
-                <p className="text-[18px] text-slate-300">
+                <p className="text-[18px] text-slate-900">
                   These gemstones reinforce your beneficial house lords (Lagna, 5th, and 9th houses) to enhance health, wisdom, and fortune.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -398,18 +825,18 @@ export default function EncyclopediaRemediesViewer() {
                     return (
                       <div key={stone.type} className="bg-slate-955 p-4 rounded-2xl border border-slate-850 space-y-2 flex flex-col justify-between">
                         <div>
-                          <span className="text-[18px] font-bold text-amber-400 uppercase tracking-widest block">{stone.type}</span>
-                          <h4 className="text-[18px] font-bold text-slate-200 mt-1">{stone.name}</h4>
-                          <p className="text-[18px] text-slate-400 leading-relaxed mt-1">{stone.desc}</p>
+                          <span className="text-[18px] font-bold text-orange-900 uppercase tracking-widest block">{stone.type}</span>
+                          <h4 className="text-[18px] font-bold text-slate-900 mt-1">{stone.name}</h4>
+                          <p className="text-[18px] text-slate-900 leading-relaxed mt-1">{stone.desc}</p>
                         </div>
                         {detailedGem && (
-                          <div className="pt-2 border-t border-slate-800 text-[18px] text-slate-300 space-y-1">
+                          <div className="pt-2 border-t border-slate-800 text-[18px] text-slate-900 space-y-1">
                             <p><strong>Metal:</strong> {detailedGem.metal} • <strong>Finger:</strong> {detailedGem.finger}</p>
                             <p><strong>Day:</strong> {detailedGem.day} • <strong>Weight:</strong> {detailedGem.caratWeight}</p>
                             {detailedGem.substitutes && detailedGem.substitutes.length > 0 && (
-                              <p className="text-[18px] text-amber-300"><strong>Upratna (Substitutes):</strong> {detailedGem.substitutes.join(', ')}</p>
+                              <p className="text-[18px] text-amber-900"><strong>Upratna (Substitutes):</strong> {detailedGem.substitutes.join(', ')}</p>
                             )}
-                            <p className="text-emerald-300 font-mono text-[18px] bg-emerald-950/30 p-1.5 rounded mt-1 border border-emerald-500/10">
+                            <p className="text-emerald-900 font-mono text-[18px] bg-white p-1.5 rounded mt-1 border border-emerald-500/10">
                               Mantra: {detailedGem.mantra}
                             </p>
                           </div>
@@ -420,9 +847,9 @@ export default function EncyclopediaRemediesViewer() {
                 </div>
 
                 {/* Incompatible Alert */}
-                <div className="bg-rose-950/20 border border-rose-500/20 p-4 rounded-xl flex items-center gap-3">
-                  <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0" />
-                  <p className="text-[20px] text-rose-300">
+                <div className="bg-rose-100 border border-rose-500/20 p-4 rounded-xl flex items-center gap-3">
+                  <ShieldAlert className="w-5 h-5 text-red-900 shrink-0" />
+                  <p className="text-[20px] text-rose-900">
                     <strong>Critical Prohibitions:</strong> Do NOT wear <strong>{lagnaInfo.incompatible.join(', ')}</strong>. These gemstones rule malefic houses for your chart and can trigger severe setbacks.
                   </p>
                 </div>
@@ -430,10 +857,10 @@ export default function EncyclopediaRemediesViewer() {
 
               {/* 2. Presiding Deities & Invocation Mantras */}
               <div className="space-y-4 pt-2">
-                <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
-                  <BookOpen className="w-5 h-5 text-amber-400" /> 2. Beneficial Deities & Vedic Invocation Mantras
+                <h3 className="text-[20px] font-bold text-amber-900 flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <BookOpen className="w-5 h-5 text-amber-900" /> 2. Beneficial Deities & Vedic Invocation Mantras
                 </h3>
-                <p className="text-[18px] text-slate-300">
+                <p className="text-[18px] text-slate-900">
                   Propitiating these specific deities brings alignment with your chart's positive planetary rulers.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -441,17 +868,17 @@ export default function EncyclopediaRemediesViewer() {
                     const deity = remediesData.presidingDeities[planet];
                     if (!deity) return null;
                     return (
-                      <div key={planet} className="bg-slate-955 p-4 rounded-2xl border border-slate-850 space-y-2">
+                      <div key={planet} className="bg-white p-4 rounded-2xl border border-slate-850 space-y-2">
                         <div className="flex justify-between items-center border-b border-slate-800 pb-1.5">
-                          <span className="text-[18px] font-bold text-amber-300">{planet} Lord Deity</span>
-                          <span className="text-[18px] text-slate-400 font-mono">Parasara & Jaimini</span>
+                          <span className="text-[18px] font-bold text-amber-900">{planet} Lord Deity</span>
+                          <span className="text-[18px] text-slate-900 font-mono">Parasara & Jaimini</span>
                         </div>
-                        <p className="text-[18px] text-slate-200"><strong>Presiding Deity:</strong> {deity.presidingDeity}</p>
-                        <p className="text-[18px] text-slate-200"><strong>Vishnu Avatar:</strong> {deity.vishnuAvatar}</p>
-                        <p className="text-[18px] text-slate-200"><strong>Tantrik Deity:</strong> {deity.tantrikDeity}</p>
-                        <div className="bg-slate-950 p-2 rounded border border-slate-800/80 mt-2">
-                          <span className="text-[18px] text-amber-400 block font-mono uppercase">Vedic Mantra:</span>
-                          <p className="text-[18px] font-mono text-amber-200 leading-snug mt-0.5">{deity.vedicMantra}</p>
+                        <p className="text-[18px] text-slate-900"><strong>Presiding Deity:</strong> {deity.presidingDeity}</p>
+                        <p className="text-[18px] text-slate-900"><strong>Vishnu Avatar:</strong> {deity.vishnuAvatar}</p>
+                        <p className="text-[18px] text-slate-900"><strong>Tantrik Deity:</strong> {deity.tantrikDeity}</p>
+                        <div className="bg-white p-2 rounded border border-slate-800/80 mt-2">
+                          <span className="text-[18px] text-amber-900 block font-mono uppercase">Vedic Mantra:</span>
+                          <p className="text-[18px] font-mono text-amber-900 leading-snug mt-0.5">{deity.vedicMantra}</p>
                         </div>
                       </div>
                     );
@@ -461,31 +888,31 @@ export default function EncyclopediaRemediesViewer() {
 
               {/* 3. Recommended Rudrakshas */}
               <div className="space-y-4 pt-2">
-                <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
-                  <Layers className="w-5 h-5 text-amber-400" /> 3. Recommended Rudraksha Beads
+                <h3 className="text-[20px] font-bold text-amber-900 flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <Layers className="w-5 h-5 text-amber-900" /> 3. Recommended Rudraksha Beads
                 </h3>
-                <p className="text-[18px] text-slate-300">
+                <p className="text-[18px] text-slate-900">
                   Beads ruled by your auspicious planets will resonate with your energy pathways and balance your mind, body, and chart.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {remediesData.rudrakshaDetails
                     .filter(r => auspiciousPlanets.some(ap => r.planet.toLowerCase().includes(ap.toLowerCase())))
                     .map(item => (
-                      <div key={item.mukhi} className="bg-slate-955 p-4 rounded-2xl border border-slate-850 flex flex-col justify-between hover:border-amber-500/20 transition-all">
+                      <div key={item.mukhi} className="bg-white p-4 rounded-2xl border border-slate-850 flex flex-col justify-between hover:border-amber-500/20 transition-all">
                         <div>
                           <div className="flex justify-between items-center border-b border-slate-800 pb-2 mb-2">
-                            <span className="text-[18px] font-bold text-amber-300">{item.mukhi}</span>
-                            <span className="text-[18px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full border border-amber-500/20">
+                            <span className="text-[18px] font-bold text-amber-900">{item.mukhi}</span>
+                            <span className="text-[18px] bg-white text-amber-900 px-2 py-0.5 rounded-full border border-amber-900/20">
                               {item.planet.split(' ')[0]}
                             </span>
                           </div>
-                          <p className="text-[18px] text-slate-300"><strong>Deity:</strong> {item.deity}</p>
-                          <p className="text-[18px] text-slate-300 mt-1"><strong>Benefits:</strong> {item.benefits}</p>
-                          <p className="text-[18px] text-emerald-300 mt-1"><strong>Health:</strong> {item.healthEffect}</p>
+                          <p className="text-[18px] text-slate-900"><strong>Deity:</strong> {item.deity}</p>
+                          <p className="text-[18px] text-slate-900 mt-1"><strong>Benefits:</strong> {item.benefits}</p>
+                          <p className="text-[18px] text-emerald-900 mt-1"><strong>Health:</strong> {item.healthEffect}</p>
                         </div>
                         <div className="pt-2 border-t border-slate-800/80 mt-2">
-                          <span className="text-[18px] text-amber-400 font-mono block">Japa Mantra:</span>
-                          <span className="text-[18px] font-mono text-slate-200">{item.mantra}</span>
+                          <span className="text-[18px] text-amber-900 font-mono block">Japa Mantra:</span>
+                          <span className="text-[18px] font-mono text-slate-900">{item.mantra}</span>
                         </div>
                       </div>
                     ))}
@@ -494,24 +921,24 @@ export default function EncyclopediaRemediesViewer() {
 
               {/* 4. Navagraha Plant Remedies */}
               <div className="space-y-4 pt-2">
-                <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
-                  <Leaf className="w-5 h-5 text-amber-400" /> 4. Navagraha Plant Remedies
+                <h3 className="text-[20px] font-bold text-amber-900 flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <Leaf className="w-5 h-5 text-amber-900" /> 4. Navagraha Plant Remedies
                 </h3>
-                <p className="text-[18px] text-slate-300">
+                <p className="text-[18px] text-slate-900">
                   Using, watering, or carrying roots of these plants strengthens your primary planets naturally.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {Object.entries(remediesData.navagrahaPlantRemedies)
                     .filter(([pl]) => auspiciousPlanets.includes(pl))
                     .map(([planet, item]) => (
-                      <div key={planet} className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-2">
+                      <div key={planet} className="bg-white p-4 rounded-2xl border border-slate-855 space-y-2">
                         <div className="border-b border-slate-800 pb-1.5">
-                          <strong className="text-[18px] text-amber-300 block">{item.sacredPlant}</strong>
-                          <span className="text-[18px] text-slate-400">Rules {planet} ({item.physicalGovernance.split(',')[0]})</span>
+                          <strong className="text-[18px] text-amber-900 block">{item.sacredPlant}</strong>
+                          <span className="text-[18px] text-slate-900">Rules {planet} ({item.physicalGovernance.split(',')[0]})</span>
                         </div>
-                        <p className="text-[18px] text-slate-300"><strong>Medicinal Parts:</strong> {item.medicinalComponents}</p>
-                        <p className="text-[18px] text-slate-300"><strong>Therapeutic Profile:</strong> {item.therapeuticProfile}</p>
-                        <p className="text-[18px] text-emerald-300 bg-emerald-950/20 p-2 rounded mt-1 border border-emerald-500/10">
+                        <p className="text-[18px] text-slate-900"><strong>Medicinal Parts:</strong> {item.medicinalComponents}</p>
+                        <p className="text-[18px] text-slate-900"><strong>Therapeutic Profile:</strong> {item.therapeuticProfile}</p>
+                        <p className="text-[18px] text-emerald-900 bg-emerald-950/20 p-2 rounded mt-1 border border-emerald-500/10">
                           <strong>Remedy:</strong> {item.practicalRemedies?.[Object.keys(item.practicalRemedies)[0]] || "Worship the tree daily."}
                         </p>
                       </div>
@@ -521,25 +948,25 @@ export default function EncyclopediaRemediesViewer() {
 
               {/* 5. Planetary Relief Remedies */}
               <div className="space-y-4 pt-2">
-                <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
-                  <Calendar className="w-5 h-5 text-amber-400" /> 5. Planetary Relief Remedies
+                <h3 className="text-[20px] font-bold text-amber-900 flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <Calendar className="w-5 h-5 text-amber-900" /> 5. Planetary Relief Remedies
                 </h3>
-                <p className="text-[18px] text-slate-300">
+                <p className="text-[18px] text-slate-900">
                   Fasting and charity resolve planetary afflictions and invoke positive energies for your Lagna.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {Object.entries(remediesData.planetaryReliefRemedies)
                     .filter(([pl]) => auspiciousPlanets.includes(pl))
                     .map(([planet, item]) => (
-                      <div key={planet} className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-2">
+                      <div key={planet} className="bg-white p-4 rounded-2xl border border-slate-855 space-y-2">
                         <div className="border-b border-slate-800 pb-1.5 flex justify-between items-center">
-                          <strong className="text-[18px] text-amber-300">{planet} Fast & Daan</strong>
-                          <span className="text-[18px] text-amber-400 font-bold font-mono">Count: {item.invocationCount}</span>
+                          <strong className="text-[18px] text-amber-900">{planet} Fast & Daan</strong>
+                          <span className="text-[18px] text-amber-900 font-bold font-mono">Count: {item.invocationCount}</span>
                         </div>
-                        <p className="text-[18px] text-slate-300"><strong>Duration:</strong> {item.fastingDuration}</p>
-                        <p className="text-[18px] text-slate-300 leading-relaxed"><strong>Fasting Diet:</strong> {item.fastingProtocol}</p>
-                        <p className="text-[18px] text-amber-200"><strong>Donations:</strong> {item.donationItems}</p>
-                        <p className="text-[18px] text-slate-300"><strong>Root Amulet:</strong> {item.amuletRemedy} (Time: {item.amuletRitualTiming})</p>
+                        <p className="text-[18px] text-slate-900"><strong>Duration:</strong> {item.fastingDuration}</p>
+                        <p className="text-[18px] text-slate-900 leading-relaxed"><strong>Fasting Diet:</strong> {item.fastingProtocol}</p>
+                        <p className="text-[18px] text-amber-900"><strong>Donations:</strong> {item.donationItems}</p>
+                        <p className="text-[18px] text-slate-900"><strong>Root Amulet:</strong> {item.amuletRemedy} (Time: {item.amuletRitualTiming})</p>
                       </div>
                     ))}
                 </div>
@@ -547,10 +974,10 @@ export default function EncyclopediaRemediesViewer() {
 
               {/* 6. Color Therapy & Clothing Guide */}
               <div className="space-y-4 pt-2">
-                <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
-                  <Palette className="w-5 h-5 text-amber-400" /> 6. Color Therapy & Lifestyle Guide
+                <h3 className="text-[20px] font-bold text-amber-900 flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <Palette className="w-5 h-5 text-amber-900" /> 6. Color Therapy & Lifestyle Guide
                 </h3>
-                <p className="text-[18px] text-slate-300">
+                <p className="text-[18px] text-slate-900">
                   Surrounding yourself with these colors balances your body's energy nodes.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -558,10 +985,10 @@ export default function EncyclopediaRemediesViewer() {
                     const colorDetails = remediesData.colorTherapy.planetColors[planet];
                     if (!colorDetails) return null;
                     return (
-                      <div key={planet} className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-1">
-                        <strong className="text-[18px] text-amber-300 block">{planet}'s Color</strong>
-                        <p className="text-[18px] text-slate-200"><strong>Color:</strong> {colorDetails.color}</p>
-                        <p className="text-[18px] text-slate-300 leading-relaxed"><strong>Quality:</strong> {colorDetails.quality}</p>
+                      <div key={planet} className="bg-white p-4 rounded-2xl border border-slate-855 space-y-1">
+                        <strong className="text-[18px] text-amber-900 block">{planet}'s Color</strong>
+                        <p className="text-[18px] text-slate-900"><strong>Color:</strong> {colorDetails.color}</p>
+                        <p className="text-[18px] text-slate-900 leading-relaxed"><strong>Quality:</strong> {colorDetails.quality}</p>
                       </div>
                     );
                   })}
@@ -570,10 +997,10 @@ export default function EncyclopediaRemediesViewer() {
 
               {/* 7. Yantras & Sacred Geometries */}
               <div className="space-y-4 pt-2">
-                <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
-                  <Compass className="w-5 h-5 text-amber-400" /> 7. Prescribed Yantras & Sacred Geometries
+                <h3 className="text-[20px] font-bold text-amber-900 flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <Compass className="w-5 h-5 text-amber-900" /> 7. Prescribed Yantras & Sacred Geometries
                 </h3>
-                <p className="text-[18px] text-slate-300">
+                <p className="text-[18px] text-slate-900">
                   These geometric yantras channel cosmic energy to balance the elements and houses associated with your Lagna chart.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -586,20 +1013,20 @@ export default function EncyclopediaRemediesViewer() {
                       });
                     })
                     .map(y => (
-                      <div key={y.name} className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-2 flex flex-col justify-between">
+                      <div key={y.name} className="bg-white p-4 rounded-2xl border border-slate-855 space-y-2 flex flex-col justify-between">
                         <div>
                           <div className="flex justify-between items-start border-b border-slate-800 pb-1">
-                            <strong className="text-[18px] text-amber-300">{y.name}</strong>
-                            <span className="text-[18px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-bold">
+                            <strong className="text-[18px] text-amber-900">{y.name}</strong>
+                            <span className="text-[18px] bg-indigo-500/20 text-indigo-900 px-2 py-0.5 rounded-full font-bold">
                               {y.direction}
                             </span>
                           </div>
-                          <p className="text-[18px] text-slate-300 mt-1"><strong>Presiding Deity:</strong> {y.deity}</p>
-                          <p className="text-[18px] text-slate-300 leading-relaxed"><strong>Benefits:</strong> {y.benefits}</p>
+                          <p className="text-[18px] text-slate-900 mt-1"><strong>Presiding Deity:</strong> {y.deity}</p>
+                          <p className="text-[18px] text-slate-900 leading-relaxed"><strong>Benefits:</strong> {y.benefits}</p>
                         </div>
-                        <div className="bg-slate-950 p-2 rounded border border-slate-800/80 mt-2">
-                          <span className="text-[18px] text-amber-400 block font-mono uppercase">Mantra:</span>
-                          <p className="text-[18px] font-mono text-amber-200 mt-0.5 leading-snug">{y.mantra}</p>
+                        <div className="bg-white p-2 rounded border border-slate-800/80 mt-2">
+                          <span className="text-[18px] text-amber-900 block font-mono uppercase">Mantra:</span>
+                          <p className="text-[18px] font-mono text-amber-900 mt-0.5 leading-snug">{y.mantra}</p>
                         </div>
                       </div>
                     ))}
@@ -611,27 +1038,27 @@ export default function EncyclopediaRemediesViewer() {
                 const signData = remediesData.zodiacSignRemedies[selectedLagna];
                 return (
                   <div className="space-y-4 pt-2">
-                    <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
-                      <Moon className="w-5 h-5 text-amber-400" /> 8. Zodiac Sign ({selectedLagna}) Specific Remedies
+                    <h3 className="text-[20px] font-bold text-amber-900 flex items-center gap-2 border-b border-slate-800 pb-2">
+                      <Moon className="w-5 h-5 text-amber-900" /> 8. Zodiac Sign ({selectedLagna}) Specific Remedies
                     </h3>
-                    <div className="bg-slate-955 p-5 rounded-2xl border border-slate-855 space-y-3">
+                    <div className="bg-white p-5 rounded-2xl border border-slate-855 space-y-3">
                       <div className="flex flex-wrap justify-between items-center border-b border-slate-800 pb-2">
-                        <span className="text-[18px] font-bold text-slate-200">Lagna Sign: {selectedLagna}</span>
-                        <span className="text-[18px] bg-amber-500/10 text-amber-400 px-3 py-1 rounded-full border border-amber-500/20 font-bold">
+                        <span className="text-[18px] font-bold text-slate-900">Lagna Sign: {selectedLagna}</span>
+                        <span className="text-[18px] bg-amber-500/10 text-amber-900 px-3 py-1 rounded-full border border-amber-500/20 font-bold">
                           Ruling Planet: {signData.rulingPlanet}
                         </span>
                       </div>
-                      <p className="text-[18px] text-slate-300"><strong>Astrological Profile:</strong> {signData.physicalAstrologicalProperties}</p>
-                      <p className="text-[18px] text-slate-300"><strong>Sacred Tree Root:</strong> {signData.sacredRootTree} (Wear wrapped in {signData.talismanWrapCloth || 'Yellow Fabric'})</p>
-                      <p className="text-[18px] text-slate-300"><strong>Harvesting Alignment:</strong> {signData.harvestingAlignment}</p>
+                      <p className="text-[18px] text-slate-900"><strong>Astrological Profile:</strong> {signData.physicalAstrologicalProperties}</p>
+                      <p className="text-[18px] text-slate-900"><strong>Sacred Tree Root:</strong> {signData.sacredRootTree} (Wear wrapped in {signData.talismanWrapCloth || 'Yellow Fabric'})</p>
+                      <p className="text-[18px] text-slate-900"><strong>Harvesting Alignment:</strong> {signData.harvestingAlignment}</p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                        <div className="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                          <span className="text-[18px] text-amber-400 font-bold uppercase">Activation Beej Mantra:</span>
-                          <p className="text-[18px] font-mono text-slate-200 mt-1"><strong>Mantra:</strong> {signData.activationBeejMantra?.mantra} (Direction: {signData.activationBeejMantra?.direction})</p>
+                        <div className="bg-white p-3 rounded-xl border border-slate-800">
+                          <span className="text-[18px] text-amber-900 font-bold uppercase">Activation Beej Mantra:</span>
+                          <p className="text-[18px] font-mono text-slate-900 mt-1"><strong>Mantra:</strong> {signData.activationBeejMantra?.mantra} (Direction: {signData.activationBeejMantra?.direction})</p>
                         </div>
-                        <div className="bg-slate-950 p-3 rounded-xl border border-slate-800">
-                          <span className="text-[18px] text-amber-400 font-bold uppercase">Fasting & Donations:</span>
-                          <p className="text-[18px] text-slate-200 mt-1"><strong>Fasting:</strong> {signData.fastingRules?.duration} ({signData.fastingRules?.protocol})</p>
+                        <div className="bg-white p-3 rounded-xl border border-slate-800">
+                          <span className="text-[18px] text-amber-900 font-bold uppercase">Fasting & Donations:</span>
+                          <p className="text-[18px] text-slate-900 mt-1"><strong>Fasting:</strong> {signData.fastingRules?.duration} ({signData.fastingRules?.protocol})</p>
                         </div>
                       </div>
                     </div>
@@ -641,24 +1068,32 @@ export default function EncyclopediaRemediesViewer() {
 
               {/* 9. Lal Kitab House Remedies, Debts & Prohibitions */}
               <div className="space-y-4 pt-2">
-                <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
-                  <Heart className="w-5 h-5 text-amber-400" /> 9. Lal Kitab House Remedies, Debts & Warnings
+                <h3 className="text-[20px] font-bold text-rose-950 flex items-center gap-2 border-b border-rose-200 pb-2">
+                  <Heart className="w-5 h-5 text-rose-700" /> 9. Lal Kitab House Remedies, Debts & Warnings
                 </h3>
-                <p className="text-[18px] text-slate-300">
+                <p className="text-[18px] text-rose-900 font-medium">
                   Lal Kitab focuses on specific house placement remedies, ancestral karmic debts (Pitru Rina), and strict donation prohibitions.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {/* 1st House Remedies for auspicious planets */}
-                  <div className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-2">
-                    <strong className="text-[18px] text-amber-300 block border-b border-slate-800 pb-1.5 uppercase">Lagna (1st House) Remedies</strong>
+                  {/* Native Birth House Placements & Remedies */}
+                  <div className="bg-white p-4 rounded-2xl border border-rose-200 shadow-sm space-y-2">
+                    <strong className="text-[18px] text-rose-950 block border-b border-rose-100 pb-1.5 uppercase font-bold">Birth House Placement Remedies</strong>
                     <div className="space-y-2 text-[18px]">
                       {auspiciousPlanets.map(planet => {
-                        const h1Remedy = remediesData.lalKitabHouseRemedies[planet]?.H1;
-                        if (!h1Remedy) return null;
+                        // Get user's actual birth house position for this planet using robust helper
+                        const houseNum = getPlanetBirthHouse(planet);
+                        const houseKey = houseNum ? `H${houseNum}` : 'H1';
+                        const houseRemedy = remediesData.lalKitabHouseRemedies[planet]?.[houseKey];
+                        if (!houseRemedy) return null;
                         return (
-                          <div key={planet} className="bg-slate-950 p-2 rounded border border-slate-800/80">
-                            <span className=" text-amber-400 font-bold block">{planet} in H1:</span>
-                            <p className="  text-slate-300 mt-0.5">{h1Remedy}</p>
+                          <div key={planet} className="bg-rose-50/70 p-2.5 rounded-xl border border-rose-200 space-y-0.5">
+                            <div className="flex justify-between items-center">
+                              <span className="text-rose-950 font-bold">{planet}</span>
+                              <span className="text-[12px] bg-rose-200 text-rose-950 px-2 py-0.5 rounded-full font-bold border border-rose-300">
+                                {houseNum ? `House ${houseNum} (H${houseNum})` : 'Placement'}
+                              </span>
+                            </div>
+                            <p className="text-rose-900 text-[15px] mt-0.5 leading-snug font-medium">{houseRemedy}</p>
                           </div>
                         );
                       })}
@@ -666,31 +1101,31 @@ export default function EncyclopediaRemediesViewer() {
                   </div>
 
                   {/* Relevant Debts */}
-                  <div className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-2">
-                    <strong className="text-[18px] text-amber-300 block border-b border-slate-800 pb-1.5 uppercase">Auspicious Planetary Debts</strong>
+                  <div className="bg-white p-4 rounded-2xl border border-rose-200 shadow-sm space-y-2">
+                    <strong className="text-[18px] text-rose-950 block border-b border-rose-100 pb-1.5 uppercase font-bold">Auspicious Planetary Debts</strong>
                     <div className="space-y-2 text-[18px]">
                       {remediesData.lalKitabSystem?.ninePlanetaryDebts
                         ?.filter(d => auspiciousPlanets.some(ap => d.debt.includes(ap)))
                         .map(d => (
-                          <div key={d.debt} className="bg-slate-955 p-2 rounded border border-slate-800/80">
-                            <span className="text-[18px] text-amber-400 font-bold block">{d.debt}:</span>
-                            <p className="text-[18px] text-slate-400 leading-tight"><strong>Cause:</strong> {d.cause}</p>
-                            <p className="text-[18px] text-emerald-300 mt-0.5"><strong>Remedy:</strong> {d.remedy}</p>
+                          <div key={d.debt} className="bg-rose-50/70 p-2.5 rounded-xl border border-rose-200">
+                            <span className="text-[16px] text-rose-950 font-bold block">{d.debt}:</span>
+                            <p className="text-[14px] text-rose-900 leading-tight"><strong>Cause:</strong> {d.cause}</p>
+                            <p className="text-[14px] text-emerald-800 font-bold mt-0.5"><strong>Remedy:</strong> {d.remedy}</p>
                           </div>
                         ))}
                     </div>
                   </div>
 
                   {/* Donation Warnings */}
-                  <div className="bg-rose-950/10 border border-rose-500/10 p-4 rounded-2xl space-y-2">
-                    <strong className="text-[20px] text-rose-300 block border-b border-rose-900/30 pb-1.5 uppercase">Strict Prohibitions</strong>
+                  <div className="bg-rose-100/60 border border-rose-300 p-4 rounded-2xl space-y-2 shadow-sm">
+                    <strong className="text-[20px] text-rose-950 block border-b border-rose-200 pb-1.5 uppercase font-extrabold">Strict Prohibitions</strong>
                     <div className="space-y-2 text-[18px]">
                       {remediesData.lalKitabSystem?.strictDonationWarnings
                         ?.filter(w => auspiciousPlanets.some(ap => w.condition.includes(ap)))
                         .map((w, idx) => (
-                          <div key={idx} className="bg-slate-950/80 p-2 rounded border border-rose-500/10">
-                            <span className="text-[18px] text-rose-400 font-bold block">{w.condition}:</span>
-                            <p className="text-[18px] text-slate-300 mt-0.5">{w.warning}</p>
+                          <div key={idx} className="bg-white p-2.5 rounded-xl border border-rose-300">
+                            <span className="text-[16px] text-rose-950 font-bold block">{w.condition}:</span>
+                            <p className="text-[14px] text-rose-900 mt-0.5 font-medium">{w.warning}</p>
                           </div>
                         ))}
                     </div>
@@ -730,35 +1165,35 @@ export default function EncyclopediaRemediesViewer() {
 
                 return (
                   <div className="space-y-4 pt-2">
-                    <h3 className="text-[18px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
-                      <Wind className="w-5 h-5 text-amber-400" /> 10. Vastu, Fengshui & Pyramid Recommendations (Element: {lagnaElement})
+                    <h3 className="text-[18px] font-bold text-amber-900 flex items-center gap-2 border-b border-slate-800 pb-2">
+                      <Wind className="w-5 h-5 text-amber-900" /> 10. Vastu, Fengshui & Pyramid Recommendations (Element: {lagnaElement})
                     </h3>
-                    <p className="text-[18px] text-slate-300">
-                      Since your Lagna belongs to the <strong>{lagnaElement} Element</strong>, the following Vastu products are highly recommended to balance spatial energies.
+                    <p className="text-[18px] text-slate-900">
+                      Since your Lagna belongs to the <strong className="text-amber-900">{lagnaElement} Element</strong>, the following Vastu products are highly recommended to balance spatial energies.
                     </p>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {/* Fengshui */}
-                      <div className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-2">
-                        <strong className="text-[18px] text-amber-300 block border-b border-slate-800 pb-1.5 uppercase">Compatible Fengshui Products</strong>
+                      <div className="bg-white p-4 rounded-2xl border border-slate-855 space-y-2">
+                        <strong className="text-[18px] text-amber-900 block border-b border-slate-800 pb-1.5 uppercase">Compatible Fengshui Products</strong>
                         <div className="space-y-2 text-[18px]">
                           {recommendedFengshui.map(p => (
-                            <div key={p.name} className="bg-slate-950 p-2.5 rounded border border-slate-800">
-                              <strong className="text-amber-400 font-bold block">{p.name}</strong>
-                              <p className="text-slate-300 mt-0.5">{p.purpose}</p>
+                            <div key={p.name} className="bg-white p-2.5 rounded border border-slate-800">
+                              <strong className="text-amber-900 font-bold block">{p.name}</strong>
+                              <p className="text-slate-900 mt-0.5">{p.purpose}</p>
                             </div>
                           ))}
                         </div>
                       </div>
 
                       {/* Pyramids */}
-                      <div className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-2">
-                        <strong className="text-[18px] text-amber-300 block border-b border-slate-800 pb-1.5 uppercase">Compatible Pyramids & Yantras</strong>
+                      <div className="bg-white p-4 rounded-2xl border border-slate-855 space-y-2">
+                        <strong className="text-[18px] text-amber-900 block border-b border-slate-800 pb-1.5 uppercase">Compatible Pyramids & Yantras</strong>
                         <div className="space-y-2 text-[18px]">
                           {recommendedPyramids.map(it => (
-                            <div key={it.name} className="bg-slate-950 p-2.5 rounded border border-slate-800">
-                              <strong className="text-amber-400 font-bold block">{it.name}</strong>
-                              <p className="text-slate-300 mt-0.5">{it.purpose}</p>
-                              {it.mantra && <p className="text-[18px] text-emerald-300 font-mono mt-1">Mantra: {it.mantra}</p>}
+                            <div key={it.name} className="bg-white p-2.5 rounded border border-slate-800">
+                              <strong className="text-amber-900 font-bold block">{it.name}</strong>
+                              <p className="text-slate-900 mt-0.5">{it.purpose}</p>
+                              {it.mantra && <p className="text-[18px] text-emerald-900 font-mono mt-1">Mantra: {it.mantra}</p>}
                             </div>
                           ))}
                         </div>
@@ -770,16 +1205,16 @@ export default function EncyclopediaRemediesViewer() {
 
               {/* 11. Prescribed Crystals, Lockets & Rosaries */}
               <div className="space-y-4 pt-2">
-                <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
-                  <Sparkles className="w-5 h-5 text-amber-400" /> 11. Prescribed Crystals, Lockets & Rosaries (Mala)
+                <h3 className="text-[20px] font-bold text-amber-900 flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <Sparkles className="w-5 h-5 text-amber-900" /> 11. Prescribed Crystals, Lockets & Rosaries (Mala)
                 </h3>
-                <p className="text-[18px] text-slate-300">
+                <p className="text-[18px] text-slate-900">
                   These sacred energy conductors are selected specifically to align with your auspicious house rulers and planetary element.
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Crystals & Lockets */}
-                  <div className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-2">
-                    <strong className="text-[18px] text-amber-300 block border-b border-slate-800 pb-1.5 uppercase">Recommended Crystals & Lockets</strong>
+                  <div className="bg-white p-4 rounded-2xl border border-slate-855 space-y-2">
+                    <strong className="text-[18px] text-amber-900 block border-b border-slate-800 pb-1.5 uppercase">Recommended Crystals & Lockets</strong>
                     <div className="space-y-2 text-[18px]">
                       {remediesData.lalKitabSystem?.crystals?.items
                         ?.filter(c => {
@@ -787,10 +1222,10 @@ export default function EncyclopediaRemediesViewer() {
                           return auspiciousPlanets.some(ap => c.name.toLowerCase().includes(ap.toLowerCase()));
                         })
                         .map(c => (
-                          <div key={c.name} className="bg-slate-950 p-2.5 rounded border border-slate-800">
-                            <strong className="text-amber-400 font-bold block">{c.name}</strong>
-                            <p className="text-slate-300 mt-0.5">{c.purpose}</p>
-                            {c.mantra && <p className="text-[18px] text-emerald-300 font-mono mt-1">Mantra: {c.mantra}</p>}
+                          <div key={c.name} className="bg-white p-2.5 rounded border border-slate-800">
+                            <strong className="text-amber-900 font-bold block">{c.name}</strong>
+                            <p className="text-slate-900 mt-0.5">{c.purpose}</p>
+                            {c.mantra && <p className="text-[18px] text-emerald-900 font-mono mt-1">Mantra: {c.mantra}</p>}
                           </div>
                         ))}
                     </div>
@@ -798,7 +1233,7 @@ export default function EncyclopediaRemediesViewer() {
 
                   {/* Rosaries & Mala */}
                   <div className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-2">
-                    <strong className="text-[18px] text-amber-300 block border-b border-slate-800 pb-1.5 uppercase">Recommended Holy Rosaries (Mala)</strong>
+                    <strong className="text-[18px] text-amber-900 block border-b border-slate-800 pb-1.5 uppercase">Recommended Holy Rosaries (Mala)</strong>
                     <div className="space-y-2 text-[18px]">
                       {remediesData.lalKitabSystem?.rosaries?.items
                         ?.filter(r => {
@@ -817,10 +1252,10 @@ export default function EncyclopediaRemediesViewer() {
                           });
                         })
                         .map(r => (
-                          <div key={r.name} className="bg-slate-955 p-2.5 rounded border border-slate-800">
-                            <strong className="text-amber-400 font-bold block">{r.name}</strong>
-                            <p className="text-slate-300 mt-0.5">{r.purpose}</p>
-                            {r.mantra && <p className="text-[18px] text-emerald-300 font-mono mt-1">Mantra: {r.mantra}</p>}
+                          <div key={r.name} className="bg-white p-2.5 rounded border border-slate-800">
+                            <strong className="text-amber-900 font-bold block">{r.name}</strong>
+                            <p className="text-slate-900 mt-0.5">{r.purpose}</p>
+                            {r.mantra && <p className="text-[18px] text-emerald-900 font-mono mt-1">Mantra: {r.mantra}</p>}
                           </div>
                         ))}
                     </div>
@@ -830,26 +1265,26 @@ export default function EncyclopediaRemediesViewer() {
 
               {/* 12. Sacred Mantra Sadhana & Code of Conduct */}
               <div className="space-y-4 pt-2">
-                <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
-                  <BookOpen className="w-5 h-5 text-amber-400" /> 12. Sacred Mantra Sadhana & Code of Conduct
+                <h3 className="text-[20px] font-bold text-amber-900 flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <BookOpen className="w-5 h-5 text-amber-900" /> 12. Sacred Mantra Sadhana & Code of Conduct
                 </h3>
-                <p className="text-[18px] text-slate-300">
+                <p className="text-[18px] text-slate-900">
                   Follow these scriptural Japa methods, chakra alignments, and guidelines to activate your remedies successfully.
                 </p>
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {/* Sadhaka Code of Conduct & Japa Rules */}
-                  <div className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-3">
-                    <strong className="text-[18px] text-amber-300 block border-b border-slate-800 pb-1.5 uppercase font-bold">Japa Methods & Sadhaka Rules</strong>
-                    <div className="text-[18px] text-slate-300 space-y-2">
+                  <div className="bg-white p-4 rounded-2xl border border-slate-855 space-y-3">
+                    <strong className="text-[18px] text-amber-900 block border-b border-slate-800 pb-1.5 uppercase font-bold">Japa Methods & Sadhaka Rules</strong>
+                    <div className="text-[18px] text-slate-900 space-y-2">
                       <p><strong>Japa Methods:</strong></p>
                       <ul className="list-disc list-inside space-y-1 pl-2">
                         {remediesData.meditationAndMantras?.japaMethodsAndRules?.japaMethods?.map(m => (
                           <li key={m.type}><strong>{m.type}</strong>: {m.description}</li>
                         ))}
                       </ul>
-                      <p className="text-emerald-400 mt-2"><strong>Mantra Siddhi Rule:</strong> {remediesData.meditationAndMantras?.japaMethodsAndRules?.mantraSiddhiRule}</p>
-                      <p className="text-orange-400 mt-2"><strong>Sadhaka Codes:</strong></p>
-                      <ul className="list-disc list-inside space-y-1 pl-2 text-slate-300">
+                      <p className="text-emerald-900 mt-2"><strong>Mantra Siddhi Rule:</strong> {remediesData.meditationAndMantras?.japaMethodsAndRules?.mantraSiddhiRule}</p>
+                      <p className="text-orange-900 mt-2"><strong>Sadhaka Codes:</strong></p>
+                      <ul className="list-disc list-inside space-y-1 pl-2 text-slate-900">
                         {remediesData.meditationAndMantras?.japaMethodsAndRules?.sadhakaCodes?.map((c, idx) => (
                           <li key={idx}>{c}</li>
                         ))}
@@ -859,17 +1294,17 @@ export default function EncyclopediaRemediesViewer() {
 
                   {/* Chakras & Seed Mantras */}
                   <div className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-2">
-                    <strong className="text-[18px] text-amber-300 block border-b border-slate-800 pb-1.5 uppercase">Auspicious Chakras & Seed Mantras</strong>
+                    <strong className="text-[18px] text-amber-900 block border-b border-slate-800 pb-1.5 uppercase">Auspicious Chakras & Seed Mantras</strong>
                     <div className="space-y-2 text-[18px]">
                       {remediesData.meditationAndMantras?.chakrasAndSeedMantras?.map(c => {
                         const isAuspicious = auspiciousPlanets.some(ap => c.planet && c.planet.toLowerCase().includes(ap.toLowerCase()));
                         return (
-                          <div key={c.chakra} className={`p-2 rounded border ${isAuspicious ? 'bg-amber-500/10 border-amber-500/30' : 'bg-slate-950 border-slate-800'}`}>
+                          <div key={c.chakra} className={`p-2 rounded border ${isAuspicious ? 'bg-white' : 'bg-white'}`}>
                             <div className="flex justify-between font-bold">
-                              <span className={isAuspicious ? 'text-amber-400' : 'text-slate-300'}>{c.chakra}</span>
-                              <span className="text-emerald-300 font-mono">Seed: {c.seedMantra}</span>
+                              <span className={isAuspicious ? 'text-amber-900' : 'text-slate-900'}>{c.chakra}</span>
+                              <span className="text-emerald-900 font-mono">Seed: {c.seedMantra}</span>
                             </div>
-                            <p className="text-[16px] text-slate-400">Planet: {c.planet} • Position: {c.position}</p>
+                            <p className="text-[16px] text-slate-900">Planet: {c.planet} • Position: {c.position}</p>
                           </div>
                         );
                       })}
@@ -880,18 +1315,18 @@ export default function EncyclopediaRemediesViewer() {
                 {/* Gayatri & Dashavtar Mantras */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-2">
                   {/* Gayatri Mantras */}
-                  <div className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-2">
-                    <strong className="text-[18px] text-amber-300 block border-b border-slate-800 pb-1.5 uppercase">Your Auspicious Gayatri Mantras</strong>
+                  <div className="bg-white p-4 rounded-2xl border border-slate-855 space-y-2">
+                    <strong className="text-[18px] text-amber-900 block border-b border-slate-800 pb-1.5 uppercase">Your Auspicious Gayatri Mantras</strong>
                     <div className="space-y-2 text-[18px]">
                       {remediesData.meditationAndMantras?.keyGayatriMantras?.map(g => {
                         const isAuspicious = auspiciousPlanets.some(ap => g.name.toLowerCase().includes(ap.toLowerCase()) || g.purpose.toLowerCase().includes(ap.toLowerCase()));
                         return (
-                          <div key={g.name} className={`p-2.5 rounded border ${isAuspicious ? 'bg-amber-500/10 border-amber-500/30' : 'bg-slate-950 border-slate-800'}`}>
-                            <span className={`font-bold block ${isAuspicious ? 'text-amber-400' : 'text-slate-300'}`}>
-                              {g.name} Gayatri {isAuspicious ? '🌟' : ''}
+                          <div key={g.name} className={`p-2.5 rounded border ${isAuspicious ? 'bg-white' : 'bg-white'}`}>
+                            <span className={`font-bold block ${isAuspicious ? 'text-amber-900' : 'text-slate-900'}`}>
+                              {g.name} Gayatri {isAuspicious ? '' : ''}
                             </span>
-                            <p className="font-mono text-[18px] text-slate-200 mt-1">{g.mantra}</p>
-                            <p className="text-[18px] text-slate-400 mt-0.5">Purpose: {g.purpose}</p>
+                            <p className="font-mono text-[18px] text-slate-900 mt-1">{g.mantra}</p>
+                            <p className="text-[18px] text-slate-900 mt-0.5">Purpose: {g.purpose}</p>
                           </div>
                         );
                       })}
@@ -900,17 +1335,17 @@ export default function EncyclopediaRemediesViewer() {
 
                   {/* Dashavtar Mantras */}
                   <div className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-2">
-                    <strong className="text-[18px] text-amber-300 block border-b border-slate-800 pb-1.5 uppercase">Beneficial Vishnu Dashavtar Mantras</strong>
+                    <strong className="text-[18px] text-amber-900 block border-b border-slate-800 pb-1.5 uppercase">Beneficial Vishnu Dashavtar Mantras</strong>
                     <div className="space-y-2 text-[18px]">
                       {remediesData.meditationAndMantras?.dashavtarMantras
                         ?.filter(d => auspiciousPlanets.includes(d.planet))
                         .map(d => (
                           <div key={d.avatar} className="bg-slate-955 p-2 rounded border border-slate-800">
                             <div className="flex justify-between">
-                              <span className="text-amber-400 font-bold">{d.avatar} Avatar</span>
-                              <span className="text-[18px] text-slate-400">({d.planet} Lord)</span>
+                              <span className="text-amber-900 font-bold">{d.avatar} Avatar</span>
+                              <span className="text-[18px] text-slate-900">({d.planet} Lord)</span>
                             </div>
-                            <p className="font-mono text-[18px] text-slate-200 mt-1">{d.mantra}</p>
+                            <p className="font-mono text-[18px] text-slate-900 mt-1">{d.mantra}</p>
                           </div>
                         ))}
                     </div>
@@ -919,12 +1354,12 @@ export default function EncyclopediaRemediesViewer() {
 
                 {/* Special Purpose Mantras */}
                 <div className="bg-slate-955 p-4 rounded-2xl border border-slate-855 space-y-2">
-                  <strong className="text-[18px] text-amber-300 block border-b border-slate-800 pb-1.5 uppercase font-bold">Special Purpose Mantras</strong>
+                  <strong className="text-[18px] text-amber-900 block border-b border-slate-800 pb-1.5 uppercase font-bold">Special Purpose Mantras</strong>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[18px]">
                     {remediesData.meditationAndMantras?.specialPurposeMantras?.map(sp => (
                       <div key={sp.purpose} className="bg-slate-955 p-2.5 rounded border border-slate-800">
-                        <strong className="text-amber-400">{sp.purpose}</strong> ({sp.deity})
-                        <p className="font-mono text-[18px] text-slate-300 mt-1">{sp.mantra}</p>
+                        <strong className="text-amber-900">{sp.purpose}</strong> ({sp.deity})
+                        <p className="font-mono text-[18px] text-slate-900 mt-1">{sp.mantra}</p>
                       </div>
                     ))}
                   </div>
@@ -933,78 +1368,78 @@ export default function EncyclopediaRemediesViewer() {
 
               {/* 13. Real-Time Transit-Based Remedies (Gochar Remedial Guide) */}
               <div className="space-y-4 pt-2">
-                <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
-                  <Sparkles className="w-5 h-5 text-amber-400" /> 13. Real-Time Transit-Based Remedies (Gochar Remedial Guide)
+                <h3 className="text-[20px] font-bold text-amber-900 flex items-center gap-2 border-b border-slate-800 pb-2">
+                  <Sparkles className="w-5 h-5 text-amber-900" /> 13. Real-Time Transit-Based Remedies (Gochar Remedial Guide)
                 </h3>
-                <p className="text-[18px] text-slate-300">
+                <p className="text-[18px] text-slate-900">
                   Planetary transits (Gochar) represent the current movement of planets and how they affect your natal houses. Below is your live remedial guidelines:
                 </p>
 
                 {/* Birth Nakshatra Remedies Card */}
                 {nakshatraLoading && (
-                  <div className="text-[18px] text-amber-400 font-mono animate-pulse py-2">
+                  <div className="text-[18px] text-amber-900 font-mono animate-pulse py-2">
                     Calculating Birth Nakshatra Remedies...
                   </div>
                 )}
                 {nakshatraError && (
-                  <div className="text-[18px] text-rose-400 bg-rose-950/20 p-4 rounded-xl border border-rose-500/20">
+                  <div className="text-[18px] text-rose-900 bg-rose-950/20 p-4 rounded-xl border border-rose-900/20">
                     Failed to load Birth Nakshatra remedies: {nakshatraError}
                   </div>
                 )}
                 {nakshatraRemedies && (
-                  <div className="bg-gradient-to-r from-slate-900 to-amber-950/40 border border-amber-500/30 p-6 rounded-3xl space-y-4 shadow-xl">
+                  <div className="bg-white border border-amber-500/30 p-6 rounded-3xl space-y-4 shadow-xl">
                     <div className="flex justify-between items-center border-b border-amber-500/20 pb-3">
-                      <h4 className="text-[20px] font-bold text-amber-300 flex items-center gap-2">
-                        🌟 Birth Nakshatra Remedies (जन्म नक्षत्र उपाय): <span className="text-white font-extrabold">{nakshatraRemedies.nakshatra}</span>
+                      <h4 className="text-[20px] font-bold text-amber-900 flex items-center gap-2">
+                        🌟 Birth Nakshatra Remedies (जन्म नक्षत्र उपाय): <span className="text-black font-bold">{nakshatraRemedies.nakshatra}</span>
                       </h4>
-                      <span className="bg-amber-500/10 text-amber-400 px-3 py-1 rounded-full border border-amber-500/30 font-mono text-[14px]">
+                      <span className="bg-amber-500/10 text-amber-900 px-3 py-1 rounded-full border border-amber-500/30 font-mono text-[14px]">
                         Ruling Lord: {nakshatraRemedies.lord}
                       </span>
                     </div>
-                    
-                    <p className="text-[16px] text-slate-300 leading-relaxed italic">
+
+                    <p className="text-[16px] text-slate-900 leading-relaxed italic">
                       <strong>Stellar Profile:</strong> {nakshatraRemedies.profile}
                     </p>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-[16px]">
-                      <div className="bg-slate-950/80 p-4 rounded-2xl border border-slate-850">
-                        <strong className="text-amber-400 block mb-1">🕉️ Presiding Deity</strong>
-                        <span className="text-slate-200">{nakshatraRemedies.deity}</span>
+                      <div className="bg-white p-4 rounded-2xl border border-slate-850">
+                        <strong className="text-amber-900 block mb-1">🕉️ Presiding Deity</strong>
+                        <span className="text-slate-900">{nakshatraRemedies.deity}</span>
                       </div>
-                      
-                      <div className="bg-slate-950/80 p-4 rounded-2xl border border-slate-855">
-                        <strong className="text-amber-400 block mb-1">📿 Seeding Beej Mantra</strong>
-                        <span className="text-emerald-300 font-mono">{nakshatraRemedies.seeding_mantra}</span>
+
+                      <div className="bg-white p-4 rounded-2xl border border-slate-855">
+                        <strong className="text-amber-900 block mb-1">📿 Seeding Beej Mantra</strong>
+                        <span className="text-emerald-900 font-mono">{nakshatraRemedies.seeding_mantra}</span>
                       </div>
-                      
-                      <div className="bg-slate-950/80 p-4 rounded-2xl border border-slate-855">
-                        <strong className="text-amber-400 block mb-1">🌿 Sacred Tree / Plant</strong>
-                        <span className="text-slate-200">{nakshatraRemedies.sacred_tree}</span>
+
+                      <div className="bg-white p-4 rounded-2xl border border-slate-855">
+                        <strong className="text-amber-900 block mb-1">🌿 Sacred Tree / Plant</strong>
+                        <span className="text-slate-900">{nakshatraRemedies.sacred_tree}</span>
                       </div>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-[16px] border-t border-amber-500/10 pt-3">
-                      <div className="bg-slate-950/80 p-4 rounded-2xl border border-slate-855">
-                        <strong className="text-amber-400 block mb-1">🎁 Recommended Donations (दान)</strong>
-                        <span className="text-slate-300 leading-relaxed">{nakshatraRemedies.donation}</span>
+                      <div className="bg-white p-4 rounded-2xl border border-slate-855">
+                        <strong className="text-amber-900 block mb-1">🎁 Recommended Donations (दान)</strong>
+                        <span className="text-slate-900 leading-relaxed">{nakshatraRemedies.donation}</span>
                       </div>
-                      
-                      <div className="bg-slate-950/80 p-4 rounded-2xl border border-slate-855">
-                        <strong className="text-amber-400 block mb-1">⚡ Primary Ritual Remedy</strong>
-                        <span className="text-slate-300 leading-relaxed">{nakshatraRemedies.remedy}</span>
+
+                      <div className="bg-white p-4 rounded-2xl border border-slate-855">
+                        <strong className="text-amber-900 block mb-1">⚡ Primary Ritual Remedy</strong>
+                        <span className="text-slate-900 leading-relaxed">{nakshatraRemedies.remedy}</span>
                       </div>
                     </div>
                   </div>
                 )}
 
                 {transitLoading && (
-                  <div className="text-[18px] text-amber-400 font-mono animate-pulse py-4">
+                  <div className="text-[18px] text-amber-900 font-mono animate-pulse py-4">
                     Fetching current cosmic transits...
                   </div>
                 )}
 
                 {transitError && (
-                  <div className="text-[18px] text-rose-400 bg-rose-950/20 p-4 rounded-xl border border-rose-500/20">
+                  <div className="text-[18px] text-rose-900 bg-rose-950/20 p-4 rounded-xl border border-rose-900/20">
                     Failed to load real-time transits: {transitError}. Showing general guidelines.
                   </div>
                 )}
@@ -1050,7 +1485,7 @@ export default function EncyclopediaRemediesViewer() {
                           type: 'Afflicted (Sade Sati Phase)',
                           severity: 'High',
                           severityScore: 3,
-                          color: 'text-rose-400 border-rose-500/20 bg-rose-950/10',
+                          color: 'text-rose-900 border-rose-500/20 bg-white',
                           remedy: 'Donate black sesame seeds or black gram (urad dal) on Saturdays. Light a mustard oil lamp under a Peepal tree in the evening. Chant Saturn Gayatri or Beej Mantra: "Om Pram Preem Prom Sah Shaneshcharaay Namah" 108 times daily.'
                         };
                       }
@@ -1059,7 +1494,7 @@ export default function EncyclopediaRemediesViewer() {
                           type: 'Afflicted (Shani Dhaiya Phase)',
                           severity: 'Medium',
                           severityScore: 2,
-                          color: 'text-amber-400 border-amber-500/20 bg-amber-950/10',
+                          color: 'text-amber-900 border-amber-500/20 bg-white',
                           remedy: 'Avoid risky property deals and investments. Read Hanuman Chalisa daily. Chant the Mahamrityunjay Mantra to protect health and peace of mind.'
                         };
                       }
@@ -1071,7 +1506,7 @@ export default function EncyclopediaRemediesViewer() {
                           type: 'Afflicted (Mental/Spiritual Illusion)',
                           severity: 'Medium',
                           severityScore: 2,
-                          color: 'text-amber-400 border-amber-500/20 bg-amber-950/10',
+                          color: 'text-amber-900 border-amber-500/20 bg-white',
                           remedy: 'Worship Goddess Durga. Feed birds with mixed grains (Saptadhanya) in the morning. Avoid making quick, impulsive life choices under current transit.'
                         };
                       }
@@ -1083,7 +1518,7 @@ export default function EncyclopediaRemediesViewer() {
                           type: 'Afflicted (Spiritual Purge / Anxiety)',
                           severity: 'Medium',
                           severityScore: 2,
-                          color: 'text-amber-400 border-amber-500/20 bg-amber-950/10',
+                          color: 'text-amber-900 border-amber-500/20 bg-white',
                           remedy: 'Worship Lord Ganesha regularly. Feed stray dogs with bread/roti. Wear or carry a silver object to ground your thoughts.'
                         };
                       }
@@ -1094,7 +1529,7 @@ export default function EncyclopediaRemediesViewer() {
                         type: 'Afflicted (High Expense & Injury Risk)',
                         severity: 'Medium',
                         severityScore: 2,
-                        color: 'text-amber-400 border-amber-500/20 bg-amber-950/10',
+                        color: 'text-amber-900 border-amber-500/20 bg-white',
                         remedy: 'Chant Hanuman Chalisa or Mangal Beej Mantra. Donate red lentils (masoor dal) or copper on Tuesdays. Practice patience and avoid driving fast.'
                       };
                     }
@@ -1104,7 +1539,7 @@ export default function EncyclopediaRemediesViewer() {
                         type: 'Weakened (Energy Drain & Eye Strain)',
                         severity: 'Low',
                         severityScore: 1,
-                        color: 'text-blue-300 border-slate-800 bg-slate-900/40',
+                        color: 'text-blue-900 border-slate-800 bg-white',
                         remedy: 'Offer Arghya (water) to the Sun in a copper vessel at sunrise. Chant the Aditya Hridaya Stotra on Sundays.'
                       };
                     }
@@ -1114,7 +1549,7 @@ export default function EncyclopediaRemediesViewer() {
                         type: 'Weakened (Expansion Blocks)',
                         severity: 'Low',
                         severityScore: 1,
-                        color: 'text-blue-300 border-slate-800 bg-slate-900/40',
+                        color: 'text-blue-900 border-slate-800 bg-white',
                         remedy: 'Apply yellow sandalwood or saffron tilak on the forehead. Worship the Banana tree on Thursdays. Donate yellow garments or chickpeas to elders.'
                       };
                     }
@@ -1124,7 +1559,7 @@ export default function EncyclopediaRemediesViewer() {
                         type: 'Weakened (Communication hurdles)',
                         severity: 'Low',
                         severityScore: 1,
-                        color: 'text-blue-300 border-slate-800 bg-slate-900/40',
+                        color: 'text-blue-900 border-slate-800 bg-white',
                         remedy: 'Feed green grass or green leafy vegetables to cows on Wednesdays. Worship Goddess Saraswati or Lord Ganesha.'
                       };
                     }
@@ -1134,7 +1569,7 @@ export default function EncyclopediaRemediesViewer() {
                         type: 'Weakened (Relationship/Luxury hurdles)',
                         severity: 'Low',
                         severityScore: 1,
-                        color: 'text-blue-300 border-slate-800 bg-slate-900/40',
+                        color: 'text-blue-900 border-slate-800 bg-white',
                         remedy: 'Donate white sweets or milk to girls on Fridays. Wear light-colored clean clothes. Chant Venus Beej Mantra.'
                       };
                     }
@@ -1146,7 +1581,7 @@ export default function EncyclopediaRemediesViewer() {
                         severity: 'None',
                         severityScore: 0,
                         isFavorable: true,
-                        color: 'text-emerald-400 border-emerald-500/20 bg-emerald-950/10',
+                        color: 'text-emerald-900 border-emerald-500/20 bg-white',
                         remedy: 'This is an excellent transit for wealth, wisdom, and career. Chant Guru Stotra and participate in spiritual learning to amplify benefits.'
                       };
                     }
@@ -1157,7 +1592,7 @@ export default function EncyclopediaRemediesViewer() {
                         severity: 'None',
                         severityScore: 0,
                         isFavorable: true,
-                        color: 'text-emerald-400 border-emerald-500/20 bg-emerald-950/10',
+                        color: 'text-emerald-900 border-emerald-500/20 bg-white',
                         remedy: 'Excellent for success in exams, job promotions, and health recovery. Chant Gayatri Mantra daily.'
                       };
                     }
@@ -1166,7 +1601,7 @@ export default function EncyclopediaRemediesViewer() {
                       type: 'Neutral / Favorable Transit',
                       severity: 'None',
                       severityScore: 0,
-                      color: 'text-slate-300 border-slate-800 bg-slate-955',
+                      color: 'text-slate-900 border-slate-800 bg-white',
                       remedy: 'Planetary alignment is stable. Continue daily meditation and maintain positive lifestyle habits.'
                     };
                   };
@@ -1204,18 +1639,18 @@ export default function EncyclopediaRemediesViewer() {
                     <div className="space-y-6">
                       {/* Transit Summary Banner */}
                       {(highAfflicted.length > 0 || mediumAfflicted.length > 0 || lowAfflicted.length > 0 || favorablePlanets.length > 0) && (
-                        <div className="bg-slate-900 border border-amber-500/20 p-5 rounded-2xl space-y-3">
-                          <h4 className="text-[18px] font-bold text-amber-400 uppercase tracking-widest flex items-center gap-2">
-                            <ShieldAlert className="w-5 h-5 text-amber-400" /> Cosmic Transit & Affliction Analysis
+                        <div className="bg-white border border-amber-500/20 p-5 rounded-2xl space-y-3">
+                          <h4 className="text-[18px] font-bold text-amber-900 uppercase tracking-widest flex items-center gap-2">
+                            <ShieldAlert className="w-5 h-5 text-amber-900" /> Cosmic Transit & Affliction Analysis
                           </h4>
-                          <p className="text-[16px] text-slate-300">
+                          <p className="text-[16px] text-slate-900">
                             Based on your {selectedLagna} Lagna chart, the planets are classified by current transit status:
                           </p>
                           <div className="flex flex-wrap gap-4 text-[16px] font-medium">
                             {(() => {
                               if (favorablePlanets.length > 0) {
                                 return (
-                                  <div className="bg-emerald-950/20 border border-emerald-500/30 px-3 py-1.5 rounded-xl text-emerald-300">
+                                  <div className="bg-white border border-emerald-500/30 px-3 py-1.5 rounded-xl text-emerald-900">
                                     🌟 <strong>Highly Favorable ({favorablePlanets.length}):</strong> {favorablePlanets.map(p => p.fullName).join(', ')}
                                   </div>
                                 );
@@ -1282,32 +1717,32 @@ export default function EncyclopediaRemediesViewer() {
                                 : null;
 
                               return (
-                                <div className="bg-slate-800/40 border border-slate-750 px-4 py-3 rounded-xl text-[20px] text-orange-400 space-y-2 w-full animate-fade-in">
+                                <div className="bg-white border border-slate-750 px-4 py-3 rounded-xl text-[20px] text-orange-400 space-y-2 w-full animate-fade-in">
                                   <div>🌟 <strong>Highly Favorable Status:</strong> {text}</div>
                                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-slate-800/60 pt-2 mt-2 text-[18px]">
                                     {mantra && (
-                                      <div className="text-amber-300 font-mono">
+                                      <div className="text-amber-900 font-mono">
                                         <strong>Activation Mantra:</strong> "{mantra}" (Chant daily to empower {supportivePlanet}).
                                       </div>
                                     )}
                                     {lalKitabRemedy && (
-                                      <div className="text-blue-300">
+                                      <div className="text-blue-900">
                                         <strong>Lal Kitab House Remedy:</strong> {lalKitabRemedy} (Practiced to capture transit benefits).
                                       </div>
                                     )}
                                     {planetaryRemedy && (
-                                      <div className="text-emerald-300">
+                                      <div className="text-emerald-900">
                                         <strong>Planetary Relief:</strong> {planetaryRemedy}
                                       </div>
                                     )}
                                   </div>
                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-800/40 pt-2 mt-2 text-[18px]">
                                     {deityDetails && (
-                                      <div className="text-pink-300">
+                                      <div className="text-pink-900">
                                         <strong>Beneficial Deities & Vedic Invocation:</strong> {deityDetails}
                                       </div>
                                     )}
-                                    <div className="text-orange-300 font-mono">
+                                    <div className="text-orange-900 font-mono">
                                       <strong>Sacred Mantra Sadhana & Code of Conduct:</strong> {gayatriText ? `Gayatri: ${gayatriText}. ` : ''}Rule: Practice with clean attire, face East, maintain constant daily Japa counts.
                                     </div>
                                   </div>
@@ -1315,17 +1750,17 @@ export default function EncyclopediaRemediesViewer() {
                               );
                             })()}
                             {highAfflicted.length > 0 && (
-                              <div className="bg-rose-950/20 border border-rose-500/30 px-3 py-1.5 rounded-xl text-rose-300">
+                              <div className="bg-white border border-rose-500/30 px-3 py-1.5 rounded-xl text-rose-950 font-bold">
                                 🚨 <strong>Highest Afflicted ({highAfflicted.length}):</strong> {highAfflicted.map(p => p.fullName).join(', ')}
                               </div>
                             )}
                             {mediumAfflicted.length > 0 && (
-                              <div className="bg-amber-950/20 border border-amber-500/30 px-3 py-1.5 rounded-xl text-amber-300">
+                              <div className="bg-white border border-amber-500/30 px-3 py-1.5 rounded-xl text-amber-900">
                                 ⚠️ <strong>Medium Afflicted ({mediumAfflicted.length}):</strong> {mediumAfflicted.map(p => p.fullName).join(', ')}
                               </div>
                             )}
                             {lowAfflicted.length > 0 && (
-                              <div className="bg-blue-950/20 border border-blue-500/30 px-3 py-1.5 rounded-xl text-blue-300">
+                              <div className="bg-white border border-blue-500/30 px-3 py-1.5 rounded-xl text-blue-900">
                                 📉 <strong>Low Afflicted ({lowAfflicted.length}):</strong> {lowAfflicted.map(p => p.fullName).join(', ')}
                               </div>
                             )}
@@ -1334,34 +1769,34 @@ export default function EncyclopediaRemediesViewer() {
                           {/* Current Transiting Nakshatra Remedies */}
                           {currentNakshatraRemedies && (
                             <div className="mt-4 pt-4 border-t border-amber-500/20 space-y-2 text-[16px]">
-                              <div className="flex items-center gap-2 text-amber-300 font-extrabold uppercase tracking-wide">
+                              <div className="flex items-center gap-2 text-amber-900 font-bold uppercase tracking-wide">
                                 🌙 Today's Transiting Moon Nakshatra (वर्तमान नक्षत्र उपाय): {currentNakshatraRemedies.nakshatra}
                               </div>
-                              <p className="text-slate-300 leading-relaxed text-[15px]">
+                              <p className="text-slate-900 leading-relaxed text-[15px]">
                                 <strong>Stellar Profile:</strong> {currentNakshatraRemedies.profile}
                               </p>
                               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[14px] pt-1">
-                                <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                                  <strong className="text-amber-400 block mb-0.5">🕉️ Deity</strong>
-                                  <span className="text-slate-200">{currentNakshatraRemedies.deity}</span>
+                                <div className="bg-white border border-slate-800 p-3 rounded-xl">
+                                  <strong className="text-amber-900 block mb-0.5">🕉️ Deity</strong>
+                                  <span className="text-slate-900">{currentNakshatraRemedies.deity}</span>
                                 </div>
-                                <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                                  <strong className="text-amber-400 block mb-0.5">📿 Seeding Mantra</strong>
-                                  <span className="text-emerald-300 font-mono">{currentNakshatraRemedies.seeding_mantra}</span>
+                                <div className="bg-white border border-slate-800 p-3 rounded-xl">
+                                  <strong className="text-amber-900 block mb-0.5">📿 Seeding Mantra</strong>
+                                  <span className="text-emerald-900 font-mono">{currentNakshatraRemedies.seeding_mantra}</span>
                                 </div>
-                                <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                                  <strong className="text-amber-400 block mb-0.5">🌿 Sacred Tree</strong>
-                                  <span className="text-slate-200">{currentNakshatraRemedies.sacred_tree}</span>
+                                <div className="bg-white border border-slate-800 p-3 rounded-xl">
+                                  <strong className="text-amber-900 block mb-0.5">🌿 Sacred Tree</strong>
+                                  <span className="text-slate-900">{currentNakshatraRemedies.sacred_tree}</span>
                                 </div>
                               </div>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-[14px] pt-1">
-                                <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                                  <strong className="text-amber-400 block mb-0.5">🎁 Today's Donation (दान)</strong>
-                                  <span className="text-slate-300">{currentNakshatraRemedies.donation}</span>
+                                <div className="bg-white border border-slate-800 p-3 rounded-xl">
+                                  <strong className="text-amber-900 block mb-0.5">🎁 Today's Donation (दान)</strong>
+                                  <span className="text-slate-900">{currentNakshatraRemedies.donation}</span>
                                 </div>
-                                <div className="bg-slate-950/60 p-3 rounded-xl border border-slate-800">
-                                  <strong className="text-amber-400 block mb-0.5">⚡ Daily Ritual Remedy</strong>
-                                  <span className="text-slate-300">{currentNakshatraRemedies.remedy}</span>
+                                <div className="bg-white border border-slate-800 p-3 rounded-xl">
+                                  <strong className="text-amber-900 block mb-0.5">⚡ Daily Ritual Remedy</strong>
+                                  <span className="text-slate-900">{currentNakshatraRemedies.remedy}</span>
                                 </div>
                               </div>
                             </div>
@@ -1377,16 +1812,16 @@ export default function EncyclopediaRemediesViewer() {
 
                           if (item.details.severity === 'High') {
                             badgeText = '🚨 Highest Affliction';
-                            badgeClass = 'bg-rose-500/20 text-rose-300 border border-rose-500/30';
+                            badgeClass = 'bg-white text-rose-900 border border-rose-500/30';
                           } else if (item.details.severity === 'Medium') {
                             badgeText = '⚠️ Moderate Affliction';
-                            badgeClass = 'bg-amber-500/20 text-amber-300 border border-amber-500/30';
+                            badgeClass = 'bg-white text-amber-900 border border-amber-500/30';
                           } else if (item.details.severity === 'Low') {
                             badgeText = '📉 Low Affliction';
-                            badgeClass = 'bg-blue-500/20 text-blue-300 border border-blue-500/30';
+                            badgeClass = 'bg-white text-blue-900 border border-blue-500/30';
                           } else if (item.details.isFavorable) {
                             badgeText = '🌟 Highly Favorable';
-                            badgeClass = 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30';
+                            badgeClass = 'bg-white text-emerald-900 border border-emerald-500/30';
                           }
 
                           const getDetailedTransitRemedies = (planetName, house) => {
@@ -1449,8 +1884,8 @@ export default function EncyclopediaRemediesViewer() {
                             <div key={item.planet} className={`p-6 rounded-3xl border ${item.details.color} flex flex-col justify-between space-y-4 ${item.details.severity === 'High' ? 'col-span-full' : (item.details.severity === 'Medium' || item.details.severity === 'Low') ? 'col-span-1 md:col-span-2' : ''}`}>
                               <div>
                                 <div className="flex justify-between items-center border-b border-slate-850 pb-2 mb-2">
-                                  <span className="text-[20px] font-extrabold uppercase tracking-wider">{item.fullName}</span>
-                                  <span className="text-[14px] bg-slate-800/60 px-2.5 py-0.5 rounded font-mono text-slate-300">
+                                  <span className="text-[20px] font-bold uppercase tracking-wider">{item.fullName}</span>
+                                  <span className="text-[14px] bg-white px-2.5 py-0.5 rounded font-mono text-slate-900">
                                     {item.rashiFull} ({item.degree.toFixed(1)}°)
                                   </span>
                                 </div>
@@ -1465,7 +1900,7 @@ export default function EncyclopediaRemediesViewer() {
                                   <p><strong>Transit Status:</strong> {item.details.type}</p>
                                   <p><strong>Transit House:</strong> House {item.house} (Gochar)</p>
                                 </div>
-                                <p className="text-[16px] text-slate-300 leading-relaxed mt-2">
+                                <p className="text-[16px] text-slate-900 leading-relaxed mt-2">
                                   <strong>Primary Remedy:</strong> {item.details.remedy}
                                 </p>
 
@@ -1477,34 +1912,34 @@ export default function EncyclopediaRemediesViewer() {
                                         Comprehensive Scriptural Remedial Protocol
                                       </h4>
                                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                          <strong className="text-amber-400 block mb-1">📿 Recommended Rudraksha Beads</strong>
-                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.rudraksha}</p>
+                                        <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-900 block mb-1">📿 Recommended Rudraksha Beads</strong>
+                                          <p className="text-slate-900 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.rudraksha}</p>
                                         </div>
-                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                          <strong className="text-amber-400 block mb-1">🌿 Navgrah Plant Remedies</strong>
-                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.plant}</p>
+                                        <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-900 block mb-1">🌿 Navgrah Plant Remedies</strong>
+                                          <p className="text-slate-900 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.plant}</p>
                                         </div>
-                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                          <strong className="text-amber-400 block mb-1">🚩 Planetary Relief Remedies</strong>
-                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.relief}</p>
+                                        <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-900 block mb-1">🚩 Planetary Relief Remedies</strong>
+                                          <p className="text-slate-900 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.relief}</p>
                                         </div>
-                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                          <strong className="text-amber-400 block mb-1">🎨 Color Therapy & Life Cycle Guide</strong>
-                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.colorTherapy}</p>
+                                        <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-900 block mb-1">🎨 Color Therapy & Life Cycle Guide</strong>
+                                          <p className="text-slate-900 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.colorTherapy}</p>
                                         </div>
-                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                          <strong className="text-amber-400 block mb-1">📜 Lal Kitab House Remedies</strong>
-                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.lalKitab}</p>
+                                        <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-900 block mb-1">📜 Lal Kitab House Remedies</strong>
+                                          <p className="text-slate-900 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.lalKitab}</p>
                                         </div>
-                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                          <strong className="text-amber-400 block mb-1">💎 Prescribed Crystal, Lockets & Rosaries</strong>
-                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.crystalsRosaries}</p>
+                                        <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-900 block mb-1">💎 Prescribed Crystal, Lockets & Rosaries</strong>
+                                          <p className="text-slate-900 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.crystalsRosaries}</p>
                                         </div>
                                       </div>
-                                      <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                        <strong className="text-amber-400 block mb-1">🕉️ Sacred Mantra</strong>
-                                        <p className="text-slate-300 font-mono whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.mantra}</p>
+                                      <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                        <strong className="text-amber-900 block mb-1">🕉️ Sacred Mantra</strong>
+                                        <p className="text-slate-900 font-mono whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.mantra}</p>
                                       </div>
                                     </div>
                                   );
@@ -1518,26 +1953,26 @@ export default function EncyclopediaRemediesViewer() {
                                         Moderate Scriptural Remedial Protocol
                                       </h4>
                                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                          <strong className="text-amber-400 block mb-1">🌿 Navgrah Plant Remedies</strong>
-                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.plant}</p>
+                                        <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-900 block mb-1">🌿 Navgrah Plant Remedies</strong>
+                                          <p className="text-slate-900 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.plant}</p>
                                         </div>
-                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                          <strong className="text-amber-400 block mb-1">🚩 Planetary Relief Remedies</strong>
-                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.relief}</p>
+                                        <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-900 block mb-1">🚩 Planetary Relief Remedies</strong>
+                                          <p className="text-slate-900 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.relief}</p>
                                         </div>
-                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                          <strong className="text-amber-400 block mb-1">🎨 Color Therapy & Life Cycle Guide</strong>
-                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.colorTherapy}</p>
+                                        <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-900 block mb-1">🎨 Color Therapy & Life Cycle Guide</strong>
+                                          <p className="text-slate-900 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.colorTherapy}</p>
                                         </div>
-                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                          <strong className="text-amber-400 block mb-1">📜 Lal Kitab House Remedies</strong>
-                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.lalKitab}</p>
+                                        <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-900 block mb-1">📜 Lal Kitab House Remedies</strong>
+                                          <p className="text-slate-900 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.lalKitab}</p>
                                         </div>
                                       </div>
-                                      <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                        <strong className="text-amber-400 block mb-1">🕉️ Sacred Mantra</strong>
-                                        <p className="text-slate-300 font-mono whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.mantra}</p>
+                                      <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                        <strong className="text-amber-900 block mb-1">🕉️ Sacred Mantra</strong>
+                                        <p className="text-slate-900 font-mono whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.mantra}</p>
                                       </div>
                                     </div>
                                   );
@@ -1547,25 +1982,25 @@ export default function EncyclopediaRemediesViewer() {
                                   const detailedRemedies = getDetailedTransitRemedies(item.fullName, item.house);
                                   return (
                                     <div className="mt-4 pt-4 border-t border-slate-800/80 space-y-4 text-[16px]">
-                                      <h4 className="text-[16px] font-bold text-amber-300 uppercase tracking-widest">
+                                      <h4 className="text-[16px] font-bold text-amber-900 uppercase tracking-widest">
                                         Minor Scriptural Remedial Protocol
                                       </h4>
                                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                          <strong className="text-amber-400 block mb-1">🌿 Navgrah Plant Remedies</strong>
-                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.plant}</p>
+                                        <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-900 block mb-1">🌿 Navgrah Plant Remedies</strong>
+                                          <p className="text-slate-900 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.plant}</p>
                                         </div>
-                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                          <strong className="text-amber-400 block mb-1">🚩 Planetary Relief Remedies</strong>
-                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.relief}</p>
+                                        <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-900 block mb-1">🚩 Planetary Relief Remedies</strong>
+                                          <p className="text-slate-900 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.relief}</p>
                                         </div>
-                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                          <strong className="text-amber-400 block mb-1">📜 Lal Kitab House Remedies</strong>
-                                          <p className="text-slate-300 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.lalKitab}</p>
+                                        <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-900 block mb-1">📜 Lal Kitab House Remedies</strong>
+                                          <p className="text-slate-900 whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.lalKitab}</p>
                                         </div>
-                                        <div className="bg-slate-950/80 p-3.5 rounded-xl border border-slate-850">
-                                          <strong className="text-amber-400 block mb-1">🕉️ Sacred Mantra</strong>
-                                          <p className="text-slate-300 font-mono whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.mantra}</p>
+                                        <div className="bg-white p-3.5 rounded-xl border border-slate-850">
+                                          <strong className="text-amber-900 block mb-1">🕉️ Sacred Mantra</strong>
+                                          <p className="text-slate-900 font-mono whitespace-pre-line leading-relaxed text-[15px]">{detailedRemedies.mantra}</p>
                                         </div>
                                       </div>
                                     </div>
@@ -1650,10 +2085,10 @@ export default function EncyclopediaRemediesViewer() {
 
                 return (
                   <div className="space-y-6 pt-4 border-t border-slate-800">
-                    <h3 className="text-[20px] font-bold text-amber-300 flex items-center gap-2 border-b border-slate-800 pb-2">
+                    <h3 className="text-[20px] font-bold text-amber-900 flex items-center gap-2 border-b border-slate-800 pb-2">
                       <ShieldAlert className="w-5 h-5 text-amber-400" /> 14. Kundali Dosha Remedies (कुण्डली दोष निवारण उपाय)
                     </h3>
-                    <p className="text-[18px] text-slate-300">
+                    <p className="text-[18px] text-slate-900">
                       Astrological analysis of your Lagna Kundali reveals the presence of specific doshas. Below are the scriptural and modern remedies from the Vedic Encyclopedia to neutralize their adverse effects:
                     </p>
 
@@ -1665,19 +2100,19 @@ export default function EncyclopediaRemediesViewer() {
                         return (
                           <div key={dosha.id} className="bg-gradient-to-b from-slate-900 to-red-950/20 border border-red-500/20 p-6 rounded-3xl space-y-4 shadow-xl">
                             <div className="flex justify-between items-center border-b border-red-500/20 pb-3">
-                              <h4 className="text-[20px] font-bold text-red-400 flex items-center gap-2">
+                              <h4 className="text-[20px] font-bold text-red-900 flex items-center gap-2">
                                 🧿 {dosha.label} Detected
                               </h4>
                             </div>
 
                             {data.title && (
-                              <p className="text-[18px] text-amber-300 font-bold leading-relaxed">
+                              <p className="text-[18px] text-amber-900 font-bold leading-relaxed">
                                 {data.title}
                               </p>
                             )}
 
                             {data.description && (
-                              <p className="text-[16px] text-slate-300 leading-relaxed italic">
+                              <p className="text-[16px] text-slate-900 leading-relaxed italic">
                                 {data.description}
                               </p>
                             )}
@@ -1685,8 +2120,8 @@ export default function EncyclopediaRemediesViewer() {
                             {/* If it's a simple list like generalRemedies or remedies array */}
                             {data.generalRemedies && (
                               <div className="space-y-2">
-                                <strong className="text-[16px] text-amber-400 block">Main Scriptural Remedies (मुख्य उपाय):</strong>
-                                <ul className="list-disc list-inside space-y-1.5 text-[15px] text-slate-300 leading-relaxed pl-2">
+                                <strong className="text-[16px] text-amber-900 block">Main Scriptural Remedies (मुख्य उपाय):</strong>
+                                <ul className="list-disc list-inside space-y-1.5 text-[15px] text-slate-900 leading-relaxed pl-2">
                                   {data.generalRemedies.map((rem, i) => (
                                     <li key={i}>{rem}</li>
                                   ))}
@@ -1696,8 +2131,8 @@ export default function EncyclopediaRemediesViewer() {
 
                             {data.remedies && Array.isArray(data.remedies) && typeof data.remedies[0] === 'string' && (
                               <div className="space-y-2">
-                                <strong className="text-[16px] text-amber-400 block">Main Scriptural Remedies (मुख्य उपाय):</strong>
-                                <ul className="list-disc list-inside space-y-1.5 text-[15px] text-slate-300 leading-relaxed pl-2">
+                                <strong className="text-[16px] text-amber-900 block">Main Scriptural Remedies (मुख्य उपाय):</strong>
+                                <ul className="list-disc list-inside space-y-1.5 text-[15px] text-slate-900 leading-relaxed pl-2">
                                   {data.remedies.map((rem, i) => (
                                     <li key={i}>{rem}</li>
                                   ))}
@@ -1708,20 +2143,20 @@ export default function EncyclopediaRemediesViewer() {
                             {/* If it has structured remedies array (for Rahu, Ketu, Manglik, Sade Sati) */}
                             {data.remedies && Array.isArray(data.remedies) && typeof data.remedies[0] === 'object' && (
                               <div className="space-y-4">
-                                <strong className="text-[16px] text-amber-400 block">Structured Planetary Alignments & Remedies:</strong>
+                                <strong className="text-[16px] text-amber-900 block">Structured Planetary Alignments & Remedies:</strong>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                   {data.remedies.map((rem, i) => (
                                     <div key={i} className="bg-slate-950/80 p-4 rounded-2xl border border-slate-850 space-y-2">
-                                      <strong className="text-amber-300 block text-[16px]">✨ {rem.name}</strong>
+                                      <strong className="text-amber-900 block text-[16px]">✨ {rem.name}</strong>
                                       {rem.mantra && (
-                                        <p className="text-emerald-300 font-mono text-[14px]">
+                                        <p className="text-emerald-900 font-mono text-[14px]">
                                           <strong>Mantra:</strong> "{rem.mantra}"
                                         </p>
                                       )}
-                                      <p className="text-slate-300 text-[14px] leading-relaxed">
+                                      <p className="text-slate-900 text-[14px] leading-relaxed">
                                         <strong>Practice:</strong> {rem.practice}
                                       </p>
-                                      <p className="text-slate-400 text-[13px] leading-relaxed italic border-t border-slate-800/40 pt-1.5 mt-1.5">
+                                      <p className="text-slate-900 text-[13px] leading-relaxed italic border-t border-slate-800/40 pt-1.5 mt-1.5">
                                         <strong>Spiritual Science:</strong> {rem.spiritualScience}
                                       </p>
                                     </div>
@@ -1732,13 +2167,13 @@ export default function EncyclopediaRemediesViewer() {
 
                             {data.mantra && typeof data.mantra === 'string' && (
                               <div className="bg-slate-950/60 p-4 rounded-2xl border border-slate-800">
-                                <strong className="text-emerald-400 block mb-1 text-[16px]">📿 Potent Nivaran Mantra</strong>
-                                <p className="text-emerald-300 font-mono text-[16px]">{data.mantra}</p>
+                                <strong className="text-emerald-900 block mb-1 text-[16px]">📿 Potent Nivaran Mantra</strong>
+                                <p className="text-emerald-900 font-mono text-[16px]">{data.mantra}</p>
                               </div>
                             )}
 
                             {data.notes && (
-                              <p className="text-[14px] text-slate-400 leading-relaxed border-t border-slate-800/60 pt-3 mt-2">
+                              <p className="text-[14px] text-slate-900 leading-relaxed border-t border-slate-800/60 pt-3 mt-2">
                                 <strong>Important Note:</strong> {data.notes}
                               </p>
                             )}
@@ -1762,12 +2197,12 @@ export default function EncyclopediaRemediesViewer() {
         {/* TAB 1: Lagna Gem Matrix */}
         {selectedTab === 'lagnaGems' && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between bg-slate-900 p-4 rounded-2xl border border-slate-800">
-              <label className="text-[18px] font-bold text-amber-400 uppercase tracking-wider">Select Your Ascendant / Lagna:</label>
+            <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-slate-800">
+              <label className="text-[18px] font-bold text-amber-900 uppercase tracking-wider">Select Your Ascendant / Lagna:</label>
               <select
                 value={selectedLagna}
                 onChange={(e) => setSelectedLagna(e.target.value)}
-                className="bg-emerald-400 border border-amber-500/40 text-black px-4 py-2 rounded-xl text-[18px] font-bold focus:outline-none focus:ring-2 focus:ring-amber-500"
+                className="bg-white border border-amber-900/40 text-black px-4 py-2 rounded-xl text-[18px] font-bold focus:outline-none focus:ring-2 focus:ring-amber-900"
               >
                 {Object.keys(remediesData.lagnaGemMatrix).map(lagna => (
                   <option key={lagna} value={lagna}>
@@ -1779,34 +2214,34 @@ export default function EncyclopediaRemediesViewer() {
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Life Stone */}
-              <div className="bg-gradient-to-b from-emerald-950/60 to-slate-900 border border-emerald-500/30 p-6 rounded-3xl text-center space-y-3">
-                <span className="text-[18px] font-bold text-emerald-400 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 inline-block">
+              <div className="bg-white border border-emerald-500/30 p-6 rounded-3xl text-center space-y-3">
+                <span className="text-[18px] font-bold text-emerald-900 uppercase tracking-widest bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 inline-block">
                   Life Stone (1st Lord)
                 </span>
-                <h3 className="text-[24px] font-bold text-emerald-200">{lagnaInfo.lifeStone}</h3>
-                <p className="text-[18px] text-slate-300 leading-relaxed">
+                <h3 className="text-[24px] font-bold text-emerald-900">{lagnaInfo.lifeStone}</h3>
+                <p className="text-[18px] text-slate-900 leading-relaxed">
                   Strengthens vitality, general health, immunity, self-confidence, and longevity.
                 </p>
               </div>
 
               {/* Karaka Stone */}
-              <div className="bg-gradient-to-b from-blue-950/60 to-slate-900 border border-blue-500/30 p-6 rounded-3xl text-center space-y-3">
-                <span className="text-[18px] font-bold text-blue-400 uppercase tracking-widest bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20 inline-block">
+              <div className="bg-white border border-blue-500/30 p-6 rounded-3xl text-center space-y-3">
+                <span className="text-[18px] font-bold text-blue-900 uppercase tracking-widest bg-blue-500/10 px-3 py-1 rounded-full border border-blue-500/20 inline-block">
                   Karaka Stone (5th Lord)
                 </span>
-                <h3 className="text-[24px] font-bold text-blue-200">{lagnaInfo.karakaStone}</h3>
-                <p className="text-[18px] text-slate-300 leading-relaxed">
+                <h3 className="text-[24px] font-bold text-blue-900">{lagnaInfo.karakaStone}</h3>
+                <p className="text-[18px] text-slate-900 leading-relaxed">
                   Enhances intelligence, education, creative talents, memory, and mantra sadhana.
                 </p>
               </div>
 
               {/* Lucky Stone */}
-              <div className="bg-gradient-to-b from-amber-950/60 to-slate-900 border border-amber-500/30 p-6 rounded-3xl text-center space-y-3">
-                <span className="text-[18px] font-bold text-amber-400 uppercase tracking-widest bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20 inline-block">
+              <div className="bg-white border border-amber-500/30 p-6 rounded-3xl text-center space-y-3">
+                <span className="text-[18px] font-bold text-amber-900 uppercase tracking-widest bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20 inline-block">
                   Lucky Stone (9th Lord)
                 </span>
-                <h3 className="text-[24px] font-bold text-amber-200">{lagnaInfo.luckyStone}</h3>
-                <p className="text-[18px] text-slate-300 leading-relaxed">
+                <h3 className="text-[24px] font-bold text-amber-900">{lagnaInfo.luckyStone}</h3>
+                <p className="text-[18px] text-slate-900 leading-relaxed">
                   Attracts fortune, spiritual growth, divine grace, higher wisdom, and prosperity.
                 </p>
               </div>
@@ -1816,8 +2251,8 @@ export default function EncyclopediaRemediesViewer() {
             <div className="bg-rose-950/40 border border-rose-500/30 p-5 rounded-2xl flex items-start gap-3">
               <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
               <div>
-                <h4 className="text-[18px] font-bold text-rose-300">Incompatible Gemstones for {selectedLagna} Ascendant</h4>
-                <p className="text-[18px] text-slate-300 mt-1">
+                <h4 className="text-[18px] font-bold text-rose-900">Incompatible Gemstones for {selectedLagna} Ascendant</h4>
+                <p className="text-[18px] text-slate-900 mt-1">
                   <strong>Do NOT wear:</strong> {lagnaInfo.incompatible.join(', ')}. Wearing malefic or enemy gemstones will strengthen hostile house lords and trigger obstacles.
                 </p>
               </div>
@@ -1834,7 +2269,7 @@ export default function EncyclopediaRemediesViewer() {
                   key={g.planet}
                   onClick={() => setSelectedPlanet(g.planet)}
                   className={`px-4 py-2 rounded-xl text-[15px] font-bold shrink-0 transition-all border ${selectedPlanet === g.planet
-                    ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md'
+                    ? 'bg-white text-slate-900 border-slate-800 hover:bg-slate-800'
                     : 'bg-white text-slate-900 border-slate-800 hover:bg-slate-800'
                     }`}
                 >
@@ -1843,15 +2278,15 @@ export default function EncyclopediaRemediesViewer() {
               ))}
             </div>
 
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-6">
+            <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-6">
               <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-800 pb-4">
                 <div>
-                  <span className="text-[16px] text-amber-400 font-semibold uppercase">{gemInfo.planet}'s Primary Ratna</span>
-                  <h3 className="text-3xl font-bold text-amber-300 mt-1">{gemInfo.gem}</h3>
+                  <span className="text-[16px] text-amber-900 font-semibold uppercase">{gemInfo.planet}'s Primary Ratna</span>
+                  <h3 className="text-3xl font-bold text-amber-900 mt-1">{gemInfo.gem}</h3>
                 </div>
                 <div className="text-right">
-                  <span className="text-[18px] text-yellow-400 block">Substitutes (Upratna):</span>
-                  <span className="text-[20px] font-bold text-red-400">{gemInfo.substitutes.join(', ')}</span>
+                  <span className="text-[18px] text-yellow-900 block">Substitutes (Upratna):</span>
+                  <span className="text-[20px] font-bold text-rose-900">{gemInfo.substitutes.join(', ')}</span>
                 </div>
               </div>
 
@@ -1874,14 +2309,14 @@ export default function EncyclopediaRemediesViewer() {
                 </div>
               </div>
 
-              <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl space-y-1">
-                <span className="text-[18px] text-amber-400 font-bold uppercase tracking-wider">Activation Mantra (Chant 108 Times Before Wearing):</span>
-                <p className="text-[20px] font-mono font-bold text-emerald-200">{gemInfo.mantra}</p>
+              <div className="bg-white border border-amber-900/40 p-4 rounded-xl space-y-1">
+                <span className="text-[18px] text-amber-900 font-bold uppercase tracking-wider">Activation Mantra (Chant 108 Times Before Wearing):</span>
+                <p className="text-[20px] font-mono font-bold text-emerald-900">{gemInfo.mantra}</p>
               </div>
 
-              <div className="bg-slate-955 p-4 rounded-xl border border-slate-800">
-                <span className="text-[18px] font-bold text-orange-400 uppercase">Key Astrological Benefits & Cures:</span>
-                <p className="text-[20px] text-emerald-200 mt-1 leading-relaxed">{gemInfo.benefits}</p>
+              <div className="bg-white border border-slate-800 p-4 rounded-xl">
+                <span className="text-[18px] font-bold text-orange-900 uppercase">Key Astrological Benefits & Cures:</span>
+                <p className="text-[20px] text-emerald-900 mt-1 leading-relaxed">{gemInfo.benefits}</p>
               </div>
             </div>
           </div>
@@ -1890,12 +2325,12 @@ export default function EncyclopediaRemediesViewer() {
         {/* TAB 3: Rudraksha Directory (1 to 21 Mukhi) */}
         {selectedTab === 'rudraksha' && (
           <div className="space-y-6">
-            <h3 className="text-xl font-bold text-amber-300 flex items-center gap-2">
+            <h3 className="text-xl font-bold text-amber-900 flex items-center gap-2">
               <span>📿</span> Rudraksha Beads (1 to 21 Mukhi)
             </h3>
-            <p className="text-xs text-slate-300">{remediesData.rudraksha?.description}</p>
+            <p className="text-xs text-slate-900">{remediesData.rudraksha?.description}</p>
             {remediesData.rudraksha?.benefits && (
-              <ul className="list-disc list-inside text-xs text-slate-300">
+              <ul className="list-disc list-inside text-xs text-slate-900">
                 {remediesData.rudraksha.benefits.map((b, i) => (
                   <li key={i}>{b}</li>
                 ))}
@@ -1904,15 +2339,15 @@ export default function EncyclopediaRemediesViewer() {
             {remediesData.rudraksha?.items && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {remediesData.rudraksha.items.map(item => (
-                  <div key={item.name} className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-2 flex flex-col justify-between hover:border-amber-500/40 transition-all">
+                  <div key={item.name} className="bg-white border border-rose-200 p-5 rounded-2xl space-y-2 flex flex-col justify-between shadow-sm hover:border-rose-400 transition-all">
                     <div>
-                      <h4 className="text-lg font-bold text-amber-400">{item.name}</h4>
-                      <p className="text-xs text-slate-300">{item.purpose}</p>
+                      <h4 className="text-lg font-bold text-rose-950">{item.name}</h4>
+                      <p className="text-sm text-rose-900 font-medium">{item.purpose}</p>
                     </div>
                     {item.mantra && (
-                      <div className="pt-2 border-t border-slate-800/80">
-                        <span className="text-[10px] text-amber-400 font-mono block">Mantra:</span>
-                        <span className="text-xs font-mono font-semibold text-slate-200">{item.mantra}</span>
+                      <div className="pt-2 border-t border-rose-100">
+                        <span className="text-[12px] text-rose-800 font-mono font-bold block">Mantra:</span>
+                        <span className="text-sm font-mono font-bold text-rose-950">{item.mantra}</span>
                       </div>
                     )}
                   </div>
@@ -1921,26 +2356,26 @@ export default function EncyclopediaRemediesViewer() {
             )}
             {remediesData.rudrakshaDetails && (
               <div className="space-y-6 mt-8">
-                <h3 className="text-xl font-bold text-amber-300 flex items-center gap-2">
+                <h3 className="text-xl font-bold text-rose-950 flex items-center gap-2">
                   <span>📿</span> Complete Rudraksha Directory (1 to 21 Mukhi + Combination Beads)
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {remediesData.rudrakshaDetails.map(item => (
-                    <div key={item.mukhi} className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-2 flex flex-col justify-between hover:border-amber-500/40 transition-all">
+                    <div key={item.mukhi} className="bg-white border border-rose-200 p-5 rounded-2xl space-y-2 flex flex-col justify-between shadow-sm hover:border-rose-400 transition-all">
                       <div>
-                        <div className="flex justify-between items-center border-b border-slate-800 pb-2 mb-2">
-                          <span className="text-[20px] font-bold text-amber-400">{item.mukhi}</span>
-                          <span className="text-[20px] bg-amber-500/10 text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/20">
+                        <div className="flex justify-between items-center border-b border-rose-100 pb-2 mb-2">
+                          <span className="text-[18px] font-bold text-rose-950">{item.mukhi}</span>
+                          <span className="text-[14px] bg-rose-100 text-rose-900 px-2 py-0.5 rounded-full font-bold border border-rose-200">
                             {item.planet}
                           </span>
                         </div>
-                        <p className="text-[18px] text-slate-300"><strong>Presiding Deity:</strong> {item.deity}</p>
-                        <p className="text-[18px] text-slate-300 mt-1"><strong>Primary Benefits:</strong> {item.benefits}</p>
-                        <p className="text-[18px] text-emerald-300 mt-1"><strong>Health Cures:</strong> {item.healthEffect}</p>
+                        <p className="text-[15px] text-rose-900 font-medium"><strong>Presiding Deity:</strong> {item.deity}</p>
+                        <p className="text-[15px] text-rose-900 mt-1 font-medium"><strong>Primary Benefits:</strong> {item.benefits}</p>
+                        <p className="text-[15px] text-emerald-800 font-bold mt-1"><strong>Health Cures:</strong> {item.healthEffect}</p>
                       </div>
-                      <div className="pt-2 border-t border-slate-800/80">
-                        <span className="text-[18px] text-amber-400 font-mono block">Mantra:</span>
-                        <span className="text-[18px] font-mono font-semibold text-slate-200">{item.mantra}</span>
+                      <div className="pt-2 border-t border-rose-100">
+                        <span className="text-[13px] text-rose-800 font-mono font-bold block">Mantra:</span>
+                        <span className="text-[14px] font-mono font-bold text-rose-950">{item.mantra}</span>
                       </div>
                     </div>
                   ))}
@@ -1954,23 +2389,23 @@ export default function EncyclopediaRemediesViewer() {
         {/* TAB 4: Yantras & Sacred Geometries */}
         {selectedTab === 'yantras' && (
           <div className="space-y-6">
-            <h3 className="text-[22px] font-bold text-amber-300 flex items-center gap-2">
+            <h3 className="text-[22px] font-bold text-amber-900 flex items-center gap-2">
               <span>☸️</span> Sacred Yantras & Cosmic Geometries
-            </h3>
+            </h3>s
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {remediesData.yantraDetails.map(item => (
-                <div key={item.name} className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-3 hover:border-amber-500/40 transition-all">
+                <div key={item.name} className="bg-white border border-slate-800 p-5 rounded-2xl space-y-3 hover:border-amber-500/40 transition-all">
                   <div className="flex justify-between items-start border-b border-slate-800 pb-2">
-                    <h4 className="text-[18px] font-bold text-amber-300">{item.name}</h4>
-                    <span className="text-[18px] bg-indigo-500/20 text-indigo-300 px-2.5 py-0.5 rounded-full font-bold">
+                    <h4 className="text-[18px] font-bold text-amber-900">{item.name}</h4>
+                    <span className="text-[18px] bg-white text-indigo-900 px-2.5 py-0.5 rounded-full font-bold">
                       Direction: {item.direction}
                     </span>
                   </div>
-                  <p className="text-[18px] text-slate-300"><strong>Presiding Deity:</strong> {item.deity}</p>
-                  <p className="text-[18px] text-slate-300"><strong>Benefits & Powers:</strong> {item.benefits}</p>
+                  <p className="text-[18px] text-stone-900 font-medium"><strong>Presiding Deity:</strong> {item.deity}</p>
+                  <p className="text-[18px] text-stone-900 font-medium"><strong>Benefits & Powers:</strong> {item.benefits}</p>
                   <div className="bg-slate-955 p-3 rounded-xl border border-slate-800">
-                    <span className="text-[18px] text-amber-400 font-mono block uppercase">Consecration & Activation Mantra:</span>
-                    <p className="text-[18px] font-sans font-medium text-orange-400 mt-0.5">{item.mantra}</p>
+                    <span className="text-[18px] text-amber-900 font-mono block uppercase">Consecration & Activation Mantra:</span>
+                    <p className="text-[18px] font-sans font-medium text-orange-900 mt-0.5">{item.mantra}</p>
                   </div>
                 </div>
               ))}
@@ -1981,15 +2416,15 @@ export default function EncyclopediaRemediesViewer() {
         {/* TAB 5: Navagraha Plant Remedies */}
         {selectedTab === 'navagrahaPlants' && (
           <div className="space-y-6">
-            <h3 className="text-[22px] font-bold text-amber-300 flex items-center gap-2">
+            <h3 className="text-[22px] font-bold text-green-900 flex items-center gap-2">
               <span>🌿</span> Navagraha Plant Remedies
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {Object.entries(remediesData.navagrahaPlantRemedies).map(([planet, item]) => (
-                <div key={planet} className="bg-slate-900 border border-slate-800 p-5 rounded-2xl hover:border-amber-500/40 transition-all">
-                  <h4 className="text-[18px] font-bold text-amber-300">{item.sacredPlant} ({planet})</h4>
-                  <p className="text-[18px] text-orange-400"><strong>Benefits:</strong> {item.therapeuticProfile}</p>
-                  <p className="text-[18px] text-slate-300"><strong>Usage:</strong> {item.practicalRemedies?.[Object.keys(item.practicalRemedies)[0]]}</p>
+                <div key={planet} className="bg-white border border-slate-800 p-5 rounded-2xl hover:border-amber-500/40 transition-all">
+                  <h4 className="text-[18px] font-bold text-amber-900">{item.sacredPlant} ({planet})</h4>
+                  <p className="text-[18px] text-stone-900 font-medium"><strong>Benefits:</strong> {item.therapeuticProfile}</p>
+                  <p className="text-[18px] text-stone-900 font-medium"><strong>Usage:</strong> {item.practicalRemedies?.[Object.keys(item.practicalRemedies)[0]]}</p>
                 </div>
               ))}
             </div>
@@ -1999,16 +2434,16 @@ export default function EncyclopediaRemediesViewer() {
         {/* TAB 6: Planetary Relief Remedies */}
         {selectedTab === 'planetaryRelief' && (
           <div className="space-y-6">
-            <h3 className="text-[22px] font-bold text-amber-300 flex items-center gap-2">
+            <h3 className="text-[22px] font-bold text-green-900 flex items-center gap-2">
               <span>🪐</span> Planetary Relief Remedies
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {Object.entries(remediesData.planetaryReliefRemedies).map(([planet, item]) => (
-                <div key={planet} className="bg-slate-900 border border-slate-800 p-5 rounded-2xl hover:border-amber-500/40 transition-all">
-                  <h4 className="text-[18px] font-bold text-amber-300">{planet}</h4>
-                  <p className="text-[18px] text-slate-300"><strong>Fasting:</strong> {item.fastingDuration}</p>
-                  <p className="text-[18px] text-slate-300"><strong>Donation:</strong> {item.donationItems}</p>
-                  <p className="text-[18px] text-orange-300"><strong>Mantra:</strong> {item.vedicInvocation}</p>
+                <div key={planet} className="bg-white border border-slate-800 p-5 rounded-2xl hover:border-amber-500/40 transition-all">
+                  <h4 className="text-[18px] font-bold text-green-900">{planet}</h4>
+                  <p className="text-[18px] text-stone-900"><strong>Fasting:</strong> {item.fastingDuration}</p>
+                  <p className="text-[18px] text-stone-900"><strong>Donation:</strong> {item.donationItems}</p>
+                  <p className="text-[18px] text-orange-900"><strong>Mantra:</strong> {item.vedicInvocation}</p>
                 </div>
               ))}
             </div>
@@ -2018,15 +2453,15 @@ export default function EncyclopediaRemediesViewer() {
         {/* TAB 7: Zodiac Sign Remedies */}
         {selectedTab === 'zodiacRemedies' && (
           <div className="space-y-6">
-            <h3 className="text-[22px] font-bold text-amber-300 flex items-center gap-2">
+            <h3 className="text-[22px] font-bold text-amber-900 flex items-center gap-2">
               <span>♈️</span> Zodiac Sign Remedies
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {Object.entries(remediesData.zodiacSignRemedies).map(([sign, data]) => (
-                <div key={sign} className="bg-slate-900 border border-slate-800 p-5 rounded-2xl hover:border-amber-500/40 transition-all">
-                  <h4 className="text-[18px] font-bold text-amber-300">{sign} (Ruling: {data.rulingPlanet})</h4>
-                  <p className="text-[18px] text-slate-300"><strong>Benefits:</strong> {data.physicalAstrologicalProperties}</p>
-                  <p className="text-[18px] text-slate-300"><strong>Fasting:</strong> {data.fastingRules?.duration}</p>
+                <div key={sign} className="bg-white border border-slate-800 p-5 rounded-2xl hover:border-amber-500/40 transition-all">
+                  <h4 className="text-[18px] font-bold text-amber-900">{sign} (Ruling: {data.rulingPlanet})</h4>
+                  <p className="text-[18px] text-slate-900"><strong>Benefits:</strong> {data.physicalAstrologicalProperties}</p>
+                  <p className="text-[18px] text-slate-900"><strong>Fasting:</strong> {data.fastingRules?.duration}</p>
                 </div>
               ))}
             </div>
@@ -2037,18 +2472,18 @@ export default function EncyclopediaRemediesViewer() {
         {selectedTab === 'lalKitabHouses' && (
           <div className="space-y-6">
             {/* System Overview */}
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-3">
-              <h3 className="text-[22px] font-bold text-amber-300 flex items-center gap-2">
+            <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-3">
+              <h3 className="text-[22px] font-bold text-amber-900 flex items-center gap-2">
                 <span>📜</span> Lal Kitab System, Astro-Palmistry & Age Milestones
               </h3>
-              <p className="text-[18px] text-slate-300 leading-relaxed">
+              <p className="text-[18px] text-slate-900 leading-relaxed">
                 {remediesData.lalKitabSystem?.introduction}
               </p>
               <div className="grid grid-cols-2 md:grid-cols-5 gap-3 pt-2">
                 {remediesData.lalKitabSystem?.ageMilestones && Object.entries(remediesData.lalKitabSystem.ageMilestones).map(([pl, age]) => (
-                  <div key={pl} className="bg-slate-955 p-3 rounded-xl border border-slate-800 text-center">
-                    <span className="text-[18px] font-bold text-amber-400 block uppercase">{pl} Activation</span>
-                    <strong className="text-[18px] text-slate-100">{age}</strong>
+                  <div key={pl} className="bg-white p-3 rounded-xl border border-slate-800 text-center">
+                    <span className="text-[18px] font-bold text-amber-900 block uppercase">{pl} Activation</span>
+                    <strong className="text-[18px] text-slate-900">{age}</strong>
                   </div>
                 ))}
               </div>
@@ -2056,16 +2491,16 @@ export default function EncyclopediaRemediesViewer() {
 
             {/* 9 Planetary Debts */}
             {remediesData.lalKitabSystem?.ninePlanetaryDebts && (
-              <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
-                <h4 className="text-[18px] font-bold text-amber-400 uppercase tracking-wider">
+              <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-4">
+                <h4 className="text-[18px] font-bold text-green-900 uppercase tracking-wider">
                   9 Planetary Debts (Pitru Rina) & Relative Remedies
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {remediesData.lalKitabSystem.ninePlanetaryDebts.map(d => (
-                    <div key={d.debt} className="bg-slate-955 p-4 rounded-2xl border border-slate-800 space-y-1">
-                      <strong className="text-[18px] text-amber-300 block">{d.debt}</strong>
-                      <p className="text-[18px] text-slate-400"><strong>Cause:</strong> {d.cause}</p>
-                      <p className="text-[18px] text-emerald-300 pt-1"><strong>Remedy:</strong> {d.remedy}</p>
+                    <div key={d.debt} className="bg-white p-4 rounded-2xl border border-slate-800 space-y-1">
+                      <strong className="text-[18px] text-amber-900 block">{d.debt}</strong>
+                      <p className="text-[18px] text-slate-900"><strong>Cause:</strong> {d.cause}</p>
+                      <p className="text-[18px] text-slate-900"><strong>Remedy:</strong> {d.remedy}</p>
                     </div>
                   ))}
                 </div>
@@ -2074,31 +2509,95 @@ export default function EncyclopediaRemediesViewer() {
 
             {/* Strict Donation Warnings */}
             {remediesData.lalKitabSystem?.strictDonationWarnings && (
-              <div className="bg-rose-950/40 border border-rose-500/30 p-6 rounded-3xl space-y-3">
-                <h4 className="text-[18px] font-bold text-rose-300 uppercase tracking-wider flex items-center gap-2">
-                  <ShieldAlert className="w-5 h-5 text-rose-400 shrink-0" /> Strict Lal Kitab Prohibitions & Donation Warnings
+              <div className="bg-white border border-rose-500/30 p-6 rounded-3xl space-y-3">
+                <h4 className="text-[18px] font-bold text-green-900 uppercase tracking-wider flex items-center gap-2">
+                  <ShieldAlert className="w-5 h-5 text-green-900 shrink-0" /> Strict Lal Kitab Prohibitions & Donation Warnings
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                   {remediesData.lalKitabSystem.strictDonationWarnings.map((w, idx) => (
-                    <div key={idx} className="bg-slate-955/90 p-3 rounded-xl border border-rose-500/20">
-                      <span className="text-[18px] font-bold text-rose-400 block">{w.condition}</span>
-                      <p className="text-[18px] text-slate-300 mt-1">{w.warning}</p>
+                    <div key={idx} className="bg-white p-3 rounded-xl border border-rose-500/20">
+                      <span className="text-[18px] font-bold text-rose-900 block">{w.condition}</span>
+                      <p className="text-[18px] text-slate-900 mt-1">{w.warning}</p>
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
+            {/* User Birth Chart Lal Kitab Summary Panel */}
+            {userChartData && (
+              <div className="bg-white p-5 rounded-2xl border border-rose-200 shadow-sm space-y-4 text-rose-950">
+                <div className="flex flex-wrap items-center justify-between border-b border-rose-200 pb-3 gap-2">
+                  <div>
+                    <span className="text-[18px] text-green-900 font-semibold uppercase tracking-wider block">Native Birth Details & Dynamic Lal Kitab Placements</span>
+                    <h3 className="text-[20px] font-bold text-green-900">
+                      Lagna Ascendant: <span className="text-green-700 font-bold">{userAscendant || 'Aries'}</span>
+                    </h3>
+                  </div>
+                  {userChartData.dasha && (
+                    <div className="bg-rose-50 px-4 py-2 rounded-xl border border-rose-200 text-right">
+                      <span className="text-[18px] text-rose-800 uppercase font-mono block">Current Mahadasha</span>
+                      <span className="text-[16px] text-rose-950 font-bold">
+                        {userChartData.dasha.current_mahadasha || userChartData.dasha.mahadasha || 'Active Dasha Period'}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-3">
+                  {Object.keys(remediesData.lalKitabHouseRemedies).map(planet => {
+                    // Extract user's planet house position & strength from chart data using getPlanetBirthHouse
+                    const houseNum = getPlanetBirthHouse(planet);
+                    const houseKey = houseNum ? `H${houseNum}` : null;
+                    const lkRemedy = houseKey ? remediesData.lalKitabHouseRemedies[planet]?.[houseKey] : null;
+
+                    const pStrength = userChartData.strength?.planets?.[planet]?.total || userChartData.shadbala?.[planet]?.total || null;
+                    const isSelected = selectedPlanet === planet;
+
+                    return (
+                      <div
+                        key={planet}
+                        onClick={() => setSelectedPlanet(planet)}
+                        className={`p-3.5 rounded-xl border cursor-pointer transition-all ${isSelected
+                          ? 'bg-rose-100 border-rose-400 shadow-sm ring-1 ring-rose-400'
+                          : 'bg-rose-50/50 border-rose-200 hover:border-rose-300'
+                          }`}
+                      >
+                        <div className="flex justify-between items-center mb-1">
+                          <span className="text-[18px] font-bold text-rose-950">{planet}</span>
+                          {houseNum ? (
+                            <span className="text-[16px] bg-rose-200 text-rose-950 px-2 py-0.5 rounded-full font-bold border border-rose-300">
+                              House {houseNum} (H{houseNum})
+                            </span>
+                          ) : (
+                            <span className="text-[18px] bg-white text-rose-800 border border-rose-200 px-2 py-0.5 rounded-full">Select to View</span>
+                          )}
+                        </div>
+                        {pStrength && (
+                          <div className="text-[18px] text-rose-800 font-mono mb-1">
+                            Shadbala Strength: <span className="text-rose-950 font-bold">{Math.round(pStrength)}</span>
+                          </div>
+                        )}
+                        <p className="text-[18px] text-rose-900 line-clamp-2 italic font-medium">
+                          {lkRemedy || remediesData.lalKitabHouseRemedies[planet]?.H1 || 'View House Remedies'}
+                        </p>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {/* Interactive House-by-House Remedies */}
-            <div className="flex items-center justify-between bg-slate-900 p-4 rounded-2xl border border-slate-800 flex-wrap gap-4">
+            <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-rose-200 shadow-sm flex-wrap gap-4">
               <div>
-                <label className="text-[18px] font-bold text-amber-400 uppercase tracking-wider block">Select Planet for House 1 to 12 Remedies:</label>
+                <label className="text-[16px] font-bold text-rose-950 uppercase tracking-wider block">Select Planet for House 1 to 12 Remedies:</label>
                 <div className="flex gap-2 overflow-x-auto pt-1">
                   {Object.keys(remediesData.lalKitabHouseRemedies).map(planet => (
                     <button
                       key={planet}
                       onClick={() => setSelectedPlanet(planet)}
-                      className={`px-3 py-1 rounded-lg text-[18px] font-bold transition-all border ${selectedPlanet === planet ? 'bg-amber-500 text-slate-950 border-amber-400' : 'bg-slate-800 text-slate-300 border-slate-700'
+                      className={`px-3 py-1 rounded-lg text-[16px] font-bold transition-all border ${selectedPlanet === planet ? 'bg-rose-700 text-white border-rose-800' : 'bg-rose-50 text-rose-950 border-rose-200 hover:bg-rose-100'
                         }`}
                     >
                       {planet}
@@ -2111,13 +2610,30 @@ export default function EncyclopediaRemediesViewer() {
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {Array.from({ length: 12 }, (_, i) => `H${i + 1}`).map(hKey => {
                 const remedyText = remediesData.lalKitabHouseRemedies[selectedPlanet]?.[hKey] || "No specific house affliction remedy listed.";
+
+                // Highlight user's actual birth placement house card using getPlanetBirthHouse
+                const userHouseNum = getPlanetBirthHouse(selectedPlanet);
+                const isUserBirthHouse = userHouseNum && `H${userHouseNum}` === hKey;
+
                 return (
-                  <div key={hKey} className="bg-slate-900 border border-slate-800 p-4 rounded-2xl space-y-2">
-                    <div className="flex justify-between items-center border-b border-slate-800 pb-1.5">
-                      <span className="text-[18px] font-bold text-amber-400">{selectedPlanet} in House {hKey.replace('H', '')}</span>
-                      <span className="text-[16px] text-emerald-300 font-mono">Lal Kitab</span>
+                  <div
+                    key={hKey}
+                    className={`p-4 rounded-2xl space-y-2 border transition-all ${isUserBirthHouse
+                      ? 'bg-amber-50 border-amber-400 shadow-md ring-2 ring-amber-400'
+                      : 'bg-white border-rose-200 shadow-sm'
+                      }`}
+                  >
+                    <div className="flex justify-between items-center border-b border-rose-100 pb-1.5">
+                      <span className="text-[18px] font-bold text-rose-950">{selectedPlanet} in House {hKey.replace('H', '')}</span>
+                      {isUserBirthHouse ? (
+                        <span className="text-[13px] bg-amber-500 text-slate-950 font-black px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+                          ⭐ Birth House
+                        </span>
+                      ) : (
+                        <span className="text-[14px] text-rose-800 font-mono font-bold">Lal Kitab</span>
+                      )}
                     </div>
-                    <p className="text-[18px] text-slate-200 leading-relaxed">{remedyText}</p>
+                    <p className="text-[16px] text-rose-950 leading-relaxed font-medium">{remedyText}</p>
                   </div>
                 );
               })}
@@ -2134,8 +2650,8 @@ export default function EncyclopediaRemediesViewer() {
                   key={planet}
                   onClick={() => setSelectedPlanet(planet)}
                   className={`px-4 py-2 rounded-xl text-[18px] font-bold shrink-0 transition-all border ${selectedPlanet === planet
-                    ? 'bg-amber-500 text-slate-950 border-amber-400 shadow-md'
-                    : 'bg-slate-900 text-slate-300 border-slate-800 hover:bg-slate-800'
+                    ? 'bg-white text-orange-600 border-amber-900 shadow-md'
+                    : 'bg-white text-slate-900 border-slate-800 hover:bg-yellow-200'
                     }`}
                 >
                   {planet}
@@ -2143,34 +2659,34 @@ export default function EncyclopediaRemediesViewer() {
               ))}
             </div>
 
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-6">
-              <h3 className="text-[18px] font-bold text-amber-300 border-b border-slate-800 pb-3">
+            <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-6">
+              <h3 className="text-[18px] font-bold text-green-900 border-b border-slate-800 pb-3">
                 Deities & Avatars for {deityInfo.planet}
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-1">
-                  <span className="text-[18px] font-bold text-amber-400 uppercase">Maharishi Parasara View</span>
-                  <p className="text-[18px] font-bold text-slate-100">Sri Vishnu Avatar: {deityInfo.vishnuAvatar}</p>
-                  <p className="text-[18px] text-slate-300">Presiding Deity: {deityInfo.presidingDeity}</p>
+                <div className="bg-white p-4 rounded-2xl border border-slate-800 space-y-1">
+                  <span className="text-[18px] font-bold text-amber-900 uppercase">Maharishi Parasara View</span>
+                  <p className="text-[18px] font-bold text-slate-900">Sri Vishnu Avatar: {deityInfo.vishnuAvatar}</p>
+                  <p className="text-[18px] text-slate-900">Presiding Deity: {deityInfo.presidingDeity}</p>
                 </div>
 
-                <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-1">
-                  <span className="text-[18px] font-bold text-amber-400 uppercase">Maharishi Jaimini View</span>
-                  <p className="text-[18px] font-bold text-slate-100">Jaimini Deity: {deityInfo.jaiminiDeity}</p>
-                  <p className="text-[18px] text-slate-300">Tantrik Deity: {deityInfo.tantrikDeity}</p>
+                <div className="bg-white p-4 rounded-2xl border border-slate-800 space-y-1">
+                  <span className="text-[18px] font-bold text-amber-900 uppercase">Maharishi Jaimini View</span>
+                  <p className="text-[18px] font-bold text-slate-900">Jaimini Deity: {deityInfo.jaiminiDeity}</p>
+                  <p className="text-[18px] text-slate-900">Tantrik Deity: {deityInfo.tantrikDeity}</p>
                 </div>
 
-                <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-1">
-                  <span className="text-[18px] font-bold text-amber-400 uppercase">Lal Kitab Presiding Deity</span>
-                  <p className="text-[18px] font-bold text-slate-100">{deityInfo.lalKitabDeity}</p>
-                  <p className="text-[18px] text-slate-300">Propitiation: Offer worship & Daan</p>
+                <div className="bg-white p-4 rounded-2xl border border-slate-800 space-y-1">
+                  <span className="text-[18px] font-bold text-amber-900 uppercase">Lal Kitab Presiding Deity</span>
+                  <p className="text-[18px] font-bold text-slate-900">{deityInfo.lalKitabDeity}</p>
+                  <p className="text-[18px] text-slate-900">Propitiation: Offer worship & Daan</p>
                 </div>
               </div>
 
-              <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl">
-                <span className="text-[18px] text-amber-400 font-bold uppercase">Vedic Planet Mantra:</span>
-                <p className="text-[18px] font-mono font-medium text-orange-300 mt-1">{deityInfo.vedicMantra}</p>
+              <div className="bg-white border border-amber-500/20 p-4 rounded-xl">
+                <span className="text-[18px] text-green-900 font-bold uppercase">Vedic Planet Mantra:</span>
+                <p className="text-[18px] font-mono font-medium text-orange-900 mt-1">{deityInfo.vedicMantra}</p>
               </div>
             </div>
           </div>
@@ -2179,24 +2695,24 @@ export default function EncyclopediaRemediesViewer() {
         {/* TAB 7: Vratas & Fasting Protocol */}
         {selectedTab === 'vratas' && (
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-3">
-              <h3 className="text-[22px] font-bold text-amber-300 flex items-center gap-2">
+            <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-3">
+              <h3 className="text-[22px] font-bold text-green-900 flex items-center gap-2">
                 <span>🚩</span> Philosophy of Fasting (Upa-vaas) & Universal Vratas
               </h3>
-              <p className="text-[18px] text-slate-300 leading-relaxed">
+              <p className="text-[18px] text-stone-900 leading-relaxed">
                 {remediesData.fastingPhilosophy?.etymology}
               </p>
             </div>
 
             {/* Great Sayings on Fasting */}
             {remediesData.fastingPhilosophy?.greatSayings && (
-              <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-3">
-                <h4 className="text-[18px] font-bold text-amber-400 uppercase tracking-wider">Great Sayings on Fasting</h4>
+              <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-3">
+                <h4 className="text-[18px] font-bold text-green-900 uppercase tracking-wider">Great Sayings on Fasting</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {remediesData.fastingPhilosophy.greatSayings.map((s, idx) => (
-                    <div key={idx} className="bg-slate-955 p-3.5 rounded-xl border border-slate-800 flex flex-col justify-between">
-                      <p className="text-[18px] text-slate-200 italic">"{s.quote}"</p>
-                      <span className="text-[18px] font-bold text-amber-400 mt-2 text-right">— {s.source}</span>
+                    <div key={idx} className="bg-white p-3.5 rounded-xl border border-slate-800 flex flex-col justify-between">
+                      <p className="text-[18px] text-stone-900 italic">"{s.quote}"</p>
+                      <span className="text-[18px] font-bold text-green-900 mt-2 text-right">— {s.source}</span>
                     </div>
                   ))}
                 </div>
@@ -2205,13 +2721,13 @@ export default function EncyclopediaRemediesViewer() {
 
             {/* Global Traditions */}
             {remediesData.fastingPhilosophy?.globalTraditions && (
-              <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-3">
-                <h4 className="text-[18px] font-bold text-amber-400 uppercase tracking-wider">Fasting in Global Traditions & Medicine</h4>
+              <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-3">
+                <h4 className="text-[18px] font-bold text-green-900 uppercase tracking-wider">Fasting in Global Traditions & Medicine</h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                   {Object.entries(remediesData.fastingPhilosophy.globalTraditions).map(([trad, desc]) => (
-                    <div key={trad} className="bg-slate-955 p-3 rounded-xl border border-slate-800">
-                      <strong className="text-[18px] text-amber-300 block">{trad} Tradition</strong>
-                      <p className="text-[18px] text-slate-300 mt-0.5">{desc}</p>
+                    <div key={trad} className="bg-white p-3 rounded-xl border border-slate-800">
+                      <strong className="text-[18px] text-green-900 block">{trad} Tradition</strong>
+                      <p className="text-[18px] text-slate-900 mt-0.5">{desc}</p>
                     </div>
                   ))}
                 </div>
@@ -2222,16 +2738,16 @@ export default function EncyclopediaRemediesViewer() {
             <h4 className="text-[18px] font-bold text-amber-300 uppercase tracking-wider pt-2">Primary Weekly & Festival Vratas</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {remediesData.vratasAndFasts.map(item => (
-                <div key={item.name} className="bg-slate-900 border border-slate-800 p-5 rounded-2xl space-y-2 hover:border-amber-500/40 transition-all">
+                <div key={item.name} className="bg-white border border-slate-800 p-5 rounded-2xl space-y-2 hover:border-amber-500/40 transition-all">
                   <div className="flex justify-between items-center border-b border-slate-800 pb-2">
-                    <h4 className="text-[18px] font-bold text-amber-400">{item.name}</h4>
-                    <span className="text-[18px] bg-amber-500/10 text-amber-300 px-2.5 py-0.5 rounded-full border border-amber-500/20">
+                    <h4 className="text-[18px] font-bold text-green-900">{item.name}</h4>
+                    <span className="text-[18px] bg-white text-amber-900 px-2.5 py-0.5 rounded-full border border-amber-500/20">
                       {item.day}
                     </span>
                   </div>
-                  <p className="text-[18px] text-slate-300"><strong>Presiding Deity:</strong> {item.deity}</p>
-                  <p className="text-[18px] text-slate-300"><strong>Purpose & Benefits:</strong> {item.purpose}</p>
-                  <p className="text-[18px] text-slate-400 leading-relaxed bg-slate-955 p-3 rounded-xl border border-slate-800">
+                  <p className="text-[18px] text-slate-900"><strong>Presiding Deity:</strong> {item.deity}</p>
+                  <p className="text-[18px] text-slate-900"><strong>Purpose & Benefits:</strong> {item.purpose}</p>
+                  <p className="text-[18px] text-slate-900 leading-relaxed bg-slate-955 p-3 rounded-xl border border-slate-800">
                     <strong>Auspicious Method (Vidhi):</strong> {item.method}
                   </p>
                 </div>
@@ -2240,19 +2756,19 @@ export default function EncyclopediaRemediesViewer() {
 
             {/* Directory of All 67 Vratas */}
             {remediesData.fastingPhilosophy?.all67VratasDirectory && (
-              <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
-                <h4 className="text-[18px] font-bold text-amber-300 uppercase tracking-wider">
+              <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-4">
+                <h4 className="text-[18px] font-bold text-amber-900 uppercase tracking-wider">
                   Complete Index of All 67 Sacred Vratas
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {remediesData.fastingPhilosophy.all67VratasDirectory.map(vr => (
-                    <div key={vr.id} className="bg-slate-955 p-3 rounded-xl border border-slate-800 flex gap-2">
-                      <span className="text-[18px] font-bold text-amber-400 bg-amber-500/10 px-2 py-1 rounded-lg border border-amber-500/20 h-fit shrink-0">
+                    <div key={vr.id} className="bg-white p-3 rounded-xl border border-slate-800 flex gap-2">
+                      <span className="text-[18px] font-bold text-amber-900 bg-amber-500/10 px-2 py-1 rounded-lg border border-amber-500/20 h-fit shrink-0">
                         #{vr.id}
                       </span>
                       <div>
-                        <strong className="text-[18px] text-orange-400 block">{vr.name}</strong>
-                        <p className="text-[18px] text-slate-400 leading-tight mt-0.5">{vr.purpose}</p>
+                        <strong className="text-[18px] text-orange-900 block">{vr.name}</strong>
+                        <p className="text-[18px] text-slate-900 leading-tight mt-0.5">{vr.purpose}</p>
                       </div>
                     </div>
                   ))}
@@ -2265,33 +2781,33 @@ export default function EncyclopediaRemediesViewer() {
         {/* TAB 8: Color Therapy & Dress Guide */}
         {selectedTab === 'colorTherapy' && (
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
-              <h3 className="text-[22px] font-bold text-amber-300 flex items-center gap-2">
-                <Palette className="w-6 h-6 text-amber-400" /> Color Therapy, VIBGYOR & Solarized Water Healing
+            <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-4">
+              <h3 className="text-[22px] font-bold text-green-900 flex items-center gap-2">
+                <Palette className="w-6 h-6 text-green-900" /> Color Therapy, VIBGYOR & Solarized Water Healing
               </h3>
-              <p className="text-[18px] text-slate-300 leading-relaxed">{remediesData.colorTherapy.description}</p>
+              <p className="text-[18px] text-slate-900 leading-relaxed">{remediesData.colorTherapy.description}</p>
               {remediesData.lalKitabSystem?.colorTherapyExtended?.conceptAndVibgyor && (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
-                  <div className="bg-slate-955 p-3 rounded-xl border border-slate-800">
-                    <strong className="text-[18px] text-amber-400 block">Prism & VIBGYOR Science</strong>
-                    <p className="text-[18px] text-slate-300">{remediesData.lalKitabSystem.colorTherapyExtended.conceptAndVibgyor.concentratedColor}</p>
+                  <div className="bg-white p-3 rounded-xl border border-slate-800">
+                    <strong className="text-[18px] text-amber-900 block">Prism & VIBGYOR Science</strong>
+                    <p className="text-[18px] text-slate-900">{remediesData.lalKitabSystem.colorTherapyExtended.conceptAndVibgyor.concentratedColor}</p>
                   </div>
-                  <div className="bg-slate-955 p-3 rounded-xl border border-slate-800">
-                    <strong className="text-[18px] text-amber-400 block">Solarized Water Tonic</strong>
-                    <p className="text-[18px] text-slate-300">{remediesData.lalKitabSystem.colorTherapyExtended.conceptAndVibgyor.solarizedWater}</p>
+                  <div className="bg-white p-3 rounded-xl border border-slate-800">
+                    <strong className="text-[18px] text-amber-900 block">Solarized Water Tonic</strong>
+                    <p className="text-[18px] text-slate-900">{remediesData.lalKitabSystem.colorTherapyExtended.conceptAndVibgyor.solarizedWater}</p>
                   </div>
                 </div>
               )}
             </div>
 
             {/* Daily Dress Guide */}
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
-              <h4 className="text-[18px] font-bold text-amber-400 uppercase tracking-wider">Day-Wise Clothing & Gemstone Color Guide</h4>
+            <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-4">
+              <h4 className="text-[18px] font-bold text-amber-900 uppercase tracking-wider">Day-Wise Clothing & Gemstone Color Guide</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 text-xs">
                 {Object.entries(remediesData.colorTherapy.dailyDressGuide).map(([day, guide]) => (
-                  <div key={day} className="bg-slate-955 p-3.5 rounded-xl border border-slate-800">
-                    <span className="text-[18px] text-amber-300 font-bold block mb-1">{day}</span>
-                    <p className="text-[18px] text-slate-300 leading-relaxed">{guide}</p>
+                  <div key={day} className="bg-white p-3.5 rounded-xl border border-slate-800">
+                    <span className="text-[18px] text-amber-900 font-bold block mb-1">{day}</span>
+                    <p className="text-[18px] text-slate-900 leading-relaxed">{guide}</p>
                   </div>
                 ))}
               </div>
@@ -2299,17 +2815,17 @@ export default function EncyclopediaRemediesViewer() {
 
             {/* Extended Color Properties & Cures */}
             {remediesData.lalKitabSystem?.colorTherapyExtended?.colorPropertiesAndCures && (
-              <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
+              <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-4">
                 <h4 className="text-[18px] font-bold text-amber-400 uppercase tracking-wider">
                   VIBGYOR Color Properties, Psychology & Health Cures
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {Object.entries(remediesData.lalKitabSystem.colorTherapyExtended.colorPropertiesAndCures).map(([colName, info]) => (
-                    <div key={colName} className="bg-slate-955 p-4 rounded-2xl border border-slate-800 space-y-1">
-                      <strong className="text-[18px] text-amber-300 block">{colName}</strong>
-                      <p className="text-[18px] text-slate-300"><strong>Qualities:</strong> {info.qualities}</p>
-                      <p className="text-[18px] text-slate-400"><strong>Psychology:</strong> {info.psychology}</p>
-                      <p className="text-[18px] text-emerald-300 pt-1"><strong>Health Cures:</strong> {info.healthCures}</p>
+                    <div key={colName} className="bg-white p-4 rounded-2xl border border-slate-800 space-y-1">
+                      <strong className="text-[18px] text-amber-900 block">{colName}</strong>
+                      <p className="text-[18px] text-slate-900"><strong>Qualities:</strong> {info.qualities}</p>
+                      <p className="text-[18px] text-slate-900"><strong>Psychology:</strong> {info.psychology}</p>
+                      <p className="text-[18px] text-emerald-900 pt-1"><strong>Health Cures:</strong> {info.healthCures}</p>
                     </div>
                   ))}
                 </div>
@@ -2318,15 +2834,15 @@ export default function EncyclopediaRemediesViewer() {
 
             {/* Colored Rosaries (Mala) Guide */}
             {remediesData.lalKitabSystem?.colorTherapyExtended?.coloredRosariesMalaGuide && (
-              <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
-                <h4 className="text-[18px] font-bold text-amber-400 uppercase tracking-wider">
+              <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-4">
+                <h4 className="text-[18px] font-bold text-amber-900 uppercase tracking-wider">
                   Colored Rosaries (Mala) Therapy Guide
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                   {remediesData.lalKitabSystem.colorTherapyExtended.coloredRosariesMalaGuide.map(ros => (
-                    <div key={ros.rosary} className="bg-slate-955 p-3.5 rounded-xl border border-slate-800">
-                      <strong className="text-[18px] text-amber-300 block">{ros.rosary}</strong>
-                      <p className="text-[18px] text-slate-300 mt-0.5">{ros.purpose}</p>
+                    <div key={ros.rosary} className="bg-white p-3.5 rounded-xl border border-slate-800">
+                      <strong className="text-[18px] text-amber-900 block">{ros.rosary}</strong>
+                      <p className="text-[18px] text-slate-900 mt-0.5">{ros.purpose}</p>
                     </div>
                   ))}
                 </div>
@@ -2340,39 +2856,39 @@ export default function EncyclopediaRemediesViewer() {
           <div className="space-y-6">
 
             {/* Concept Header */}
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-3">
-              <h3 className="text-xl font-bold text-amber-300 flex items-center gap-2">
+            <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-3">
+              <h3 className="text-xl font-bold text-amber-900 flex items-center gap-2">
                 <span>🧘</span> Science of Meditation, Sound Vibrations & Kundalini
               </h3>
-              <p className="text-[18px] text-slate-300 leading-relaxed">
+              <p className="text-[18px] text-slate-900 leading-relaxed">
                 {remediesData.meditationAndMantras.meditationConcept.definition}
               </p>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2">
                 {remediesData.meditationAndMantras.meditationConcept.stages.map(stg => (
-                  <div key={stg.stage} className="bg-slate-955 p-3 rounded-xl border border-slate-800">
-                    <span className="text-[18px] text-amber-400 font-bold block">{stg.stage}</span>
-                    <span className="text-[18px] text-slate-300">{stg.meaning}</span>
+                  <div key={stg.stage} className="bg-white p-3 rounded-xl border border-slate-800">
+                    <span className="text-[18px] text-amber-900 font-bold block">{stg.stage}</span>
+                    <span className="text-[18px] text-slate-900">{stg.meaning}</span>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* 7 Chakras & Seed Mantras Table */}
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
-              <h4 className="text-[18px] font-bold text-amber-400 uppercase tracking-wider">
+            <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-4">
+              <h4 className="text-[18px] font-bold text-amber-900 uppercase tracking-wider">
                 7 Chakras, Governing Planets & Seed Mantras
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {remediesData.meditationAndMantras.chakrasAndSeedMantras.map(ch => (
-                  <div key={ch.chakra} className="bg-slate-955 p-4 rounded-2xl border border-slate-800 flex justify-between items-center">
+                  <div key={ch.chakra} className="bg-white p-4 rounded-2xl border border-slate-800 flex justify-between items-center">
                     <div>
-                      <span className="text-[18px] font-bold text-amber-300">{ch.chakra}</span>
-                      <span className="text-[18px] text-slate-400 block">{ch.position}</span>
-                      <span className="text-[18px] text-slate-300 mt-1 block">Planet: <strong>{ch.planet}</strong></span>
+                      <span className="text-[18px] font-bold text-amber-900">{ch.chakra}</span>
+                      <span className="text-[18px] text-slate-900 block">{ch.position}</span>
+                      <span className="text-[18px] text-slate-900 mt-1 block">Planet: <strong>{ch.planet}</strong></span>
                     </div>
-                    <div className="text-right bg-amber-500/10 px-3 py-1.5 rounded-xl border border-amber-500/20">
-                      <span className="text-[18px] text-amber-400 font-mono block uppercase">Seed</span>
-                      <span className="text-[18px] font-mono font-black text-amber-200">{ch.seedMantra}</span>
+                    <div className="text-right bg-white px-3 py-1.5 rounded-xl border border-slate-800">
+                      <span className="text-[18px] text-amber-900 font-mono block uppercase">Seed</span>
+                      <span className="text-[18px] font-mono font-black text-amber-900">{ch.seedMantra}</span>
                     </div>
                   </div>
                 ))}
@@ -2382,25 +2898,25 @@ export default function EncyclopediaRemediesViewer() {
             {/* Japa Methods & Sadhaka Rules */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Japa Methods */}
-              <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-3">
-                <h4 className="text-base font-bold text-amber-400 uppercase">3 Methods of Japa (Recitation)</h4>
+              <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-3">
+                <h4 className="text-base font-bold text-amber-900 uppercase">3 Methods of Japa (Recitation)</h4>
                 {remediesData.meditationAndMantras.japaMethodsAndRules.japaMethods.map(m => (
                   <div key={m.type} className="bg-slate-955 p-3 rounded-xl border border-slate-800">
-                    <strong className="text-[18px] text-amber-300 block">{m.type} Japa</strong>
-                    <p className="text-[18px] text-slate-300">{m.description}</p>
+                    <strong className="text-[18px] text-amber-900 block">{m.type} Japa</strong>
+                    <p className="text-[18px] text-slate-900">{m.description}</p>
                   </div>
                 ))}
-                <div className="p-3 bg-amber-500/10 rounded-xl border border-amber-500/20 text-xs text-amber-200">
+                <div className="p-3 bg-white rounded-xl border border-amber-500/20 text-xs text-amber-900">
                   <strong>Mantra Siddhi Rule:</strong> {remediesData.meditationAndMantras.japaMethodsAndRules.mantraSiddhiRule}
                 </div>
               </div>
 
               {/* Sadhaka Code of Conduct */}
-              <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-3">
-                <h4 className="text-[18px] font-bold text-amber-400 uppercase">16 Codes for Mantra Sadhaka</h4>
-                <div className="space-y-1 text-[18px] text-slate-300">
+              <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-3">
+                <h4 className="text-[18px] font-bold text-amber-900 uppercase">16 Codes for Mantra Sadhaka</h4>
+                <div className="space-y-1 text-[18px] text-slate-900">
                   {remediesData.meditationAndMantras.japaMethodsAndRules.sadhakaCodes.map((code, idx) => (
-                    <p key={idx} className="bg-slate-955 p-2 rounded-lg border border-slate-800/60">
+                    <p key={idx} className="bg-white p-2 rounded-lg border border-slate-800/60">
                       {code}
                     </p>
                   ))}
@@ -2409,50 +2925,50 @@ export default function EncyclopediaRemediesViewer() {
             </div>
 
             {/* Gayatri Mantras */}
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
-              <h4 className="text-[18px] font-bold text-amber-400 uppercase">Key Gayatri Mantras</h4>
+            <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-4">
+              <h4 className="text-[18px] font-bold text-amber-900 uppercase">Key Gayatri Mantras</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {remediesData.meditationAndMantras.keyGayatriMantras.map(g => (
-                  <div key={g.name} className="bg-slate-955 p-4 rounded-2xl border border-slate-800 space-y-1">
+                  <div key={g.name} className="bg-white p-4 rounded-2xl border border-slate-800 space-y-1">
                     <div className="flex justify-between items-center border-b border-slate-800 pb-1">
-                      <span className="text-[18px] text-amber-300">{g.name}</span>
-                      <span className="text-[18px] text-amber-400 ">{g.purpose}</span>
+                      <span className="text-[18px] text-amber-900">{g.name}</span>
+                      <span className="text-[18px] text-amber-900 ">{g.purpose}</span>
                     </div>
-                    <p className="text-[18px] text-slate-200 pt-1">{g.mantra}</p>
+                    <p className="text-[18px] text-slate-900 pt-1">{g.mantra}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Dashavtar Mantras */}
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
-              <h4 className="text-[18px] font-bold text-amber-400 uppercase">Vishnu Dashavtar Mantras</h4>
+            <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-4">
+              <h4 className="text-[18px] font-bold text-amber-900 uppercase">Vishnu Dashavtar Mantras</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {remediesData.meditationAndMantras.dashavtarMantras.map(d => (
-                  <div key={d.avatar} className="bg-slate-955 p-3.5 rounded-xl border border-slate-800 space-y-0.5">
+                  <div key={d.avatar} className="bg-white p-3.5 rounded-xl border border-slate-800 space-y-0.5">
                     <div className="flex justify-between items-center">
-                      <strong className="text-[18px] text-amber-300">{d.avatar}</strong>
-                      <span className="text-[18px] bg-amber-500/10 text-amber-400 px-2 py-0.5 rounded-full font-bold">
+                      <strong className="text-[18px] text-amber-900">{d.avatar}</strong>
+                      <span className="text-[18px] bg-white text-amber-900 px-2 py-0.5 rounded-full font-bold">
                         Planet: {d.planet}
                       </span>
                     </div>
-                    <p className="text-[18px] font-mono text-slate-200 pt-1">{d.mantra}</p>
+                    <p className="text-[18px] font-mono text-slate-900 pt-1">{d.mantra}</p>
                   </div>
                 ))}
               </div>
             </div>
 
             {/* Special Purpose Mantras */}
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
-              <h4 className="text-[18px] font-bold text-amber-400 uppercase">Special Purpose Mantras</h4>
+            <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-4">
+              <h4 className="text-[18px] font-bold text-amber-900 uppercase">Special Purpose Mantras</h4>
               <div className="space-y-3">
                 {remediesData.meditationAndMantras.specialPurposeMantras.map(sp => (
-                  <div key={sp.purpose} className="bg-slate-955 p-4 rounded-2xl border border-slate-800 space-y-1">
+                  <div key={sp.purpose} className="bg-white p-4 rounded-2xl border border-slate-800 space-y-1">
                     <div className="flex justify-between items-center border-b border-slate-800 pb-1">
-                      <span className="text-[18px] font-bold text-amber-300">{sp.purpose}</span>
-                      <span className="text-[18px] text-amber-400">{sp.deity}</span>
+                      <span className="text-[18px] font-bold text-amber-900">{sp.purpose}</span>
+                      <span className="text-[18px] text-amber-900">{sp.deity}</span>
                     </div>
-                    <p className="text-[18px] font-mono font-bold text-amber-200 pt-1">{sp.mantra}</p>
+                    <p className="text-[18px] font-mono font-bold text-amber-900 pt-1">{sp.mantra}</p>
                   </div>
                 ))}
               </div>
@@ -2463,15 +2979,15 @@ export default function EncyclopediaRemediesViewer() {
         {/* TAB: Crystals */}
         {selectedTab === 'crystals' && remediesData.lalKitabSystem?.crystals && (
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
-              <h3 className="text-[22px] font-bold text-amber-300 flex items-center gap-2">
-                <Sparkles className="w-6 h-6 text-amber-400" /> Sacred Crystals & Lockets
+            <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-4">
+              <h3 className="text-[22px] font-bold text-greens-900 flex items-center gap-2">
+                <Sparkles className="w-6 h-6 text-amber-900" /> Sacred Crystals & Lockets
               </h3>
-              <p className="text-[18px] text-slate-300">{remediesData.lalKitabSystem.crystals.description}</p>
+              <p className="text-[18px] text-slate-900">{remediesData.lalKitabSystem.crystals.description}</p>
 
               <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl space-y-2">
-                <strong className="text-[18px] text-amber-400 font-bold uppercase tracking-wider">Key Benefits of Crystals:</strong>
-                <ul className="list-disc list-inside text-[18px] text-slate-300 space-y-1">
+                <strong className="text-[18px] text-amber-900 font-bold uppercase tracking-wider">Key Benefits of Crystals:</strong>
+                <ul className="list-disc list-inside text-[18px] text-slate-900 space-y-1">
                   {remediesData.lalKitabSystem.crystals.benefits.map(b => (
                     <li key={b}>{b}</li>
                   ))}
@@ -2480,15 +2996,15 @@ export default function EncyclopediaRemediesViewer() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-[18px] mt-4">
                 {remediesData.lalKitabSystem.crystals.items.map(p => (
-                  <div key={p.name} className="bg-slate-955 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between hover:border-amber-500/30 transition-all">
+                  <div key={p.name} className="bg-white p-4 rounded-2xl border border-slate-800 flex flex-col justify-between hover:border-amber-500/30 transition-all">
                     <div>
-                      <strong className="text-amber-400 font-bold block">{p.name}</strong>
-                      <p className="text-slate-300 mt-1">{p.purpose}</p>
+                      <strong className="text-amber-900 font-bold block">{p.name}</strong>
+                      <p className="text-slate-900 mt-1">{p.purpose}</p>
                     </div>
                     {p.mantra && (
-                      <div className="bg-slate-950 p-2 rounded border border-slate-800/80 mt-2">
-                        <span className="text-[14px] text-amber-400 block font-mono uppercase">Mantra:</span>
-                        <p className="text-[16px] font-mono text-emerald-200 mt-0.5 leading-snug">{p.mantra}</p>
+                      <div className="bg-white p-2 rounded border border-slate-800/80 mt-2">
+                        <span className="text-[14px] text-amber-900 block font-mono uppercase">Mantra:</span>
+                        <p className="text-[16px] font-mono text-emerald-900 mt-0.5 leading-snug">{p.mantra}</p>
                       </div>
                     )}
                   </div>
@@ -2501,15 +3017,15 @@ export default function EncyclopediaRemediesViewer() {
         {/* TAB: Rosaries */}
         {selectedTab === 'rosaries' && remediesData.lalKitabSystem?.rosaries && (
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
-              <h3 className="text-[22px] font-bold text-amber-300 flex items-center gap-2">
-                <Layers className="w-6 h-6 text-amber-400" /> Holy Rosaries (Mala)
+            <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-4">
+              <h3 className="text-[22px] font-bold text-green-900 flex items-center gap-2">
+                <Layers className="w-6 h-6 text-amber-900" /> Holy Rosaries (Mala)
               </h3>
-              <p className="text-[18px] text-slate-300">{remediesData.lalKitabSystem.rosaries.description}</p>
+              <p className="text-[18px] text-slate-900">{remediesData.lalKitabSystem.rosaries.description}</p>
 
-              <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl space-y-2">
-                <strong className="text-[18px] text-amber-400 font-bold uppercase tracking-wider">Key Benefits of Rosaries:</strong>
-                <ul className="list-disc list-inside text-[18px] text-slate-300 space-y-1">
+              <div className="bg-white border border-amber-500/20 p-4 rounded-xl space-y-2">
+                <strong className="text-[18px] text-amber-900 font-bold uppercase tracking-wider">Key Benefits of Rosaries:</strong>
+                <ul className="list-disc list-inside text-[18px] text-slate-900 space-y-1">
                   {remediesData.lalKitabSystem.rosaries.benefits.map(b => (
                     <li key={b}>{b}</li>
                   ))}
@@ -2518,15 +3034,15 @@ export default function EncyclopediaRemediesViewer() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-[18px] mt-4">
                 {remediesData.lalKitabSystem.rosaries.items.map(p => (
-                  <div key={p.name} className="bg-slate-955 p-4 rounded-2xl border border-slate-800 flex flex-col justify-between hover:border-amber-500/30 transition-all">
+                  <div key={p.name} className="bg-white p-4 rounded-2xl border border-slate-800 flex flex-col justify-between hover:border-amber-500/30 transition-all">
                     <div>
-                      <strong className="text-amber-400 font-bold block">{p.name}</strong>
-                      <p className="text-slate-300 mt-1">{p.purpose}</p>
+                      <strong className="text-amber-900 font-bold block">{p.name}</strong>
+                      <p className="text-slate-900 mt-1">{p.purpose}</p>
                     </div>
                     {p.mantra && (
-                      <div className="bg-slate-950 p-2 rounded border border-slate-800/80 mt-2">
-                        <span className="text-[14px] text-amber-400 block font-mono uppercase">Mantra:</span>
-                        <p className="text-[16px] font-mono text-emerald-200 mt-0.5 leading-snug">{p.mantra}</p>
+                      <div className="bg-white p-2 rounded border border-slate-800/80 mt-2">
+                        <span className="text-[14px] text-amber-900 block font-mono uppercase">Mantra:</span>
+                        <p className="text-[16px] font-mono text-emerald-900 mt-0.5 leading-snug">{p.mantra}</p>
                       </div>
                     )}
                   </div>
@@ -2539,16 +3055,16 @@ export default function EncyclopediaRemediesViewer() {
         {/* TAB 10: Fengshui Products */}
         {selectedTab === 'fengshui' && remediesData.lalKitabSystem?.fengshui && (
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
-              <h3 className="text-[22px] font-bold text-amber-300 flex items-center gap-2">
-                <Wind className="w-6 h-6 text-amber-400" /> Fengshui Products & Remedies
+            <div className="bg-white border border-slate-800 p-6 rounded-3xl space-y-4">
+              <h3 className="text-[22px] font-bold text-green-900 flex items-center gap-2">
+                <Wind className="w-6 h-6 text-amber-900" /> Fengshui Products & Remedies
               </h3>
-              <p className="text-[18px] text-slate-300">{remediesData.lalKitabSystem.fengshui.description}</p>
+              <p className="text-[18px] text-slate-900">{remediesData.lalKitabSystem.fengshui.description}</p>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-[18px]">
                 {remediesData.lalKitabSystem.fengshui.products.map(p => (
-                  <div key={p.name} className="bg-slate-955 p-3 rounded-xl border border-slate-800">
-                    <span className=" text-amber-400 font-bold block">{p.name}</span>
-                    <p className=" text-slate-300">{p.purpose}</p>
+                  <div key={p.name} className="bg-white p-3 rounded-xl border border-slate-800">
+                    <span className=" text-amber-900 font-bold block">{p.name}</span>
+                    <p className=" text-slate-900">{p.purpose}</p>
                   </div>
                 ))}
               </div>
@@ -2559,20 +3075,20 @@ export default function EncyclopediaRemediesViewer() {
         {/* TAB 11: Pyramids */}
         {selectedTab === 'pyramids' && remediesData.lalKitabSystem?.pyramids && (
           <div className="space-y-6">
-            <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl space-y-4">
-              <h3 className="text-[22px] font-bold text-amber-300 flex items-center gap-2">
+            <div className="bg-whites border border-slate-800 p-6 rounded-3xl space-y-4">
+              <h3 className="text-[22px] font-bold text-green-900 flex items-center gap-2">
                 <Triangle className="w-6 h-6 text-amber-400" /> Pyramids
               </h3>
-              <p className="text-[18px] text-slate-300">{remediesData.lalKitabSystem.pyramids.description}</p>
-              <ul className="list-disc list-inside text-[18px] text-slate-300 space-y-2">
+              <p className="text-[18px] text-slate-900">{remediesData.lalKitabSystem.pyramids.description}</p>
+              <ul className="list-disc list-inside text-[18px] text-slate-900 space-y-2">
                 {remediesData.lalKitabSystem.pyramids.benefits.map(b => <li key={b}>{b}</li>)}
               </ul>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-[18px] mt-4">
                 {remediesData.lalKitabSystem.pyramids.items.map(it => (
-                  <div key={it.name} className="bg-slate-955 p-3 rounded-xl border border-slate-800">
-                    <span className="text-amber-400 font-bold block">{it.name}</span>
-                    <p className="text-slate-300">{it.purpose}</p>
-                    {it.mantra && <p className="text-slate-400 italic mt-1">{it.mantra}</p>}
+                  <div key={it.name} className="bg-white p-3 rounded-xl border border-slate-800">
+                    <span className="text-amber-900 font-bold block">{it.name}</span>
+                    <p className="text-slate-900">{it.purpose}</p>
+                    {it.mantra && <p className="text-slate-900 italic mt-1">{it.mantra}</p>}
                   </div>
                 ))}
               </div>
