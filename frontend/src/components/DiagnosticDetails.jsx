@@ -145,7 +145,10 @@ export default function DiagnosticDetails({ domain, worksheetData }) {
                                 {domainInfo.houseLabels[hNum]}
                             </h4>
                             <p style={{ fontSize: '24px', marginBottom: '15px' }}>
-                                <strong style={{ color: 'rgba(8, 136, 4, 1)' }}>Responsible Sign:</strong>  {houseObj.sign_name || "Unknown"}
+                                <strong style={{ color: 'rgba(8, 136, 4, 1)' }}>Responsible Sign:</strong>{' '}
+                                <span style={{ color: '#2563eb', fontWeight: 900, textShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>
+                                    {houseObj.sign_name || "Unknown"}
+                                </span>
                             </p>
 
                             <div>
