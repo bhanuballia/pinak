@@ -49,7 +49,12 @@ export default function StudyViewer({ worksheetData: propWorksheetData }) {
                     time: params.get('time') || basic.birth_time || basic.time,
                     lat: params.get('lat') || basic.lat,
                     lon: params.get('lon') || basic.lon,
-                    tz_offset: params.get('tz') || basic.tz_offset
+                    tz_offset: params.get('tz') || basic.tz_offset,
+                    charts: parsed?.charts,
+                    chart: parsed?.chart,
+                    planet_positions: parsed?.planet_positions || parsed?.positions || parsed?.planets,
+                    panchang: parsed?.panchang,
+                    vargas: parsed?.vargas
                 };
 
                 const [general, personalRes] = await Promise.all([
@@ -57,7 +62,7 @@ export default function StudyViewer({ worksheetData: propWorksheetData }) {
                         console.error("General study insights fetch failed", e);
                         return [];
                     }),
-                    uData.date && uData.lat && uData.lon
+                    (uData.date || (parsed && (parsed.charts || parsed.chart)))
                         ? fetchPersonalStudyInsights(uData).catch(e => {
                             console.error("Personal study analysis failed", e);
                             return [];

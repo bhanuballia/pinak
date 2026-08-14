@@ -179,10 +179,14 @@ SIGN_LORDS = {
 }
 
 def get_house_str(house_num):
-    if not house_num: return "Unknown House"
-    suffixes = {1: "st", 2: "nd", 3: "rd"}
-    suffix = suffixes.get(house_num if house_num <= 3 else 0, "th")
-    return f"{house_num}{suffix} House"
+    if house_num is None or house_num == "": return "Unknown House"
+    try:
+        h_int = int(house_num)
+        suffixes = {1: "st", 2: "nd", 3: "rd"}
+        suffix = suffixes.get(h_int if h_int <= 3 else 0, "th")
+        return f"{h_int}{suffix} House"
+    except (ValueError, TypeError):
+        return f"{house_num} House"
 
 @router.post("/personal")
 async def get_personal_study_analysis(payload: Dict[str, Any] = Body(...)):
@@ -200,23 +204,30 @@ async def get_personal_study_analysis(payload: Dict[str, Any] = Body(...)):
             lon = float(payload.get("lon", 0))
             tz_offset = float(payload.get("tz_offset", 0.0))
         except (ValueError, TypeError):
-            return []
+            lat, lon, tz_offset = 0.0, 0.0, 0.0
 
-        if not date:
+        # Check if pre-assembled chart data is passed in payload
+        if payload.get("charts") and payload.get("planet_positions"):
+            data = payload
+        elif payload.get("chart") and payload.get("chart", {}).get("houses"):
+            data = payload
+            if "charts" not in data:
+                data["charts"] = {"houses": payload["chart"]["houses"]}
+        elif date:
+            # Assemble report data to get planetary positions
+            data = assemble_report_data(
+                name=name,
+                date=date,
+                time=time,
+                tz_offset=tz_offset,
+                lat=lat,
+                lon=lon
+            )
+        else:
             return []
-
-        # Assemble report data to get planetary positions
-        data = assemble_report_data(
-            name=name,
-            date=date,
-            time=time,
-            tz_offset=tz_offset,
-            lat=lat,
-            lon=lon
-        )
 
         planets = data.get("planet_positions", [])
-        houses_data = data.get("charts", {}).get("houses", {})
+        houses_data = data.get("charts", {}).get("houses") or data.get("chart", {}).get("houses") or {}
         
         analysis = []
         
