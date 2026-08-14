@@ -5,10 +5,8 @@ const ProfessionalRoyaleClock = ({ time }) => {
     const ghatiRotation = (time.total_ghati % 60) * 6;
     const muhurtaRotation = (time.total_ghati / 2 % 30) * 12;
 
-    const symptoms = ["♈\uFE0E", "♉\uFE0E", "♊\uFE0E", "♋\uFE0E", "♌\uFE0E", "♍\uFE0E", "♎\uFE0E", "♏\uFE0E", "♐\uFE0E", "♑\uFE0E", "♒\uFE0E", "♓\uFE0E"];
+    const symptoms = ["♈︎", "♉︎", "♊︎", "♋︎", "♌︎", "♍︎", "♎︎", "♏︎", "♐︎", "♑︎", "♒︎", "♓︎"];
     const rashis = ["Mesh", "Vrishabh", "Mithun", "Kark", "Simha", "Kanya", "Tula", "Vrishchik", "Dhanu", "Makar", "Kumbh", "Meen"];
-
-    const swordPath = "polygon(50% 0%, 100% 20%, 80% 100%, 20% 100%, 0% 20%)";
 
     return (
         <div style={{
@@ -18,44 +16,40 @@ const ProfessionalRoyaleClock = ({ time }) => {
             margin: '0 auto 50px',
             userSelect: 'none'
         }}>
-            {/* 3D Golden Brass Case */}
+            {/* 3D Rose-Gold Brass Case */}
             <div style={{
                 position: 'absolute',
                 inset: '-20px',
                 borderRadius: '50%',
-                background: 'linear-gradient(135deg, #d4af37 0%, #f9f295 45%, #b8860b 100%)',
-                boxShadow: '0 30px 60px rgba(0,0,0,0.8), inset 0 2px 5px rgba(255,255,255,0.5)',
-                border: '4px solid #5c4033'
+                background: 'linear-gradient(135deg, #fecdd3 0%, #ffe4e6 45%, #fda4af 100%)',
+                boxShadow: '0 20px 50px rgba(136, 19, 55, 0.15), inset 0 2px 5px rgba(255,255,255,0.8)',
+                border: '4px solid #be123c'
             }}>
                 <div style={{
                     position: 'absolute',
                     inset: '8px',
                     borderRadius: '50%',
-                    border: '1px solid rgba(0,0,0,0.2)',
-                    boxShadow: 'inset 0 0 10px rgba(0,0,0,0.5)'
+                    border: '1px solid rgba(136, 19, 55, 0.2)',
+                    boxShadow: 'inset 0 0 10px rgba(136, 19, 55, 0.1)'
                 }}></div>
             </div>
 
             {/* Main Dial Surface */}
-            <svg viewBox="0 0 400 400" style={{ width: '100%', height: '100%', filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.5))' }}>
+            <svg viewBox="0 0 400 400" style={{ width: '100%', height: '100%', filter: 'drop-shadow(0 10px 20px rgba(136, 19, 55, 0.1))' }}>
                 <defs>
                     <radialGradient id="royalDial" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
-                        <stop offset="0%" stopColor="#1e293b" />
-                        <stop offset="70%" stopColor="#0f172a" />
-                        <stop offset="100%" stopColor="#020617" />
+                        <stop offset="0%" stopColor="#ffffff" />
+                        <stop offset="70%" stopColor="#fff1f2" />
+                        <stop offset="100%" stopColor="#ffe4e6" />
                     </radialGradient>
                     <linearGradient id="solidGold" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stopColor="#d4af37" />
-                        <stop offset="45%" stopColor="#fef3c7" />
-                        <stop offset="100%" stopColor="#92400e" />
+                        <stop offset="0%" stopColor="#be123c" />
+                        <stop offset="45%" stopColor="#e11d48" />
+                        <stop offset="100%" stopColor="#881337" />
                     </linearGradient>
-                    <filter id="goldGlow">
-                        <feGaussianBlur stdDeviation="1" result="blur" />
-                        <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                    </filter>
                 </defs>
 
-                <circle cx="200" cy="200" r="195" fill="url(#royalDial)" stroke="#1e293b" strokeWidth="2" />
+                <circle cx="200" cy="200" r="195" fill="url(#royalDial)" stroke="#fecdd3" strokeWidth="2" />
 
                 {[...Array(60)].map((_, i) => {
                     const angle = (i * 6 * Math.PI) / 180;
@@ -68,7 +62,7 @@ const ProfessionalRoyaleClock = ({ time }) => {
                             y1={200 - rInner * Math.cos(angle)}
                             x2={200 + rOuter * Math.sin(angle)}
                             y2={200 - rOuter * Math.cos(angle)}
-                            stroke={i % 5 === 0 ? "#d4af37" : "#334155"}
+                            stroke={i % 5 === 0 ? "#be123c" : "#fecdd3"}
                             strokeWidth={i % 5 === 0 ? 3 : 1}
                         />
                     );
@@ -85,7 +79,7 @@ const ProfessionalRoyaleClock = ({ time }) => {
                                 y={200 - rText * Math.cos(angle)}
                                 textAnchor="middle"
                                 dominantBaseline="middle"
-                                fill="rgba(243, 202, 21, 1)"
+                                fill="#881337"
                                 fontSize="12"
                                 fontWeight="900"
                                 transform={`rotate(${i * 30}, ${200 + rText * Math.sin(angle)}, ${200 - rText * Math.cos(angle)})`}
@@ -98,9 +92,8 @@ const ProfessionalRoyaleClock = ({ time }) => {
                                 y={200 - rIcon * Math.cos(angle)}
                                 textAnchor="middle"
                                 dominantBaseline="middle"
-                                fill="#d4af37"
+                                fill="#be123c"
                                 fontSize="28"
-                                filter="url(#goldGlow)"
                             >
                                 {symptoms[i]}
                             </text>
@@ -108,17 +101,17 @@ const ProfessionalRoyaleClock = ({ time }) => {
                     );
                 })}
 
-                <circle cx="200" cy="200" r="30" fill="#020617" stroke="#d4af37" strokeWidth="2" />
-                <text x="200" y="200" textAnchor="middle" dominantBaseline="middle" fill="#d4af37" fontSize="20" fontWeight="bold">ॐ</text>
+                <circle cx="200" cy="200" r="30" fill="#fff1f2" stroke="#be123c" strokeWidth="2" />
+                <text x="200" y="200" textAnchor="middle" dominantBaseline="middle" fill="#881337" fontSize="20" fontWeight="bold">ॐ</text>
 
                 <g style={{ transform: `rotate(${muhurtaRotation}deg)`, transformOrigin: '200px 200px', transition: 'transform 1s cubic-bezier(0.4, 0, 0.2, 1)' }}>
-                    <path d="M 192,200 L 200,60 L 208,200 Z" fill="url(#solidGold)" filter="url(#goldGlow)" />
-                    <circle cx="200" cy="200" r="10" fill="#d4af37" />
+                    <path d="M 192,200 L 200,60 L 208,200 Z" fill="url(#solidGold)" />
+                    <circle cx="200" cy="200" r="10" fill="#be123c" />
                 </g>
 
                 <g style={{ transform: `rotate(${ghatiRotation}deg)`, transformOrigin: '200px 200px', transition: 'transform 0.5s ease-out' }}>
-                    <path d="M 197,200 L 200,45 L 203,200 Z" fill="#ff4d00" stroke="#fcd34d" strokeWidth="0.5" />
-                    <circle cx="200" cy="200" r="6" fill="#ff4d00" />
+                    <path d="M 197,200 L 200,45 L 203,200 Z" fill="#e11d48" stroke="#be123c" strokeWidth="0.5" />
+                    <circle cx="200" cy="200" r="6" fill="#e11d48" />
                 </g>
             </svg>
 
@@ -127,19 +120,19 @@ const ProfessionalRoyaleClock = ({ time }) => {
                 bottom: '-25px',
                 left: '50%',
                 transform: 'translateX(-50%)',
-                width: '220px',
-                background: 'linear-gradient(to bottom, #1e293b, #020617)',
+                width: '240px',
+                background: '#ffffff',
                 padding: '12px 20px',
                 borderRadius: '16px',
-                border: '1px solid rgba(212,175,55,0.4)',
-                boxShadow: '0 20px 40px rgba(0,0,0,0.6)',
+                border: '1px solid #fecdd3',
+                boxShadow: '0 10px 25px rgba(136, 19, 55, 0.1)',
                 textAlign: 'center',
                 zIndex: 50
             }}>
-                <div style={{ fontSize: '10px', color: '#d4af37', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px', marginBottom: '8px' }}>
+                <div style={{ fontSize: '12px', color: '#be123c', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px', marginBottom: '4px' }}>
                     Vedic Chronology
                 </div>
-                <div style={{ color: 'white', fontFamily: 'monospace', fontSize: '20px', fontWeight: 900, letterSpacing: '2px' }}>
+                <div style={{ color: '#881337', fontFamily: 'monospace', fontSize: '22px', fontWeight: 900, letterSpacing: '2px' }}>
                     {String(time.ghati).padStart(2, '0')} : {String(time.pala).padStart(2, '0')} : {String(time.vipala).padStart(2, '0')}
                 </div>
             </div>
@@ -184,10 +177,10 @@ const getChoghadiyaRuler = (name) => {
 
 const getChoghadiyaColor = (name) => {
     const cleanName = name.trim().toLowerCase();
-    if (cleanName.includes('amrit')) return '#10b981'; // emerald-500
-    if (cleanName.includes('shubh')) return '#3b82f6'; // blue-500
-    if (cleanName.includes('labh')) return '#a855f7'; // purple-500
-    return '#cbd5e1';
+    if (cleanName.includes('amrit')) return '#15803d'; // green-700
+    if (cleanName.includes('shubh')) return '#052285ff'; // deep navy
+    if (cleanName.includes('labh')) return '#be123c'; // dark rose-700
+    return '#475569';
 };
 
 export default function DailyPanchangViewer() {
@@ -204,15 +197,24 @@ export default function DailyPanchangViewer() {
     const [oracleLoading, setOracleLoading] = useState(false);
     const [activeOracleCategory, setActiveOracleCategory] = useState("General");
 
+    const theme = {
+        bg: '#fff1f2', // rose-50
+        text: '#1e293b', // dark slate
+        heading: '#881337', // dark rose heading
+        headerGradient: 'linear-gradient(135deg, #ffe4e6 0%, #fff1f2 100%)',
+        cardBg: '#ffffff',
+        borderColor: '#fecdd3', // rose-200 border
+        buttonBg: '#ffe4e6',
+        accentText: '#be123c'
+    };
+
     const handleDateChange = (daysToAdd) => {
         const currentDate = selectedDate ? new Date(selectedDate) : new Date();
         currentDate.setDate(currentDate.getDate() + daysToAdd);
-        // Format to YYYY-MM-DD local time correctly
         const yyyy = currentDate.getFullYear();
         const mm = String(currentDate.getMonth() + 1).padStart(2, '0');
         const dd = String(currentDate.getDate()).padStart(2, '0');
         setSelectedDate(`${yyyy}-${mm}-${dd}`);
-        // Reset oracle
         setOracleResponse(null);
         setOracleQuestion("");
     };
@@ -293,7 +295,6 @@ export default function DailyPanchangViewer() {
         loadTransitForecast(selectedDate);
 
         let interval;
-        // Only auto-refresh if looking at today's panchang
         if (!selectedDate) {
             interval = setInterval(loadPanchang, 10000);
         }
@@ -301,16 +302,16 @@ export default function DailyPanchangViewer() {
     }, [selectedDate]);
 
     if (loading) return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#020617', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ width: '80px', height: '80px', border: '8px solid rgba(255,255,255,0.05)', borderRadius: '50%', position: 'relative' }}>
-                <div style={{ position: 'absolute', inset: '-8px', border: '8px solid #d4af37', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
+        <div style={{ minHeight: '100vh', backgroundColor: theme.bg, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ width: '80px', height: '80px', border: `8px solid ${theme.borderColor}`, borderRadius: '50%', position: 'relative' }}>
+                <div style={{ position: 'absolute', inset: '-8px', border: '8px solid #e11d48', borderTopColor: 'transparent', borderRadius: '50%', animation: 'spin 1s linear infinite' }}></div>
             </div>
-            <p style={{ marginTop: '40px', color: '#d4af37', fontFamily: 'serif', letterSpacing: '4px', fontStyle: 'italic', fontWeight: 900, fontSize: '24px' }}>CALIBRATING...</p>
+            <p style={{ marginTop: '40px', color: '#881337', fontFamily: 'serif', letterSpacing: '4px', fontStyle: 'italic', fontWeight: 900, fontSize: '24px' }}>CALIBRATING PANCHANG...</p>
             <style>{` @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } } `}</style>
         </div>
     );
 
-    if (error) return <div style={{ minHeight: '100vh', padding: '40px', color: 'red' }}>Error: {error}</div>;
+    if (error) return <div style={{ minHeight: '100vh', padding: '40px', color: '#be123c', backgroundColor: theme.bg, fontFamily: 'serif', textAlign: 'center', fontSize: '24px', fontWeight: 900 }}>Error: {error}</div>;
 
     const interpretation = getInterpretation(
         data.vedic_time.muhurta_index,
@@ -318,7 +319,7 @@ export default function DailyPanchangViewer() {
     );
 
     return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#020617', color: '#cbd5e1', fontFamily: 'serif', padding: '40px 20px' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: theme.bg, color: theme.text, fontFamily: 'serif', padding: '40px 20px' }}>
             <div style={{ maxWidth: '1200px', margin: '0 auto', position: 'relative' }}>
                 <button
                     onClick={() => {
@@ -331,18 +332,19 @@ export default function DailyPanchangViewer() {
                         position: 'absolute',
                         top: '0',
                         left: '0',
-                        background: 'linear-gradient(135deg, rgba(230, 210, 33, 0.2) 0%, rgba(245, 200, 51, 0.2) 100%)',
-                        color: 'rgba(230, 210, 33, 1)',
-                        border: '1px solid rgba(230, 210, 33, 0.4)',
+                        background: '#e11d48',
+                        color: '#ffffff',
+                        border: 'none',
                         padding: '12px 24px',
                         borderRadius: '30px',
-                        fontSize: '18px',
+                        fontSize: '16px',
                         fontWeight: '900',
                         cursor: 'pointer',
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '8px',
                         zIndex: 10,
+                        boxShadow: '0 4px 14px rgba(225, 29, 72, 0.3)',
                         transition: 'transform 0.2s',
                     }}
                     onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
@@ -361,18 +363,19 @@ export default function DailyPanchangViewer() {
                         position: 'absolute',
                         top: '0',
                         right: '0',
-                        background: 'linear-gradient(135deg, rgba(230, 210, 33, 0.2) 0%, rgba(245, 200, 51, 0.2) 100%)',
-                        color: 'rgba(230, 210, 33, 1)',
-                        border: '1px solid rgba(230, 210, 33, 0.4)',
+                        background: '#e11d48',
+                        color: '#ffffff',
+                        border: 'none',
                         padding: '12px 24px',
                         borderRadius: '30px',
-                        fontSize: '18px',
+                        fontSize: '16px',
                         fontWeight: '900',
                         cursor: 'pointer',
                         display: 'inline-flex',
                         alignItems: 'center',
                         gap: '8px',
                         zIndex: 10,
+                        boxShadow: '0 4px 14px rgba(225, 29, 72, 0.3)',
                         transition: 'transform 0.2s',
                     }}
                     onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
@@ -383,143 +386,140 @@ export default function DailyPanchangViewer() {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '60px', alignItems: 'flex-start', paddingTop: '60px' }}>
 
                     <div style={{ flex: '1 1 400px', textAlign: 'center' }}>
-                        <div style={{ padding: '60px 20px', background: 'rgba(15,23,42,0.6)', borderRadius: '60px', border: '1px solid rgba(255,255,255,0.05)', boxShadow: '0 40px 100px rgba(0,0,0,0.5)' }}>
-                            <h4 style={{ color: '#d4af37', fontSize: '12px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '6px', marginBottom: '10px' }}>Ujjain Royal Observatory</h4>
-                            <h1 style={{ color: 'white', fontSize: '42px', fontWeight: 900, fontStyle: 'italic', marginBottom: '50px' }}>Vikramaditya Watch</h1>
+                        <div style={{ padding: '50px 20px', background: theme.cardBg, borderRadius: '40px', border: `1px solid ${theme.borderColor}`, boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)' }}>
+                            <h4 style={{ color: '#be123c', fontSize: '14px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '4px', marginBottom: '10px' }}>Ujjain Royal Observatory</h4>
+                            <h1 style={{ color: '#881337', fontSize: '42px', fontWeight: 900, fontStyle: 'italic', marginBottom: '40px' }}>Vikramaditya Watch</h1>
 
                             <ProfessionalRoyaleClock time={data.vedic_time} />
 
-                            <div style={{ marginTop: '60px', padding: '30px', background: 'rgba(212,175,55,0.05)', borderRadius: '30px', border: '1px solid rgba(212,175,55,0.1)', textAlign: 'left' }}>
-                                <div style={{ color: '#d4af37', fontSize: '20px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px', marginBottom: '10px' }}>Cosmic Proclamation</div>
-                                <div style={{ color: 'white', fontSize: '20px', fontWeight: 900, marginBottom: '10px' }}>Current: {interpretation.name} Muhurta</div>
-                                <div style={{ fontSize: '20px', lineHeight: '1.6', color: 'rgba(241, 211, 36, 1)' }}>
+                            <div style={{ marginTop: '50px', padding: '30px', background: '#fff1f2', borderRadius: '30px', border: `1px solid ${theme.borderColor}`, textAlign: 'left' }}>
+                                <div style={{ color: '#be123c', fontSize: '18px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px', marginBottom: '10px' }}>Cosmic Proclamation</div>
+                                <div style={{ color: '#881337', fontSize: '22px', fontWeight: 900, marginBottom: '10px' }}>Current: {interpretation.name} Muhurta</div>
+                                <div style={{ fontSize: '18px', lineHeight: '1.6', color: '#1e293b' }}>
                                     <p style={{ marginBottom: '8px' }}>We are presently in the <strong>{interpretation.stage}</strong> cycle. {interpretation.ghatiDesc}.</p>
-                                    <p style={{ color: 'rgba(241, 211, 36, 1)', fontWeight: 700 }}>Divine Advice: {interpretation.advice}</p>
+                                    <p style={{ color: '#be123c', fontWeight: 900 }}>Divine Advice: {interpretation.advice}</p>
                                 </div>
                             </div>
                         </div>
 
-
-                        {/* New Educational Section */}
-                        <div style={{ marginTop: '30px', padding: '30px', background: 'rgba(30,41,59,0.3)', borderRadius: '30px', border: '1px solid rgba(255,255,255,0.05)', textAlign: 'left' }}>
-                            <div style={{ color: 'rgba(233, 216, 216, 1)', fontSize: '22px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '15px' }}>Divine Glossary</div>
+                        {/* Educational Glossary Section */}
+                        <div style={{ marginTop: '30px', padding: '30px', background: theme.cardBg, borderRadius: '30px', border: `1px solid ${theme.borderColor}`, textAlign: 'left', boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)' }}>
+                            <div style={{ color: '#881337', fontSize: '20px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '15px' }}>Divine Glossary</div>
                             <div style={{ marginBottom: '15px' }}>
-                                <div style={{ color: 'rgb(230, 221, 221)', fontSize: '20px', fontWeight: 700, marginBottom: '4px' }}>What is a Muhurta?</div>
-                                <div style={{ fontSize: '16px', color: 'rgba(212, 203, 73, 1)', lineHeight: '1.5' }}>A Muhurta is a unit of 48 minutes. There are exactly 30 Muhurtas in a Vedic day (sunrise to sunrise). Each Muhurta is ruled by a specific Deity and carries a unique energetic vibration.</div>
+                                <div style={{ color: '#be123c', fontSize: '18px', fontWeight: 900, marginBottom: '4px' }}>What is a Muhurta?</div>
+                                <div style={{ fontSize: '16px', color: '#1e293b', lineHeight: '1.5' }}>A Muhurta is a unit of 48 minutes. There are exactly 30 Muhurtas in a Vedic day (sunrise to sunrise). Each Muhurta is ruled by a specific Deity and carries a unique energetic vibration.</div>
                             </div>
                             <div>
-                                <div style={{ color: 'rgb(230, 221, 221)', fontSize: '20px', fontWeight: 700, marginBottom: '4px' }}>What does Ghati Progress mean?</div>
-                                <div style={{ fontSize: '16px', color: 'rgba(212, 203, 73, 1)', lineHeight: '1.5' }}>A 'Ghati' is 24 minutes. The clock tracks 60 Ghatis per day. 'Progress' shows how far we have traveled since the last Sunrise—the ultimate anchor of Vedic time.</div>
+                                <div style={{ color: '#be123c', fontSize: '18px', fontWeight: 900, marginBottom: '4px' }}>What does Ghati Progress mean?</div>
+                                <div style={{ fontSize: '16px', color: '#1e293b', lineHeight: '1.5' }}>A 'Ghati' is 24 minutes. The clock tracks 60 Ghatis per day. 'Progress' shows how far we have traveled since the last Sunrise—the ultimate anchor of Vedic time.</div>
                             </div>
                         </div>
 
-
-
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '40px', paddingTop: '40px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', marginTop: '30px', paddingTop: '30px', borderTop: `1px solid ${theme.borderColor}` }}>
                             <div>
-                                <div style={{ fontSize: '22px', color: 'rgba(233, 209, 209, 1)', fontWeight: 900, textTransform: 'uppercase' }}>Current Muhurta</div>
-                                <div style={{ fontSize: '32px', color: 'white', fontWeight: 900 }}>#{data.vedic_time.muhurta_index}</div>
+                                <div style={{ fontSize: '16px', color: '#be123c', fontWeight: 900, textTransform: 'uppercase' }}>Current Muhurta</div>
+                                <div style={{ fontSize: '32px', color: '#881337', fontWeight: 900 }}>#{data.vedic_time.muhurta_index}</div>
                             </div>
-                            <div style={{ borderLeft: '1px solid rgba(255,255,255,0.1)' }}>
-                                <div style={{ fontSize: '22px', color: 'rgba(233, 209, 209, 1)', fontWeight: 900, textTransform: 'uppercase' }}>Ghati Progress</div>
-                                <div style={{ fontSize: '32px', color: '#d4af37', fontWeight: 900 }}>{data.vedic_time.total_ghati}</div>
+                            <div style={{ borderLeft: `1px solid ${theme.borderColor}` }}>
+                                <div style={{ fontSize: '16px', color: '#be123c', fontWeight: 900, textTransform: 'uppercase' }}>Ghati Progress</div>
+                                <div style={{ fontSize: '32px', color: '#881337', fontWeight: 900 }}>{data.vedic_time.total_ghati}</div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div style={{ flex: '2 1 600px', display: 'flex', flexDirection: 'column', gap: '40px' }}>
-                    <div style={{ background: 'linear-gradient(135deg, #0f172a 0%, #020617 100%)', padding: '50px', borderRadius: '60px', border: '1px solid rgba(255,255,255,0.05)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '30px' }}>
+                <div style={{ flex: '2 1 600px', display: 'flex', flexDirection: 'column', gap: '40px', marginTop: '40px' }}>
+                    <div style={{ background: theme.headerGradient, padding: '45px 35px', borderRadius: '40px', border: `1px solid ${theme.borderColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '30px', boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
-                            <button onClick={() => handleDateChange(-1)} style={{ background: 'transparent', border: 'none', color: '#d4af37', fontSize: '28px', cursor: 'pointer', transition: 'transform 0.2s', padding: '10px' }} onMouseOver={(e) => e.target.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.target.style.transform = 'scale(1)'}>◀</button>
+                            <button onClick={() => handleDateChange(-1)} style={{ background: 'transparent', border: 'none', color: '#881337', fontSize: '32px', cursor: 'pointer', transition: 'transform 0.2s', padding: '10px' }} onMouseOver={(e) => e.target.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.target.style.transform = 'scale(1)'}>◀</button>
                             <div style={{ textAlign: 'center' }}>
-                                <h1 style={{ fontSize: '64px', color: '#d4af37', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>{data.date}</h1>
-                                <p style={{ fontSize: '24px', color: '#eec2c0ff', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '4px', margin: '5px 0 0 0' }}>
+                                <h1 style={{ fontSize: '56px', color: '#881337', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>{data.date}</h1>
+                                <p style={{ fontSize: '22px', color: '#be123c', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '4px', margin: '5px 0 0 0' }}>
                                     {data.day}
                                 </p>
                                 {data.monthly_sankranti && (
-                                    <div style={{ marginTop: '15px', color: '#29e018ff', fontSize: '22px', fontWeight: 700, letterSpacing: '2px', background: 'rgba(212,175,55,0.1)', padding: '6px 15px', borderRadius: '20px', display: 'inline-block' }}>
+                                    <div style={{ marginTop: '15px', color: '#15803d', fontSize: '18px', fontWeight: 900, letterSpacing: '1px', background: '#f0fdf4', padding: '6px 18px', borderRadius: '20px', display: 'inline-block', border: '1px solid #bbf7d0' }}>
                                         {data.monthly_sankranti.name} • {data.monthly_sankranti.date}, {data.monthly_sankranti.exact_time}
                                     </div>
                                 )}
                             </div>
-                            <button onClick={() => handleDateChange(1)} style={{ background: 'transparent', border: 'none', color: '#d4af37', fontSize: '28px', cursor: 'pointer', transition: 'transform 0.2s', padding: '10px' }} onMouseOver={(e) => e.target.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.target.style.transform = 'scale(1)'}>▶</button>
+                            <button onClick={() => handleDateChange(1)} style={{ background: 'transparent', border: 'none', color: '#881337', fontSize: '32px', cursor: 'pointer', transition: 'transform 0.2s', padding: '10px' }} onMouseOver={(e) => e.target.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.target.style.transform = 'scale(1)'}>▶</button>
                         </div>
                         {data.is_adhik_maas && (
-                            <div style={{ background: 'rgba(212,175,55,0.2)', color: '#d4af37', padding: '8px 20px', borderRadius: '20px', fontSize: '14px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px' }}>Adhik Maas</div>
+                            <div style={{ background: '#ffe4e6', color: '#881337', padding: '8px 20px', borderRadius: '20px', fontSize: '14px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px', border: `1px solid ${theme.borderColor}` }}>Adhik Maas</div>
                         )}
                         {data.sankranti && (
-                            <div style={{ background: 'rgba(239,68,68,0.2)', color: '#ef4444', padding: '12px 25px', borderRadius: '20px', border: '1px solid rgba(239,68,68,0.4)', textAlign: 'center' }}>
-                                <div style={{ fontSize: '20px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '4px' }}>{data.sankranti.name}</div>
-                                <div style={{ fontSize: '18px', color: '#fca5a5' }}>Transit at {data.sankranti.exact_time}</div>
+                            <div style={{ background: '#ffe4e6', color: '#be123c', padding: '12px 25px', borderRadius: '20px', border: `1px solid ${theme.borderColor}`, textAlign: 'center' }}>
+                                <div style={{ fontSize: '18px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '4px' }}>{data.sankranti.name}</div>
+                                <div style={{ fontSize: '16px', color: '#881337', fontWeight: 700 }}>Transit at {data.sankranti.exact_time}</div>
                             </div>
                         )}
-                        <div style={{ background: 'rgba(0,0,0,0.5)', padding: '20px 40px', borderRadius: '30px', border: '1px solid rgba(255,191,0,0.1)', display: 'flex', gap: '40px' }}>
+                        <div style={{ background: '#ffffff', padding: '20px 40px', borderRadius: '30px', border: `1px solid ${theme.borderColor}`, display: 'flex', gap: '40px', boxShadow: '0 4px 15px rgba(136, 19, 55, 0.05)' }}>
                             <div style={{ textAlign: 'center' }}>
-                                <span style={{ fontSize: '14px', color: '#f97316', fontWeight: 900, textTransform: 'uppercase', display: 'block' }}>Sunrise</span>
-                                <span style={{ fontSize: '20px', color: 'white', fontWeight: 900 }}>{data.sun_rise}</span>
+                                <span style={{ fontSize: '14px', color: '#be123c', fontWeight: 900, textTransform: 'uppercase', display: 'block' }}>Sunrise</span>
+                                <span style={{ fontSize: '22px', color: '#881337', fontWeight: 900 }}>{data.sun_rise}</span>
                             </div>
                             <div style={{ textAlign: 'center' }}>
-                                <span style={{ fontSize: '14px', color: 'rgba(243, 54, 29, 1)', fontWeight: 900, textTransform: 'uppercase', display: 'block' }}>Sunset</span>
-                                <span style={{ fontSize: '20px', color: 'white', fontWeight: 900 }}>{data.sun_set}</span>
+                                <span style={{ fontSize: '14px', color: '#be123c', fontWeight: 900, textTransform: 'uppercase', display: 'block' }}>Sunset</span>
+                                <span style={{ fontSize: '22px', color: '#881337', fontWeight: 900 }}>{data.sun_set}</span>
                             </div>
                         </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px' }}>
                         {[
-                            { label: "Tithi", value: data.tithi.tithi_name, icon: "🌓", color: "#60a5fa" },
-                            { label: "Nakshatra", value: data.nakshatra.nakshatra_name, icon: "🪐", color: "#a78bfa" },
-                            { label: "Yoga", value: data.yoga.yoga_name, icon: "🌀", color: "#34d399" },
-                            { label: "Karana", value: data.karana.karana_name, icon: "🛡️", color: "#fbbf24" }
+                            { label: "Tithi", value: data.tithi.tithi_name, icon: "🌓", color: "#881337" },
+                            { label: "Nakshatra", value: data.nakshatra.nakshatra_name, icon: "🪐", color: "#052285ff" },
+                            { label: "Yoga", value: data.yoga.yoga_name, icon: "🌀", color: "rgba(180, 93, 12, 1)" },
+                            { label: "Karana", value: data.karana.karana_name, icon: "🛡️", color: "#be123c" }
                         ].map((item, i) => (
-                            <div key={i} style={{ background: 'rgba(30,41,59,0.4)', padding: '40px', borderRadius: '50px', border: `1px solid ${item.color}22` }}>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+                            <div key={i} style={{ background: theme.cardBg, padding: '35px', borderRadius: '35px', border: `1px solid ${theme.borderColor}`, boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '15px', alignItems: 'center' }}>
                                     <span style={{ fontSize: '32px' }}>{item.icon}</span>
-                                    <span style={{ fontSize: '22px', color: 'hsla(0, 42%, 90%, 0.99)', fontWeight: 900, textTransform: 'uppercase' }}>{item.label}</span>
+                                    <span style={{ fontSize: '18px', color: '#be123c', fontWeight: 900, textTransform: 'uppercase' }}>{item.label}</span>
                                 </div>
-                                <h3 style={{ fontSize: '32px', color: item.color, fontWeight: 900, margin: 0, fontStyle: 'italic' }}>{item.value}</h3>
+                                <h3 style={{ fontSize: '28px', color: item.color, fontWeight: 900, margin: 0, fontStyle: 'italic' }}>{item.value}</h3>
                             </div>
                         ))}
                     </div>
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
-                        <div style={{ background: 'linear-gradient(135deg, #064e3b 0%, #022c22 100%)', padding: '40px', borderRadius: '50px', border: '1px solid rgba(52,211,153,0.3)' }}>
-                            <span style={{ fontSize: '10px', color: '#34d399', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px' }}>Auspicious Hour</span>
-                            <h2 style={{ fontSize: '42px', color: 'white', fontWeight: 900, margin: '10px 0' }}>Abhijit Muhurta</h2>
-                            <p style={{ fontSize: '32px', color: '#10b981', fontWeight: 900 }}>{data.muhurtas.abhijit.start} - {data.muhurtas.abhijit.end}</p>
+                        <div style={{ background: '#f0fdf4', padding: '35px', borderRadius: '35px', border: '1px solid #bbf7d0', boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)' }}>
+                            <span style={{ fontSize: '12px', color: '#15803d', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px' }}>Auspicious Hour</span>
+                            <h2 style={{ fontSize: '32px', color: '#14532d', fontWeight: 900, margin: '10px 0' }}>Abhijit Muhurta</h2>
+                            <p style={{ fontSize: '28px', color: '#15803d', fontWeight: 900, margin: 0 }}>{data.muhurtas.abhijit.start} - {data.muhurtas.abhijit.end}</p>
                         </div>
-                        <div style={{ background: 'linear-gradient(135deg, #450a0a 0%, #7f1d1d 100%)', padding: '40px', borderRadius: '50px', border: '1px solid rgba(239,68,68,0.3)' }}>
-                            <span style={{ fontSize: '10px', color: '#f87171', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px' }}>Inauspicious Rahu</span>
-                            <h2 style={{ fontSize: '42px', color: 'white', fontWeight: 900, margin: '10px 0' }}>Rahu Kaal</h2>
-                            <p style={{ fontSize: '32px', color: '#ef4444', fontWeight: 900 }}>{data.muhurtas.rahu_kaal.start} - {data.muhurtas.rahu_kaal.end}</p>
+                        <div style={{ background: '#fff1f2', padding: '35px', borderRadius: '35px', border: `1px solid ${theme.borderColor}`, boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)' }}>
+                            <span style={{ fontSize: '12px', color: '#be123c', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '3px' }}>Inauspicious Rahu</span>
+                            <h2 style={{ fontSize: '32px', color: '#881337', fontWeight: 900, margin: '10px 0' }}>Rahu Kaal</h2>
+                            <p style={{ fontSize: '28px', color: '#be123c', fontWeight: 900, margin: 0 }}>{data.muhurtas.rahu_kaal.start} - {data.muhurtas.rahu_kaal.end}</p>
                         </div>
                     </div>
 
-                    <div style={{ marginTop: '30px', textAlign: 'center' }}>
+                    <div style={{ marginTop: '20px', textAlign: 'center' }}>
                         <button
                             onClick={() => {
                                 const popupSettings = 'width=1100,height=850,menubar=no,toolbar=no,location=no,status=no';
                                 window.open('/?dosha=true', 'DoshaDashboard', popupSettings);
                             }}
                             style={{
-                                background: 'linear-gradient(135deg, #6b21a8 0%, #3b0764 100%)',
-                                color: 'white',
-                                border: '1px solid rgba(168, 85, 247, 0.5)',
-                                padding: '15px 30px',
+                                background: '#e11d48',
+                                color: '#ffffff',
+                                border: 'none',
+                                padding: '16px 36px',
                                 borderRadius: '50px',
-                                fontSize: '14px',
+                                fontSize: '16px',
                                 fontWeight: '900',
                                 textTransform: 'uppercase',
                                 letterSpacing: '2px',
                                 cursor: 'pointer',
-                                boxShadow: '0 10px 25px rgba(107, 33, 168, 0.5)',
+                                boxShadow: '0 8px 20px rgba(225, 29, 72, 0.3)',
                                 display: 'inline-flex',
                                 alignItems: 'center',
                                 gap: '10px'
                             }}
                         >
-                            <span style={{ fontSize: '18px' }}>🧿</span> Advanced Doshas & Exceptions
+                            <span style={{ fontSize: '20px' }}>🧿</span> Advanced Doshas & Exceptions
                         </button>
                     </div>
 
@@ -527,52 +527,53 @@ export default function DailyPanchangViewer() {
                         <>
                             {/* Shubh Chaughadiya Muhurt Card */}
                             <div id="shubh-chaughadiya-muhurt-section" style={{
-                                backgroundColor: '#ffffff',
-                                color: '#0f172a',
-                                borderRadius: '24px',
-                                padding: '30px',
-                                boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
-                                border: '1px solid #e2e8f0',
+                                backgroundColor: theme.cardBg,
+                                color: theme.text,
+                                borderRadius: '35px',
+                                padding: '40px',
+                                boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)',
+                                border: `1px solid ${theme.borderColor}`,
                                 marginTop: '30px',
                                 textAlign: 'left'
                             }}>
                                 {/* Header */}
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '15px' }}>
                                     <div style={{
-                                        width: '40px',
-                                        height: '40px',
-                                        borderRadius: '12px',
-                                        backgroundColor: '#fef3c7',
+                                        width: '44px',
+                                        height: '44px',
+                                        borderRadius: '14px',
+                                        backgroundColor: '#ffe4e6',
                                         display: 'flex',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        color: '#d97706',
-                                        fontSize: '20px'
+                                        color: '#be123c',
+                                        fontSize: '22px',
+                                        fontWeight: 900
                                     }}>
                                         ☆
                                     </div>
-                                    <h2 style={{ fontSize: '24px', fontWeight: '800', margin: 0, color: '#0f172a', fontFamily: 'sans-serif' }}>
-                                        Shubh Chaughadiya Muhurt for <span style={{ color: '#d97706' }}>{data.day}</span>
+                                    <h2 style={{ fontSize: '28px', fontWeight: '900', margin: 0, color: '#881337', fontFamily: 'serif' }}>
+                                        Shubh Chaughadiya Muhurt for <span style={{ color: '#be123c' }}>{data.day}</span>
                                     </h2>
                                 </div>
 
-                                <p style={{ fontSize: '18px', color: 'rgba(0, 0, 0, 1)', marginBottom: '20px', fontFamily: 'sans-serif' }}>
-                                    Most auspicious periods for today (<span style={{ color: '#d97706' }}>{data.day}</span>):
+                                <p style={{ fontSize: '18px', color: '#1e293b', marginBottom: '20px', fontFamily: 'serif' }}>
+                                    Most auspicious periods for today (<span style={{ color: '#be123c', fontWeight: 900 }}>{data.day}</span>):
                                 </p>
 
                                 {/* Table Container */}
                                 <div style={{
-                                    border: '1px solid #e2e8f0',
-                                    borderRadius: '16px',
+                                    border: `1px solid ${theme.borderColor}`,
+                                    borderRadius: '20px',
                                     overflow: 'hidden',
                                     marginBottom: '25px'
                                 }}>
-                                    <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'sans-serif' }}>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'serif' }}>
                                         <thead>
-                                            <tr style={{ borderBottom: '1px solid #e2e8f0', backgroundColor: '#f8fafc' }}>
-                                                <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '14px', fontWeight: '800', color: '#040207ff', letterSpacing: '1px', textTransform: 'uppercase' }}>Time</th>
-                                                <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '14px', fontWeight: '800', color: '#000000ff', letterSpacing: '1px', textTransform: 'uppercase' }}>Type</th>
-                                                <th style={{ textAlign: 'left', padding: '12px 20px', fontSize: '14px', fontWeight: '800', color: '#040207ff', letterSpacing: '1px', textTransform: 'uppercase' }}>Ruler</th>
+                                            <tr style={{ borderBottom: `1px solid ${theme.borderColor}`, backgroundColor: '#ffe4e6' }}>
+                                                <th style={{ textAlign: 'left', padding: '14px 20px', fontSize: '14px', fontWeight: '900', color: '#881337', letterSpacing: '1px', textTransform: 'uppercase' }}>Time</th>
+                                                <th style={{ textAlign: 'left', padding: '14px 20px', fontSize: '14px', fontWeight: '900', color: '#881337', letterSpacing: '1px', textTransform: 'uppercase' }}>Type</th>
+                                                <th style={{ textAlign: 'left', padding: '14px 20px', fontSize: '14px', fontWeight: '900', color: '#881337', letterSpacing: '1px', textTransform: 'uppercase' }}>Ruler</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -582,14 +583,14 @@ export default function DailyPanchangViewer() {
                                                     const ruler = getChoghadiyaRuler(c.name);
                                                     const textColor = getChoghadiyaColor(c.name);
                                                     return (
-                                                        <tr key={idx} style={{ borderBottom: idx < arr.length - 1 ? '1px solid #e2e8f0' : 'none' }}>
-                                                            <td style={{ padding: '16px 20px', fontSize: '16px', fontWeight: '600', color: '#1e293b' }}>
+                                                        <tr key={idx} style={{ borderBottom: idx < arr.length - 1 ? `1px solid ${theme.borderColor}` : 'none' }}>
+                                                            <td style={{ padding: '16px 20px', fontSize: '18px', fontWeight: '700', color: '#1e293b' }}>
                                                                 {c.start} - {c.end}
                                                             </td>
-                                                            <td style={{ padding: '16px 20px', fontSize: '16px', fontWeight: '700', color: textColor }}>
+                                                            <td style={{ padding: '16px 20px', fontSize: '18px', fontWeight: '900', color: textColor }}>
                                                                 {c.name}
                                                             </td>
-                                                            <td style={{ padding: '16px 20px', fontSize: '16px', fontWeight: '600', color: 'hsla(241, 85%, 44%, 1.00)' }}>
+                                                            <td style={{ padding: '16px 20px', fontSize: '18px', fontWeight: '700', color: '#052285ff' }}>
                                                                 {ruler}
                                                             </td>
                                                         </tr>
@@ -601,26 +602,26 @@ export default function DailyPanchangViewer() {
 
                                 {/* About Box */}
                                 <div style={{
-                                    backgroundColor: '#eff6ff',
-                                    borderRadius: '16px',
-                                    padding: '20px',
-                                    border: '1px solid #dbeafe',
-                                    fontFamily: 'sans-serif'
+                                    backgroundColor: '#fff1f2',
+                                    borderRadius: '20px',
+                                    padding: '25px',
+                                    border: `1px solid ${theme.borderColor}`,
+                                    fontFamily: 'serif'
                                 }}>
-                                    <h4 style={{ fontSize: '16px', fontWeight: '700', color: '#1e40af', margin: '0 0 10px 0' }}>
+                                    <h4 style={{ fontSize: '18px', fontWeight: '900', color: '#881337', margin: '0 0 12px 0' }}>
                                         About These Auspicious Periods:
                                     </h4>
-                                    <ul style={{ listStyleType: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '16px', color: '#1e293b' }}>
-                                        <li style={{ display: 'flex', gap: '8px' }}>
-                                            <span style={{ color: '#10b981', fontWeight: 'bold' }}>•</span>
+                                    <ul style={{ listStyleType: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '17px', color: '#1e293b' }}>
+                                        <li style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                            <span style={{ color: '#15803d', fontWeight: '900' }}>•</span>
                                             <span><strong>Amrit</strong> - Most auspicious time ruled by Moon, excellent for all activities</span>
                                         </li>
-                                        <li style={{ display: 'flex', gap: '8px' }}>
-                                            <span style={{ color: '#3b82f6', fontWeight: 'bold' }}>•</span>
+                                        <li style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                            <span style={{ color: '#052285ff', fontWeight: '900' }}>•</span>
                                             <span><strong>Shubh</strong> - Auspicious time ruled by Jupiter, ideal for religious ceremonies</span>
                                         </li>
-                                        <li style={{ display: 'flex', gap: '8px' }}>
-                                            <span style={{ color: '#a855f7', fontWeight: 'bold' }}>•</span>
+                                        <li style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                                            <span style={{ color: '#be123c', fontWeight: '900' }}>•</span>
                                             <span><strong>Labh</strong> - Auspicious time ruled by Mercury, good for business and education</span>
                                         </li>
                                     </ul>
@@ -628,26 +629,26 @@ export default function DailyPanchangViewer() {
                             </div>
 
                             <div style={{ marginTop: '40px' }}>
-                                <h3 style={{ color: '#d4af37', textTransform: 'uppercase', letterSpacing: '3px', fontSize: '20px', fontWeight: '900', marginBottom: '20px', textAlign: 'center' }}>Choghadiya (Day & Night)</h3>
+                                <h3 style={{ color: '#881337', textTransform: 'uppercase', letterSpacing: '3px', fontSize: '24px', fontWeight: '900', marginBottom: '25px', textAlign: 'center' }}>Choghadiya (Day & Night)</h3>
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '24px' }}>
-                                    <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '30px', padding: '30px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <h4 style={{ color: 'white', textAlign: 'center', marginBottom: '20px', fontSize: '18px', textTransform: 'uppercase', letterSpacing: '2px' }}>Day Choghadiya</h4>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                    <div style={{ background: theme.cardBg, borderRadius: '35px', padding: '35px', border: `1px solid ${theme.borderColor}`, boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)' }}>
+                                        <h4 style={{ color: '#881337', textAlign: 'center', marginBottom: '20px', fontSize: '20px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 900 }}>Day Choghadiya</h4>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                             {data.choghadiya.day.map((c, i) => (
-                                                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 15px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', borderLeft: `4px solid ${c.quality === 'Good' ? '#34d399' : c.quality === 'Bad' ? '#f87171' : '#fbbf24'}`, color: c.quality === 'Good' ? '#34d399' : c.quality === 'Bad' ? '#f87171' : '#fbbf24' }}>
-                                                    <span style={{ fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px' }}>{c.name}</span>
-                                                    <span style={{ fontSize: '18px', opacity: 0.9 }}>{c.start} - {c.end}</span>
+                                                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 18px', background: c.quality === 'Good' ? '#f0fdf4' : c.quality === 'Bad' ? '#fff1f2' : '#fefce8', borderRadius: '14px', borderLeft: `5px solid ${c.quality === 'Good' ? '#15803d' : c.quality === 'Bad' ? '#be123c' : '#854d0e'}`, border: `1px solid ${theme.borderColor}` }}>
+                                                    <span style={{ fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px', color: c.quality === 'Good' ? '#15803d' : c.quality === 'Bad' ? '#be123c' : '#854d0e', fontSize: '16px' }}>{c.name}</span>
+                                                    <span style={{ fontSize: '18px', fontWeight: 700, color: '#1e293b' }}>{c.start} - {c.end}</span>
                                                 </div>
                                             ))}
                                         </div>
                                     </div>
-                                    <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '30px', padding: '30px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                                        <h4 style={{ color: 'white', textAlign: 'center', marginBottom: '20px', fontSize: '18px', textTransform: 'uppercase', letterSpacing: '2px' }}>Night Choghadiya</h4>
-                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                    <div style={{ background: theme.cardBg, borderRadius: '35px', padding: '35px', border: `1px solid ${theme.borderColor}`, boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)' }}>
+                                        <h4 style={{ color: '#881337', textAlign: 'center', marginBottom: '20px', fontSize: '20px', textTransform: 'uppercase', letterSpacing: '2px', fontWeight: 900 }}>Night Choghadiya</h4>
+                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                                             {data.choghadiya.night.map((c, i) => (
-                                                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '12px 15px', background: 'rgba(0,0,0,0.2)', borderRadius: '10px', borderLeft: `4px solid ${c.quality === 'Good' ? '#34d399' : c.quality === 'Bad' ? '#f87171' : '#fbbf24'}`, color: c.quality === 'Good' ? '#34d399' : c.quality === 'Bad' ? '#f87171' : '#fbbf24' }}>
-                                                    <span style={{ fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px' }}>{c.name}</span>
-                                                    <span style={{ fontSize: '18px', opacity: 0.9 }}>{c.start} - {c.end}</span>
+                                                <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '14px 18px', background: c.quality === 'Good' ? '#f0fdf4' : c.quality === 'Bad' ? '#fff1f2' : '#fefce8', borderRadius: '14px', borderLeft: `5px solid ${c.quality === 'Good' ? '#15803d' : c.quality === 'Bad' ? '#be123c' : '#854d0e'}`, border: `1px solid ${theme.borderColor}` }}>
+                                                    <span style={{ fontWeight: 900, textTransform: 'uppercase', letterSpacing: '1px', color: c.quality === 'Good' ? '#15803d' : c.quality === 'Bad' ? '#be123c' : '#854d0e', fontSize: '16px' }}>{c.name}</span>
+                                                    <span style={{ fontSize: '18px', fontWeight: 700, color: '#1e293b' }}>{c.start} - {c.end}</span>
                                                 </div>
                                             ))}
                                         </div>
@@ -655,44 +656,44 @@ export default function DailyPanchangViewer() {
                                 </div>
 
                                 {/* Choghadiya Oracle Section */}
-                                <div id="auspicious-time-advisor-section" style={{ marginTop: '30px', background: 'linear-gradient(135deg, rgba(30,41,59,0.8) 0%, rgba(15,23,42,0.9) 100%)', borderRadius: '30px', padding: '30px', border: '1px solid rgba(167,139,250,0.3)', boxShadow: '0 10px 30px rgba(0,0,0,0.5)' }}>
-                                    <h4 style={{ color: 'rgba(230, 210, 33, 1)', textAlign: 'center', marginBottom: '15px', fontSize: '20px', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: 900 }}>Auspicious Time Advisor (शुभ समय परामर्श)</h4>
-                                    <p style={{ color: 'rgba(245, 200, 51, 1)', textAlign: 'center', fontSize: '18px', marginBottom: '20px' }}>Ask a question about travel, business, health, or ceremonies. The Oracle will look at the *currently active* Choghadiya and guide you.</p>
+                                <div id="auspicious-time-advisor-section" style={{ marginTop: '40px', background: theme.cardBg, borderRadius: '35px', padding: '40px', border: `1px solid ${theme.borderColor}`, boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)' }}>
+                                    <h4 style={{ color: '#881337', textAlign: 'center', marginBottom: '15px', fontSize: '24px', textTransform: 'uppercase', letterSpacing: '3px', fontWeight: 900 }}>Auspicious Time Advisor (शुभ समय परामर्श)</h4>
+                                    <p style={{ color: '#be123c', textAlign: 'center', fontSize: '18px', marginBottom: '25px' }}>Ask a question about travel, business, health, or ceremonies. The Oracle will look at the *currently active* Choghadiya and guide you.</p>
 
-                                    <form onSubmit={handleOracleSubmit} style={{ display: 'flex', gap: '15px', maxWidth: '600px', margin: '0 auto' }}>
+                                    <form onSubmit={handleOracleSubmit} style={{ display: 'flex', gap: '15px', maxWidth: '650px', margin: '0 auto' }}>
                                         <input
                                             type="text"
                                             value={oracleQuestion}
                                             onChange={(e) => setOracleQuestion(e.target.value)}
                                             placeholder="e.g. Is this a good time to travel?"
-                                            style={{ flex: 1, padding: '15px 25px', borderRadius: '30px', background: 'rgba(0,0,0,0.5)', border: '1px solid rgba(167,139,250,0.3)', color: 'hsla(0, 45%, 86%, 1.00)', fontSize: '18px', outline: 'none' }}
+                                            style={{ flex: 1, padding: '16px 25px', borderRadius: '30px', background: '#fff1f2', border: `1px solid ${theme.borderColor}`, color: '#1e293b', fontSize: '18px', outline: 'none', fontWeight: 700 }}
                                             disabled={oracleLoading}
                                         />
                                         <button
                                             type="submit"
                                             disabled={oracleLoading || !oracleQuestion.trim()}
-                                            style={{ padding: '15px 30px', borderRadius: '30px', background: oracleLoading ? '#64748b' : '#8b5cf6', color: 'white', border: 'none', fontWeight: 900, textTransform: 'uppercase', cursor: oracleLoading ? 'not-allowed' : 'pointer', transition: 'background 0.3s', fontSize: '16px' }}
+                                            style={{ padding: '16px 32px', borderRadius: '30px', background: oracleLoading ? '#cbd5e1' : '#e11d48', color: 'white', border: 'none', fontWeight: 900, textTransform: 'uppercase', cursor: oracleLoading ? 'not-allowed' : 'pointer', transition: 'background 0.3s', fontSize: '16px', boxShadow: '0 4px 14px rgba(225, 29, 72, 0.3)' }}
                                         >
                                             {oracleLoading ? "Consulting..." : "Ask"}
                                         </button>
                                     </form>
 
                                     {oracleResponse && (
-                                        <div style={{ marginTop: '25px', padding: '25px', borderRadius: '20px', background: 'rgba(0,0,0,0.4)', borderLeft: `5px solid ${oracleResponse.quality === 'Inauspicious' ? '#ef4444' : oracleResponse.quality === 'Extremely Auspicious' || oracleResponse.quality === 'Auspicious' ? '#10b981' : '#f59e0b'}`, color: 'white', maxWidth: '600px', margin: '25px auto 0' }}>
+                                        <div style={{ marginTop: '25px', padding: '25px', borderRadius: '25px', background: '#fff1f2', borderLeft: `6px solid ${oracleResponse.quality === 'Inauspicious' ? '#be123c' : oracleResponse.quality === 'Extremely Auspicious' || oracleResponse.quality === 'Auspicious' ? '#15803d' : '#854d0e'}`, border: `1px solid ${theme.borderColor}`, color: '#1e293b', maxWidth: '650px', margin: '25px auto 0' }}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
                                                 <span style={{ fontSize: '24px' }}>🔮</span>
-                                                <span style={{ fontWeight: 900, letterSpacing: '1px', color: '#e2e8f0', textTransform: 'uppercase', fontSize: '14px' }}>Oracle Insight</span>
+                                                <span style={{ fontWeight: 900, letterSpacing: '1px', color: '#881337', textTransform: 'uppercase', fontSize: '16px' }}>Oracle Insight</span>
                                             </div>
-                                            <div style={{ lineHeight: '1.6', color: '#cbd5e1', fontSize: '15px', whiteSpace: 'pre-wrap' }}>
+                                            <div style={{ lineHeight: '1.6', color: '#1e293b', fontSize: '18px', whiteSpace: 'pre-wrap', fontStyle: 'italic' }}>
                                                 {oracleResponse.response}
                                             </div>
                                         </div>
                                     )}
 
                                     {/* Category Tabs and Questions Grid */}
-                                    <div style={{ marginTop: '30px' }}>
+                                    <div style={{ marginTop: '35px' }}>
                                         {/* Category Buttons */}
-                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', justifyContent: 'center', marginBottom: '20px' }}>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', justifyContent: 'center', marginBottom: '25px' }}>
                                             {[
                                                 { id: "General", label: "General" },
                                                 { id: "Night", label: "🌙 Night" },
@@ -708,15 +709,15 @@ export default function DailyPanchangViewer() {
                                                     key={cat.id}
                                                     onClick={() => setActiveOracleCategory(cat.id)}
                                                     style={{
-                                                        padding: '8px 16px',
+                                                        padding: '10px 20px',
                                                         borderRadius: '20px',
-                                                        border: `1px solid ${activeOracleCategory === cat.id ? '#a78bfa' : 'rgba(167,139,250,0.3)'}`,
-                                                        background: activeOracleCategory === cat.id ? 'rgba(167,139,250,0.2)' : 'transparent',
-                                                        color: activeOracleCategory === cat.id ? 'rgba(243, 189, 189, 1)' : 'rgba(238, 199, 23, 1)',
-                                                        fontSize: '18px',
+                                                        border: `1px solid ${activeOracleCategory === cat.id ? '#be123c' : theme.borderColor}`,
+                                                        background: activeOracleCategory === cat.id ? '#e11d48' : '#ffffff',
+                                                        color: activeOracleCategory === cat.id ? '#ffffff' : '#881337',
+                                                        fontSize: '16px',
                                                         cursor: 'pointer',
                                                         transition: 'all 0.2s',
-                                                        fontWeight: activeOracleCategory === cat.id ? 700 : 400
+                                                        fontWeight: 900
                                                     }}
                                                 >
                                                     {cat.label}
@@ -762,9 +763,9 @@ export default function DailyPanchangViewer() {
                                                         key={idx}
                                                         onClick={(e) => { e.preventDefault(); handleOracleSubmit(q); }}
                                                         disabled={oracleLoading}
-                                                        style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '15px', padding: '10px 15px', color: 'rgba(241, 201, 22, 1)', fontSize: '18px', cursor: oracleLoading ? 'not-allowed' : 'pointer', transition: 'all 0.2s', textAlign: 'left' }}
-                                                        onMouseOver={(e) => { if (!oracleLoading) e.target.style.background = 'rgba(167,139,250,0.2)' }}
-                                                        onMouseOut={(e) => { if (!oracleLoading) e.target.style.background = 'rgba(255,255,255,0.05)' }}
+                                                        style={{ background: '#fff1f2', border: `1px solid ${theme.borderColor}`, borderRadius: '15px', padding: '10px 16px', color: '#881337', fontSize: '16px', cursor: oracleLoading ? 'not-allowed' : 'pointer', transition: 'all 0.2s', textAlign: 'left', fontWeight: 700 }}
+                                                        onMouseOver={(e) => { if (!oracleLoading) { e.target.style.background = '#ffe4e6'; e.target.style.color = '#be123c'; } }}
+                                                        onMouseOut={(e) => { if (!oracleLoading) { e.target.style.background = '#fff1f2'; e.target.style.color = '#881337'; } }}
                                                     >
                                                         {q}
                                                     </button>
@@ -776,18 +777,18 @@ export default function DailyPanchangViewer() {
                             </div>
 
                             {/* Advanced Transit Forecast Section */}
-                            <div style={{ marginTop: '50px', padding: '30px', background: 'linear-gradient(135deg, rgba(30,41,59,0.5) 0%, rgba(15,23,42,0.8) 100%)', borderRadius: '30px', border: '1px solid rgba(212,175,55,0.2)', textAlign: 'left', boxShadow: '0 20px 50px rgba(0,0,0,0.3)', width: '100%', maxWidth: '1200px', margin: '30px auto 0 auto' }}>
-                                <div style={{ color: '#d4af37', fontSize: '24px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <div style={{ marginTop: '40px', padding: '40px', background: theme.cardBg, borderRadius: '35px', border: `1px solid ${theme.borderColor}`, textAlign: 'left', boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)', width: '100%', maxWidth: '1200px', margin: '30px auto 0 auto' }}>
+                                <div style={{ color: '#881337', fontSize: '24px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <span>🪐</span> Advanced Transit Forecast (पारगमन गोचर)
                                 </div>
-                                <p style={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '15px', marginBottom: '20px', lineHeight: '1.4' }}>
+                                <p style={{ color: '#be123c', fontSize: '16px', marginBottom: '25px', lineHeight: '1.4', fontWeight: 700 }}>
                                     Upcoming astrological transits, alignments, and their direct impact on zodiac signs.
                                 </p>
 
                                 {forecastLoading ? (
-                                    <p style={{ color: '#d4af37', fontSize: '16px', fontStyle: 'italic' }}>Calculating alignments...</p>
+                                    <p style={{ color: '#881337', fontSize: '18px', fontStyle: 'italic', fontWeight: 900 }}>Calculating alignments...</p>
                                 ) : transitForecast.length === 0 ? (
-                                    <p style={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: '16px' }}>No major transit alignments active in the near future.</p>
+                                    <p style={{ color: '#475569', fontSize: '16px' }}>No major transit alignments active in the near future.</p>
                                 ) : (
                                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '20px' }}>
                                         {transitForecast.map((ev, idx) => {
@@ -795,46 +796,46 @@ export default function DailyPanchangViewer() {
                                             const favorables = Object.values(ev.rashi_impacts).filter(r => r.status === 'Favorable');
 
                                             return (
-                                                <div key={idx} style={{ background: 'rgba(15, 23, 42, 0.5)', padding: '25px', borderRadius: '25px', border: '1px solid rgba(255, 255, 255, 0.05)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                                                <div key={idx} style={{ background: '#fff1f2', padding: '25px', borderRadius: '25px', border: `1px solid ${theme.borderColor}`, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                                                     <div>
                                                         <span style={{
                                                             display: 'inline-block',
-                                                            padding: '4px 10px',
+                                                            padding: '4px 12px',
                                                             borderRadius: '10px',
-                                                            fontSize: '11px',
+                                                            fontSize: '12px',
                                                             fontWeight: '900',
                                                             textTransform: 'uppercase',
-                                                            backgroundColor: ev.is_benefic ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
-                                                            color: ev.is_benefic ? '#10b981' : '#ef4444',
-                                                            border: ev.is_benefic ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid rgba(239, 68, 68, 0.4)',
-                                                            marginBottom: '8px'
+                                                            backgroundColor: ev.is_benefic ? '#f0fdf4' : '#ffe4e6',
+                                                            color: ev.is_benefic ? '#15803d' : '#be123c',
+                                                            border: ev.is_benefic ? '1px solid #bbf7d0' : '1px solid #fecdd3',
+                                                            marginBottom: '10px'
                                                         }}>
                                                             {ev.is_benefic ? 'Auspicious (शुभ)' : 'Cautionary (सतर्कता)'}
                                                         </span>
-                                                        <h3 style={{ fontSize: '22px', fontWeight: 'bold', color: '#fff', margin: '0 0 4px 0' }}>
+                                                        <h3 style={{ fontSize: '22px', fontWeight: '900', color: '#881337', margin: '0 0 6px 0' }}>
                                                             {ev.name_hi} / {ev.name_en}
                                                         </h3>
-                                                        <p style={{ fontSize: '14px', color: '#d4af37', fontWeight: 'bold', margin: '0 0 12px 0' }}>
+                                                        <p style={{ fontSize: '15px', color: '#be123c', fontWeight: '900', margin: '0 0 12px 0' }}>
                                                             📅 {new Date(ev.start_date).toLocaleDateString('hi-IN', { month: 'long', day: 'numeric' })} से {new Date(ev.end_date).toLocaleDateString('hi-IN', { month: 'long', day: 'numeric', year: 'numeric' })}
                                                         </p>
-                                                        <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.85)', lineHeight: '1.6', margin: '0 0 20px 0' }}>
+                                                        <p style={{ fontSize: '16px', color: '#1e293b', lineHeight: '1.6', margin: '0 0 20px 0' }}>
                                                             {ev.desc_hi} <br />
-                                                            <span style={{ fontSize: '14px', color: 'rgba(255,255,255,0.5)' }}>{ev.desc_en}</span>
+                                                            <span style={{ fontSize: '14px', color: '#475569' }}>{ev.desc_en}</span>
                                                         </p>
                                                     </div>
 
                                                     {/* Impacted Signs */}
-                                                    <div style={{ borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '15px' }}>
+                                                    <div style={{ borderTop: `1px solid ${theme.borderColor}`, paddingTop: '15px' }}>
                                                         {cautions.length > 0 && (
                                                             <div style={{ marginBottom: '15px' }}>
-                                                                <span style={{ fontSize: '14px', color: '#f87171', fontWeight: '900', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
+                                                                <span style={{ fontSize: '14px', color: '#be123c', fontWeight: '900', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
                                                                     ⚠️ Warning / सावधान रहें:
                                                                 </span>
                                                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                                                                     {cautions.map(c => (
-                                                                        <div key={c.rashi_name_en} style={{ padding: '6px 12px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.3)', borderRadius: '12px' }}>
-                                                                            <span style={{ color: '#fca5a5', fontWeight: 'bold', fontSize: '15px' }}>{c.rashi_name_hi} ({c.rashi_name_en})</span>
-                                                                            <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)', marginTop: '2px' }}>
+                                                                        <div key={c.rashi_name_en} style={{ padding: '6px 12px', background: '#ffe4e6', border: '1px solid #fecdd3', borderRadius: '12px' }}>
+                                                                            <span style={{ color: '#881337', fontWeight: '900', fontSize: '14px' }}>{c.rashi_name_hi} ({c.rashi_name_en})</span>
+                                                                            <div style={{ fontSize: '12px', color: '#be123c', marginTop: '2px', fontWeight: 700 }}>
                                                                                 {c.areas.map(a => a.hi).join(', ')} मामले
                                                                             </div>
                                                                         </div>
@@ -845,14 +846,14 @@ export default function DailyPanchangViewer() {
 
                                                         {favorables.length > 0 && (
                                                             <div>
-                                                                <span style={{ fontSize: '14px', color: '#34d399', fontWeight: '900', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
+                                                                <span style={{ fontSize: '14px', color: '#15803d', fontWeight: '900', textTransform: 'uppercase', display: 'block', marginBottom: '8px' }}>
                                                                     🌟 Auspicious / शुभ परिणाम:
                                                                 </span>
                                                                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                                                                     {favorables.map(f => (
-                                                                        <div key={f.rashi_name_en} style={{ padding: '6px 12px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '12px' }}>
-                                                                            <span style={{ color: '#a7f3d0', fontWeight: 'bold', fontSize: '15px' }}>{f.rashi_name_hi} ({f.rashi_name_en})</span>
-                                                                            <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.6)', marginTop: '2px' }}>
+                                                                        <div key={f.rashi_name_en} style={{ padding: '6px 12px', background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '12px' }}>
+                                                                            <span style={{ color: '#15803d', fontWeight: '900', fontSize: '14px' }}>{f.rashi_name_hi} ({f.rashi_name_en})</span>
+                                                                            <div style={{ fontSize: '12px', color: '#166534', marginTop: '2px', fontWeight: 700 }}>
                                                                                 {f.areas.map(a => a.hi).join(', ')} लाभ
                                                                             </div>
                                                                         </div>
@@ -868,14 +869,26 @@ export default function DailyPanchangViewer() {
                                 )}
                             </div>
 
-                            <div style={{ textAlign: 'center', padding: '40px 0 20px 0' }}>
-
-
-
-                            </div>
-
-                            <div style={{ textAlign: 'center', padding: '20px 0 60px 0' }}>
-                                <button onClick={() => window.close()} style={{ padding: '24px 80px', borderRadius: '100px', background: 'rgba(255,255,255,0.05)', color: 'white', border: '1px solid rgba(255,255,255,0.1)', fontSize: '11px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '5px' }}>Return to Workstation</button>
+                            <div style={{ textAlign: 'center', padding: '40px 0 60px 0' }}>
+                                <button
+                                    onClick={() => window.close()}
+                                    style={{
+                                        padding: '20px 60px',
+                                        borderRadius: '100px',
+                                        background: '#e11d48',
+                                        color: '#ffffff',
+                                        border: 'none',
+                                        fontSize: '18px',
+                                        fontWeight: 900,
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '4px',
+                                        cursor: 'pointer',
+                                        transition: 'all 0.3s ease',
+                                        boxShadow: '0 8px 20px rgba(225, 29, 72, 0.3)'
+                                    }}
+                                >
+                                    Return to Workstation
+                                </button>
                             </div>
                         </>
                     )}
@@ -883,7 +896,5 @@ export default function DailyPanchangViewer() {
                 </div>
             </div>
         </div>
-
     );
 };
-

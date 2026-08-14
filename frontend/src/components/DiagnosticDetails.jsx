@@ -87,13 +87,13 @@ export default function DiagnosticDetails({ domain, worksheetData }) {
     return (
         <div style={{
             marginTop: '40px',
-            backgroundColor: 'rgba(15, 23, 42, 0.6)',
+            backgroundColor: 'hsla(320, 100%, 99%, 1.00)',
             padding: '30px',
             borderRadius: '30px',
             border: '1px solid rgba(255, 255, 255, 0.1)',
             color: '#cbd5e1'
         }}>
-            <h3 style={{ fontSize: '28px', fontWeight: 900, color: 'white', fontStyle: 'italic', marginBottom: '20px', borderBottom: '1px solid rgba(212,175,55,0.2)', paddingBottom: '10px' }}>
+            <h3 style={{ fontSize: '28px', fontWeight: 900, color: 'rgba(57, 12, 180, 1)', fontStyle: 'italic', marginBottom: '20px', borderBottom: '1px solid rgba(212,175,55,0.2)', paddingBottom: '10px' }}>
                 {domainInfo.title}
             </h3>
 
@@ -107,20 +107,20 @@ export default function DiagnosticDetails({ domain, worksheetData }) {
 
                     return (
                         <div key={hNum} style={{
-                            backgroundColor: 'rgba(30, 41, 59, 0.6)',
+                            backgroundColor: 'hsla(320, 100%, 99%, 1.00)',
                             padding: '20px',
                             borderRadius: '20px',
                             border: '1px solid rgba(212,175,55,0.1)'
                         }}>
-                            <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#d4af37', marginBottom: '10px' }}>
+                            <h4 style={{ fontSize: '22px', fontWeight: 'bold', color: 'rgba(180, 12, 12, 1)', marginBottom: '10px' }}>
                                 {domainInfo.houseLabels[hNum]}
                             </h4>
-                            <p style={{ fontSize: '18px', marginBottom: '15px' }}>
-                                <strong style={{ color: 'white' }}>Responsible Sign:</strong> {houseObj.sign_name || "Unknown"}
+                            <p style={{ fontSize: '24px', marginBottom: '15px' }}>
+                                <strong style={{ color: 'rgba(8, 136, 4, 1)' }}>Responsible Sign:</strong>  {houseObj.sign_name || "Unknown"}
                             </p>
 
                             <div>
-                                <strong style={{ color: 'white', display: 'block', marginBottom: '10px' }}>Planets Present in this House:</strong>
+                                <strong style={{ color: 'hsla(0, 33%, 1%, 1.00)', display: 'block', fontSize: '24px', marginBottom: '10px' }}>Planets Present in this House:</strong>
                                 {planetNames.length > 0 ? (
                                     <div style={{ display: 'grid', gap: '10px' }}>
                                         {planetNames.map(p => (
@@ -130,15 +130,15 @@ export default function DiagnosticDetails({ domain, worksheetData }) {
                                                 borderRadius: '10px',
                                                 border: '1px solid rgba(255,255,255,0.1)'
                                             }}>
-                                                <span style={{ fontWeight: 'bold', color: '#818cf8', display: 'block', fontSize: '18px' }}>{p}</span>
-                                                <p style={{ fontSize: '22px', marginTop: '5px', fontStyle: 'italic' }}>
+                                                <span style={{ fontWeight: 'bold', color: 'rgba(5, 14, 97, 1)', display: 'block', fontSize: '24px' }}>{p}</span>
+                                                <p style={{ fontSize: '22px', color: 'rgba(12, 7, 8, 1)', marginTop: '5px', fontStyle: 'italic' }}>
                                                     {PLANET_EFFECTS[p] || "Influence depends on aspects and strength."}
                                                 </p>
                                             </div>
                                         ))}
                                     </div>
                                 ) : (
-                                    <p style={{ fontStyle: 'italic', color: '#94a3b8' }}>
+                                    <p style={{ fontStyle: 'italic', color: 'rgba(1, 2, 3, 1)' }}>
                                         No planets are present in this house in your birth chart. The house is governed by its Lord ({houseObj.sign_name}'s ruler).
                                     </p>
                                 )}

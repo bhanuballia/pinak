@@ -1320,7 +1320,7 @@ export default function OracleViewer({ categoryProp }) {
 
                                 {/* Details & Responsible Planet */}
                                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
-                                    <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: '30px', padding: '35px', border: '1px solid rgba(255,255,255,0.05)' }}>
+                                    <div style={{ background: 'hsla(240, 14%, 99%, 1.00)', borderRadius: '30px', padding: '35px', border: '1px solid rgba(255,255,255,0.05)' }}>
                                         <p style={{ fontSize: '10px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', color: isLightMode ? '#475569' : '#94a3b8', marginBottom: '15px' }}>Responsible Energy</p>
                                         <p style={{ fontSize: '20px', fontWeight: 700, color: '#fbbf24' }}>
                                             {category === 'manglik' ? 'Mars (Mangal)' : category === 'rahu' ? 'Rahu (North Node)' : category === 'ketu' ? 'Ketu (South Node)' : category === 'sadesati' ? 'Saturn & Moon' : category === 'kalsarp' ? 'Rahu & Ketu Axis' : 'Sun & 9th House'}

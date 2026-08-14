@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { FINANCE_HOUSE_INTERPRETATIONS, FINANCE_YOGAS, SIGN_LORDS } from '../data/financeData';
 import { BPHS_BHAVA_LORDS_RULES } from '../data/bphsBhavaLords';
 
-
 export default function FinanceAnalysis() {
-    const [isLightMode, setIsLightMode] = useState(false);
+    const [isLightMode, setIsLightMode] = useState(true);
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedYoga, setSelectedYoga] = useState(null);
@@ -17,8 +16,8 @@ export default function FinanceAnalysis() {
         setLoading(false);
     }, []);
 
-    if (loading) return <div className="p-10 text-center italic text-[#d4af37]">Loading Financial Analysis...</div>;
-    if (!data) return <div className="p-10 text-center italic text-red-400">No data found. Please generate a report.</div>;
+    if (loading) return <div className="p-10 text-center italic text-[#881337] bg-[#fff1f2] min-h-screen">Loading Financial Analysis...</div>;
+    if (!data) return <div className="p-10 text-center italic text-red-600 bg-[#fff1f2] min-h-screen">No data found. Please generate a report.</div>;
 
     const houses = data.charts?.houses || {};
     const planets = data.planet_positions || [];
@@ -29,7 +28,6 @@ export default function FinanceAnalysis() {
     const h2Sign = houses["2"]?.sign_name;
     const lord2 = SIGN_LORDS[h2Sign];
     const pos2 = getPlanetHouse(lord2) || null;
-
 
     // Simple Yoga Checkers
     const hasYoga = (yogaId) => {
@@ -48,7 +46,7 @@ export default function FinanceAnalysis() {
             const moonHouse = getPlanetHouse('Moon');
             if (!jupHouse || !moonHouse) return false;
             const diff = Math.abs(jupHouse - moonHouse);
-            return [0, 3, 6, 9].includes(diff); // 1, 4, 7, 10 distance
+            return [0, 3, 6, 9].includes(diff);
         }
         if (yogaId === 'dhan_yoga') {
             const h2Sign = houses["2"]?.sign_name;
@@ -64,13 +62,9 @@ export default function FinanceAnalysis() {
             return planetsToCheck.some(p => [1, 4, 7, 10].includes(getPlanetHouse(p)));
         }
         if (yogaId === 'raj_yoga') {
-            // Simplified: Kendra lord in Trikona or vice versa
             const kendraHouses = [1, 4, 7, 10];
             const trikonaHouses = [1, 5, 9];
-
-            // Get lords of kendra
             const kendraLords = kendraHouses.map(h => SIGN_LORDS[houses[h]?.sign_name]);
-            // Check if any kendra lord is in a trikona house
             return kendraLords.some(lord => trikonaHouses.includes(getPlanetHouse(lord)));
         }
         if (yogaId === 'laxmi_yoga') {
@@ -85,12 +79,8 @@ export default function FinanceAnalysis() {
             const isKendraTrikona = (h) => [1, 4, 7, 10, 5, 9].includes(h);
             const isDusthana = (h) => [6, 8, 12].includes(h);
 
-            // Standard Laxmi Yoga: L1 and L9 in Kendra/Trikona + L1 not in Dusthana
             if (pos1 && pos9 && isKendraTrikona(pos1) && isKendraTrikona(pos9) && !isDusthana(pos1)) return true;
-
-            // Variation: Venus + L9 in Kendra/Trikona
             if (pos9 && venusPos && isKendraTrikona(pos9) && isKendraTrikona(venusPos)) return true;
-
             return false;
         }
         return false;
@@ -102,8 +92,7 @@ export default function FinanceAnalysis() {
     };
 
     return (
-        <div className={`${isLightMode ? 'light-mode-override' : 'min-h-screen bg-[#020617] text-[#cbd5e1] font-serif p-8'} relative`}>
-
+        <div className="min-h-screen bg-[#fff1f2] text-[#1e293b] font-serif p-8 relative">
             <button
                 onClick={() => setIsLightMode(!isLightMode)}
                 style={{
@@ -111,75 +100,45 @@ export default function FinanceAnalysis() {
                     top: '20px',
                     right: '80px',
                     zIndex: 1000,
-                    background: isLightMode ? 'rgba(0,0,0,0.8)' : 'rgba(255,255,255,0.8)',
-                    border: '1px solid #ccc',
-                    borderRadius: '4px',
-                    padding: '6px 12px',
+                    background: '#ffe4e6',
+                    border: '1px solid #fecdd3',
+                    borderRadius: '8px',
+                    padding: '6px 14px',
                     fontSize: '14px',
                     cursor: 'pointer',
                     fontWeight: 'bold',
-                    color: isLightMode ? 'white' : 'black',
-                    boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+                    color: '#881337',
+                    boxShadow: '0 2px 8px rgba(136, 19, 55, 0.1)'
                 }}
             >
-                {isLightMode ? '🌙 Dark' : '☀️ Light'}
+                {isLightMode ? '🌹 Light Rose' : '🌙 Dark'}
             </button>
-
-
-            <style>{`
-                .light-mode-override {
-                    background-color: #f8fafc !important;
-                    color: #a51e0dbd !important;
-                }
-                .light-mode-override .bg-\[\#0f172a\] {
-                    background-color: #ffffff !important;
-                    border-color: rgba(0,0,0,0.1) !important;
-                    box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;
-                }
-                .light-mode-override .text-white {
-                    color: #0f172a !important;
-                }
-                .light-mode-override .text-\[\#cbd5e1\] {
-                    color: #a51e0dbd !important;
-                }
-                .light-mode-override .bg-white\/5 {
-                    background-color: rgba(0,0,0,0.03) !important;
-                    border-color: rgba(0,0,0,0.05) !important;
-                }
-                .light-mode-override .from-\[\#1e1b4b\] {
-                    --tw-gradient-from: #f1f5f9 var(--tw-gradient-from-position) !important;
-                }
-                .light-mode-override .to-\[\#020617\] {
-                    --tw-gradient-to: #e2e8f0 var(--tw-gradient-to-position) !important;
-                }
-            `}</style>
 
             <div className="max-w-6xl mx-auto space-y-12">
                 {/* Header */}
-                <div className="text-center space-y-4 border-b border-[#d4af37]/20 pb-12">
+                <div className="text-center space-y-4 border-b border-[#fecdd3] pb-12">
                     <div className="text-6xl mb-4">💰</div>
-                    <h1 className="text-5xl font-black text-white italic tracking-tighter">Finance & Prosperity Analysis</h1>
-                    <p className="text-[#d4af37] uppercase tracking-[0.4em] text-sm font-black">Lagna Chart Diagnostic • Wealth Potential</p>
+                    <h1 className="text-5xl font-black text-[#881337] italic tracking-tighter">Finance & Prosperity Analysis</h1>
+                    <p className="text-[#be123c] uppercase tracking-[0.4em] text-sm font-black">Lagna Chart Diagnostic • Wealth Potential</p>
                 </div>
 
                 {/* 2nd Lord Placement Section */}
                 {pos2 && BPHS_BHAVA_LORDS_RULES.SecondLord[pos2] && (
-                    <div className="bg-[#0f172a] rounded-[3rem] border border-[#d4af37]/20 p-8 md:p-10 shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-8 opacity-5 text-8xl text-white">💰</div>
+                    <div className="bg-white rounded-[3rem] border border-[#fecdd3] p-8 md:p-10 shadow-lg relative overflow-hidden group">
                         <div className="flex flex-col md:flex-row items-center gap-6 relative z-10">
-                            <div className="text-5xl text-[#d4af37]">🏛️</div>
+                            <div className="text-5xl text-[#be123c]">🏛️</div>
                             <div className="flex-1 space-y-2">
-                                <span className="px-3 py-1 bg-[#d4af37]/10 text-[#d4af37] text-[9px] font-black uppercase tracking-widest rounded-full border border-[#d4af37]/20">
+                                <span className="px-3 py-1 bg-[#ffe4e6] text-[#be123c] text-[10px] font-black uppercase tracking-widest rounded-full border border-[#fecdd3]">
                                     Second Lord House Placement (BPHS Ch. 24)
                                 </span>
-                                <h4 className="text-2xl font-black text-white italic">
+                                <h4 className="text-2xl font-black text-[#881337] italic">
                                     Wealth Lord ({lord2}) in the {pos2 === 1 ? "1st" : pos2 === 2 ? "2nd" : pos2 === 3 ? "3rd" : pos2 + "th"} House
                                 </h4>
-                                <p className="text-[18px] text-stone-300 leading-relaxed italic">
+                                <p className="text-[18px] text-[#1e293b] leading-relaxed italic">
                                     "{BPHS_BHAVA_LORDS_RULES.SecondLord[pos2].result}"
                                 </p>
-                                <div className="text-[18px] text-stone-400 font-serif border-t border-[#d4af37]/10 pt-2 italic">
-                                    <span className="font-bold block text-white not-italic mb-1">Sastra Notes:</span>
+                                <div className="text-[18px] text-[#475569] font-serif border-t border-[#fecdd3] pt-2 italic">
+                                    <span className="font-bold block text-[#881337] not-italic mb-1">Sastra Notes:</span>
                                     {BPHS_BHAVA_LORDS_RULES.SecondLord[pos2].notes}
                                 </div>
                             </div>
@@ -196,14 +155,14 @@ export default function FinanceAnalysis() {
                         const signName = houseData?.sign_name;
 
                         return (
-                            <div key={hNum} className="bg-[#0f172a] rounded-[3rem] border border-[#d4af37]/10 p-8 shadow-2xl relative overflow-hidden group">
-                                <div className="absolute -right-8 -top-8 text-[12rem] text-white/5 font-serif group-hover:scale-110 transition-transform">{hNum}</div>
-                                <h3 className="text-2xl font-black text-orange-400 mb-2">{hInfo.title}</h3>
-                                <p className="text-[20px] text-orange-400  mb-6 font-sans uppercase tracking-widest">Sign: {signName}</p>
-                                <p className="text-[20px] italic mb-8 border-l-4 border-[#d4af37] pl-4">{hInfo.description}</p>
+                            <div key={hNum} className="bg-white rounded-[3rem] border border-[#fecdd3] p-8 shadow-lg relative overflow-hidden group">
+                                <div className="absolute -right-8 -top-8 text-[12rem] text-rose-900/5 font-serif group-hover:scale-110 transition-transform">{hNum}</div>
+                                <h3 className="text-2xl font-black text-[#be123c] mb-2">{hInfo.title}</h3>
+                                <p className="text-[20px] text-[#881337] mb-6 font-sans uppercase tracking-widest font-bold">Sign: {signName}</p>
+                                <p className="text-[20px] italic mb-8 border-l-4 border-[#e11d48] pl-4 text-[#1e293b]">{hInfo.description}</p>
 
                                 <div className="space-y-4 relative z-10">
-                                    <h4 className="text-[20px] font-black uppercase text-white tracking-widest">Planetary Influences</h4>
+                                    <h4 className="text-[20px] font-black uppercase text-[#881337] tracking-widest">Planetary Influences</h4>
                                     {housePlanets.length > 0 ? (
                                         housePlanets.map((p, i) => {
                                             const pName = typeof p === 'object' ? p.name : p;
@@ -211,26 +170,26 @@ export default function FinanceAnalysis() {
                                             const isObject = typeof interpretation === 'object' && interpretation !== null;
 
                                             return (
-                                                <div key={i} className="bg-white/5 p-5 rounded-2xl border border-white/5 hover:border-[#d4af37]/30 transition-all group/planet">
+                                                <div key={i} className="bg-[#fff1f2] p-5 rounded-2xl border border-[#fecdd3] hover:border-[#e11d48]/40 transition-all group/planet">
                                                     <div className="flex items-center justify-between mb-2">
                                                         <div className="flex items-center gap-3">
                                                             <span className="text-xl">✨</span>
-                                                            <span className="font-bold text-white text-[20px]">{pName}</span>
+                                                            <span className="font-bold text-[#881337] text-[20px]">{pName}</span>
                                                         </div>
-                                                        {isObject && <span className="text-[20px] text-[#d4af37] font-bols uppercase tracking-tighter opacity-0 group-hover/planet:opacity-100 transition-opacity">Deep Analysis available</span>}
+                                                        {isObject && <span className="text-[16px] text-[#be123c] font-bold uppercase tracking-tighter opacity-0 group-hover/planet:opacity-100 transition-opacity">Deep Analysis available</span>}
                                                     </div>
 
                                                     {!isObject ? (
-                                                        <p className="text-[20px] italic opacity-80 leading-relaxed">{interpretation || "This planet's presence brings specialized energy to your financial sector."}</p>
+                                                        <p className="text-[20px] italic text-[#1e293b] leading-relaxed">{interpretation || "This planet's presence brings specialized energy to your financial sector."}</p>
                                                     ) : (
                                                         <div className="space-y-4">
-                                                            <p className="text-[20px] italic text-[#d4af37] leading-relaxed">{interpretation.intro}</p>
+                                                            <p className="text-[20px] italic text-[#881337] leading-relaxed">{interpretation.intro}</p>
 
                                                             <div className="grid grid-cols-2 gap-2 mt-4">
                                                                 {Object.entries(interpretation.effects_on_wealth).slice(0, 2).map(([key, val], idx) => (
-                                                                    <div key={idx} className="bg-black/20 p-2 rounded-lg">
-                                                                        <p className="text-[20px] font-bold text-orange-400 uppercase">{key}</p>
-                                                                        <p className="text-[20px] text-amber-400">{val}</p>
+                                                                    <div key={idx} className="bg-white p-2 rounded-lg border border-[#fecdd3]">
+                                                                        <p className="text-[16px] font-bold text-[#be123c] uppercase">{key}</p>
+                                                                        <p className="text-[16px] text-[#1e293b]">{val}</p>
                                                                     </div>
                                                                 ))}
                                                             </div>
@@ -241,7 +200,7 @@ export default function FinanceAnalysis() {
                                                                     name: `${pName} in ${hInfo.title}`,
                                                                     details: interpretation
                                                                 })}
-                                                                className="w-full mt-4 py-2 bg-[#d4af37]/10 hover:bg-[#d4af37]/20 border border-[#d4af37]/20 rounded-xl text-[10px] font-black text-[#d4af37] uppercase tracking-[0.2em] transition-all"
+                                                                className="w-full mt-4 py-2 bg-[#ffe4e6] hover:bg-[#fecdd3] border border-[#fecdd3] rounded-xl text-[12px] font-black text-[#881337] uppercase tracking-[0.2em] transition-all"
                                                             >
                                                                 View Full Diagnostic
                                                             </button>
@@ -251,7 +210,7 @@ export default function FinanceAnalysis() {
                                             );
                                         })
                                     ) : (
-                                        <p className="text-[20px] italic opacity-40">No planets occupy this house. Its results are governed by the Lord of {signName}.</p>
+                                        <p className="text-[20px] italic text-[#475569]">No planets occupy this house. Its results are governed by the Lord of {signName}.</p>
                                     )}
                                 </div>
                             </div>
@@ -260,13 +219,12 @@ export default function FinanceAnalysis() {
                 </div>
 
                 {/* Yogas Section */}
-                <div className="bg-[#0f172a] rounded-[4rem] border border-[#d4af37]/20 p-12 shadow-inner relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-[#d4af37]/5 to-transparent"></div>
+                <div className="bg-white rounded-[4rem] border border-[#fecdd3] p-12 shadow-lg relative overflow-hidden">
                     <div className="relative z-10">
                         <div className="flex items-center gap-4 mb-10">
-                            <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent to-[#d4af37]/20"></div>
-                            <h2 className="text-3xl font-black text-[#d4af37] italic">Special Wealth Yogas</h2>
-                            <div className="h-[2px] flex-1 bg-gradient-to-l from-transparent to-[#d4af37]/20"></div>
+                            <div className="h-[2px] flex-1 bg-gradient-to-r from-transparent to-[#fecdd3]"></div>
+                            <h2 className="text-3xl font-black text-[#881337] italic">Special Wealth Yogas</h2>
+                            <div className="h-[2px] flex-1 bg-gradient-to-l from-transparent to-[#fecdd3]"></div>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -276,14 +234,14 @@ export default function FinanceAnalysis() {
                                     <div
                                         key={yoga.id}
                                         onClick={() => active && yoga.details && setSelectedYoga(yoga)}
-                                        className={`p-6 rounded-3xl border transition-all cursor-pointer ${active ? 'bg-[#d4af37]/10 border-[#d4af37] shadow-[0_0_30px_rgba(212,175,55,0.2)]' : 'bg-white/5 border-white/10 opacity-40'}`}
+                                        className={`p-6 rounded-3xl border transition-all cursor-pointer ${active ? 'bg-[#fff1f2] border-[#e11d48] shadow-md' : 'bg-white border-[#fecdd3] opacity-60'}`}
                                     >
                                         <div className="flex justify-between items-start mb-4">
-                                            <h4 className="text-[20px] font-bold text-white">{yoga.name}</h4>
-                                            {active && <span className="text-xs bg-[#d4af37] text-black px-2 py-1 rounded-full font-black uppercase tracking-tighter">Active</span>}
+                                            <h4 className="text-[20px] font-bold text-[#881337]">{yoga.name}</h4>
+                                            {active && <span className="text-xs bg-[#e11d48] text-white px-3 py-1 rounded-full font-black uppercase tracking-tighter">Active</span>}
                                         </div>
-                                        <p className="text-[20px] text-orange-400 italic opacity-80 leading-snug">{yoga.description}</p>
-                                        {active && yoga.details && <p className="text-[20px] text-[#d4af37] mt-4 uppercase font-black tracking-widest">Click for deep analysis ↗</p>}
+                                        <p className="text-[20px] text-[#475569] italic leading-snug">{yoga.description}</p>
+                                        {active && yoga.details && <p className="text-[16px] text-[#be123c] mt-4 uppercase font-black tracking-widest">Click for deep analysis ↗</p>}
                                     </div>
                                 );
                             })}
@@ -293,34 +251,33 @@ export default function FinanceAnalysis() {
 
                 {/* Yoga Details Modal */}
                 {selectedYoga && (
-                    <div className="fixed inset-0 bg-black/90 backdrop-blur-xl z-[1000] overflow-y-auto p-4 md:p-12 flex justify-center">
-                        <div className="w-full max-w-4xl bg-[#0f172a] rounded-[3rem] border border-[#d4af37]/30 shadow-2xl p-10 relative h-fit">
+                    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[1000] overflow-y-auto p-4 md:p-12 flex justify-center">
+                        <div className="w-full max-w-4xl bg-white rounded-[3rem] border border-[#fecdd3] shadow-2xl p-10 relative h-fit text-[#1e293b]">
                             <button
                                 onClick={() => setSelectedYoga(null)}
-                                className="absolute top-8 right-8 text-white/40 hover:text-white text-2xl transition-colors"
+                                className="absolute top-8 right-8 text-[#881337] hover:text-[#be123c] text-2xl font-bold transition-colors"
                             >
                                 ✕
                             </button>
 
                             <div className="space-y-10">
-                                <header className="border-b border-white/10 pb-8">
-                                    <h2 className="text-4xl font-black text-[#d4af37] italic mb-4">{selectedYoga.name}</h2>
-                                    <p className="text-xl text-[#cbd5e1] leading-relaxed italic">{selectedYoga.description}</p>
+                                <header className="border-b border-[#fecdd3] pb-8">
+                                    <h2 className="text-4xl font-black text-[#881337] italic mb-4">{selectedYoga.name}</h2>
+                                    <p className="text-xl text-[#1e293b] leading-relaxed italic">{selectedYoga.description}</p>
                                 </header>
 
                                 {selectedYoga.id === 'budh_aditya' && (
                                     <div className="space-y-12">
-                                        {/* Dynamic House Check */}
-                                        <section className="bg-[#d4af37]/5 p-8 rounded-3xl border border-[#d4af37]/20">
-                                            <h4 className="text-[#d4af37] uppercase font-black tracking-[0.2em] mb-4 text-sm text-center">Specific House Impact</h4>
+                                        <section className="bg-[#fff1f2] p-8 rounded-3xl border border-[#fecdd3]">
+                                            <h4 className="text-[#be123c] uppercase font-black tracking-[0.2em] mb-4 text-sm text-center">Specific House Impact</h4>
                                             {(() => {
                                                 const hNum = getYogaHouse('budh_aditya');
                                                 const houseKey = `${hNum}${hNum === 1 ? 'st' : hNum === 2 ? 'nd' : hNum === 3 ? 'rd' : 'th'} house`;
                                                 const impact = selectedYoga.details.results_in_different_houses[houseKey];
                                                 return (
                                                     <div className="text-center">
-                                                        <p className="text-white text-2xl font-bold mb-2">Formed in your {hNum}{hNum === 1 ? 'st' : hNum === 2 ? 'nd' : hNum === 3 ? 'rd' : 'th'} House</p>
-                                                        <p className="text-xl italic text-amber-100/90">This {impact || "formation brings powerful financial and intellectual clarity."}</p>
+                                                        <p className="text-[#881337] text-2xl font-bold mb-2">Formed in your {hNum}{hNum === 1 ? 'st' : hNum === 2 ? 'nd' : hNum === 3 ? 'rd' : 'th'} House</p>
+                                                        <p className="text-xl italic text-[#1e293b]">{impact || "This formation brings powerful financial and intellectual clarity."}</p>
                                                     </div>
                                                 );
                                             })()}
@@ -328,19 +285,19 @@ export default function FinanceAnalysis() {
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                             <section>
-                                                <h4 className="text-[#d4af37] font-black uppercase text-xs tracking-widest mb-6">Formation Conditions</h4>
+                                                <h4 className="text-[#be123c] font-black uppercase text-xs tracking-widest mb-6">Formation Conditions</h4>
                                                 <ul className="space-y-3">
                                                     {selectedYoga.details.conditions.map((c, i) => (
-                                                        <li key={i} className="text-sm opacity-80 pl-4 border-l-2 border-[#d4af37]/30 leading-relaxed">{c}</li>
+                                                        <li key={i} className="text-sm text-[#1e293b] pl-4 border-l-2 border-[#e11d48] leading-relaxed">{c}</li>
                                                     ))}
                                                 </ul>
                                             </section>
                                             <section>
-                                                <h4 className="text-[#d4af37] font-black uppercase text-xs tracking-widest mb-6">Positive Effects</h4>
+                                                <h4 className="text-[#be123c] font-black uppercase text-xs tracking-widest mb-6">Positive Effects</h4>
                                                 <ul className="space-y-3">
                                                     {selectedYoga.details.effects.map((e, i) => (
-                                                        <li key={i} className="text-sm opacity-80 flex items-start gap-3">
-                                                            <span className="text-[#d4af37]">✧</span>
+                                                        <li key={i} className="text-sm text-[#1e293b] flex items-start gap-3">
+                                                            <span className="text-[#be123c]">✧</span>
                                                             {e}
                                                         </li>
                                                     ))}
@@ -348,20 +305,20 @@ export default function FinanceAnalysis() {
                                             </section>
                                         </div>
 
-                                        <section className="bg-red-500/5 p-8 rounded-3xl border border-red-500/20">
-                                            <h4 className="text-red-400 font-black uppercase text-xs tracking-widest mb-4 text-center">Nullification Warning</h4>
+                                        <section className="bg-red-50 p-8 rounded-3xl border border-red-200">
+                                            <h4 className="text-red-700 font-black uppercase text-xs tracking-widest mb-4 text-center">Nullification Warning</h4>
                                             <ul className="space-y-3">
                                                 {selectedYoga.details.nullification.map((n, i) => (
-                                                    <li key={i} className="text-sm opacity-80 text-center italic">{n}</li>
+                                                    <li key={i} className="text-sm text-red-900 text-center italic">{n}</li>
                                                 ))}
                                             </ul>
                                         </section>
 
-                                        <section className="bg-emerald-500/5 p-8 rounded-3xl border border-emerald-500/20">
-                                            <h4 className="text-emerald-400 font-black uppercase text-xs tracking-widest mb-4 text-center">Amplification Remedies</h4>
+                                        <section className="bg-emerald-50 p-8 rounded-3xl border border-emerald-200">
+                                            <h4 className="text-emerald-800 font-black uppercase text-xs tracking-widest mb-4 text-center">Amplification Remedies</h4>
                                             <div className="flex flex-wrap gap-3 justify-center">
                                                 {selectedYoga.details.remedies.map((r, i) => (
-                                                    <span key={i} className="bg-emerald-500/10 text-emerald-300 px-4 py-2 rounded-full text-xs font-bold border border-emerald-500/20">{r}</span>
+                                                    <span key={i} className="bg-emerald-100 text-emerald-900 px-4 py-2 rounded-full text-xs font-bold border border-emerald-300">{r}</span>
                                                 ))}
                                             </div>
                                         </section>
@@ -370,16 +327,16 @@ export default function FinanceAnalysis() {
 
                                 {selectedYoga.id === 'gajkesari' && (
                                     <div className="space-y-12">
-                                        <section className="bg-[#d4af37]/5 p-8 rounded-3xl border border-[#d4af37]/20">
-                                            <h4 className="text-[#d4af37] uppercase font-black tracking-[0.2em] mb-4 text-sm text-center">Specific House Impact</h4>
+                                        <section className="bg-[#fff1f2] p-8 rounded-3xl border border-[#fecdd3]">
+                                            <h4 className="text-[#be123c] uppercase font-black tracking-[0.2em] mb-4 text-sm text-center">Specific House Impact</h4>
                                             {(() => {
                                                 const hNum = getPlanetHouse('Jupiter');
                                                 const houseKey = `${hNum}${hNum === 1 ? 'st' : hNum === 2 ? 'nd' : hNum === 3 ? 'rd' : 'th'} house`;
                                                 const impact = selectedYoga.details.house_results[houseKey];
                                                 return (
                                                     <div className="text-center">
-                                                        <p className="text-white text-2xl font-bold mb-2">Formed in your {hNum}{hNum === 1 ? 'st' : hNum === 2 ? 'nd' : hNum === 3 ? 'rd' : 'th'} House</p>
-                                                        <p className="text-xl italic text-amber-100/90">{impact || "This placement ensures divine protection and expansion of assets."}</p>
+                                                        <p className="text-[#881337] text-2xl font-bold mb-2">Formed in your {hNum}{hNum === 1 ? 'st' : hNum === 2 ? 'nd' : hNum === 3 ? 'rd' : 'th'} House</p>
+                                                        <p className="text-xl italic text-[#1e293b]">{impact || "This placement ensures divine protection and expansion of assets."}</p>
                                                     </div>
                                                 );
                                             })()}
@@ -387,15 +344,15 @@ export default function FinanceAnalysis() {
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                             <section>
-                                                <h4 className="text-[#d4af37] font-black uppercase text-xs tracking-widest mb-6">Formation Logic</h4>
-                                                <p className="text-sm opacity-80 italic leading-relaxed">{selectedYoga.details.formation}</p>
+                                                <h4 className="text-[#be123c] font-black uppercase text-xs tracking-widest mb-6">Formation Logic</h4>
+                                                <p className="text-sm text-[#1e293b] italic leading-relaxed">{selectedYoga.details.formation}</p>
                                             </section>
                                             <section>
-                                                <h4 className="text-[#d4af37] font-black uppercase text-xs tracking-widest mb-6">Prosperity Effects</h4>
+                                                <h4 className="text-[#be123c] font-black uppercase text-xs tracking-widest mb-6">Prosperity Effects</h4>
                                                 <ul className="space-y-3">
                                                     {selectedYoga.details.effects.map((e, i) => (
-                                                        <li key={i} className="text-sm opacity-80 flex items-start gap-3">
-                                                            <span className="text-[#d4af37]">✧</span>
+                                                        <li key={i} className="text-sm text-[#1e293b] flex items-start gap-3">
+                                                            <span className="text-[#be123c]">✧</span>
                                                             {e}
                                                         </li>
                                                     ))}
@@ -403,20 +360,20 @@ export default function FinanceAnalysis() {
                                             </section>
                                         </div>
 
-                                        <section className="bg-red-500/5 p-8 rounded-3xl border border-red-500/20">
-                                            <h4 className="text-red-400 font-black uppercase text-xs tracking-widest mb-4 text-center">Negative Combinations</h4>
+                                        <section className="bg-red-50 p-8 rounded-3xl border border-red-200">
+                                            <h4 className="text-red-700 font-black uppercase text-xs tracking-widest mb-4 text-center">Negative Combinations</h4>
                                             <ul className="space-y-2">
                                                 {selectedYoga.details.negative_combinations.map((n, i) => (
-                                                    <li key={i} className="text-sm opacity-60 text-center italic">{n}</li>
+                                                    <li key={i} className="text-sm text-red-900 text-center italic">{n}</li>
                                                 ))}
                                             </ul>
                                         </section>
 
-                                        <section className="bg-emerald-500/5 p-8 rounded-3xl border border-emerald-500/20">
-                                            <h4 className="text-emerald-400 font-black uppercase text-xs tracking-widest mb-4 text-center">Yoga Amplification</h4>
+                                        <section className="bg-emerald-50 p-8 rounded-3xl border border-emerald-200">
+                                            <h4 className="text-emerald-800 font-black uppercase text-xs tracking-widest mb-4 text-center">Yoga Amplification</h4>
                                             <div className="flex flex-wrap gap-3 justify-center">
                                                 {selectedYoga.details.remedies.map((r, i) => (
-                                                    <span key={i} className="bg-emerald-500/10 text-emerald-300 px-4 py-2 rounded-full text-xs font-bold border border-emerald-500/20">{r}</span>
+                                                    <span key={i} className="bg-emerald-100 text-emerald-900 px-4 py-2 rounded-full text-xs font-bold border border-emerald-300">{r}</span>
                                                 ))}
                                             </div>
                                         </section>
@@ -425,32 +382,32 @@ export default function FinanceAnalysis() {
 
                                 {selectedYoga.id === 'raj_yoga' && (
                                     <div className="space-y-12">
-                                        <section className="bg-gradient-to-br from-[#d4af37]/20 to-transparent p-10 rounded-[3rem] border border-[#d4af37]/30 text-center">
-                                            <h4 className="text-[#d4af37] uppercase font-black tracking-[0.3em] mb-4 text-xs">Royal Authority</h4>
-                                            <p className="text-3xl font-black text-white italic mb-4">Emperor's Presence Detected</p>
-                                            <p className="text-lg opacity-80 max-w-2xl mx-auto">Your chart possesses the alignment of Kendra and Trikona lords, the hallmark of leadership and generational fame.</p>
+                                        <section className="bg-[#fff1f2] p-10 rounded-[3rem] border border-[#fecdd3] text-center">
+                                            <h4 className="text-[#be123c] uppercase font-black tracking-[0.3em] mb-4 text-xs">Royal Authority</h4>
+                                            <p className="text-3xl font-black text-[#881337] italic mb-4">Emperor's Presence Detected</p>
+                                            <p className="text-lg text-[#1e293b] max-w-2xl mx-auto">Your chart possesses the alignment of Kendra and Trikona lords, the hallmark of leadership and generational fame.</p>
                                         </section>
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                             <section>
-                                                <h4 className="text-[#d4af37] font-black uppercase text-xs tracking-widest mb-6">Formation Logic</h4>
-                                                <p className="text-sm opacity-80 leading-relaxed italic border-l-2 border-[#d4af37]/20 pl-4">{selectedYoga.details.formation}</p>
+                                                <h4 className="text-[#be123c] font-black uppercase text-xs tracking-widest mb-6">Formation Logic</h4>
+                                                <p className="text-sm text-[#1e293b] leading-relaxed italic border-l-2 border-[#e11d48] pl-4">{selectedYoga.details.formation}</p>
 
                                                 <div className="mt-8">
-                                                    <h5 className="text-white text-xs font-bold uppercase mb-4 tracking-tighter">Special Rajyoga Variants</h5>
+                                                    <h5 className="text-[#881337] text-xs font-bold uppercase mb-4 tracking-tighter">Special Rajyoga Variants</h5>
                                                     <div className="flex flex-wrap gap-2">
                                                         {selectedYoga.details.special_types.map((t, i) => (
-                                                            <span key={i} className="text-[10px] bg-white/5 border border-white/10 px-3 py-1 rounded-md text-white/60">{t}</span>
+                                                            <span key={i} className="text-[11px] bg-[#fff1f2] border border-[#fecdd3] px-3 py-1 rounded-md text-[#881337] font-bold">{t}</span>
                                                         ))}
                                                     </div>
                                                 </div>
                                             </section>
                                             <section>
-                                                <h4 className="text-[#d4af37] font-black uppercase text-xs tracking-widest mb-6">Success Indicators</h4>
+                                                <h4 className="text-[#be123c] font-black uppercase text-xs tracking-widest mb-6">Success Indicators</h4>
                                                 <ul className="space-y-4">
                                                     {selectedYoga.details.effects.map((e, i) => (
-                                                        <li key={i} className="text-sm opacity-80 flex items-start gap-4">
-                                                            <div className="w-2 h-2 rounded-full bg-[#d4af37] mt-1.5 shadow-[0_0_10px_#d4af37]"></div>
+                                                        <li key={i} className="text-sm text-[#1e293b] flex items-start gap-4">
+                                                            <div className="w-2 h-2 rounded-full bg-[#e11d48] mt-1.5"></div>
                                                             {e}
                                                         </li>
                                                     ))}
@@ -458,22 +415,22 @@ export default function FinanceAnalysis() {
                                             </section>
                                         </div>
 
-                                        <section className="bg-red-500/5 p-8 rounded-3xl border border-red-500/20">
-                                            <h4 className="text-red-400 font-black uppercase text-xs tracking-widest mb-6 text-center">Factors of Nullification</h4>
+                                        <section className="bg-red-50 p-8 rounded-3xl border border-red-200">
+                                            <h4 className="text-red-700 font-black uppercase text-xs tracking-widest mb-6 text-center">Factors of Nullification</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 {selectedYoga.details.nullification.map((n, i) => (
-                                                    <div key={i} className="text-[11px] opacity-60 flex items-center gap-2">
-                                                        <span className="text-red-500">✕</span> {n}
+                                                    <div key={i} className="text-[12px] text-red-900 flex items-center gap-2">
+                                                        <span className="text-red-600 font-bold">✕</span> {n}
                                                     </div>
                                                 ))}
                                             </div>
                                         </section>
 
-                                        <section className="bg-emerald-500/5 p-8 rounded-3xl border border-emerald-500/20 text-center">
-                                            <h4 className="text-emerald-400 font-black uppercase text-xs tracking-widest mb-6">Amplify Royal Power</h4>
+                                        <section className="bg-emerald-50 p-8 rounded-3xl border border-emerald-200 text-center">
+                                            <h4 className="text-emerald-800 font-black uppercase text-xs tracking-widest mb-6">Amplify Royal Power</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                                 {selectedYoga.details.remedies.map((r, i) => (
-                                                    <div key={i} className="bg-white/5 p-4 rounded-xl text-xs italic opacity-80">{r}</div>
+                                                    <div key={i} className="bg-white p-4 rounded-xl text-xs italic text-emerald-900 border border-emerald-200 font-semibold">{r}</div>
                                                 ))}
                                             </div>
                                         </section>
@@ -482,58 +439,58 @@ export default function FinanceAnalysis() {
 
                                 {selectedYoga.id === 'dhan_yoga' && (
                                     <div className="space-y-12">
-                                        <section className="bg-[#d4af37]/5 p-10 rounded-[3rem] border border-[#d4af37]/30 text-center">
-                                            <h4 className="text-[#d4af37] uppercase font-black tracking-[0.3em] mb-4 text-xs">Wealth Abundance</h4>
-                                            <p className="text-3xl font-black text-white italic mb-4">Financial Flow Activation</p>
-                                            <p className="text-lg opacity-80 max-w-2xl mx-auto">Your chart shows a powerful synergy between the houses of resources (2nd), intelligence (5th), fortune (9th), and gains (11th).</p>
+                                        <section className="bg-[#fff1f2] p-10 rounded-[3rem] border border-[#fecdd3] text-center">
+                                            <h4 className="text-[#be123c] uppercase font-black tracking-[0.3em] mb-4 text-xs">Wealth Abundance</h4>
+                                            <p className="text-3xl font-black text-[#881337] italic mb-4">Financial Flow Activation</p>
+                                            <p className="text-lg text-[#1e293b] max-w-2xl mx-auto">Your chart shows a powerful synergy between the houses of resources (2nd), intelligence (5th), fortune (9th), and gains (11th).</p>
                                         </section>
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                             <section>
-                                                <h4 className="text-[#d4af37] font-black uppercase text-xs tracking-widest mb-6">Formation Principles</h4>
-                                                <p className="text-sm opacity-80 leading-relaxed italic border-l-2 border-[#d4af37]/20 pl-4">{selectedYoga.details.formation}</p>
+                                                <h4 className="text-[#be123c] font-black uppercase text-xs tracking-widest mb-6">Formation Principles</h4>
+                                                <p className="text-sm text-[#1e293b] leading-relaxed italic border-l-2 border-[#e11d48] pl-4">{selectedYoga.details.formation}</p>
 
                                                 <div className="mt-8 space-y-4">
-                                                    <h5 className="text-white text-xs font-bold uppercase mb-4 tracking-tighter">Core Rules</h5>
+                                                    <h5 className="text-[#881337] text-xs font-bold uppercase mb-4 tracking-tighter">Core Rules</h5>
                                                     {selectedYoga.details.logic.map((l, i) => (
-                                                        <div key={i} className="text-[11px] bg-white/5 border border-white/10 p-3 rounded-lg text-white/60">
+                                                        <div key={i} className="text-[12px] bg-[#fff1f2] border border-[#fecdd3] p-3 rounded-lg text-[#1e293b] font-medium">
                                                             • {l}
                                                         </div>
                                                     ))}
                                                 </div>
                                             </section>
                                             <section>
-                                                <h4 className="text-[#d4af37] font-black uppercase text-xs tracking-widest mb-6">Legendary Wealth Combinations</h4>
+                                                <h4 className="text-[#be123c] font-black uppercase text-xs tracking-widest mb-6">Legendary Wealth Combinations</h4>
                                                 <div className="space-y-6">
                                                     {selectedYoga.details.special_combinations.map((c, i) => (
-                                                        <div key={i} className="bg-gradient-to-r from-white/5 to-transparent p-5 rounded-2xl border-l-2 border-[#d4af37]">
-                                                            <h5 className="text-white font-bold text-sm mb-2">{c.title}</h5>
-                                                            <p className="text-xs italic opacity-70 leading-relaxed">{c.description}</p>
+                                                        <div key={i} className="bg-[#fff1f2] p-5 rounded-2xl border-l-4 border-[#e11d48]">
+                                                            <h5 className="text-[#881337] font-bold text-sm mb-2">{c.title}</h5>
+                                                            <p className="text-xs italic text-[#1e293b] leading-relaxed">{c.description}</p>
                                                         </div>
                                                     ))}
                                                 </div>
                                             </section>
                                         </div>
 
-                                        <section className="bg-emerald-500/5 p-8 rounded-3xl border border-emerald-500/20 text-center">
-                                            <h4 className="text-emerald-400 font-black uppercase text-xs tracking-widest mb-4">Prosperity Insight</h4>
-                                            <p className="text-sm italic opacity-80">"When the 2nd (Wealth) and 11th (Gains) lords connect with the 9th (Luck) lord, wealth is achieved through divine grace and minimal struggle."</p>
+                                        <section className="bg-emerald-50 p-8 rounded-3xl border border-emerald-200 text-center">
+                                            <h4 className="text-emerald-800 font-black uppercase text-xs tracking-widest mb-4">Prosperity Insight</h4>
+                                            <p className="text-sm italic text-emerald-950 font-medium">"When the 2nd (Wealth) and 11th (Gains) lords connect with the 9th (Luck) lord, wealth is achieved through divine grace and minimal struggle."</p>
                                         </section>
                                     </div>
                                 )}
 
                                 {selectedYoga.id === 'laxmi_yoga' && (
                                     <div className="space-y-12">
-                                        <section className="bg-[#d4af37]/5 p-8 rounded-3xl border border-[#d4af37]/20">
-                                            <h4 className="text-[#d4af37] uppercase font-black tracking-[0.2em] mb-4 text-sm text-center">Fortune Indicator</h4>
+                                        <section className="bg-[#fff1f2] p-8 rounded-3xl border border-[#fecdd3]">
+                                            <h4 className="text-[#be123c] uppercase font-black tracking-[0.2em] mb-4 text-sm text-center">Fortune Indicator</h4>
                                             {(() => {
                                                 const h9Sign = houses["9"]?.sign_name;
                                                 const l9 = SIGN_LORDS[h9Sign];
                                                 const pos9 = getPlanetHouse(l9);
                                                 return (
                                                     <div className="text-center">
-                                                        <p className="text-white text-2xl font-bold mb-2">Lord of 9th ({l9}) in your {pos9}{pos9 === 1 ? 'st' : pos9 === 2 ? 'nd' : pos9 === 3 ? 'rd' : 'th'} House</p>
-                                                        <p className="text-xl italic text-amber-100/90">This position anchors the Laxmi Yoga, ensuring that fortune flows through your life with divine support.</p>
+                                                        <p className="text-[#881337] text-2xl font-bold mb-2">Lord of 9th ({l9}) in your {pos9}{pos9 === 1 ? 'st' : pos9 === 2 ? 'nd' : pos9 === 3 ? 'rd' : 'th'} House</p>
+                                                        <p className="text-xl italic text-[#1e293b]">This position anchors the Laxmi Yoga, ensuring that fortune flows through your life with divine support.</p>
                                                     </div>
                                                 );
                                             })()}
@@ -541,15 +498,15 @@ export default function FinanceAnalysis() {
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                             <section>
-                                                <h4 className="text-[#d4af37] font-black uppercase text-xs tracking-widest mb-6">Formation Logic</h4>
-                                                <p className="text-sm opacity-80 italic leading-relaxed">{selectedYoga.details.formation}</p>
+                                                <h4 className="text-[#be123c] font-black uppercase text-xs tracking-widest mb-6">Formation Logic</h4>
+                                                <p className="text-sm text-[#1e293b] italic leading-relaxed">{selectedYoga.details.formation}</p>
                                             </section>
                                             <section>
-                                                <h4 className="text-[#d4af37] font-black uppercase text-xs tracking-widest mb-6">Wealth & Life Effects</h4>
+                                                <h4 className="text-[#be123c] font-black uppercase text-xs tracking-widest mb-6">Wealth & Life Effects</h4>
                                                 <ul className="space-y-3">
                                                     {selectedYoga.details.effects.map((e, i) => (
-                                                        <li key={i} className="text-sm opacity-80 flex items-start gap-3">
-                                                            <span className="text-[#d4af37]">✧</span>
+                                                        <li key={i} className="text-sm text-[#1e293b] flex items-start gap-3">
+                                                            <span className="text-[#be123c]">✧</span>
                                                             {e}
                                                         </li>
                                                     ))}
@@ -557,20 +514,20 @@ export default function FinanceAnalysis() {
                                             </section>
                                         </div>
 
-                                        <section className="bg-red-500/5 p-8 rounded-3xl border border-red-500/20">
-                                            <h4 className="text-red-400 font-black uppercase text-xs tracking-widest mb-4 text-center">Partial & Negative Combinations</h4>
+                                        <section className="bg-red-50 p-8 rounded-3xl border border-red-200">
+                                            <h4 className="text-red-700 font-black uppercase text-xs tracking-widest mb-4 text-center">Partial & Negative Combinations</h4>
                                             <ul className="space-y-2">
                                                 {selectedYoga.details.negative_combinations.map((n, i) => (
-                                                    <li key={i} className="text-sm opacity-60 text-center italic">{n}</li>
+                                                    <li key={i} className="text-sm text-red-900 text-center italic">{n}</li>
                                                 ))}
                                             </ul>
                                         </section>
 
-                                        <section className="bg-emerald-500/5 p-8 rounded-3xl border border-emerald-500/20 text-center">
-                                            <h4 className="text-emerald-400 font-black uppercase text-xs tracking-widest mb-6">Amplify Prosperity</h4>
+                                        <section className="bg-emerald-50 p-8 rounded-3xl border border-emerald-200 text-center">
+                                            <h4 className="text-emerald-800 font-black uppercase text-xs tracking-widest mb-6">Amplify Prosperity</h4>
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                                 {selectedYoga.details.remedies.map((r, i) => (
-                                                    <div key={i} className="bg-white/5 p-4 rounded-xl text-xs italic opacity-80">{r}</div>
+                                                    <div key={i} className="bg-white p-4 rounded-xl text-xs italic text-emerald-900 border border-emerald-200 font-semibold">{r}</div>
                                                 ))}
                                             </div>
                                         </section>
@@ -579,14 +536,14 @@ export default function FinanceAnalysis() {
 
                                 {selectedYoga.id === 'planet_detail' && (
                                     <div className="space-y-12">
-                                        <section className="border-b border-white/10 pb-10">
-                                            <p className="text-sm opacity-60 mb-8 leading-relaxed italic">{selectedYoga.details.intro}</p>
+                                        <section className="border-b border-[#fecdd3] pb-10">
+                                            <p className="text-sm text-[#1e293b] mb-8 leading-relaxed italic">{selectedYoga.details.intro}</p>
 
                                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                 {Object.entries(selectedYoga.details.effects_on_wealth).map(([key, val], i) => (
-                                                    <div key={i} className="bg-white/5 p-4 rounded-2xl border border-white/5">
-                                                        <p className="text-[#d4af37] text-[10px] font-black uppercase tracking-widest mb-1">{key}</p>
-                                                        <p className="text-white text-sm font-medium">{val}</p>
+                                                    <div key={i} className="bg-[#fff1f2] p-4 rounded-2xl border border-[#fecdd3]">
+                                                        <p className="text-[#be123c] text-[12px] font-black uppercase tracking-widest mb-1">{key}</p>
+                                                        <p className="text-[#1e293b] text-sm font-medium">{val}</p>
                                                     </div>
                                                 ))}
                                             </div>
@@ -594,33 +551,33 @@ export default function FinanceAnalysis() {
 
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
                                             <section className="space-y-6">
-                                                <h4 className="text-[#d4af37] font-black uppercase text-xs tracking-widest">Strength Analysis</h4>
+                                                <h4 className="text-[#be123c] font-black uppercase text-xs tracking-widest">Strength Analysis</h4>
                                                 <div className="space-y-4">
-                                                    <div className="bg-emerald-500/10 p-5 rounded-2xl border border-emerald-500/20">
-                                                        <p className="text-emerald-400 text-[10px] font-black uppercase mb-2">When Strong</p>
-                                                        <p className="text-xs text-emerald-100/80 leading-relaxed italic">{selectedYoga.details.strong_vs_weak.Strong}</p>
+                                                    <div className="bg-emerald-50 p-5 rounded-2xl border border-emerald-200">
+                                                        <p className="text-emerald-800 text-[12px] font-black uppercase mb-2">When Strong</p>
+                                                        <p className="text-xs text-emerald-950 leading-relaxed italic">{selectedYoga.details.strong_vs_weak.Strong}</p>
                                                     </div>
-                                                    <div className="bg-red-500/10 p-5 rounded-2xl border border-red-500/20">
-                                                        <p className="text-red-400 text-[10px] font-black uppercase mb-2">When Weak</p>
-                                                        <p className="text-xs text-red-100/80 leading-relaxed italic">{selectedYoga.details.strong_vs_weak.Weak}</p>
+                                                    <div className="bg-red-50 p-5 rounded-2xl border border-red-200">
+                                                        <p className="text-red-800 text-[12px] font-black uppercase mb-2">When Weak</p>
+                                                        <p className="text-xs text-red-950 leading-relaxed italic">{selectedYoga.details.strong_vs_weak.Weak}</p>
                                                     </div>
                                                 </div>
                                             </section>
 
                                             <section className="space-y-6">
-                                                <h4 className="text-[#d4af37] font-black uppercase text-xs tracking-widest">Wealth Creation Areas</h4>
+                                                <h4 className="text-[#be123c] font-black uppercase text-xs tracking-widest">Wealth Creation Areas</h4>
                                                 <div className="flex flex-wrap gap-2">
                                                     {selectedYoga.details.areas_for_gaining_wealth.map((area, i) => (
-                                                        <span key={i} className="bg-white/5 border border-white/10 px-4 py-2 rounded-full text-xs text-white/80">{area}</span>
+                                                        <span key={i} className="bg-[#fff1f2] border border-[#fecdd3] px-4 py-2 rounded-full text-xs text-[#881337] font-bold">{area}</span>
                                                     ))}
                                                 </div>
 
                                                 <div className="pt-6">
-                                                    <h4 className="text-[#d4af37] font-black uppercase text-xs tracking-widest mb-6">Financial Remedies</h4>
+                                                    <h4 className="text-[#be123c] font-black uppercase text-xs tracking-widest mb-6">Financial Remedies</h4>
                                                     <ul className="space-y-3">
                                                         {selectedYoga.details.remedies.map((r, i) => (
-                                                            <li key={i} className="text-sm opacity-80 flex items-center gap-3">
-                                                                <span className="text-[#d4af37] text-xs">◆</span>
+                                                            <li key={i} className="text-sm text-[#1e293b] flex items-center gap-3">
+                                                                <span className="text-[#be123c] text-xs">◆</span>
                                                                 {r}
                                                             </li>
                                                         ))}
@@ -639,7 +596,7 @@ export default function FinanceAnalysis() {
                 <div className="text-center py-12">
                     <button
                         onClick={() => window.close()}
-                        className="px-12 py-4 rounded-full border border-[#d4af37]/30 hover:bg-[#d4af37]/10 transition-all text-[#d4af37] font-black uppercase tracking-[0.5em] text-xs shadow-2xl"
+                        className="px-12 py-4 rounded-full bg-[#e11d48] hover:bg-[#be123c] transition-all text-white font-black uppercase tracking-[0.5em] text-xs shadow-xl"
                     >
                         Return to Workstation
                     </button>
@@ -648,4 +605,3 @@ export default function FinanceAnalysis() {
         </div>
     );
 }
-
