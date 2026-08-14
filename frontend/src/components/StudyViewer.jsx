@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { fetchStudyInsights, fetchPersonalStudyInsights } from '../services/api';
+import DiagnosticDetails from './DiagnosticDetails';
 
-export default function StudyViewer() {
+export default function StudyViewer({ worksheetData: propWorksheetData }) {
     const [insights, setInsights] = useState([]);
     const [personalInsights, setPersonalInsights] = useState([]);
     const [govtJobActivationData, setGovtJobActivationData] = useState(null);
@@ -9,6 +10,7 @@ export default function StudyViewer() {
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('All');
     const [userData, setUserData] = useState(null);
+    const [worksheetData, setWorksheetData] = useState(propWorksheetData || null);
     const [isHindi, setIsHindi] = useState(false);
     const [isLightMode, setIsLightMode] = useState(true);
 
@@ -28,14 +30,26 @@ export default function StudyViewer() {
     useEffect(() => {
         const loadInsights = async () => {
             try {
+                let parsed = propWorksheetData;
+                if (!parsed) {
+                    const localData = localStorage.getItem('worksheetData');
+                    if (localData) {
+                        try { parsed = JSON.parse(localData); } catch (e) { }
+                    }
+                }
+                if (parsed) setWorksheetData(parsed);
+
                 const params = new URLSearchParams(window.location.search);
+                const basic = parsed?.basic_details || {};
+                const meta = parsed?.meta || {};
+
                 const uData = {
-                    name: params.get('name') || 'Student',
-                    date: params.get('date'),
-                    time: params.get('time'),
-                    lat: params.get('lat'),
-                    lon: params.get('lon'),
-                    tz_offset: params.get('tz')
+                    name: params.get('name') || meta.name || basic.name || 'Student',
+                    date: params.get('date') || basic.birth_date || basic.date,
+                    time: params.get('time') || basic.birth_time || basic.time,
+                    lat: params.get('lat') || basic.lat,
+                    lon: params.get('lon') || basic.lon,
+                    tz_offset: params.get('tz') || basic.tz_offset
                 };
 
                 const [general, personalRes] = await Promise.all([
@@ -53,11 +67,9 @@ export default function StudyViewer() {
 
                 setInsights(general);
                 setPersonalInsights(personalRes);
-                if (uData.date) setUserData(uData);
+                if (uData.date || uData.name) setUserData(uData);
 
-                const localData = localStorage.getItem('worksheetData');
-                if (localData) {
-                    const parsed = JSON.parse(localData);
+                if (parsed) {
                     const pos = parsed.planet_positions || parsed.positions || parsed.planets || [];
                     let moonObj = pos.find(p => p.planet === 'Moon' || p.name === 'Moon');
                     let ascObj = pos.find(p => p.planet === 'Lagna' || p.planet === 'Ascendant' || p.name === 'Lagna' || p.name === 'Ascendant');
@@ -84,7 +96,7 @@ export default function StudyViewer() {
             }
         };
         loadInsights();
-    }, []);
+    }, [propWorksheetData]);
 
     if (loading) {
         return (
@@ -223,7 +235,7 @@ export default function StudyViewer() {
                 )}
 
                 {/* Personal Analysis Section */}
-                {userData && personalInsights.length > 0 && (
+                {(userData || worksheetData) && (
                     <section style={{ marginBottom: '80px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '40px' }}>
                             <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to right, transparent, rgba(190, 18, 60, 0.3))' }}></div>
@@ -248,6 +260,20 @@ export default function StudyViewer() {
                                 </div>
                             ))}
                         </div>
+
+                        {/* Lagna Kundali House Diagnostics Component */}
+                        {worksheetData && (
+                            <section style={{ marginBottom: '60px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '20px' }}>
+                                    <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to right, transparent, rgba(136, 19, 55, 0.3))' }}></div>
+                                    <h2 style={{ fontSize: '36px', color: '#881337', fontWeight: 900, fontStyle: 'italic', margin: 0 }}>
+                                        📊 Lagna Kundali Education & Academic Diagnostic
+                                    </h2>
+                                    <div style={{ height: '2px', flex: 1, background: 'linear-gradient(to left, transparent, rgba(136, 19, 55, 0.3))' }}></div>
+                                </div>
+                                <DiagnosticDetails domain="study" worksheetData={worksheetData} />
+                            </section>
+                        )}
 
                         {/* Classical Priority Hierarchy for Selecting Field of Study */}
                         <div style={{

@@ -45,6 +45,15 @@ const DOMAIN_MAP = {
         title: "Domestic Peace & Harmony Diagnostic",
         houses: [4],
         houseLabels: { 4: "Domestic Environment & Griha Sukha (4th House)" }
+    },
+    study: {
+        title: "Study & Education Diagnostic (Lagna Kundali)",
+        houses: [4, 5, 9],
+        houseLabels: {
+            4: "Foundational Education & Concentration (4th House)",
+            5: "Intelligence & Field of Study (5th House)",
+            9: "Higher Education, Degrees & Wisdom (9th House)"
+        }
     }
 };
 
@@ -61,12 +70,13 @@ const PLANET_EFFECTS = {
 };
 
 export default function DiagnosticDetails({ domain, worksheetData }) {
-    if (!worksheetData || !worksheetData.chart || !worksheetData.chart.houses) return null;
+    if (!worksheetData) return null;
+
+    const housesData = worksheetData.chart?.houses || worksheetData.charts?.houses;
+    if (!housesData) return null;
 
     const domainInfo = DOMAIN_MAP[domain];
     if (!domainInfo) return null;
-
-    const housesData = worksheetData.chart.houses;
 
     // Check for Yogas (Simple logic for UI)
     const yogas = [];
@@ -77,10 +87,29 @@ export default function DiagnosticDetails({ domain, worksheetData }) {
         yogas.push("Raja Yoga Status: Evaluated based on Kendra and Trikona Lord connections for business success.");
     }
     if (domain === 'marriage' || domain === 'spouse_health') {
-        const h7Planets = housesData["7"]?.planets || [];
-        const hasMars = h7Planets.some(p => (typeof p === 'object' ? p.name : p) === 'Mars');
+        const h7Planets = housesData["7"]?.planets || housesData[7]?.planets || [];
+        const hasMars = h7Planets.some(p => (typeof p === 'object' ? (p.name || p.planet) : p) === 'Mars');
         if (hasMars) {
             yogas.push("Manglik Dosha Effect: Mars is present in the 7th house, requiring careful partner matching.");
+        }
+    }
+    if (domain === 'study') {
+        const h5Planets = housesData["5"]?.planets || housesData[5]?.planets || [];
+        const h9Planets = housesData["9"]?.planets || housesData[9]?.planets || [];
+        const h4Planets = housesData["4"]?.planets || housesData[4]?.planets || [];
+
+        const pNames5 = h5Planets.map(p => typeof p === 'object' ? (p.name || p.planet) : p);
+        const pNames9 = h9Planets.map(p => typeof p === 'object' ? (p.name || p.planet) : p);
+        const pNames4 = h4Planets.map(p => typeof p === 'object' ? (p.name || p.planet) : p);
+
+        if (pNames5.includes('Jupiter') || pNames5.includes('Mercury')) {
+            yogas.push("Saraswati & Budhaditya Academic Yoga: Powerful placement of Mercury/Jupiter in the 5th House grants rapid absorption, sharp analytical mind, and high academic honors.");
+        }
+        if (pNames9.includes('Jupiter') || pNames9.includes('Sun')) {
+            yogas.push("Brahma Vidya Alignment: High spiritual and academic fortune in the 9th House indicates success in Master's, Doctorate, research, and guidance from esteemed professors.");
+        }
+        if (pNames4.includes('Mercury') || pNames4.includes('Moon')) {
+            yogas.push("Buddhi & Griha Vidya Yoga: Strong emotional composure and memory retention during competitive exams and long study sessions.");
         }
     }
 

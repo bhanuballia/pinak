@@ -948,7 +948,7 @@ function App() {
     }
 
     if (studyMode) {
-        return <StudyViewer />;
+        return <StudyViewer worksheetData={worksheetData} />;
     }
 
     if (careerMode) {
