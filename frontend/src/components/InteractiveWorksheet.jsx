@@ -2868,6 +2868,7 @@ const getDignityStatus = (planet, signName) => {
 
 export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', fullSize = false, hideAnalysis = false, onChartClick }) => {
   const [language, setLanguage] = useState('en');
+  const [expandedTransits, setExpandedTransits] = useState({});
   const chartData = baseChartKey === 'charts' ? data.charts : (data.vargas?.[baseChartKey] || data.charts);
   const lagnaHouse = chartData?.houses?.[1] || chartData?.houses?.["1"] || {};
   let lagnaSignIndex = lagnaHouse.sign_index;
@@ -2933,7 +2934,22 @@ export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', 
   if (transitHouses[1]) {
     transitHouses[1].planets.unshift("Ascendant");
     transitEffects["Ascendant"] = "neutral";
+    transitEffects["Ascendant"] = "neutral";
   }
+
+  const renderPointWise = (text, isExpanded) => {
+    if (!text) return null;
+    const sentences = text.split(/(?<=[.!?])\s+/).filter(s => s.trim().length > 0);
+    const visibleSentences = isExpanded ? sentences : sentences.slice(0, 2);
+
+    return (
+      <ul className="list-disc ml-5 space-y-1.5 text-[18px] leading-relaxed text-slate-900 font-serif">
+        {visibleSentences.map((s, idx) => (
+          <li key={idx}>{s.trim()}</li>
+        ))}
+      </ul>
+    );
+  };
 
   return (
     <div className="flex flex-col h-full bg-[#fdfbf7]">
@@ -3019,9 +3035,7 @@ export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', 
                       {signEffect ? (
                         <div>
                           <p className="text-[18px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {signName}</p>
-                          <p className="text-[18px] leading-relaxed text-slate-900 font-serif">
-                            {signEffect}
-                          </p>
+                          {renderPointWise(signEffect, expandedTransits[planet])}
                         </div>
                       ) : (
                         <p className="text-[18px] text-gray-400 italic font-serif">Sign interpretation coming soon.</p>
@@ -3029,10 +3043,18 @@ export const TransitPanel = ({ data, transitPositions, baseChartKey = 'charts', 
                       {houseEffect && (
                         <div className="pt-3 border-t border-indigo-50">
                           <p className="text-[18px] font-bold text-indigo-700 uppercase tracking-widest mb-1">In {houseLabel} House (Transiting)</p>
-                          <p className="text-[18px] leading-relaxed text-slate-900 font-serif">
-                            {houseEffect}
-                          </p>
+                          {renderPointWise(houseEffect, expandedTransits[planet])}
                         </div>
+                      )}
+
+                      {/* Read More Toggle */}
+                      {(signEffect || houseEffect) && (
+                        <button
+                          onClick={() => setExpandedTransits(prev => ({ ...prev, [planet]: !prev[planet] }))}
+                          className="mt-2 text-indigo-600 font-bold text-sm hover:text-indigo-800 transition-colors"
+                        >
+                          {expandedTransits[planet] ? 'Show Less' : 'Read Full Analysis'}
+                        </button>
                       )}
                     </div>
                   </section>
@@ -4860,12 +4882,6 @@ const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSele
             <div className="shrink-0 border-t-2 border-indigo-200 bg-slate-50">
               <DashaDashboard data={data} />
             </div>
-            <div className="shrink-0 border-t-4 border-amber-300">
-              <VimshottariLifeTable data={data} />
-            </div>
-            <div className="shrink-0 border-t-4 border-emerald-300">
-              <VimshottariGridTimeline data={data} />
-            </div>
           </div>
         );
       case "shadbala":
@@ -4982,6 +4998,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
   const [transitCompareBaseChart, setTransitCompareBaseChart] = useState('charts');
   const [data, setData] = useState(incomingData);
   const [showAstroCharts, setShowAstroCharts] = useState(true);
+  const [showSunAnalysisPopup, setShowSunAnalysisPopup] = useState(false);
   const [showExternalApps, setShowExternalApps] = useState(true);
   const [showOracleTools, setShowOracleTools] = useState(true);
 
@@ -5124,6 +5141,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
     { id: "career", label: "Career", icon: "💼", color: "from-slate-700 to-slate-900" },
     { id: "finance", label: "Finance (Wealth Activation)", icon: "💰", color: "from-emerald-500 to-teal-700" },
     { id: "marriage", label: "Marriage", icon: "💍", color: "from-rose-400 to-pink-600" },
+    { id: "legal_matters", label: "Legal Matters", icon: "⚖️", color: "from-slate-700 to-indigo-900" },
     { id: "business", label: "Business", icon: "💹", color: "from-amber-500 to-orange-700" },
     { id: "business_naming", label: "Business Naming", icon: "🏢", color: "from-blue-500 to-indigo-700" },
     { id: "health", label: "Health", icon: "🏥", color: "from-red-500 to-red-700" },
@@ -5177,7 +5195,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
       return;
     }
     const oracleIds = [
-      'ascendant', 'study', 'career', 'marriage', 'finance', 'business', 'business_naming', 'health',
+      'ascendant', 'study', 'career', 'marriage', 'legal_matters', 'finance', 'business', 'business_naming', 'health',
       'parents_health', 'spouse_health', 'children_health', 'mental_peace',
       'home_peace', 'manglik', 'kalsarp', 'pitra', 'sadesati', 'rahu', 'ketu', 'loshu',
       'lalkitab', 'daily_panchang', 'monthly_panchang', 'horary', 'chakra', 'yantra'
@@ -6256,6 +6274,16 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                       onChartClick={() => setShowVimshottariTransitControl(true)}
                       hideAnalysis={cid === 'transit_compare2'}
                     />
+                    
+                    {/* Add Sun button below transit panel */}
+                    <div className="mt-4 flex justify-center">
+                      <button 
+                        onClick={() => setShowSunAnalysisPopup(true)}
+                        className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-full shadow-lg border-2 border-orange-300 transition-transform hover:scale-105 flex items-center gap-2"
+                      >
+                        <span className="text-xl">☀️</span> Sun
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -6347,12 +6375,6 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                     </div>
                     <div className="shrink-0 border-t-4 border-indigo-300">
                       <DashaDashboard data={data} />
-                    </div>
-                    <div className="shrink-0 border-t-4 border-amber-300">
-                      <VimshottariLifeTable data={data} />
-                    </div>
-                    <div className="shrink-0 border-t-4 border-emerald-300">
-                      <VimshottariGridTimeline data={data} />
                     </div>
                   </div>
                 </div>
@@ -7229,6 +7251,43 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
 
             </div>
           </>
+        )}
+
+        {showSunAnalysisPopup && (
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[300] flex items-center justify-center p-4">
+            <div className="w-full max-w-2xl bg-white shadow-2xl rounded-2xl overflow-hidden max-h-[90vh] flex flex-col animate-in fade-in zoom-in duration-200">
+              <div className="flex items-center justify-between p-4 bg-gradient-to-r from-orange-500 to-rose-500 text-white shrink-0 border-b-4 border-orange-600">
+                <h4 className="text-lg font-black tracking-widest uppercase flex items-center gap-2"><span className="text-2xl filter drop-shadow-md">☀️</span> Analysis of Sun</h4>
+                <button onClick={() => setShowSunAnalysisPopup(false)} className="text-white hover:text-orange-200 text-3xl leading-none transition-colors">&times;</button>
+              </div>
+              <div className="p-6 overflow-y-auto space-y-6 flex-1 bg-orange-50/30">
+                <div className="bg-white p-5 rounded-xl border border-orange-100 shadow-sm">
+                  <h5 className="text-sm font-black text-orange-800 uppercase tracking-widest border-b border-orange-200 pb-2 mb-3 flex items-center gap-2">
+                    <span className="text-lg">🏠</span> House Analysis (House {data?.planet_positions?.find(p => p.planet === 'Sun')?.house || 'N/A'})
+                  </h5>
+                  <p className="text-slate-700 font-serif leading-relaxed text-lg">
+                    {(() => {
+                      const sunPos = data?.planet_positions?.find(p => p.planet === 'Sun') || {};
+                      const sunHouseInfoRaw = SUN_HOUSE_INTERPRETATIONS[sunPos.house];
+                      return (typeof sunHouseInfoRaw === 'object' ? sunHouseInfoRaw.general : sunHouseInfoRaw) || 'No house information available for the Sun.';
+                    })()}
+                  </p>
+                </div>
+                <div className="bg-white p-5 rounded-xl border border-orange-100 shadow-sm">
+                  <h5 className="text-sm font-black text-orange-800 uppercase tracking-widest border-b border-orange-200 pb-2 mb-3 flex items-center gap-2">
+                    <span className="text-lg">✨</span> Sign Analysis (Sign {data?.planet_positions?.find(p => p.planet === 'Sun')?.sign || 'N/A'})
+                  </h5>
+                  <p className="text-slate-700 font-serif leading-relaxed text-lg">
+                    {(() => {
+                      const sunPos = data?.planet_positions?.find(p => p.planet === 'Sun') || {};
+                      const sunSignInfoRaw = PLANET_IN_SIGN_EFFECTS['Sun']?.[sunPos.sign];
+                      return (typeof sunSignInfoRaw === 'object' ? (sunSignInfoRaw.description || sunSignInfoRaw.general || sunSignInfoRaw.positive || '') : sunSignInfoRaw) || 'No sign information available for the Sun.';
+                    })()}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
         {selectedPlanet && (

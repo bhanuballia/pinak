@@ -84,6 +84,11 @@ def calculate_sudarshan_chakra(planet_positions: List[Dict[str, Any]], ascendant
             "is_focused_house": total_planets_count >= 3
         })
 
+    # Generate the AI Report
+    from charts.sudarshan_report_engine import SudarshanReportEngine
+    report_engine = SudarshanReportEngine()
+    ai_report = report_engine.generate(house_synthesis)
+
     return {
         "lagna_reference": {
             "sign": ZODIAC_SIGNS[lagna_sign_idx],
@@ -100,5 +105,6 @@ def calculate_sudarshan_chakra(planet_positions: List[Dict[str, Any]], ascendant
             "sign_index": sun_sign_idx,
             "houses": surya_houses
         },
-        "synthesis": house_synthesis
+        "synthesis": house_synthesis,
+        "report": ai_report
     }

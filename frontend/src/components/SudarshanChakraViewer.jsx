@@ -7,6 +7,7 @@ export default function SudarshanChakraViewer({ birthData: propBirthData }) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [activeTab, setActiveTab] = useState('circular'); // 'circular' | 'synthesis' | 'all_charts'
+    const [isAnalysisOpen, setIsAnalysisOpen] = useState(false);
 
     const getLocalData = () => {
         try {
@@ -33,12 +34,25 @@ export default function SudarshanChakraViewer({ birthData: propBirthData }) {
                     planetPositions = birthData.planet_positions;
                 }
 
-                if (birthData?.chart?.ascendant) {
+                const ascPlanet = planetPositions.find(p => p.planet === 'Ascendant' || p.name === 'Ascendant' || p.planet === 'Lagna' || p.name === 'Lagna');
+                if (ascPlanet && ascPlanet.fullDegree !== undefined) {
+                    ascDeg = ascPlanet.fullDegree;
+                } else if (ascPlanet && ascPlanet.degree !== undefined) {
+                    ascDeg = ascPlanet.degree;
+                } else if (typeof birthData?.chart?.ascendant === 'number') {
                     ascDeg = birthData.chart.ascendant;
-                } else if (birthData?.ascendant_deg) {
+                } else if (typeof birthData?.ascendant_deg === 'number') {
                     ascDeg = birthData.ascendant_deg;
-                } else if (birthData?.ascendant) {
+                } else if (typeof birthData?.ascendant === 'number') {
                     ascDeg = birthData.ascendant;
+                } else if (birthData?.basic_details?.ascendant) {
+                    const signs = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+                    const idx = signs.indexOf(birthData.basic_details.ascendant);
+                    if (idx >= 0) ascDeg = idx * 30 + 15;
+                } else if (typeof birthData?.chart?.ascendant === 'string') {
+                    const signs = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+                    const idx = signs.indexOf(birthData.chart.ascendant);
+                    if (idx >= 0) ascDeg = idx * 30 + 15;
                 }
 
                 const baseUrl = import.meta.env.VITE_API_URL || (window.location.hostname === 'localhost' ? 'http://localhost:8000' : '');
@@ -87,7 +101,7 @@ export default function SudarshanChakraViewer({ birthData: propBirthData }) {
         );
     }
 
-    const { lagna_reference, chandra_reference, surya_reference, synthesis } = sudarshanData;
+    const { lagna_reference, chandra_reference, surya_reference, synthesis, report } = sudarshanData;
 
     // Helper for rendering sign number + planets inside each sector cell matching reference image layout
     const renderSectorCell = (signName, planets, signFontSize = 'text-[12px]') => {
@@ -198,7 +212,18 @@ export default function SudarshanChakraViewer({ birthData: propBirthData }) {
                         <h2 className="text-xl sm:text-2xl font-serif font-black text-slate-900 tracking-wide">
                             Sudarshan Chakra
                         </h2>
+
                     </div>
+
+
+                    {report && (
+                        <button
+                            onClick={() => setIsAnalysisOpen(true)}
+                            className="bg-amber-600 hover:bg-amber-700 text-[16px] text-white font-bold py-2 px-6 rounded-xl shadow-md transition-colors"
+                        >
+                            Analysis
+                        </button>
+                    )}
 
                     {/* Circular Chart Container */}
                     <div className="relative w-full aspect-square max-w-[580px] mx-auto my-4">
@@ -248,8 +273,11 @@ export default function SudarshanChakraViewer({ birthData: propBirthData }) {
                 </div>
 
                 {/* Bottom Explanation Footer */}
-                <div className="mt-3 text-[18px] sm:text-[18px] text-stone-900 font-sans leading-relaxed px-2">
-                    The Sudarshan Chakra display shows birth chart from the Ascendant, from the Moon and from the Sun.
+                <div className="mt-3 flex flex-col items-center gap-4">
+                    <div className="text-[18px] sm:text-[18px] text-stone-900 font-sans leading-relaxed px-2 text-center">
+                        The Sudarshan Chakra display shows birth chart from the Ascendant, from the Moon and from the Sun.
+                    </div>
+
                 </div>
             </div>
         );
@@ -429,6 +457,36 @@ export default function SudarshanChakraViewer({ birthData: propBirthData }) {
                     </div>
                 )}
             </div>
+
+            {/* Analysis Modal */}
+            {isAnalysisOpen && report && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+                    <div className="bg-rose-50 w-full max-w-2xl rounded-2xl shadow-2xl border border-amber-500/40 flex flex-col max-h-[90vh]">
+                        <div className="flex items-center justify-between p-4 border-b border-slate-700/20 bg-white/50 rounded-t-2xl">
+                            <h3 className="text-xl font-bold text-amber-900 flex items-center gap-2">
+                                <span>✨</span> Sudarshan Chakra Analysis
+                            </h3>
+                            <button
+                                onClick={() => setIsAnalysisOpen(false)}
+                                className="text-slate-500 hover:text-rose-600 transition-colors p-1"
+                            >
+                                ✕
+                            </button>
+                        </div>
+                        <div className="p-6 overflow-y-auto custom-scrollbar text-[16px] whitespace-pre-wrap leading-relaxed text-slate-900 font-sans">
+                            {report}
+                        </div>
+                        <div className="p-4 border-t border-slate-700/20 bg-white/50 rounded-b-2xl flex justify-end">
+                            <button
+                                onClick={() => setIsAnalysisOpen(false)}
+                                className="bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 px-6 rounded-xl transition-colors"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

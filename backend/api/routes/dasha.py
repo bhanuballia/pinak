@@ -53,11 +53,13 @@ def wealth_activation_endpoint(payload: Dict = Body(...)):
             # ensure keys are ints
             house_lords = {int(k): str(v) for k, v in house_lords.items()}
 
+        ascendant_deg = float(payload.get("ascendant", 0))
         result = compute_wealth_activation_timeline(
             jd_ut=jd_ut,
             moon_sidereal_long=moon_lon,
             house_lords=house_lords,
-            years_ahead=float(payload.get("years", 80.0))
+            years_ahead=float(payload.get("years", 80.0)),
+            ascendant_deg=ascendant_deg
         )
         return result
     except Exception as e:

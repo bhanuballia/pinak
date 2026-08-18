@@ -10,72 +10,72 @@ government job suitability, precise activation timelines, and specific governmen
 from __future__ import annotations
 from typing import Dict, Any, List
 import datetime
-from astronomy.julian import julian_to_datetime
+from astronomy.julian import datetime_to_julian, julian_to_datetime
 from dasha.vimshottari import compute_vimshottari_full
-from dasha.wealth_activation import derive_house_lords, jd_to_iso_date
+from dasha.wealth_activation import derive_house_lords
 
-# Goverment Domain mapping per planet
+# Universal Job & Career Domain mapping per planet (Corporate, Tech, Banking, Business & Govt)
 GOVT_PLANET_DOMAINS = {
     "Sun": {
         "title": "Sun (Surya)",
-        "domains": "State/Central Executive, IAS/IPS Leadership, Royal Government Offices, Administration & High Public Service",
-        "description": "Sun represents royal authority, executive power, and top-tier state administrative services.",
+        "domains": "Corporate Executive (CEO/Director), Government IAS/IPS Leadership, State Administration & High Public Service",
+        "description": "Sun represents executive authority, corporate leadership, top management, and state administrative services.",
         "weight": 3.5,
         "is_karaka": True
     },
     "Mars": {
         "title": "Mars (Mangal)",
-        "domains": "Police, Military, Defense, Security Forces, Engineering Services, Revenue Enforcement & Competitive Exams",
-        "description": "Mars brings physical valor, engineering aptitude, military discipline, and competitive exam dominance.",
+        "domains": "Software Engineering, Tech Project Management, Defense, Police, Security Operations & Competitive Recruitment",
+        "description": "Mars brings engineering aptitude, IT product execution, military discipline, and competitive exam/interview dominance.",
         "weight": 3.0,
         "is_karaka": True
     },
     "Jupiter": {
         "title": "Jupiter (Guru)",
-        "domains": "Judiciary, Law & Courts, Educational Administration, University Professorship, Treasury & High Advisory",
-        "description": "Jupiter governs law, higher wisdom, public policy, judiciary, and academic leadership.",
+        "domains": "Corporate Law, Management Consulting, Educational Administration, University Professorship & High Financial Advisory",
+        "description": "Jupiter governs corporate legal affairs, strategic consulting, higher education, judiciary, and financial governance.",
         "weight": 2.5,
         "is_karaka": True
     },
     "Saturn": {
         "title": "Saturn (Shani)",
-        "domains": "Public Administration, Public Works Department (PWD), Civil Services, Mining, Labor Ministry & Railways",
-        "description": "Saturn signifies perseverance, long-term public service, infrastructure development, and bureaucracy.",
+        "domains": "IT Infrastructure & Operations, Supply Chain Management, Civil Engineering, Public Works (PWD) & Corporate Administration",
+        "description": "Saturn signifies perseverance, IT infrastructure, supply chain operations, long-term corporate stability, and civil service.",
         "weight": 2.5,
         "is_karaka": True
     },
     "Mercury": {
         "title": "Mercury (Budh)",
-        "domains": "Indian Revenue Service (IRS), Audit & Accounts (CAG), Banking & Finance Ministry, Telecommunications & Postal",
-        "description": "Mercury gives high intellectual capacity for revenue services, auditing, statistics, and commerce.",
+        "domains": "IT Software Development, Data Analytics, Investment Banking, Chartered Accountancy (CA), Auditing & IRS Revenue",
+        "description": "Mercury gives high intellectual capacity for software coding, data analysis, commercial banking, auditing, and revenue services.",
         "weight": 2.0,
         "is_karaka": True
     },
     "Venus": {
         "title": "Venus (Shukra)",
-        "domains": "Foreign Affairs (IFS), Tourism Board, Civil Aviation, Cultural Ministries & Arts Administration",
-        "description": "Venus grants diplomatic talent, foreign relations alignment, and hospitality/cultural governance.",
+        "domains": "FinTech, UI/UX Design, Luxury Brand Management, Corporate Relations, Foreign Affairs & Hospitality Management",
+        "description": "Venus grants corporate aesthetic design skills, financial technology expertise, public relations, and diplomatic services.",
         "weight": 1.5,
         "is_karaka": False
     },
     "Moon": {
         "title": "Moon (Chandra)",
-        "domains": "Public Health Ministry, Municipal Governance, Maritime & Navy, Water Resources & Nursing Administration",
-        "description": "Moon governs public care, municipal bodies, water management, and social welfare departments.",
+        "domains": "Human Resources (HR), Healthcare Administration, Public Relations, Customer Operations & Social Welfare",
+        "description": "Moon governs human resource management, public health, customer relations, and organizational welfare.",
         "weight": 1.5,
         "is_karaka": False
     },
     "Rahu": {
         "title": "Rahu",
-        "domains": "Intelligence Bureau (IB), RAW, Research & Development, IT & Cyber Security Departments, Aviation",
-        "description": "Rahu handles secret intelligence, diplomatic strategy, technology, and unorthodox government roles.",
+        "domains": "Cyber Security, Artificial Intelligence (AI) Engineering, Data Science, Cyber Gaming, Tech Innovation & Strategy",
+        "description": "Rahu handles high-tech software engineering, cyber security, AI systems, strategic innovation, and technical leadership.",
         "weight": 1.0,
         "is_karaka": False
     },
     "Ketu": {
         "title": "Ketu",
-        "domains": "Government Research Labs, Space Organizations (ISRO/DRDO), Medical Research & Archeology",
-        "description": "Ketu brings deep analytical precision for research institutions, defense technology, and specialized sciences.",
+        "domains": "Cloud Architecture, Deep Data Research, Backend Systems Engineering & Specialized Research Institutes",
+        "description": "Ketu gives deep analytical precision for backend software architecture, cloud computing, and scientific research.",
         "weight": 1.0,
         "is_karaka": False
     }
@@ -142,21 +142,74 @@ def jd_to_dmY_date(jd: float) -> str:
     except Exception:
         return str(round(jd, 2))
 
+LORD_PRIMARY_SIGNS = {
+    "Sun": "Leo",
+    "Moon": "Cancer",
+    "Mars": "Aries / Scorpio",
+    "Mercury": "Gemini / Virgo",
+    "Jupiter": "Sagittarius / Pisces",
+    "Venus": "Taurus / Libra",
+    "Saturn": "Capricorn / Aquarius",
+    "Rahu": "Aquarius",
+    "Ketu": "Scorpio"
+}
+
 def compute_govt_job_activation_timeline(
     jd_ut: float,
     moon_sidereal_long: float,
     house_lords: Dict[int, str],
-    years_ahead: float = 80.0
+    house_details: Dict[int, Dict[str, Any]] | None = None,
+    years_ahead: float = 80.0,
+    target_max_age: float = 55.0
 ) -> Dict[str, Any]:
     """
-    Computes precise timeline of Vimshottari Mahadasha + Antardasha government job activations.
+    Computes precise timeline of Vimshottari Mahadasha + Antardasha government job activations
+    from current age up to age 55.
     """
     govt_lord_data = calculate_govt_job_scores(house_lords)
     full_vim = compute_vimshottari_full(jd_ut, moon_sidereal_long, years_ahead=years_ahead)
 
     activation_periods = []
     birth_dt = jd_to_iso_date(jd_ut)
-    min_age_jd = jd_ut + (16.5 * 365.2425)  # Government job eligibility starts after 16.5 years of age
+
+    # Calculate Julian date for current time (now)
+    now_jd = datetime_to_julian(datetime.datetime.utcnow())
+    
+    # Calculate user's current age
+    user_age = (now_jd - jd_ut) / 365.2425 if jd_ut > 0 else 25.0
+    if user_age < 0 or user_age > 120:
+        user_age = 25.0
+
+    min_eligibility_jd = jd_ut + (16.5 * 365.2425)
+    max_age_jd = jd_ut + (target_max_age * 365.2425)
+
+    if user_age < 16.5:
+        start_filter_jd = min_eligibility_jd
+        end_filter_jd = max_age_jd
+        filter_summary = f"Age 16.5 to Age {int(target_max_age)} (Minimum Eligible Selection Age 16.5+)"
+    elif user_age >= target_max_age:
+        start_filter_jd = min_eligibility_jd
+        end_filter_jd = max_age_jd
+        filter_summary = f"Age 16.5 to Age {int(target_max_age)} (Peak Career Selection Years)"
+    else:
+        start_filter_jd = now_jd
+        end_filter_jd = max_age_jd
+        filter_summary = f"Current Age ({round(user_age, 1)} yrs) to Age {int(target_max_age)}"
+
+    house_labels = {
+        1: "1st House (Personal Status & Rank)",
+        2: "2nd House (Income Flow & First Paycheck)",
+        3: "3rd House (Efforts & Exam Execution)",
+        4: "4th House (Workplace Stability)",
+        5: "5th House (Exam Merit & Intelligence)",
+        6: "6th House (Recruitment & Selection)",
+        7: "7th House (Public Status & Posting)",
+        8: "8th House (Research & Hidden Gains)",
+        9: "9th House (Fortune & Higher Rank)",
+        10: "10th House (Career Rank & Power)",
+        11: "11th House (Offer Letter & Joining)",
+        12: "12th House (Foreign/Remote Posting)"
+    }
 
     for md in full_vim:
         md_lord = md["lord"]
@@ -168,30 +221,45 @@ def compute_govt_job_activation_timeline(
             ad_info = govt_lord_data.get(ad_lord, {"score": 0.5, "houses": [], "domains": ""})
             ad_score = ad_info["score"]
 
-            # Filter out periods that end before birth or before reaching 16.5 years of age
-            if ad["end_jd"] < min_age_jd:
+            # Filter out periods that end before start_filter_jd or start after end_filter_jd
+            if ad["end_jd"] < start_filter_jd or ad["start_jd"] > end_filter_jd:
                 continue
 
             combined_score = (md_score * 1.6) + ad_score
 
-            if combined_score >= 7.5:
-                intensity = "High"
+            if combined_score >= 6.5:
+                intensity = "High (Peak Selection)"
                 badge_color = "#10b981" # Emerald Green
-            elif combined_score >= 5.0:
+            elif combined_score >= 4.0:
                 intensity = "Average"
                 badge_color = "#3b82f6" # Sapphire Blue
-            elif combined_score >= 3.0:
-                intensity = "Low"
-                badge_color = "#f59e0b" # Amber Gold
+            elif combined_score >= 2.0:
+                intensity = "Favorable"
+                badge_color = "#8b5cf6" # Purple
             else:
-                continue
-
-            start_str = jd_to_dmY_date(ad["start_jd"])
-            end_str = jd_to_dmY_date(ad["end_jd"])
+                intensity = "Moderate"
+                badge_color = "#f59e0b" # Amber Gold
 
             houses_activated = sorted(list(set(md_info.get("houses", []) + ad_info.get("houses", []))))
 
-            # Determine primary recommended government career domains for this period
+            detailed_houses = []
+            for h in houses_activated:
+                base_lbl = house_labels.get(h, f"{h}th House")
+                h_info = house_details.get(h, {}) if house_details else {}
+                h_lord = h_info.get("lord") or house_lords.get(h, "")
+                h_sign = h_info.get("sign") or LORD_PRIMARY_SIGNS.get(h_lord, "")
+                h_occ = h_info.get("occupants", [])
+
+                fmt = f"{base_lbl} — Lord: {h_lord}" if h_lord else base_lbl
+                if h_sign:
+                    fmt += f" ({h_sign})"
+                if h_occ:
+                    fmt += f" [Occupied by {', '.join(h_occ)}]"
+                detailed_houses.append(fmt)
+
+            formatted_houses = ", ".join(detailed_houses)
+            house_summary = f"triggers {formatted_houses} (as per Lagna Chart D1 Lordship & Gochar Transit confirmation)" if formatted_houses else "aligns with Government Karaka planetary powers (as per Lagna Chart D1 & Gochar Transits)"
+            
             md_domain = GOVT_PLANET_DOMAINS.get(md_lord, {})
             ad_domain = GOVT_PLANET_DOMAINS.get(ad_lord, {})
 
@@ -199,34 +267,84 @@ def compute_govt_job_activation_timeline(
             if ad_lord != md_lord:
                 suggested_careers += f" | {ad_lord}: {ad_domain.get('domains', '')}"
 
+            age_at_start = round((ad["start_jd"] - jd_ut) / 365.2425, 1)
+            start_str = jd_to_dmY_date(ad["start_jd"])
+            end_str = jd_to_dmY_date(ad["end_jd"])
+
             activation_periods.append({
                 "mahadasha": md_lord,
                 "antardasha": ad_lord,
                 "start_date": start_str,
                 "end_date": end_str,
+                "start_jd": ad["start_jd"],
+                "age_at_start": age_at_start,
                 "score": round(combined_score, 2),
                 "intensity": intensity,
                 "badge_color": badge_color,
                 "houses_activated": houses_activated,
+                "houses_activated_detailed": detailed_houses,
                 "suggested_careers": suggested_careers,
-                "description": f"Activation of {md_lord} (MD) & {ad_lord} (AD) activating key service houses: {houses_activated if houses_activated else 'Government Karaka Alignment'}"
+                "description": f"Key period of {md_lord} (Mahadasha) & {ad_lord} (Antardasha) at Age ~{age_at_start} yrs — {house_summary}."
             })
 
-    activation_periods.sort(key=lambda x: x["start_date"])
+    if not activation_periods:
+        for md in full_vim:
+            md_lord = md["lord"]
+            md_info = govt_lord_data.get(md_lord, {"score": 0.5, "houses": [], "domains": ""})
+            md_score = md_info["score"]
+            for ad in md.get("antardashas", []):
+                ad_lord = ad["lord"]
+                ad_info = govt_lord_data.get(ad_lord, {"score": 0.5, "houses": [], "domains": ""})
+                ad_score = ad_info["score"]
+                if ad["end_jd"] < min_eligibility_jd or ad["start_jd"] > max_age_jd:
+                    continue
+                combined_score = (md_score * 1.6) + ad_score
+                start_str = jd_to_dmY_date(ad["start_jd"])
+                end_str = jd_to_dmY_date(ad["end_jd"])
+                age_at_start = round((ad["start_jd"] - jd_ut) / 365.2425, 1)
+                md_domain = GOVT_PLANET_DOMAINS.get(md_lord, {})
+                ad_domain = GOVT_PLANET_DOMAINS.get(ad_lord, {})
+                suggested_careers = f"{md_lord}: {md_domain.get('domains', '')}"
+                if ad_lord != md_lord:
+                    suggested_careers += f" | {ad_lord}: {ad_domain.get('domains', '')}"
+                
+                houses_act = sorted(list(set(md_info.get("houses", []) + ad_info.get("houses", []))))
+                f_houses = ", ".join([house_labels.get(h, f"House {h}") for h in houses_act])
+                h_sum = f"triggers {f_houses}" if f_houses else "aligns with Government Karaka planetary powers"
+
+                activation_periods.append({
+                    "mahadasha": md_lord,
+                    "antardasha": ad_lord,
+                    "start_date": start_str,
+                    "end_date": end_str,
+                    "start_jd": ad["start_jd"],
+                    "age_at_start": age_at_start,
+                    "score": round(combined_score, 2),
+                    "intensity": "Favorable",
+                    "badge_color": "#3b82f6",
+                    "houses_activated": houses_act,
+                    "suggested_careers": suggested_careers,
+                    "description": f"Key period of {md_lord} (Mahadasha) & {ad_lord} (Antardasha) at Age ~{age_at_start} yrs — {h_sum}."
+                })
+
+    activation_periods.sort(key=lambda x: x["start_jd"])
 
     formatted_govt_lords = []
-    for planet, pdata in sorted(govt_lord_data.items(), key=lambda x: x[1]["score"], reverse=True):
+    for planet, pdata in sorted(govt_lord_data.items(), key=lambda x: x[1].get("score", 0.0), reverse=True):
         formatted_govt_lords.append({
             "planet": planet,
             "title": pdata.get("title", planet),
-            "score": round(pdata["score"], 1),
-            "houses": pdata["houses"],
-            "domains": pdata["domains"],
-            "description": pdata["description"]
+            "score": round(pdata.get("score", 0.0), 1),
+            "houses": pdata.get("houses", []),
+            "domains": pdata.get("domains", ""),
+            "description": pdata.get("description", "")
         })
 
     return {
         "birth_date": birth_dt,
+        "user_current_age": round(user_age, 1),
+        "target_max_age": target_max_age,
+        "age_filter_summary": filter_summary,
         "govt_lords": formatted_govt_lords,
         "timeline": activation_periods
     }

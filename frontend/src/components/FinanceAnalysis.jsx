@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { FINANCE_HOUSE_INTERPRETATIONS, FINANCE_YOGAS, SIGN_LORDS } from '../data/financeData';
 import { BPHS_BHAVA_LORDS_RULES } from '../data/bphsBhavaLords';
+import { FINANCE_QUESTIONS_LIST } from '../data/financeQuestionsData';
 
 export default function FinanceAnalysis() {
     const [isLightMode, setIsLightMode] = useState(true);
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedYoga, setSelectedYoga] = useState(null);
+    const [questionSearch, setQuestionSearch] = useState('');
 
     useEffect(() => {
         const savedData = localStorage.getItem('worksheetData');
@@ -23,6 +25,13 @@ export default function FinanceAnalysis() {
     const planets = data.planet_positions || [];
 
     const getPlanetHouse = (p) => planets.find(item => item.planet === p)?.house;
+
+    // Calculate House Lords map
+    const lords = {};
+    for (let h = 1; h <= 12; h++) {
+        const sign = houses[h]?.sign_name;
+        lords[h] = SIGN_LORDS[sign] || null;
+    }
 
     // Calculate 2nd Lord Placement
     const h2Sign = houses["2"]?.sign_name;
@@ -58,8 +67,19 @@ export default function FinanceAnalysis() {
             return (pos2 && [1, 2, 5, 9, 11].includes(pos2)) || (pos11 && [1, 2, 5, 9, 11].includes(pos11));
         }
         if (yogaId === 'panch_mahapurush') {
-            const planetsToCheck = ['Mars', 'Jupiter', 'Mercury', 'Venus', 'Saturn'];
-            return planetsToCheck.some(p => [1, 4, 7, 10].includes(getPlanetHouse(p)));
+            const rules = [
+                { planet: 'Mars', signs: ['Aries', 'Scorpio', 'Capricorn'] },
+                { planet: 'Mercury', signs: ['Gemini', 'Virgo'] },
+                { planet: 'Jupiter', signs: ['Sagittarius', 'Pisces', 'Cancer'] },
+                { planet: 'Venus', signs: ['Taurus', 'Libra', 'Pisces'] },
+                { planet: 'Saturn', signs: ['Capricorn', 'Aquarius', 'Libra'] }
+            ];
+            return rules.some(r => {
+                const hNum = getPlanetHouse(r.planet);
+                if (!hNum || ![1, 4, 7, 10].includes(hNum)) return false;
+                const sign = houses[hNum]?.sign_name;
+                return r.signs.includes(sign);
+            });
         }
         if (yogaId === 'raj_yoga') {
             const kendraHouses = [1, 4, 7, 10];
@@ -241,6 +261,29 @@ export default function FinanceAnalysis() {
                                             {active && <span className="text-xs bg-[#e11d48] text-white px-3 py-1 rounded-full font-black uppercase tracking-tighter">Active</span>}
                                         </div>
                                         <p className="text-[20px] text-[#475569] italic leading-snug">{yoga.description}</p>
+                                        {active && yoga.id === 'panch_mahapurush' && (() => {
+                                            const rules = [
+                                                { name: 'Ruchaka', planet: 'Mars', signs: ['Aries', 'Scorpio', 'Capricorn'] },
+                                                { name: 'Bhadra', planet: 'Mercury', signs: ['Gemini', 'Virgo'] },
+                                                { name: 'Hamsa', planet: 'Jupiter', signs: ['Sagittarius', 'Pisces', 'Cancer'] },
+                                                { name: 'Malavya', planet: 'Venus', signs: ['Taurus', 'Libra', 'Pisces'] },
+                                                { name: 'Sasa', planet: 'Saturn', signs: ['Capricorn', 'Aquarius', 'Libra'] }
+                                            ];
+                                            const activeYogas = rules.filter(r => {
+                                                const hNum = getPlanetHouse(r.planet);
+                                                if (!hNum || ![1, 4, 7, 10].includes(hNum)) return false;
+                                                return r.signs.includes(houses[hNum]?.sign_name);
+                                            });
+                                            return (
+                                                <div className="mt-3 flex flex-wrap gap-1.5">
+                                                    {activeYogas.map((ay, i) => (
+                                                        <span key={i} className="bg-[#ffe4e6] border border-[#fecdd3] text-[#881337] text-[18px] font-bold px-2 py-0.5 rounded-md">
+                                                            ✨ {ay.name} Yoga
+                                                        </span>
+                                                    ))}
+                                                </div>
+                                            );
+                                        })()}
                                         {active && yoga.details && <p className="text-[16px] text-[#be123c] mt-4 uppercase font-black tracking-widest">Click for deep analysis ↗</p>}
                                     </div>
                                 );
@@ -269,7 +312,7 @@ export default function FinanceAnalysis() {
                                 {selectedYoga.id === 'budh_aditya' && (
                                     <div className="space-y-12">
                                         <section className="bg-[#fff1f2] p-8 rounded-3xl border border-[#fecdd3]">
-                                            <h4 className="text-[#be123c] uppercase font-black tracking-[0.2em] mb-4 text-sm text-center">Specific House Impact</h4>
+                                            <h4 className="text-[#be123c] uppercase font-black tracking-[0.2em] mb-4 text-[18px] text-center">Specific House Impact</h4>
                                             {(() => {
                                                 const hNum = getYogaHouse('budh_aditya');
                                                 const houseKey = `${hNum}${hNum === 1 ? 'st' : hNum === 2 ? 'nd' : hNum === 3 ? 'rd' : 'th'} house`;
@@ -319,6 +362,95 @@ export default function FinanceAnalysis() {
                                             <div className="flex flex-wrap gap-3 justify-center">
                                                 {selectedYoga.details.remedies.map((r, i) => (
                                                     <span key={i} className="bg-emerald-100 text-emerald-900 px-4 py-2 rounded-full text-xs font-bold border border-emerald-300">{r}</span>
+                                                ))}
+                                            </div>
+                                        </section>
+                                    </div>
+                                )}
+
+                                {selectedYoga.id === 'panch_mahapurush' && (
+                                    <div className="space-y-12">
+                                        <section className="bg-[#fff1f2] p-8 rounded-3xl border border-[#fecdd3]">
+                                            <h4 className="text-[#be123c] uppercase font-black tracking-[0.2em] mb-6 text-sm text-center">Activated Mahapurush Yogas in Your Chart</h4>
+                                            {(() => {
+                                                const rules = [
+                                                    { name: 'Ruchaka Yoga', planet: 'Mars', signs: ['Aries', 'Scorpio', 'Capricorn'] },
+                                                    { name: 'Bhadra Yoga', planet: 'Mercury', signs: ['Gemini', 'Virgo'] },
+                                                    { name: 'Hamsa Yoga', planet: 'Jupiter', signs: ['Sagittarius', 'Pisces', 'Cancer'] },
+                                                    { name: 'Malavya Yoga', planet: 'Venus', signs: ['Taurus', 'Libra', 'Pisces'] },
+                                                    { name: 'Sasa Yoga', planet: 'Saturn', signs: ['Capricorn', 'Aquarius', 'Libra'] }
+                                                ];
+                                                const activated = rules.filter(r => {
+                                                    const hNum = getPlanetHouse(r.planet);
+                                                    if (!hNum || ![1, 4, 7, 10].includes(hNum)) return false;
+                                                    const sign = houses[hNum]?.sign_name;
+                                                    return r.signs.includes(sign);
+                                                });
+
+                                                if (activated.length === 0) {
+                                                    return (
+                                                        <p className="text-center text-sm italic text-[#881337]">No Panch Mahapurush Yoga is active in the Kendra houses of your Lagna chart.</p>
+                                                    );
+                                                }
+
+                                                return (
+                                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                        {activated.map((y, idx) => {
+                                                            const hNum = getPlanetHouse(y.planet);
+                                                            const sign = houses[hNum]?.sign_name;
+                                                            const details = selectedYoga.details?.yogas?.[y.name];
+                                                            return (
+                                                                <div key={idx} className="bg-white p-5 rounded-2xl border border-[#fecdd3] shadow-sm flex flex-col justify-between">
+                                                                    <div>
+                                                                        <div className="flex items-center justify-between mb-2">
+                                                                            <span className="text-[20px] font-bold text-[#881337]">{y.name}</span>
+                                                                            <span className="bg-[#e11d48] text-white text-[18px] font-black uppercase px-2.5 py-0.5 rounded-full">Active</span>
+                                                                        </div>
+                                                                        <p className="text-[18px] text-[#be123c] font-bold mb-3">
+                                                                            Formed by <span className="underline">{y.planet}</span> in <span className="underline">{sign}</span> ({hNum}{hNum === 1 ? 'st' : hNum === 2 ? 'nd' : hNum === 3 ? 'rd' : 'th'} House)
+                                                                        </p>
+                                                                        <p className="text-[18px] italic text-[#1e293b] leading-relaxed">{details?.meaning}</p>
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                );
+                                            })()}
+                                        </section>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+                                            <section>
+                                                <h4 className="text-[#be123c] font-black uppercase text-[18px] tracking-widest mb-6">Formation Principles</h4>
+                                                <p className="text-[18px] text-[#1e293b] italic leading-relaxed pl-4 border-l-2 border-[#e11d48]">{selectedYoga.details?.formation}</p>
+                                            </section>
+                                            <section>
+                                                <h4 className="text-[#be123c] font-black uppercase text-[18px] tracking-widest mb-6">Key Stature & Wealth Blessings</h4>
+                                                <ul className="space-y-3">
+                                                    {selectedYoga.details?.effects?.map((e, i) => (
+                                                        <li key={i} className="text-[18px] text-[#1e293b] flex items-start gap-3">
+                                                            <span className="text-[#be123c]">✧</span>
+                                                            {e}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </section>
+                                        </div>
+
+                                        <section className="bg-red-50 p-8 rounded-3xl border border-red-200">
+                                            <h4 className="text-red-700 font-black uppercase text-[18px] tracking-widest mb-4 text-center">Factors of Cancellation or Weakening</h4>
+                                            <ul className="space-y-3">
+                                                {selectedYoga.details?.nullification?.map((n, i) => (
+                                                    <li key={i} className="text-[18px] text-red-900 text-center italic">{n}</li>
+                                                ))}
+                                            </ul>
+                                        </section>
+
+                                        <section className="bg-emerald-50 p-8 rounded-3xl border border-emerald-200">
+                                            <h4 className="text-emerald-800 font-black uppercase text-[18px] tracking-widest mb-4 text-center">Amplification & Dharmic Remedies</h4>
+                                            <div className="flex flex-wrap gap-3 justify-center">
+                                                {selectedYoga.details?.remedies?.map((r, i) => (
+                                                    <span key={i} className="bg-emerald-100 text-emerald-900 px-4 py-2 rounded-full text-[18px] font-bold border border-emerald-300">{r}</span>
                                                 ))}
                                             </div>
                                         </section>
@@ -591,6 +723,69 @@ export default function FinanceAnalysis() {
                         </div>
                     </div>
                 )}
+
+                {/* 20 Financial Questions Diagnostic Table */}
+                <div className="bg-white rounded-[4rem] border border-[#fecdd3] p-8 md:p-12 shadow-lg relative overflow-hidden">
+                    <div className="relative z-10">
+                        <div className="flex flex-col md:flex-row items-center justify-between gap-6 mb-10 pb-6 border-b border-[#fecdd3]">
+                            <div>
+                                <h2 className="text-3xl font-black text-[#881337] italic">Lagna Chart Financial Diagnostic Guide</h2>
+                                <p className="text-[#be123c] uppercase tracking-[0.2em] text-xs font-black mt-1">20 Core Financial Queries • Evaluated on Native's Chart</p>
+                            </div>
+                            <input
+                                type="text"
+                                placeholder="Search financial question (e.g. income, property, inheritance)..."
+                                value={questionSearch}
+                                onChange={(e) => setQuestionSearch(e.target.value)}
+                                className="px-5 py-3 rounded-full border border-[#fecdd3] text-sm focus:outline-none focus:ring-2 focus:ring-[#e11d48] w-full md:w-96 bg-[#fff1f2] text-[#881337] font-semibold"
+                            />
+                        </div>
+
+                        <div className="overflow-x-auto custom-scrollbar">
+                            <table className="w-full text-left border-collapse">
+                                <thead>
+                                    <tr className="bg-[#fff1f2] border-b border-[#fecdd3] text-[#881337] uppercase font-black text-[12px] tracking-wider">
+                                        <th className="p-4 w-12 text-center">#</th>
+                                        <th className="p-4 w-1/4">Financial Question</th>
+                                        <th className="p-4 w-1/3">Chart Diagnostic Result</th>
+                                        <th className="p-4">Astrological Analysis Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-[#fecdd3]/50 text-sm">
+                                    {FINANCE_QUESTIONS_LIST
+                                        .filter(q => q.question.toLowerCase().includes(questionSearch.toLowerCase()))
+                                        .map((q, idx) => {
+                                            const dashaData = data.dasha?.list || data.dasha || [];
+                                            const evaluation = q.evaluate(houses, planets, lords, dashaData);
+                                            return (
+                                                <tr key={q.id} className="hover:bg-[#fff1f2]/40 transition-colors">
+                                                    <td className="p-4 font-black text-[#be123c] text-center">{idx + 1}</td>
+                                                    <td className="p-4">
+                                                        <p className="font-bold text-[#881337] text-[18px] leading-snug">{q.question}</p>
+                                                        <div className="flex gap-1.5 flex-wrap mt-2">
+                                                            {q.housesNeeded.map(h => (
+                                                                <span key={h} className="bg-[#ffe4e6] text-[#be123c] border border-[#fecdd3] text-[10px] font-black uppercase px-2 py-0.5 rounded-md">
+                                                                    House {h}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    </td>
+                                                    <td className="p-4 bg-[#fff1f2]/20">
+                                                        <p className="font-bold text-[#881337] text-[16px] mb-1">{evaluation.summary}</p>
+                                                        <p className="text-[16px] italic text-stone-900 leading-relaxed">{evaluation.details}</p>
+                                                    </td>
+                                                    <td className="p-4">
+                                                        <span className="text-[11px] font-black uppercase tracking-wider text-[#be123c] block mb-1">Computation Rule:</span>
+                                                        <p className="text-[16px] font-medium text-stone-900 leading-relaxed italic">{evaluation.astrologicalRule}</p>
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
 
                 {/* Close Button */}
                 <div className="text-center py-12">

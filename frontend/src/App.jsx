@@ -73,6 +73,9 @@ import HarshaBalaViewer from './components/HarshaBalaViewer';
 import TajikaYogasViewer from './components/TajikaYogasViewer';
 import TripatakiChakraViewer from './components/TripatakiChakraViewer';
 import KalachakraViewer from './components/KalachakraViewer';
+import AshtakavargaViewer from './components/AshtakavargaViewer';
+
+import VimshottariLifeTable from './components/VimshottariLifeTable';
 import LongevityViewer from './components/LongevityViewer';
 import ZodiacPDFchart from './components/ZodiacPDFchart';
 import VarshaphalaDetailedCharts from './components/VarshaphalaDetailedCharts';
@@ -80,6 +83,8 @@ import AnimatedTransitsViewer from './components/AnimatedTransitsViewer';
 import NavamshaAgesViewer from './components/NavamshaAgesViewer';
 import KPChartViewer from './components/KPChartViewer';
 import AstrologicalTimeMachine from './components/AstrologicalTimeMachine';
+import VimshottariGridTimeline from './components/VimshottariGridTimeline';
+import ZodiacChart from './components/ZodiacChart';
 import SunriseChartViewer from './components/SunriseChartViewer';
 import KundaliReportView from './components/KundaliReportView';
 import BhriguBinduAnalysis from './components/BhriguBinduAnalysis';
@@ -108,10 +113,16 @@ import PersonalityNumerology from './pages/personalityNumerology';
 import MarriageNumerology from './pages/marriageNumerology';
 import CarrierNumerology from './pages/carrierNumerology';
 import VimshottariExplanation from './components/VimshottariExplanation';
+import DashaDashboard from './pages/DashaDashboard';
+import LegalMattersViewer from './components/LegalMattersViewer.jsx';
+
 
 function App() {
     useWindowNavigation();
     const [vimshottariRefMode, setVimshottariRefMode] = useState(false);
+    const [dashaAnalysisMode, setDashaAnalysisMode] = useState(false);
+    const [yearlyDashaMode, setYearlyDashaMode] = useState(false);
+    const [dashaGridMode, setDashaGridMode] = useState(false);
     const [isWorksheetMode, setIsWorksheetMode] = useState(false);
     const [advancedNakshatraMode, setAdvancedNakshatraMode] = useState(false);
     const [classicLayoutMode, setClassicLayoutMode] = useState(false);
@@ -147,6 +158,7 @@ function App() {
     const [careerMode, setCareerMode] = useState(false);
     const [financeMode, setFinanceMode] = useState(false);
     const [marriageMode, setMarriageMode] = useState(false);
+    const [legalMattersMode, setLegalMattersMode] = useState(false);
     const [businessMode, setBusinessMode] = useState(false);
     const [healthMode, setHealthMode] = useState(false);
     const [parentsHealthMode, setParentsHealthMode] = useState(false);
@@ -227,6 +239,24 @@ function App() {
 
         if (params.get('vimshottari_ref') === 'true') {
             setVimshottariRefMode(true);
+        } else if (params.get('dasha_analysis') === 'true') {
+            setDashaAnalysisMode(true);
+        } else if (params.get('yearly_dasha') === 'true') {
+            setYearlyDashaMode(true);
+            const savedData = localStorage.getItem('worksheetData');
+            if (savedData) {
+                try {
+                    setWorksheetData(JSON.parse(savedData));
+                } catch (e) { }
+            }
+        } else if (params.get('dasha_timeline') === 'true') {
+            setDashaGridMode(true);
+            const savedData = localStorage.getItem('worksheetData');
+            if (savedData) {
+                try {
+                    setWorksheetData(JSON.parse(savedData));
+                } catch (e) { }
+            }
         } else if (params.get('worksheet') === 'true') {
             setIsWorksheetMode(true);
             const fs = params.get('fullScreen');
@@ -549,6 +579,8 @@ function App() {
             setFinanceMode(true);
         } else if (params.get('marriage') === 'true') {
             setMarriageMode(true);
+        } else if (params.get('legal_matters') === 'true') {
+            setLegalMattersMode(true);
         } else if (params.get('business') === 'true') {
             setBusinessMode(true);
         } else if (params.get('health') === 'true') {
@@ -963,6 +995,10 @@ function App() {
         return <MarriageViewer />;
     }
 
+    if (legalMattersMode) {
+        return <LegalMattersViewer />;
+    }
+
     if (businessMode) {
         return <BusinessViewer />;
     }
@@ -1124,6 +1160,28 @@ function App() {
                 <div className="max-w-6xl mx-auto animate-fade-in">
                     <VimshottariExplanation />
                 </div>
+            </div>
+        );
+    }
+
+    if (dashaAnalysisMode) {
+        return (
+            <DashaDashboard data={null} />
+        );
+    }
+
+    if (yearlyDashaMode) {
+        return (
+            <div className="p-4 bg-slate-50 min-h-screen">
+                <VimshottariLifeTable data={worksheetData} />
+            </div>
+        );
+    }
+
+    if (dashaGridMode) {
+        return (
+            <div className="p-4 bg-slate-50 min-h-screen">
+                <VimshottariGridTimeline data={worksheetData} />
             </div>
         );
     }

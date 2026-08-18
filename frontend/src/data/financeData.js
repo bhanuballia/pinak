@@ -1107,8 +1107,55 @@ export const FINANCE_YOGAS = [
     {
         id: "panch_mahapurush",
         name: "Panch Mahapurush Yoga",
-        description: "One of the 5 planets (Mars, Mercury, Jupiter, Venus, Saturn) in its own or exaltation sign in a Kendra house.",
-        condition: (houses) => false
+        description: "Formed when Mars, Mercury, Jupiter, Venus, or Saturn is in its own sign or exaltation sign while placed in a Kendra house (1st, 4th, 7th, or 10th).",
+        details: {
+            yogas: {
+                "Ruchaka Yoga": {
+                    planet: "Mars",
+                    signs: ["Aries", "Scorpio", "Capricorn"],
+                    meaning: "Formed by Mars in own or exaltation sign in a Kendra. Bestows immense bravery, commanding leadership, sports/military honors, and strong property assets."
+                },
+                "Bhadra Yoga": {
+                    planet: "Mercury",
+                    signs: ["Gemini", "Virgo"],
+                    meaning: "Formed by Mercury in own or exaltation sign in a Kendra. Bestows extraordinary intelligence, eloquence, sharp business acumen, scholarly achievements, and mathematical genius."
+                },
+                "Hamsa Yoga": {
+                    planet: "Jupiter",
+                    signs: ["Sagittarius", "Pisces", "Cancer"],
+                    meaning: "Formed by Jupiter in own or exaltation sign in a Kendra. Bestows divine wisdom, high morality, spiritual reverence, administrative distinction, and righteous prosperity."
+                },
+                "Malavya Yoga": {
+                    planet: "Venus",
+                    signs: ["Taurus", "Libra", "Pisces"],
+                    meaning: "Formed by Venus in own or exaltation sign in a Kendra. Bestows magnetic charm, luxury, artistic flair, graceful speech, wealthy comforts, and marital happiness."
+                },
+                "Sasa Yoga": {
+                    planet: "Saturn",
+                    signs: ["Capricorn", "Aquarius", "Libra"],
+                    meaning: "Formed by Saturn in own or exaltation sign in a Kendra. Bestows deep authority, endurance, political or organizational power, disciplined leadership, and long-lasting legacy."
+                }
+            },
+            formation: "Formed when any of the 5 Tara grahas (Mars, Mercury, Jupiter, Venus, Saturn) is placed in a Kendra house (1st, 4th, 7th, 10th from Lagna) while simultaneously occupying its Own Sign or Exaltation Sign.",
+            effects: [
+                "Exceptional leadership qualities and distinction in chosen career path.",
+                "Immense magnetic personality and high stature in society.",
+                "Wealth generation through noble, honorable, and high-impact means.",
+                "Unshakable resilience and ability to overcome major life obstacles.",
+                "High position of authority, respect, and enduring public reputation."
+            ],
+            nullification: [
+                "Combustion by the Sun nullifies or severely weakens the yoga's power.",
+                "Debilitation in Navamsha (D9) chart diminishes the physical manifestations.",
+                "Conjunction or heavy aspect by malefic Rahu/Ketu/afflicted planets.",
+                "Placement in Bhava Sandhi (cuspal boundary) reduces planetary strength."
+            ],
+            remedies: [
+                "Strengthen the participating planet through targeted mantras and spiritual discipline.",
+                "Engage in ethical and righteous conduct (Dharma) aligned with the planet's nature.",
+                "Perform selfless service (Sewa) and donate items associated with the participating planet on its day."
+            ]
+        }
     },
     {
         id: "dhan_yoga",

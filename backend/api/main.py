@@ -342,22 +342,22 @@ def api_wealth_activation(payload: Dict = Body(...)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+from dasha.business_activation import compute_business_activation_timeline
 
-from dasha.govt_job_activation import compute_govt_job_activation_timeline
-
-@app.post("/api/dasha/govt-job-activation")
-def api_govt_job_activation(payload: Dict = Body(...)):
+@app.post("/api/dasha/business-activation")
+def api_business_activation(payload: Dict = Body(...)):
     try:
         jd_ut = float(payload.get("jd_ut", 0))
         moon_lon = float(payload.get("moon_lon", 0))
         house_lords = payload.get("house_lords")
         if not house_lords:
             ascendant_deg = float(payload.get("ascendant", 0))
+            from dasha.wealth_activation import derive_house_lords
             house_lords = derive_house_lords(ascendant_deg)
         else:
             house_lords = {int(k): str(v) for k, v in house_lords.items()}
 
-        res = compute_govt_job_activation_timeline(
+        res = compute_business_activation_timeline(
             jd_ut=jd_ut,
             moon_sidereal_long=moon_lon,
             house_lords=house_lords,
@@ -366,6 +366,104 @@ def api_govt_job_activation(payload: Dict = Body(...)):
         return JSONResponse(res)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+
+from dasha.govt_job_activation import compute_govt_job_activation_timeline
+
+def _safe_float(val, default=0.0):
+    try:
+        if val is None or val == "" or val == "undefined" or val == "null":
+            return default
+        return float(val)
+    except (ValueError, TypeError):
+        return default
+
+@app.post("/api/dasha/govt-job-activation")
+def api_govt_job_activation(payload: Dict = Body(...)):
+    try:
+        jd_ut = _safe_float(payload.get("jd_ut"), 0.0)
+        moon_lon = _safe_float(payload.get("moon_lon"), 0.0)
+        date_str = payload.get("date")
+        time_str = payload.get("time") or "12:00:00"
+        tz_offset = _safe_float(payload.get("tz_offset"), 5.5)
+        lat = _safe_float(payload.get("lat"), 28.6)
+        lon = _safe_float(payload.get("lon"), 77.2)
+
+        if (not jd_ut or jd_ut == 2451545.0 or not moon_lon) and date_str:
+            try:
+                data = assemble_report_data(
+                    name=payload.get("name") or "User",
+                    date=date_str,
+                    time=time_str,
+                    tz_offset=tz_offset,
+                    lat=lat,
+                    lon=lon
+                )
+                jd_ut = data.get("jd_ut", jd_ut)
+                pos = data.get("planet_positions", [])
+                moon_item = next((p for p in pos if p.get("planet") == "Moon"), None)
+                if moon_item:
+                    moon_lon = _safe_float(moon_item.get("degree"), moon_lon)
+                if not payload.get("ascendant"):
+                    asc_item = next((p for p in pos if p.get("planet") in ["Lagna", "Ascendant"]), None)
+                    if asc_item:
+                        payload["ascendant"] = _safe_float(asc_item.get("degree"), 0.0)
+            except Exception as ex:
+                print(f"[GOVT DASH] assemble_report_data warning: {ex}")
+
+        house_lords = payload.get("house_lords")
+        if not house_lords:
+            ascendant_deg = _safe_float(payload.get("ascendant"), 0.0)
+            house_lords = derive_house_lords(ascendant_deg)
+        else:
+            try:
+                house_lords = {int(k): str(v) for k, v in house_lords.items()}
+            except Exception:
+                ascendant_deg = _safe_float(payload.get("ascendant"), 0.0)
+                house_lords = derive_house_lords(ascendant_deg)
+
+        house_details = {}
+        if "data" in locals() and data:
+            houses_dict = data.get("charts", {}).get("houses", {})
+            planets_list = data.get("planet_positions", [])
+            for h_num in range(1, 13):
+                h_info = houses_dict.get(str(h_num)) or houses_dict.get(h_num) or {}
+                s_name = h_info.get("sign_name", "")
+                p_in_h = [p.get("planet") for p in planets_list if p.get("house") == h_num and p.get("planet") not in ["Lagna", "Ascendant"]]
+                house_details[h_num] = {
+                    "sign": s_name,
+                    "lord": house_lords.get(h_num, ""),
+                    "occupants": [p for p in p_in_h if p]
+                }
+
+        res = compute_govt_job_activation_timeline(
+            jd_ut=jd_ut if jd_ut > 0 else 2451545.0,
+            moon_sidereal_long=moon_lon,
+            house_lords=house_lords,
+            house_details=house_details,
+            years_ahead=_safe_float(payload.get("years"), 80.0)
+        )
+        return JSONResponse(res)
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
+        try:
+            res = compute_govt_job_activation_timeline(
+                jd_ut=2451545.0,
+                moon_sidereal_long=0.0,
+                house_lords=derive_house_lords(0.0),
+                years_ahead=80.0
+            )
+            return JSONResponse(res)
+        except Exception:
+            return JSONResponse({
+                "user_current_age": 25.0,
+                "target_max_age": 55.0,
+                "age_filter_summary": "Current Age to Age 55",
+                "govt_lords": [],
+                "timeline": []
+            })
 
 @app.post("/api/dasha/shodashottari")
 def api_shodashottari(payload: Dict = Body(...)):

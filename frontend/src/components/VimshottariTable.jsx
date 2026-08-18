@@ -71,6 +71,12 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
         const ci = idx >= 0 ? idx : 0;
         setCurrentIdx(ci);
         setPage(Math.floor(ci / PAGE_SIZE));
+        if (fetchedRows[ci]) {
+          try {
+            localStorage.setItem('activeVimshottariDasha', JSON.stringify(fetchedRows[ci]));
+            window.dispatchEvent(new CustomEvent('activeDashaChanged', { detail: fetchedRows[ci] }));
+          } catch (e) { }
+        }
         setLoading(false);
       })
       .catch(err => {
@@ -186,13 +192,13 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
           <span className="flex items-center gap-1.5">
             <span className="text-sm">💍</span>
             <span>
-              {nextMarriageRow.is_current 
-                ? <strong>Active Marriage Dasha!</strong> 
+              {nextMarriageRow.is_current
+                ? <strong>Active Marriage Dasha!</strong>
                 : <span>Next Marriage Dasha:</span>}
               {' '}{nextMarriageRow.dasha_chain} starting at age <strong>{nextMarriageRow.age}</strong> ({nextMarriageRow.start_date})
             </span>
           </span>
-          <button 
+          <button
             onClick={() => setShowWindowsModal(true)}
             className="text-[9px] font-black uppercase tracking-widest text-pink-600 bg-pink-100 hover:bg-pink-200 px-2.5 py-1 rounded-lg transition-all border border-pink-200/50"
           >
@@ -251,7 +257,7 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
               {/* Time */}
               <div className="px-1 py-1 text-center font-mono text-slate-900 border-r border-slate-100">{row.start_time}</div>
               {/* Nakshatra Distance */}
-              <div className={`px-1 py-1 text-center border-r border-slate-100 flex flex-col items-center justify-center gap-0.5`}>
+              <div className={`px-1 py-1 border-r border-slate-100 flex flex-row items-center justify-center gap-1.5`}>
                 <span className={`text-[14px] font-black ${tColors.text}`}>{row.nak_distance ?? row.tara_num}</span>
                 <span className={`text-[12px] font-bold leading-none ${tColors.text} opacity-75 truncate max-w-full`}>{row.tara_name}</span>
               </div>
@@ -299,7 +305,7 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
             <p className="text-xs text-slate-500 mb-4">
               Here are the next upcoming favorable Vimshottari dasha periods for marriage:
             </p>
-            
+
             <div className="space-y-3 mb-4">
               {upcomingWindows.map((win, idx) => (
                 <div key={idx} className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center justify-between hover:border-pink-200 hover:bg-pink-50/20 transition-all">
@@ -329,7 +335,7 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
                 <p className="text-xs text-slate-400 italic text-center py-4">No upcoming favorable marriage windows found in this sequence.</p>
               )}
             </div>
-            
+
             <button
               onClick={() => setShowWindowsModal(false)}
               className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors"

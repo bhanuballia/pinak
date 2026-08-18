@@ -146,7 +146,7 @@ export default function DiagnosticDetails({ domain, worksheetData }) {
                             </h4>
                             <p style={{ fontSize: '24px', marginBottom: '15px' }}>
                                 <strong style={{ color: 'rgba(8, 136, 4, 1)' }}>Responsible Sign:</strong>{' '}
-                                <span style={{ color: '#2563eb', fontWeight: 900, textShadow: '0 1px 2px rgba(0,0,0,0.1)' }}>
+                                <span style={{ color: '#2563eb', fontWeight: 300, textShadow: '0 1px 2px hsla(253, 92%, 30%, 1.00)' }}>
                                     {houseObj.sign_name || "Unknown"}
                                 </span>
                             </p>
@@ -187,8 +187,8 @@ export default function DiagnosticDetails({ domain, worksheetData }) {
                         border: '1px solid rgba(212,175,55,0.2)',
                         marginTop: '10px'
                     }}>
-                        <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: '#d4af37', marginBottom: '10px' }}>Yoga & Special Alignments</h4>
-                        <ul style={{ listStyleType: 'disc', paddingLeft: '20px', fontSize: '16px', lineHeight: '1.6' }}>
+                        <h4 style={{ fontSize: '20px', fontWeight: 'bold', color: 'rgba(8, 10, 146, 1)', marginBottom: '10px' }}>Yoga & Special Alignments</h4>
+                        <ul style={{ listStyleType: 'disc', paddingLeft: '20px', fontSize: '22px', color: 'hsla(330, 90%, 31%, 1.00)', lineHeight: '1.6' }}>
                             {yogas.map((y, i) => <li key={i}>{y}</li>)}
                         </ul>
                     </div>

@@ -93,59 +93,102 @@ def calculate_wealth_lords(house_lords: Dict[int, str]) -> Dict[str, Dict[str, A
 
     return scores
 
-def compute_wealth_activation_timeline(
-    jd_ut: float,
-    moon_sidereal_long: float,
-    house_lords: Dict[int, str],
-    years_ahead: float = 80.0,
-    ascendant_deg: float = 0.0
-) -> Dict[str, Any]:
+def compute_business_activation_timeline(jd_ut: float, moon_sidereal_long: float, house_lords: dict, years_ahead: float = 80.0):
     """
-    Computes precise timeline of Vimshottari Mahadasha + Antardasha wealth activations
-    including current real-time Gochar (planetary transits) relative to user's Lagna.
+    Computes a timeline of Vimshottari Dasha periods optimized for Business/Entrepreneurship activation.
+    Evaluates Mahadasha and Antardasha lords against key business houses (7th, 10th, 11th, 3rd)
+    and natural karakas (Mercury, Rahu).
     """
-    wealth_lord_data = calculate_wealth_lords(house_lords)
-    full_vim = compute_vimshottari_full(jd_ut, moon_sidereal_long, years_ahead=years_ahead)
+    from dasha.vimshottari import compute_vimshottari_full
+    full_vim = compute_vimshottari_full(jd_ut, moon_sidereal_long, years_ahead)
+
+    business_lord_data = {}
+    
+    # 7th house (Partnerships, Trade, Markets) - Primary
+    lord_7 = house_lords.get("7")
+    if lord_7: business_lord_data[lord_7] = {"score": 3.0, "houses": ["7th (Trade/Markets)"]}
+
+    # 10th house (Career, Status, Authority) - Primary
+    lord_10 = house_lords.get("10")
+    if lord_10:
+        if lord_10 in business_lord_data:
+            business_lord_data[lord_10]["score"] += 2.5
+            business_lord_data[lord_10]["houses"].append("10th (Career/Status)")
+        else:
+            business_lord_data[lord_10] = {"score": 2.5, "houses": ["10th (Career/Status)"]}
+
+    # 11th house (Profits, Scaling, Networks) - Primary
+    lord_11 = house_lords.get("11")
+    if lord_11:
+        if lord_11 in business_lord_data:
+            business_lord_data[lord_11]["score"] += 2.0
+            business_lord_data[lord_11]["houses"].append("11th (Profits)")
+        else:
+            business_lord_data[lord_11] = {"score": 2.0, "houses": ["11th (Profits)"]}
+
+    # 3rd house (Courage, Initiative, Sales) - Secondary
+    lord_3 = house_lords.get("3")
+    if lord_3:
+        if lord_3 in business_lord_data:
+            business_lord_data[lord_3]["score"] += 1.0
+            business_lord_data[lord_3]["houses"].append("3rd (Initiative/Sales)")
+        else:
+            business_lord_data[lord_3] = {"score": 1.0, "houses": ["3rd (Initiative/Sales)"]}
+
+    # Natural Karakas for Business
+    # Mercury (Commerce, Intellect, Trade)
+    if "Mercury" in business_lord_data:
+        business_lord_data["Mercury"]["score"] += 1.5
+        business_lord_data["Mercury"]["houses"].append("Karaka (Commerce)")
+    else:
+        business_lord_data["Mercury"] = {"score": 1.5, "houses": ["Karaka (Commerce)"]}
+
+    # Rahu (Out of box thinking, scaling, startups)
+    if "Rahu" in business_lord_data:
+        business_lord_data["Rahu"]["score"] += 1.0
+        business_lord_data["Rahu"]["houses"].append("Karaka (Innovation)")
+    else:
+        business_lord_data["Rahu"] = {"score": 1.0, "houses": ["Karaka (Innovation)"]}
+
 
     activation_periods = []
     birth_dt = jd_to_formatted_date(jd_ut)
 
     for md in full_vim:
         md_lord = md["lord"]
-        md_info = wealth_lord_data.get(md_lord, {"score": 0.5, "houses": []})
+        md_info = business_lord_data.get(md_lord, {"score": 0.5, "houses": []})
         md_score = md_info["score"]
 
         for ad in md.get("antardashas", []):
             ad_lord = ad["lord"]
-            ad_info = wealth_lord_data.get(ad_lord, {"score": 0.5, "houses": []})
+            ad_info = business_lord_data.get(ad_lord, {"score": 0.5, "houses": []})
             ad_score = ad_info["score"]
 
-            # Filter out periods that end before birth
             if ad["end_jd"] < jd_ut:
                 continue
 
             combined_score = (md_score * 1.6) + ad_score
 
-            if combined_score >= 6.5:
-                intensity = "Golden Wealth Era (Pinnacle)"
+            if combined_score >= 6.0:
+                intensity = "Golden Business Era (Pinnacle)"
                 badge_color = "#10b981" # Emerald Green
                 status_type = "Good"
-                reason = f"Synergy between Mahadasha Lord ({md_lord}) and Antardasha Lord ({ad_lord}) directly activating high-weight wealth houses ({md_info.get('houses', []) + ad_info.get('houses', [])})."
-            elif combined_score >= 4.5:
-                intensity = "High Prosperity & Asset Growth"
+                reason = f"Synergy between Mahadasha Lord ({md_lord}) and Antardasha Lord ({ad_lord}) directly activating high-weight commercial houses ({md_info.get('houses', []) + ad_info.get('houses', [])})."
+            elif combined_score >= 4.0:
+                intensity = "High Market Growth & Expansion"
                 badge_color = "#3b82f6" # Sapphire Blue
                 status_type = "Good"
-                reason = f"Operating Dasha Lords ({md_lord}-{ad_lord}) possess strong wealth scores and support asset creation."
-            elif combined_score >= 3.0:
-                intensity = "Steady Financial Gains"
+                reason = f"Operating Dasha Lords ({md_lord}-{ad_lord}) possess strong business scores and support enterprise scaling."
+            elif combined_score >= 2.5:
+                intensity = "Steady Operations & Consolidation"
                 badge_color = "#f59e0b" # Amber Gold
                 status_type = "Good"
-                reason = f"Moderate activation by {md_lord} and {ad_lord} providing stable income and routine cash flows."
+                reason = f"Moderate activation by {md_lord} and {ad_lord} providing stable business operations."
             else:
-                intensity = "Financial Caution & Restrictive Pressure"
+                intensity = "Operational Challenge & Pivot Needed"
                 badge_color = "#ef4444" # Red
                 status_type = "Challenging"
-                reason = f"Neither {md_lord} nor {ad_lord} holds strong Dhanakaraka or primary wealth lord status for your Lagna chart, calling for strict budget discipline."
+                reason = f"Neither {md_lord} nor {ad_lord} holds strong business lord status for your Lagna chart, calling for caution and strategic pivoting."
 
             start_str = jd_to_formatted_date(ad["start_jd"])
             end_str = jd_to_formatted_date(ad["end_jd"])
@@ -169,10 +212,10 @@ def compute_wealth_activation_timeline(
     # Sort descending by score for quick top insights
     activation_periods.sort(key=lambda x: x["start_date"])
 
-    # Prepare top wealth lords breakdown
-    formatted_wealth_lords = []
-    for planet, pdata in sorted(wealth_lord_data.items(), key=lambda x: x[1]["score"], reverse=True):
-        formatted_wealth_lords.append({
+    # Prepare top business lords breakdown
+    formatted_business_lords = []
+    for planet, pdata in sorted(business_lord_data.items(), key=lambda x: x[1]["score"], reverse=True):
+        formatted_business_lords.append({
             "planet": planet,
             "score": round(pdata["score"], 1),
             "houses": pdata["houses"],
@@ -190,14 +233,14 @@ def compute_wealth_activation_timeline(
 
         from panchang.nakshatra import compute_nakshatra_from_lon
 
-        asc_sign_idx = int(ascendant_deg // 30) % 12
+        asc_sign_idx = int(0.0 // 30) % 12
 
         for p_name, p_info in transit_positions.items():
             t_lon = p_info.get("sidereal", {}).get("lon", p_info.get("longitude", 0.0))
             t_sign_idx = int(t_lon // 30) % 12
             # House relative to Lagna (1-indexed)
             house_from_lagna = ((t_sign_idx - asc_sign_idx) % 12) + 1
-            sign_name = ZODIAC_NAMES[t_sign_idx]
+            sign_name = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"][t_sign_idx]
             deg_in_sign = round(t_lon % 30, 2)
             is_retro = p_info.get("is_retrograde", False)
 
@@ -206,8 +249,8 @@ def compute_wealth_activation_timeline(
             nak_name = nak_info.get("nakshatra_name", "")
             nak_pada = nak_info.get("pada", 1)
 
-            # Highlight wealth house transits (1st, 2nd, 5th, 9th, 11th, 10th)
-            is_wealth_house = house_from_lagna in [1, 2, 5, 9, 11, 10]
+            # Highlight business house transits (1st, 7th, 10th, 11th, 3rd)
+            is_business_house = house_from_lagna in [1, 7, 10, 11, 3]
 
             current_gochar.append({
                 "planet": p_name,
@@ -217,14 +260,14 @@ def compute_wealth_activation_timeline(
                 "nakshatra": nak_name,
                 "pada": nak_pada,
                 "is_retrograde": is_retro,
-                "is_wealth_house": is_wealth_house
+                "is_business_house": is_business_house
             })
     except Exception as ge:
         print("Gochar transit calculation error:", ge)
 
     return {
         "birth_date": birth_dt,
-        "wealth_lords": formatted_wealth_lords,
+        "business_lords": formatted_business_lords,
         "timeline": activation_periods,
         "current_gochar": current_gochar
     }
