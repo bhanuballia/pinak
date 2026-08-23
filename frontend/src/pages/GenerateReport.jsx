@@ -591,6 +591,16 @@ export default function GenerateReport() {
     if (win) win.focus();
   };
 
+  const handleOpenFaceReading = () => {
+    const params = new URLSearchParams({
+      face_reading: 'true',
+      name: name || ''
+    });
+    const win = window.open(`/?${params.toString()}`, 'FaceReading', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+
   const handleOpenPredictionNumerology = () => {
     const params = new URLSearchParams({
       prediction_numerology: 'true',
@@ -1146,6 +1156,12 @@ export default function GenerateReport() {
                 className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-50 text-black shadow hover:bg-rose-600 flex items-center gap-2"
               >
                 <span>🔮</span> Numerology
+              </button>
+              <button
+                onClick={handleOpenFaceReading}
+                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-50 text-black shadow hover:bg-rose-600 flex items-center gap-2"
+              >
+                <span>👤</span> Face Reading
               </button>
               <button
                 onClick={handleOpenPredictionNumerology}

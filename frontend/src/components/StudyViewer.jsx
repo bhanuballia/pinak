@@ -168,7 +168,7 @@ export default function StudyViewer({ worksheetData: propWorksheetData }) {
             </button>
             {/* Premium Header */}
             <div style={{
-                padding: '80px 40px',
+                padding: '20px 40px',
                 background: theme.headerGradient,
                 borderBottom: `1px solid ${theme.borderColor}`,
                 position: 'relative',
@@ -179,8 +179,8 @@ export default function StudyViewer({ worksheetData: propWorksheetData }) {
 
                 <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', alignItems: 'center', gap: '40px' }}>
                     <div style={{
-                        width: '120px',
-                        height: '120px',
+                        width: '30px',
+                        height: '30px',
                         borderRadius: '35px',
                         background: '#ffffff',
                         backdropFilter: 'blur(20px)',
@@ -192,7 +192,7 @@ export default function StudyViewer({ worksheetData: propWorksheetData }) {
                         boxShadow: '0 10px 25px rgba(136, 19, 55, 0.1)'
                     }}>🎓</div>
                     <div>
-                        <h1 style={{ fontSize: '64px', fontWeight: 900, color: theme.heading, margin: 0, fontStyle: 'italic', letterSpacing: '-2px' }}>Vedic Study Guide</h1>
+                        <h1 style={{ fontSize: '34px', fontWeight: 900, color: theme.heading, margin: 0, fontStyle: 'italic', letterSpacing: '-2px' }}>Vedic Study Guide</h1>
                         <p style={{ color: 'rgba(2, 1, 1, 1)', textTransform: 'uppercase', letterSpacing: '6px', fontSize: '18px', fontWeight: 900, marginTop: '10px' }}>
                             Educational Astrology • Academic Success Diagnostic
                         </p>
@@ -202,6 +202,7 @@ export default function StudyViewer({ worksheetData: propWorksheetData }) {
 
             {/* Filter Bar */}
             <div style={{
+                display: 'none',
                 position: 'sticky',
                 top: 0,
                 zIndex: 100,

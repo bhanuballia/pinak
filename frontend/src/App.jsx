@@ -112,6 +112,7 @@ import MedicalNumerology from './pages/medicalNumerology';
 import PersonalityNumerology from './pages/personalityNumerology';
 import MarriageNumerology from './pages/marriageNumerology';
 import CarrierNumerology from './pages/carrierNumerology';
+import FaceReader from './pages/FaceReader.jsx';
 import VimshottariExplanation from './components/VimshottariExplanation';
 import DashaDashboard from './pages/DashaDashboard';
 import LegalMattersViewer from './components/LegalMattersViewer.jsx';
@@ -227,6 +228,7 @@ function App() {
     const [marriageNumerologyMode, setMarriageNumerologyMode] = useState(false);
     const [carrierNumerologyMode, setCarrierNumerologyMode] = useState(false);
     const [remedyMode, setRemedyMode] = useState(false);
+    const [faceReadingMode, setFaceReadingMode] = useState(false);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -684,6 +686,8 @@ function App() {
             }
         } else if (params.get('vastu') === 'true') {
             setVastuMode(true);
+        } else if (params.get('face_reading') === 'true') {
+            setFaceReadingMode(true);
         } else if (params.get('numerology') === 'true') {
             setNumerologyMode(true);
         } else if (params.get('prediction_numerology') === 'true') {
@@ -1233,6 +1237,12 @@ function App() {
     if (vastuMode) {
         return (
             <VastuAnalyzer />
+        );
+    }
+
+    if (faceReadingMode) {
+        return (
+            <FaceReader />
         );
     }
 

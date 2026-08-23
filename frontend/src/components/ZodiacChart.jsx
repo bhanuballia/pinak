@@ -119,7 +119,7 @@ const PLANET_COLORS = {
   "Ascendant": "#000000"   // Black
 };
 
-const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, variant = "modern", planetEffects = {}, scaleText = 1, planetPositions = [], defaultRect = false, hideLegend = false, hideOuterRect, defaultLang = "en", showFullscreenButton = false, onPopOut, bgColor, stackLayout = false, showNakshatra = false, showDegree = false, hideTranslation = false }) => {
+const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, titleFontSize, variant = "modern", planetEffects = {}, scaleText = 1, planetPositions = [], defaultRect = false, hideLegend = false, hideOuterRect, defaultLang = "en", showFullscreenButton = false, onPopOut, bgColor, stackLayout = false, showNakshatra = false, showDegree = false, hideTranslation = false }) => {
   const isMainChart = title && (
     title.toLowerCase().includes('birth') ||
     title.toLowerCase().includes('lagna') ||
@@ -142,7 +142,7 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
   const isLegacy = variant === "legacy";
 
   if (isRect) {
-    return <ZodiacRectSign houses={houses} transitHouses={transitHouses} onPlanetClick={onPlanetClick} title={title} variant={variant} planetEffects={planetEffects} planetPositions={planetPositions} isRect={isRect} setIsRect={setIsRect} scaleText={scaleText} hideLegend={hideLegend} hideOuterRect={finalHideOuterRect} defaultLang={lang} showFullscreenButton={showFullscreenButton} onPopOut={onPopOut} showNakshatra={showNakshatra} showDegree={showDegree} bgColor={bgColor} hideTranslation={hideTranslation} />;
+    return <ZodiacRectSign houses={houses} transitHouses={transitHouses} onPlanetClick={onPlanetClick} title={title} titleFontSize={titleFontSize} variant={variant} planetEffects={planetEffects} planetPositions={planetPositions} isRect={isRect} setIsRect={setIsRect} scaleText={scaleText} hideLegend={hideLegend} hideOuterRect={finalHideOuterRect} defaultLang={lang} showFullscreenButton={showFullscreenButton} onPopOut={onPopOut} showNakshatra={showNakshatra} showDegree={showDegree} bgColor={bgColor} hideTranslation={hideTranslation} />;
   }
 
   const containerRef = React.useRef(null);
@@ -490,7 +490,7 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, varia
             gap: '6px'
           }}>
             <div style={{
-              fontSize: '12px',
+              fontSize: titleFontSize || '12px',
               fontWeight: 'bold',
               color: '#0a4d7a',
             }}>

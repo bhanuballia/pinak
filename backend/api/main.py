@@ -3,6 +3,9 @@ import os
 from dotenv import load_dotenv
 load_dotenv() # Load variables from .env file into the environment
 
+import matplotlib
+matplotlib.use('Agg')
+
 print("[STARTUP] Initializing Vedic Astrology API...")
 """
 FastAPI application wiring for the Vedic Astrology App.
@@ -104,6 +107,8 @@ from jaimini_pro.api.websocket_routes import router as websocket_router
 from api.services.firebase_admin import initialize_firebase_admin
 from api.services.cron_jobs import setup_cron_jobs
 from contextlib import asynccontextmanager
+from api.routers.face_reading import router as face_reading_router
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -139,6 +144,7 @@ app.include_router(ai_interpretation.router, prefix="/api", tags=["AI"])
 app.include_router(transit.router, prefix="/api/transit", tags=["Transit"])
 app.include_router(vakri_routes.router, tags=["Vakri Explorer"])
 app.include_router(vastu.router)
+app.include_router(face_reading_router, prefix="/api", tags=["Face Reading"])
 @app.get("/api/yantras")
 async def get_yantras():
     fallback_yantras = [

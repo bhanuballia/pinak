@@ -9,10 +9,10 @@ const PLANETS = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn"]
 const ABBREV = { Sun: "Su", Moon: "Mo", Mars: "Ma", Mercury: "Me", Jupiter: "Ju", Venus: "Ve", Saturn: "Sa" };
 const PLANET_COLORS_CLASSIC = { Sun: "#cc0000", Moon: "#000000", Mars: "#cc0000", Mercury: "#008000", Jupiter: "#ff8c00", Venus: "#ff00ff", Saturn: "#0000ff" };
 
-const MiniBarChart = ({ title, data, dataKey, isPercent, reqKey }) => {
+const MiniBarChart = ({ title, data, dataKey, isPercent, reqKey, titleFontSize }) => {
     return (
         <div className="flex flex-col h-full bg-white border border-[#8ec5e6] overflow-hidden">
-            <div className="bg-[#f0f8fc] border-b border-[#8ec5e6] px-2 py-1 text-[11px] font-bold tracking-tight text-[#0a4d7a] flex justify-between items-center">
+            <div className="bg-[#f0f8fc] border-b border-[#8ec5e6] px-2 py-1 font-bold tracking-tight text-[#0a4d7a] flex justify-between items-center" style={{ fontSize: titleFontSize || '11px' }}>
                 <span>{title}</span>
             </div>
             <div className="flex-1 relative border-x border-b border-black overflow-hidden mx-1.5 mt-1.5 mb-1.5 shadow-sm bg-white">
@@ -45,10 +45,10 @@ const MiniBarChart = ({ title, data, dataKey, isPercent, reqKey }) => {
     );
 };
 
-const ShadbalaRatioChart = ({ title, data }) => {
+const ShadbalaRatioChart = ({ title, data, titleFontSize }) => {
     return (
         <div className="flex flex-col h-full bg-white border border-[#8ec5e6] overflow-hidden">
-            <div className="bg-[#f0f8fc] border-b border-[#8ec5e6] px-2 py-1 text-[11px] font-bold tracking-tight text-[#0a4d7a] flex justify-between items-center">
+            <div className="bg-[#f0f8fc] border-b border-[#8ec5e6] px-2 py-1 font-bold tracking-tight text-[#0a4d7a] flex justify-between items-center" style={{ fontSize: titleFontSize || '11px' }}>
                 <span>{title}</span>
             </div>
             <div className="flex-1 relative border-x border-b border-black overflow-hidden m-2 shadow-sm">
@@ -94,6 +94,7 @@ const ShadbalaRatioChart = ({ title, data }) => {
 export default function ClassicLayoutViewer2({ data: worksheetData }) {
     const [avData, setAvData] = useState(null);
     const [transitData, setTransitData] = useState(null);
+    const [isRectLagna, setIsRectLagna] = useState(true);
 
     useEffect(() => {
         let bd = null;
@@ -149,6 +150,37 @@ export default function ClassicLayoutViewer2({ data: worksheetData }) {
     if (!worksheetData) return null;
 
     const d1Houses = worksheetData.charts?.houses || worksheetData.charts?.D1?.houses || [];
+
+    const todayFromLagnaHouses = React.useMemo(() => {
+        if (!d1Houses || !transitData || !transitData.transit_chart || !transitData.transit_chart.houses) return null;
+        return d1Houses.map(natalHouse => {
+            const transitH = transitData.transit_chart.houses.find(h => h.sign_index === natalHouse.sign_index) || { planets: [] };
+            return {
+                ...natalHouse,
+                planets: transitH.planets
+            };
+        });
+    }, [d1Houses, transitData]);
+
+    const todayFromMoonHouses = React.useMemo(() => {
+        if (!d1Houses || !transitData || !transitData.transit_chart || !transitData.transit_chart.houses) return null;
+        let moonSignIndex = 0;
+        for (let h of d1Houses) {
+            if (h.planets && h.planets.some(p => (typeof p === 'string' ? p : p.name) === 'Moon')) {
+                moonSignIndex = h.sign_index;
+                break;
+            }
+        }
+        return [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(houseNum => {
+            const currentSignIndex = (moonSignIndex + houseNum - 1) % 12;
+            const transitH = transitData.transit_chart.houses.find(h => h.sign_index === currentSignIndex) || { planets: [] };
+            return {
+                house: houseNum,
+                sign_index: currentSignIndex,
+                planets: transitH.planets
+            };
+        });
+    }, [d1Houses, transitData]);
 
     // Prepare AV houses
     let marsBhinna = [];
@@ -213,73 +245,78 @@ export default function ClassicLayoutViewer2({ data: worksheetData }) {
             {/* Main Grid */}
             <div className="flex-1 flex flex-col p-1 gap-1 min-h-[850px] bg-[#fff0d6]">
 
-                {/* Row 1: Birth Chart & Transits */}
-                <div className="flex gap-1 h-[45%] min-h-[500px]">
+                {/* Row 1: Birth Chart */}
+                <div className="flex gap-1 h-[45%] min-h-[400px]">
                     {/* Left: Birth Chart */}
-                    <div className="flex-[2] bg-white border border-[#8ec5e6] flex flex-col overflow-hidden">
-                        <div className="flex-1 relative p-1 flex items-center justify-center bg-white">
-                            <ZodiacChart houses={d1Houses} variant="legacy" defaultRect={true} scaleText={1.6} title="Birth Chart" />
+                    <div className="flex-1 bg-white border border-[#8ec5e6] flex flex-col overflow-hidden relative">
+                        <div className="flex-1 relative p-1 flex items-center justify-center bg-white mt-5">
+                            <ZodiacChart key={isRectLagna ? 'rect' : 'diamond'} houses={d1Houses} variant="legacy" defaultRect={isRectLagna} hideOuterRect={true} hideLegend={true} scaleText={1.6} title="D1/Lagna Chart" />
                         </div>
                     </div>
-
-                    {/* Middle: Transits */}
-                    <div className="flex-1 flex flex-col gap-1">
-                        <div className="flex-1 bg-white border border-[#8ec5e6] flex flex-col overflow-hidden">
-                            <div className="flex-1 relative p-1 flex items-center justify-center bg-white">
-                                {transitData ? (
-                                    <ZodiacChart houses={d1Houses} variant="legacy" defaultRect={true} scaleText={2.0} title="Today From Lagna" />
-                                ) : (
-                                    <div className="flex flex-col h-full w-full">
-                                        <div className="bg-[#f0f8fc] border-b border-[#8ec5e6] px-2 py-1 text-[11px] text-[#0a4d7a] font-bold">Today From Lagna</div>
-                                        <div className="flex h-full items-center justify-center text-[14px] text-gray-400">Loading Transit...</div>
-                                    </div>
-                                )}
+                    {/* Right: Bar Charts and Vimshottari Table */}
+                    <div className="flex-1 flex flex-col gap-1 h-full">
+                        <div className="h-[40%] min-h-0 flex gap-1">
+                            <div className="flex-1 overflow-hidden">
+                                <MiniBarChart title="Vimshopaka" data={shadbalaData} dataKey="vimshopaka" isPercent={false} titleFontSize="16px" />
+                            </div>
+                            <div className="flex-1 overflow-hidden">
+                                <ShadbalaRatioChart title="Shad Bala" data={shadbalaData} titleFontSize="16px" />
                             </div>
                         </div>
-                        <div className="flex-1 bg-white border border-[#8ec5e6] flex flex-col overflow-hidden">
-                            <div className="flex-1 relative p-1 flex items-center justify-center bg-white">
-                                <ZodiacChart houses={d1Houses} variant="legacy" defaultRect={true} scaleText={2.0} title="Today From Moon" />
+
+                        <div className="h-[60%] min-h-0 flex gap-1">
+                            {/* Vimshottari Table */}
+                            <div className="flex-1 bg-white border border-[#8ec5e6] overflow-hidden flex flex-col">
+                                <VimshottariTable data={worksheetData} hideMarriageDasha={true} />
                             </div>
                         </div>
                     </div>
                 </div>
 
-                {/* Row 2: Ashtakavarga and Today */}
-                <div className="flex gap-1 h-[25%] min-h-[300px]">
+                {/* Row 2: Transits and Ashtakavarga */}
+                <div className="flex gap-1 h-[25%] min-h-[250px]">
+                    {/* Today From Lagna */}
+                    <div className="flex-1 bg-white border border-[#8ec5e6] flex flex-col overflow-hidden">
+                        <div className="flex-1 relative p-1 flex items-center justify-center bg-white">
+                            {transitData ? (
+                                <div className="w-full h-full flex flex-col [&_text]:!font-['Times_New_Roman'] [&_div]:!font-['Times_New_Roman'] [&_text]:!font-bold">
+                                    <ZodiacChart key="today-lagna-rect" houses={todayFromLagnaHouses || d1Houses} variant="legacy" defaultRect={true} hideOuterRect={true} hideLegend={true} showNakshatra={false} scaleText={2.5} title="Today From Lagna" titleFontSize="16px" />
+                                </div>
+                            ) : (
+                                <div className="flex flex-col h-full w-full">
+                                    <div className="bg-[#f0f8fc] border-b border-[#8ec5e6] px-2 py-1 text-[16px] text-[#0a4d7a] font-bold">Today From Lagna</div>
+                                    <div className="flex h-full items-center justify-center text-[14px] text-gray-400">Loading Transit...</div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    {/* Today From Moon */}
+                    <div className="flex-1 bg-white border border-[#8ec5e6] flex flex-col overflow-hidden">
+                        <div className="flex-1 relative p-1 flex items-center justify-center bg-white">
+                            <div className="w-full h-full flex flex-col [&_text]:!font-['Times_New_Roman'] [&_div]:!font-['Times_New_Roman'] [&_text]:!font-bold">
+                                <ZodiacChart key="today-moon-rect" houses={todayFromMoonHouses || d1Houses} variant="legacy" defaultRect={true} hideOuterRect={true} scaleText={2.5} title="Today From Moon" titleFontSize="16px" />
+                            </div>
+                        </div>
+                    </div>
                     {/* Bhinnashtaka */}
                     <div className="flex-1 bg-white border border-[#8ec5e6] flex flex-col overflow-hidden">
-                        {avData ? <AshtakavargaChart title="Bhinnashtaka Varga for Mars" housesData={marsBhinna} defaultRect={true} scaleText={2.0} /> : <div className="p-2 text-xs">Loading AV...</div>}
+                        {avData ? (
+                            <div className="w-full h-full flex flex-col [&_text]:!font-['Times_New_Roman'] [&_div]:!font-['Times_New_Roman'] font-size-[16px]">
+                                <AshtakavargaChart title="Bhinnashtaka Varga for Mars" housesData={marsBhinna} defaultRect={false} scaleText={2.0} hideOuterFrame={true} titleFontSize="12px" />
+                            </div>
+                        ) : <div className="p-2 text-xs">Loading AV...</div>}
                     </div>
                     {/* Samudaya */}
                     <div className="flex-1 bg-white border border-[#8ec5e6] flex flex-col overflow-hidden">
-                        {avData ? <AshtakavargaChart title="Samudaya Ashtakavarga" housesData={samAstavarga} defaultRect={true} scaleText={2.0} /> : <div className="p-2 text-xs">Loading AV...</div>}
-                    </div>
-                    {/* Today Chart */}
-                    <div className="flex-1 bg-white border border-[#8ec5e6] flex flex-col overflow-hidden">
-                        <div className="flex-1 relative p-1 flex items-center justify-center bg-white">
-                            <ZodiacChart houses={d1Houses} variant="legacy" defaultRect={true} scaleText={2.0} title="Today" />
-                        </div>
+                        {avData ? (
+                            <div className="w-full h-full flex flex-col [&_text]:!font-['Times_New_Roman'] [&_div]:!font-['Times_New_Roman']">
+                                <AshtakavargaChart title="Samudaya Ashtakavarga" housesData={samAstavarga} defaultRect={false} scaleText={2.0} hideOuterFrame={true} titleFontSize="16px" />
+                            </div>
+                        ) : <div className="p-2 text-xs">Loading AV...</div>}
                     </div>
                 </div>
 
-                {/* Row 3: Bar Charts and Vimshottari Table */}
-                <div className="flex gap-1 h-[30%] min-h-[400px]">
-                    <div className="flex-[1.2] flex gap-1">
-                        <div className="flex-1 overflow-hidden">
-                            <MiniBarChart title="Vimshopaka" data={shadbalaData} dataKey="vimshopaka" isPercent={false} />
-                        </div>
-                        <div className="flex-1 overflow-hidden">
-                            <ShadbalaRatioChart title="Shad Bala" data={shadbalaData} />
-                        </div>
-                    </div>
 
-                    <div className="flex-[1.8] flex gap-1">
-                        {/* Vimshottari Table */}
-                        <div className="flex-1 bg-white border border-[#8ec5e6] overflow-hidden flex flex-col">
-                            <VimshottariTable data={worksheetData} hideMarriageDasha={true} />
-                        </div>
-                    </div>
-                </div>
 
             </div>
 

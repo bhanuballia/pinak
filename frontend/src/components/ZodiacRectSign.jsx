@@ -88,7 +88,7 @@ const NAKSHATRA_HINDI = {
     "Revati": "रेव"
 };
 
-const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", planetEffects = {}, aspectRatio = 2.5, planetPositions = [], isRect, setIsRect, scaleText = 1, hideLegend = false, hideOuterRect, defaultLang = 'en', showFullscreenButton = false, onPopOut, showNakshatra = false, showDegree = false, bgColor, hideTranslation = false }) => {
+const ZodiacRectSign = ({ houses, onPlanetClick, title, titleFontSize, variant = "modern", planetEffects = {}, aspectRatio = 2.5, planetPositions = [], isRect, setIsRect, scaleText = 1, hideLegend = false, hideOuterRect, defaultLang = 'en', showFullscreenButton = false, onPopOut, showNakshatra = false, showDegree = false, bgColor, hideTranslation = false }) => {
     const isMainChart = title && (
         title.toLowerCase().includes('birth') ||
         title.toLowerCase().includes('lagna') ||
@@ -170,7 +170,7 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, variant = "modern", plan
                         gap: '6px'
                     }}>
                         <div style={{
-                            fontSize: '11px',
+                            fontSize: titleFontSize || '11px',
                             fontWeight: 'bold',
                             color: '#0a4d7a',
                         }}>

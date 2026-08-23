@@ -208,12 +208,12 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
       )}
 
       {/* Column Headers */}
-      <div className="shrink-0 grid grid-cols-[2.2fr_0.4fr_1fr_0.5fr_0.9fr_0.4fr_1.6fr] bg-indigo-100 text-black text-[12px] font-black uppercase tracking-wider border-b border-slate-700">
+      <div className="shrink-0 grid grid-cols-[2.0fr_0.35fr_0.9fr_0.5fr_0.8fr_0.75fr_1.5fr] bg-indigo-100 text-black text-[11px] font-black uppercase whitespace-nowrap border-b border-slate-700">
         <div className="px-1.5 py-1.5 border-r border-slate-600">दशाएँ</div>
         <div className="px-1 py-1.5 border-r border-slate-600 text-center">उम्र</div>
-        <div className="px-1.5 py-1.5 border-r border-slate-600">आरम्भ दिनांक</div>
+        <div className="px-1.5 py-1.5 border-r border-slate-600 text-center">आरम्भ दिनांक</div>
         <div className="px-1 py-1.5 border-r border-slate-600 text-center">समय</div>
-        <div className="px-1.5 py-1.5 border-r border-slate-600 text-center">नक्षत्र दूरी</div>
+        <div className="px-1 py-1.5 border-r border-slate-600 text-center">नक्षत्र दूरी</div>
         <div className="px-1 py-1.5 border-r border-slate-600 text-center">राशि दूरी</div>
         <div className="px-1.5 py-1.5 text-center">गोचर में दशा स्वामी</div>
       </div>
@@ -231,7 +231,7 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
             <div
               key={globalIdx}
               ref={isCurrent ? currentRowRef : null}
-              className={`grid grid-cols-[2.2fr_0.4fr_1fr_0.5fr_0.9fr_0.4fr_1.6fr] text-[14px] border-black transition-all
+              className={`grid grid-cols-[2.0fr_0.35fr_0.9fr_0.5fr_0.8fr_0.75fr_1.5fr] text-[14px] border-black transition-all
                 ${isCurrent
                   ? 'bg-amber-100 border-amber-300 shadow-inner'
                   : i % 2 === 0 ? 'bg-rose-100 hover:bg-slate-50' : 'bg-rose-100 hover:bg-slate-100'
@@ -253,7 +253,7 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
               {/* Age */}
               <div className="px-1 py-1 text-center font-bold text-slate-900 border-r border-slate-100">{row.age}</div>
               {/* Start Date */}
-              <div className="px-1.5 py-1 font-mono text-indigo-800 font-semibold border-r border-slate-100">{row.start_date}</div>
+              <div className="px-1.5 py-1 font-mono text-indigo-800 font-semibold text-center whitespace-nowrap border-r border-slate-100">{row.start_date}</div>
               {/* Time */}
               <div className="px-1 py-1 text-center font-mono text-slate-900 border-r border-slate-100">{row.start_time}</div>
               {/* Nakshatra Distance */}
@@ -264,7 +264,7 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
               {/* Rashi Distance */}
               <div className="px-1 py-1 text-center font-black text-slate-700 border-r border-slate-100">{row.rashi_distance}</div>
               {/* Gochar */}
-              <div className="px-1.5 py-1 text-center text-slate-900 font-mono text-[13px] leading-tight break-words">{row.gochar}</div>
+              <div className="px-1.5 py-1 text-center text-slate-900 font-mono text-[11px] leading-tight whitespace-nowrap overflow-hidden text-ellipsis">{row.gochar}</div>
             </div>
           );
         })}
@@ -371,22 +371,20 @@ function Header({ page, totalPages, onPrev, onNext, onFirst, onLast, rowCount, l
       </div>
 
       {/* Levels Selector Switch */}
-      <div className="flex items-center rounded border border-black mx-2 overflow-hidden bg-amber-100">
+      <div className="flex items-center rounded border border-black mx-2 overflow-hidden bg-indigo-400">
         <button
           onClick={() => onLevelsChange && onLevelsChange(Math.max(1, levels - 1))}
           disabled={levels <= 1}
-          className="px-2.5 py-0.5 text-black text-[25px] font-bold hover:bg-slate-600 disabled:opacity-30 border-r border-black"
+          className="px-2.5 py-0.2 text-white  text-[20px] font-extrabold hover:bg-slate-600 disabled:opacity-30 border-r border-black"
           title="Decrease Depth"
         >
           -
         </button>
-        <span className="px-2 text-[20px] text-black font-bold tracking-widest uppercase">
-          L{levels}
-        </span>
+
         <button
           onClick={() => onLevelsChange && onLevelsChange(Math.min(5, levels + 1))}
           disabled={levels >= 5}
-          className="px-2.5 py-0.5 text-black  text-[25px] font-bold hover:bg-slate-600 disabled:opacity-30 border-l border-black"
+          className="px-2.5 py-0.2 text-white  text-[20px] font-extrabold hover:bg-slate-600 disabled:opacity-30 border-l border-black"
           title="Increase Depth"
         >
           +
