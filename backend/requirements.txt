@@ -32,3 +32,4 @@ lxml
 pillow
 svgwrite
 cairocffi
+matplotlib
