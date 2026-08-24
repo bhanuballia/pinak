@@ -34,3 +34,4 @@ svgwrite
 cairocffi
 matplotlib
 opencv-python-headless
+mediapipe
