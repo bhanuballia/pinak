@@ -33,3 +33,4 @@ pillow
 svgwrite
 cairocffi
 matplotlib
+opencv-python-headless
