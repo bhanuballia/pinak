@@ -108,6 +108,7 @@ from api.services.firebase_admin import initialize_firebase_admin
 from api.services.cron_jobs import setup_cron_jobs
 from contextlib import asynccontextmanager
 from api.routers.face_reading import router as face_reading_router
+from api.routers import palmistry
 
 
 @asynccontextmanager
@@ -145,6 +146,7 @@ app.include_router(transit.router, prefix="/api/transit", tags=["Transit"])
 app.include_router(vakri_routes.router, tags=["Vakri Explorer"])
 app.include_router(vastu.router)
 app.include_router(face_reading_router, prefix="/api", tags=["Face Reading"])
+app.include_router(palmistry.router, prefix="/api/palmistry", tags=["Palmistry"])
 @app.get("/api/yantras")
 async def get_yantras():
     fallback_yantras = [

@@ -113,6 +113,7 @@ import PersonalityNumerology from './pages/personalityNumerology';
 import MarriageNumerology from './pages/marriageNumerology';
 import CarrierNumerology from './pages/carrierNumerology';
 import FaceReader from './pages/FaceReader.jsx';
+import Palmistry from './pages/Palmistry.jsx';
 import VimshottariExplanation from './components/VimshottariExplanation';
 import DashaDashboard from './pages/DashaDashboard';
 import LegalMattersViewer from './components/LegalMattersViewer.jsx';
@@ -229,6 +230,7 @@ function App() {
     const [carrierNumerologyMode, setCarrierNumerologyMode] = useState(false);
     const [remedyMode, setRemedyMode] = useState(false);
     const [faceReadingMode, setFaceReadingMode] = useState(false);
+    const [palmistryMode, setPalmistryMode] = useState(false);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -688,6 +690,8 @@ function App() {
             setVastuMode(true);
         } else if (params.get('face_reading') === 'true') {
             setFaceReadingMode(true);
+        } else if (params.get('palmistry') === 'true') {
+            setPalmistryMode(true);
         } else if (params.get('numerology') === 'true') {
             setNumerologyMode(true);
         } else if (params.get('prediction_numerology') === 'true') {
@@ -1243,6 +1247,12 @@ function App() {
     if (faceReadingMode) {
         return (
             <FaceReader />
+        );
+    }
+
+    if (palmistryMode) {
+        return (
+            <Palmistry />
         );
     }
 
