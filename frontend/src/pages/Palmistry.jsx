@@ -53,7 +53,7 @@ export default function Palmistry() {
 
     try {
       // Connect to the Python FastAPI backend
-      const response = await fetch('http://localhost:8000/api/palmistry/analyze', {
+      const response = await fetch('/api/palmistry/analyze', {
         method: 'POST',
         body: formData,
       });

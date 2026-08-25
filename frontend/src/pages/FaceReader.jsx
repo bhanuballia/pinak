@@ -101,7 +101,7 @@ export default function FaceReader() {
     const formData = new FormData();
     formData.append('image', file);
     try {
-      const response = await fetch('http://localhost:8000/api/validate-face', {
+      const response = await fetch('/api/validate-face', {
         method: 'POST',
         body: formData,
       });
@@ -160,7 +160,7 @@ export default function FaceReader() {
 
     try {
       // Make sure this endpoint matches our FastAPI backend
-      const response = await fetch('http://localhost:8000/api/analyze-face', {
+      const response = await fetch('/api/analyze-face', {
         method: 'POST',
         body: formData,
       });
