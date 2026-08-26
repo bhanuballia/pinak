@@ -148,15 +148,77 @@ def analyze_face_image(image_bytes: bytes) -> dict:
         else:
             ratios["forehead_ratio"] = 0.33
             
-        # 6. Jaw Ratio
+        # 6. Jaw Ratio & Forehead Width
         jaw_left = get_pt(361)
         jaw_right = get_pt(132)
         jaw_width = calculate_distance(jaw_left, jaw_right)
         
+        forehead_left = get_pt(251) # right temple
+        forehead_right = get_pt(21) # left temple
+        forehead_width = calculate_distance(forehead_left, forehead_right)
+        
         if face_width > 0:
             ratios["jaw_ratio"] = float(jaw_width / face_width)
+            ratios["forehead_width_ratio"] = float(forehead_width / face_width)
         else:
             ratios["jaw_ratio"] = 1.0
+            ratios["forehead_width_ratio"] = 1.0
+
+        # 7. Eyebrow Metrics
+        left_eb_inner = get_pt(107)
+        right_eb_inner = get_pt(336)
+        eb_spacing = calculate_distance(left_eb_inner, right_eb_inner)
+        left_eb_top = get_pt(52)
+        left_eb_bottom = get_pt(65)
+        eb_thickness = calculate_distance(left_eb_top, left_eb_bottom)
+        
+        if eye_distance > 0:
+            ratios["eb_spacing_ratio"] = float(eb_spacing / eye_distance)
+        else:
+            ratios["eb_spacing_ratio"] = 1.0
+            
+        if face_height > 0:
+            ratios["eb_thickness_ratio"] = float(eb_thickness / face_height)
+        else:
+            ratios["eb_thickness_ratio"] = 0.05
+            
+        # 8. Eye Size (Height vs Width)
+        left_eye_top = get_pt(159)
+        left_eye_bottom = get_pt(145)
+        eye_height = calculate_distance(left_eye_top, left_eye_bottom)
+        
+        if eye_width > 0:
+            ratios["eye_size_ratio"] = float(eye_height / eye_width)
+        else:
+            ratios["eye_size_ratio"] = 0.3
+            
+        # 9. Nose Tip Width
+        nose_left = get_pt(129) # left nostril
+        nose_right = get_pt(358) # right nostril
+        nose_tip_width = calculate_distance(nose_left, nose_right)
+        
+        if face_width > 0:
+            ratios["nose_tip_ratio"] = float(nose_tip_width / face_width)
+        else:
+            ratios["nose_tip_ratio"] = 0.2
+            
+        # 10. Mouth Width
+        mouth_left = get_pt(61)
+        mouth_right = get_pt(291)
+        mouth_width = calculate_distance(mouth_left, mouth_right)
+        
+        if face_width > 0:
+            ratios["mouth_width_ratio"] = float(mouth_width / face_width)
+        else:
+            ratios["mouth_width_ratio"] = 0.3
+            
+        # 11. Upper Lip to Face Ratio (For explicit upper lip fullness)
+        if face_height > 0:
+            ratios["upper_lip_ratio"] = float(upper_lip_thickness / face_height)
+            ratios["lower_lip_ratio"] = float(lower_lip_thickness / face_height)
+        else:
+            ratios["upper_lip_ratio"] = 0.02
+            ratios["lower_lip_ratio"] = 0.02
 
         # Ensure all other ratios are standard Python floats
         ratios["face_width_to_height"] = float(ratios["face_width_to_height"])

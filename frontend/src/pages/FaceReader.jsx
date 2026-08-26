@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
-import { Camera, Upload, RefreshCw, AlertCircle, Video } from 'lucide-react';
+import { Camera, Upload, RefreshCw, AlertCircle, Video, FileText, Info } from 'lucide-react';
 import Webcam from 'react-webcam';
 import { Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip } from 'recharts';
 
@@ -14,6 +14,19 @@ export default function FaceReader() {
   const [isFaceValid, setIsFaceValid] = useState(null);
   const [showSuccessPopup, setShowSuccessPopup] = useState(false);
   const [scanPhraseIndex, setScanPhraseIndex] = useState(0);
+
+  // New state variables for dual-layer architecture
+  const [inputMode, setInputMode] = useState('image'); // 'image' or 'questionnaire'
+  const [activeTab, setActiveTab] = useState('classic'); // 'classic' or 'detailed'
+  const [questionnaireData, setQuestionnaireData] = useState({
+    faceShape: '', foreheadHeight: '', eyes: ''
+  });
+
+  // State for optional birth details (Lagna synthesis)
+  const [dob, setDob] = useState('');
+  const [tob, setTob] = useState('');
+  const [city, setCity] = useState('');
+  const [synthesisReport, setSynthesisReport] = useState(null);
 
   const fileInputRef = useRef(null);
   const webcamRef = useRef(null);
@@ -149,37 +162,88 @@ export default function FaceReader() {
     }
   }, [webcamRef, previewUrl]);
 
+  const getMockDetailedReading = () => {
+    return {
+      coreNature: [
+        "Analytical and observational temperament",
+        "Tends towards independence in decision-making",
+        "Moderate emotional expression, preferring practical approaches"
+      ],
+      career: [
+        { label: 'Leadership', score: 75 },
+        { label: 'Communication', score: 85 },
+        { label: 'Creativity', score: 60 },
+        { label: 'Analysis', score: 90 },
+        { label: 'Entrepreneurship', score: 70 },
+        { label: 'Public-facing', score: 80 }
+      ],
+      finance: "Strong financial ambition. Practical approach toward resources. Moderate risk orientation.",
+      marriage: "The selected traditional indicators are interpreted as showing strong potential for stable partnerships. A complete Jyotisha assessment should consider the 7th house, 7th lord, Venus, Navamsa and relevant dashas before drawing conclusions.",
+      strengths: ["Determination", "Practical thinking", "Communication ability", "Resource management"],
+      challenges: ["Impatience", "Overthinking", "Occasional emotional sensitivity"],
+      remedies: [
+        { theme: "Mental restlessness", action: "Meditation or mantra practice" },
+        { theme: "Physical vitality", action: "Maintain a regular daily routine and proper sleep hygiene" }
+      ]
+    };
+  };
+
   const handleAnalyze = async () => {
-    if (!selectedImage) return;
+    if (inputMode === 'image' && !selectedImage) return;
 
     setLoading(true);
     setError(null);
 
-    const formData = new FormData();
-    formData.append('image', selectedImage);
+    if (inputMode === 'image') {
+      const formData = new FormData();
+      formData.append('image', selectedImage);
+      if (dob) formData.append('dob', dob);
+      if (tob) formData.append('tob', tob);
+      if (city) formData.append('city', city);
 
-    try {
-      // Make sure this endpoint matches our FastAPI backend
-      const response = await fetch('/api/analyze-face', {
-        method: 'POST',
-        body: formData,
-      });
+      try {
+        const response = await fetch('/api/analyze-face', {
+          method: 'POST',
+          body: formData,
+        });
 
-      if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.detail || 'Analysis failed. Make sure a face is clearly visible.');
+        if (!response.ok) {
+          const errData = await response.json();
+          throw new Error(errData.detail || 'Analysis failed. Make sure a face is clearly visible.');
+        }
+
+        const data = await response.json();
+        const updatedReading = data.reading;
+        setReading(updatedReading);
+        setLandmarks(data.landmarks);
+        if (data.processed_image) {
+          setPreviewUrl(`data:image/jpeg;base64,${data.processed_image}`);
+        }
+        if (data.synthesis_report) {
+          setSynthesisReport(data.synthesis_report);
+        } else {
+          setSynthesisReport(null);
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
-
-      const data = await response.json();
-      setReading(data.reading);
-      setLandmarks(data.landmarks);
-      if (data.processed_image) {
-        setPreviewUrl(`data:image/jpeg;base64,${data.processed_image}`);
-      }
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    } else {
+      // Mock questionnaire submission delay
+      setTimeout(() => {
+        setReading({
+          summary: "Based on your questionnaire responses, we have generated a detailed Vedic face reading.",
+          face_shape: { trait: questionnaireData.faceShape || "Oval", description: "Indicates balance and harmony." },
+          eyes: { trait: questionnaireData.eyes || "Medium", description: "Shows clear perception and emotional stability." },
+          nose: { trait: "Medium", description: "Balanced approach to material matters." },
+          lips: { trait: "Medium", description: "Measured communication." },
+          detailed: getMockDetailedReading()
+        });
+        setLandmarks(null);
+        setLoading(false);
+        setActiveTab('detailed'); // Switch to detailed automatically for questionnaire
+      }, 1500);
     }
   };
 
@@ -254,10 +318,59 @@ export default function FaceReader() {
           </p>
         </div>
 
-        {/* Upload Section */}
+        {/* Input Mode Selector */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: '20px' }}>
+          <button
+            onClick={() => { setInputMode('image'); setReading(null); }}
+            style={{
+              padding: '12px 24px', borderRadius: '12px', fontWeight: 'bold', cursor: 'pointer',
+              border: inputMode === 'image' ? `2px solid ${theme.heading}` : `2px solid ${theme.borderColor}`,
+              background: inputMode === 'image' ? theme.heading : '#fff',
+              color: inputMode === 'image' ? '#fff' : theme.text,
+              display: 'flex', alignItems: 'center', gap: '8px', transition: 'all 0.3s'
+            }}
+          >
+            <Camera size={20} />  Upload Image
+          </button>
+
+        </div>
+
+        {/* Optional Birth Details Section */}
+        <div style={{
+          backgroundColor: '#fff',
+          borderRadius: '16px',
+          padding: '25px',
+          boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
+          border: `1px solid ${theme.borderColor}`,
+          marginBottom: '20px',
+          textAlign: 'left'
+        }}>
+          <h3 style={{ color: theme.heading, fontSize: '20px', margin: '0 0 15px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '24px' }}>✨</span> Optional: Birth Details for Cosmic Alignment
+          </h3>
+          <p style={{ color: '#64748b', fontSize: '14px', marginBottom: '20px', marginTop: 0 }}>
+            Enter your birth details to generate a highly advanced synthesis report comparing your face reading with your Vedic Birth Chart (Lagna).
+          </p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '15px' }}>
+            <div>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', color: theme.text, marginBottom: '6px' }}>Date of Birth</label>
+              <input type="date" value={dob} onChange={(e) => setDob(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', color: theme.text, marginBottom: '6px' }}>Time of Birth</label>
+              <input type="time" value={tob} onChange={(e) => setTob(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }} />
+            </div>
+            <div>
+              <label style={{ display: 'block', fontSize: '14px', fontWeight: 'bold', color: theme.text, marginBottom: '6px' }}>City of Birth</label>
+              <input type="text" placeholder="e.g., New Delhi, India" value={city} onChange={(e) => setCity(e.target.value)} style={{ width: '100%', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }} />
+            </div>
+          </div>
+        </div>
+
+        {/* Upload/Questionnaire Section */}
         <div style={{
           backgroundColor: theme.cardBg,
-          backgroundImage: "url('/deities/face.png')",
+          backgroundImage: inputMode === 'image' ? "url('/deities/face.png')" : 'none',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundRepeat: 'no-repeat',
@@ -270,219 +383,291 @@ export default function FaceReader() {
           animation: 'fadeInUp 0.8s ease-out'
         }}>
 
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handleImageChange}
-            style={{ display: 'none' }}
-          />
+          {inputMode === 'questionnaire' ? (
+            <div style={{ textAlign: 'left', maxWidth: '600px', margin: '0 auto' }}>
+              <h3 style={{ color: theme.heading, fontSize: '24px', marginBottom: '24px' }}>Face Feature Questionnaire</h3>
 
-          {!previewUrl && !isCameraOpen ? (
-            <div>
-              <div
-                onClick={() => fileInputRef.current.click()}
-                style={{
-                  border: '2px dashed #fda4af',
-                  borderRadius: '16px',
-                  padding: '60px 20px',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s ease',
-                  backgroundColor: '#fffbfa',
-                  marginBottom: '16px'
-                }}
-                onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#ffe4e6'}
-                onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#fffbfa'}
-              >
-                <Upload size={48} color="#e11d48" style={{ margin: '0 auto 16px', animation: 'pulseUpload 2s infinite ease-in-out' }} />
-                <h3 style={{ fontSize: '20px', color: theme.heading, marginBottom: '8px', fontWeight: 'bold' }}>Upload your photo</h3>
-                <p style={{ color: '#64748b', fontSize: '14px' }}>Ensure your face is clearly visible, facing forward, with good lighting.</p>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px', color: theme.text }}>Face Shape</label>
+                <select
+                  value={questionnaireData.faceShape}
+                  onChange={(e) => setQuestionnaireData({ ...questionnaireData, faceShape: e.target.value })}
+                  style={{ width: '100%', padding: '12px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}
+                >
+                  <option value="">Select Face Shape...</option>
+                  <option value="Heart">Heart</option>
+                  <option value="Square">Square</option>
+                  <option value="Round">Round</option>
+                  <option value="Diamond">Diamond</option>
+                  <option value="Oval">Oval</option>
+                  <option value="Oblong">Oblong</option>
+                </select>
               </div>
 
-              <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0' }}>
-                <div style={{ flex: 1, height: '1px', background: theme.borderColor }}></div>
-                <span style={{ padding: '0 10px', color: '#64748b', fontSize: '14px', fontWeight: 'bold' }}>OR</span>
-                <div style={{ flex: 1, height: '1px', background: theme.borderColor }}></div>
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px', color: theme.text }}>Forehead Height</label>
+                <select
+                  value={questionnaireData.foreheadHeight}
+                  onChange={(e) => setQuestionnaireData({ ...questionnaireData, foreheadHeight: e.target.value })}
+                  style={{ width: '100%', padding: '12px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}
+                >
+                  <option value="">Select Forehead Height...</option>
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
+                </select>
+              </div>
+
+              <div style={{ marginBottom: '20px' }}>
+                <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '8px', color: theme.text }}>Eyes</label>
+                <select
+                  value={questionnaireData.eyes}
+                  onChange={(e) => setQuestionnaireData({ ...questionnaireData, eyes: e.target.value })}
+                  style={{ width: '100%', padding: '12px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}
+                >
+                  <option value="">Select Eye Type...</option>
+                  <option value="Large/Almond">Large / Almond</option>
+                  <option value="Small/Deep">Small / Deep-set</option>
+                  <option value="Round">Round</option>
+                </select>
               </div>
 
               <button
-                onClick={() => setIsCameraOpen(true)}
+                onClick={handleAnalyze}
+                disabled={loading}
                 style={{
-                  padding: '14px 24px',
-                  borderRadius: '12px',
-                  border: `2px solid #e11d48`,
-                  background: 'transparent',
-                  color: '#e11d48',
-                  fontWeight: 'bold',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px',
                   width: '100%',
-                  fontSize: '16px',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseOver={(e) => {
-                  e.currentTarget.style.backgroundColor = '#e11d48';
-                  e.currentTarget.style.color = '#fff';
-                }}
-                onMouseOut={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.color = '#e11d48';
+                  padding: '14px',
+                  borderRadius: '12px',
+                  border: 'none',
+                  background: '#e11d48',
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  fontSize: '18px',
+                  cursor: loading ? 'not-allowed' : 'pointer',
+                  marginTop: '20px'
                 }}
               >
-                <Camera size={20} /> Use Camera
+                {loading ? 'Analyzing...' : 'Generate Vedic Reading'}
               </button>
             </div>
-          ) : isCameraOpen ? (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <div style={{
-                borderRadius: '16px',
-                overflow: 'hidden',
-                border: `4px solid ${theme.borderColor}`,
-                marginBottom: '20px',
-                width: '100%',
-                maxWidth: '400px',
-                aspectRatio: '1',
-                position: 'relative'
-              }}>
-                <Webcam
-                  audio={false}
-                  ref={webcamRef}
-                  screenshotFormat="image/jpeg"
-                  videoConstraints={{ facingMode: "user" }}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                />
-              </div>
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button
-                  onClick={() => setIsCameraOpen(false)}
-                  style={{
-                    padding: '10px 20px',
-                    borderRadius: '8px',
-                    border: `1px solid ${theme.borderColor}`,
-                    background: '#fff',
-                    color: theme.heading,
-                    fontWeight: 'bold',
-                    cursor: 'pointer'
-                  }}
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={capture}
-                  style={{
-                    padding: '10px 24px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    background: '#10b981',
-                    color: '#fff',
-                    fontWeight: 'bold',
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}
-                >
-                  <Camera size={18} /> Snap Photo
-                </button>
-              </div>
-            </div>
           ) : (
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <div style={{
-                position: 'relative',
-                width: '100%',
-                maxWidth: '550px',
-                height: '450px',
-                borderRadius: '16px',
-                overflow: 'hidden',
-                border: `2px solid ${theme.borderColor}`,
-                marginBottom: '20px',
-                boxShadow: isFaceValid === true ? '0 0 25px 8px rgba(34, 197, 94, 0.7)' : isFaceValid === false ? '0 0 25px 8px rgba(239, 68, 68, 0.7)' : 'none',
-                transition: 'box-shadow 0.4s ease-in-out'
-              }}>
-                <img src={previewUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#000', display: 'block' }} />
-                {loading && (
-                  <div style={{
-                    position: 'absolute',
-                    top: 0, left: 0, right: 0, bottom: 0,
-                    background: 'rgba(0, 20, 10, 0.65)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'flex-end',
-                    overflow: 'hidden',
-                    backgroundImage: 'linear-gradient(rgba(16, 185, 129, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(16, 185, 129, 0.2) 1px, transparent 1px)',
-                    backgroundSize: '20px 20px',
-                    paddingBottom: '20px'
-                  }}>
-                    {/* The scanning laser line */}
-                    <div style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '4px',
-                      background: '#10b981',
-                      boxShadow: '0 0 15px 5px rgba(16, 185, 129, 0.7)',
-                      animation: 'scan 2s ease-in-out infinite alternate'
-                    }}></div>
+            <>
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                style={{ display: 'none' }}
+              />
 
-                    {/* The text */}
-                    <div style={{
-                      color: '#10b981',
-                      fontFamily: 'monospace',
-                      fontSize: '13px',
-                      fontWeight: 'bold',
-                      background: 'rgba(0, 0, 0, 0.6)',
-                      padding: '4px 10px',
-                      borderRadius: '4px',
-                      animation: 'pulseText 1.5s infinite',
-                      zIndex: 10
-                    }}>
-                      &gt; {scanPhrases[scanPhraseIndex]}
-                    </div>
+              {!previewUrl && !isCameraOpen ? (
+                <div>
+                  <div
+                    onClick={() => fileInputRef.current.click()}
+                    style={{
+                      border: '2px dashed #fda4af',
+                      borderRadius: '16px',
+                      padding: '60px 20px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      backgroundColor: '#fffbfa',
+                      marginBottom: '16px'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#ffe4e6'}
+                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#fffbfa'}
+                  >
+                    <Upload size={48} color="#e11d48" style={{ margin: '0 auto 16px', animation: 'pulseUpload 2s infinite ease-in-out' }} />
+                    <h3 style={{ fontSize: '20px', color: theme.heading, marginBottom: '8px', fontWeight: 'bold' }}>Upload your photo</h3>
+                    <p style={{ color: '#64748b', fontSize: '14px' }}>Ensure your face is clearly visible, facing forward, with good lighting.</p>
                   </div>
-                )}
-              </div>
 
-              <div style={{ display: 'flex', gap: '10px' }}>
-                <button
-                  onClick={() => fileInputRef.current.click()}
-                  disabled={loading}
-                  style={{
-                    padding: '10px 20px',
-                    borderRadius: '8px',
-                    border: `1px solid ${theme.borderColor}`,
-                    background: '#fff',
-                    color: theme.heading,
-                    fontWeight: 'bold',
-                    cursor: loading ? 'not-allowed' : 'pointer'
-                  }}
-                >
-                  Change Photo
-                </button>
-                <button
-                  onClick={handleAnalyze}
-                  disabled={loading}
-                  style={{
-                    padding: '10px 24px',
-                    borderRadius: '8px',
-                    border: 'none',
-                    background: '#e11d48',
-                    color: '#fff',
-                    fontWeight: 'bold',
-                    cursor: loading ? 'not-allowed' : 'pointer',
-                    boxShadow: '0 4px 14px rgba(225, 29, 72, 0.3)'
-                  }}
-                >
-                  {loading ? 'Analyzing...' : 'Analyze Face'}
-                </button>
-              </div>
-            </div>
+                  <div style={{ display: 'flex', alignItems: 'center', margin: '20px 0' }}>
+                    <div style={{ flex: 1, height: '1px', background: theme.borderColor }}></div>
+                    <span style={{ padding: '0 10px', color: '#64748b', fontSize: '14px', fontWeight: 'bold' }}>OR</span>
+                    <div style={{ flex: 1, height: '1px', background: theme.borderColor }}></div>
+                  </div>
+
+                  <button
+                    onClick={() => setIsCameraOpen(true)}
+                    style={{
+                      padding: '14px 24px',
+                      borderRadius: '12px',
+                      border: `2px solid #e11d48`,
+                      background: 'rgba(240, 233, 234, 1)',
+                      color: 'hsla(350, 83%, 7%, 1.00)',
+                      fontWeight: 'bold',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '8px',
+                      width: '100%',
+                      fontSize: '18px',
+                      transition: 'all 0.3s ease'
+                    }}
+                    onMouseOver={(e) => {
+                      e.currentTarget.style.backgroundColor = 'hsla(351, 69%, 61%, 1.00)';
+                      e.currentTarget.style.color = '#fff';
+                    }}
+                    onMouseOut={(e) => {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                      e.currentTarget.style.color = '#e11d48';
+                    }}
+                  >
+                    <Camera size={20} /> Use Camera
+                  </button>
+                </div>
+              ) : isCameraOpen ? (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <div style={{
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    border: `4px solid ${theme.borderColor}`,
+                    marginBottom: '20px',
+                    width: '100%',
+                    maxWidth: '400px',
+                    aspectRatio: '1',
+                    position: 'relative'
+                  }}>
+                    <Webcam
+                      audio={false}
+                      ref={webcamRef}
+                      screenshotFormat="image/jpeg"
+                      videoConstraints={{ facingMode: "user" }}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </div>
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <button
+                      onClick={() => setIsCameraOpen(false)}
+                      style={{
+                        padding: '10px 20px',
+                        borderRadius: '8px',
+                        border: `1px solid ${theme.borderColor}`,
+                        background: '#fff',
+                        color: theme.heading,
+                        fontWeight: 'bold',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={capture}
+                      style={{
+                        padding: '10px 24px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: '#10b981',
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        cursor: 'pointer',
+                        boxShadow: '0 4px 14px rgba(16, 185, 129, 0.3)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '8px'
+                      }}
+                    >
+                      <Camera size={18} /> Snap Photo
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <div style={{
+                    position: 'relative',
+                    width: '100%',
+                    maxWidth: '550px',
+                    height: '450px',
+                    borderRadius: '16px',
+                    overflow: 'hidden',
+                    border: `2px solid ${theme.borderColor}`,
+                    marginBottom: '20px',
+                    boxShadow: isFaceValid === true ? '0 0 25px 8px rgba(34, 197, 94, 0.7)' : isFaceValid === false ? '0 0 25px 8px rgba(239, 68, 68, 0.7)' : 'none',
+                    transition: 'box-shadow 0.4s ease-in-out'
+                  }}>
+                    <img src={previewUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'contain', backgroundColor: '#000', display: 'block' }} />
+                    {loading && (
+                      <div style={{
+                        position: 'absolute',
+                        top: 0, left: 0, right: 0, bottom: 0,
+                        background: 'rgba(0, 20, 10, 0.65)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'flex-end',
+                        overflow: 'hidden',
+                        backgroundImage: 'linear-gradient(rgba(16, 185, 129, 0.2) 1px, transparent 1px), linear-gradient(90deg, rgba(16, 185, 129, 0.2) 1px, transparent 1px)',
+                        backgroundSize: '20px 20px',
+                        paddingBottom: '20px'
+                      }}>
+                        {/* The scanning laser line */}
+                        <div style={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '4px',
+                          background: '#10b981',
+                          boxShadow: '0 0 15px 5px rgba(16, 185, 129, 0.7)',
+                          animation: 'scan 2s ease-in-out infinite alternate'
+                        }}></div>
+
+                        {/* The text */}
+                        <div style={{
+                          color: '#10b981',
+                          fontFamily: 'monospace',
+                          fontSize: '13px',
+                          fontWeight: 'bold',
+                          background: 'rgba(0, 0, 0, 0.6)',
+                          padding: '4px 10px',
+                          borderRadius: '4px',
+                          animation: 'pulseText 1.5s infinite',
+                          zIndex: 10
+                        }}>
+                          &gt; {scanPhrases[scanPhraseIndex]}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '10px' }}>
+                    <button
+                      onClick={() => fileInputRef.current.click()}
+                      disabled={loading}
+                      style={{
+                        padding: '10px 20px',
+                        borderRadius: '8px',
+                        border: `1px solid ${theme.borderColor}`,
+                        background: '#fff',
+                        color: theme.heading,
+                        fontWeight: 'bold',
+                        cursor: loading ? 'not-allowed' : 'pointer'
+                      }}
+                    >
+                      Change Photo
+                    </button>
+                    <button
+                      onClick={handleAnalyze}
+                      disabled={loading}
+                      style={{
+                        padding: '10px 24px',
+                        borderRadius: '8px',
+                        border: 'none',
+                        background: '#e11d48',
+                        color: '#fff',
+                        fontWeight: 'bold',
+                        cursor: loading ? 'not-allowed' : 'pointer',
+                        boxShadow: '0 4px 14px rgba(225, 29, 72, 0.3)'
+                      }}
+                    >
+                      {loading ? 'Analyzing...' : 'Analyze Face'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
           )}
 
           {error && (
@@ -496,480 +681,659 @@ export default function FaceReader() {
         {/* Results Section */}
         {reading && (
           <div style={{ animation: 'fadeIn 0.5s ease-out' }}>
-            <div style={{
-              background: 'linear-gradient(135deg, #881337 0%, #be123c 100%)',
-              color: 'white',
-              padding: '30px',
-              borderRadius: '20px 20px 0 0',
-              textAlign: 'center'
-            }}>
-              <h2 style={{ fontSize: '28px', fontStyle: 'italic', margin: '0 0 10px 0' }}>Your Face Reading Summary</h2>
-              <p style={{ fontSize: '20px', lineHeight: '1.6', opacity: 0.9 }}>{reading.summary}</p>
+
+            {/* Tabs */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '30px', borderBottom: `2px solid ${theme.borderColor}` }}>
+              <button
+                onClick={() => setActiveTab('classic')}
+                style={{
+                  padding: '12px 24px', fontSize: '18px', fontWeight: 'bold', background: 'transparent', cursor: 'pointer',
+                  border: 'none', borderBottom: activeTab === 'classic' ? `4px solid ${theme.heading}` : '4px solid transparent',
+                  color: activeTab === 'classic' ? theme.heading : '#64748b', transition: 'all 0.2s'
+                }}
+              >
+                Classic View
+              </button>
+              <button
+                onClick={() => setActiveTab('detailed')}
+                style={{
+                  padding: '12px 24px', fontSize: '18px', fontWeight: 'bold', background: 'transparent', cursor: 'pointer',
+                  border: 'none', borderBottom: activeTab === 'detailed' ? `4px solid ${theme.heading}` : '4px solid transparent',
+                  color: activeTab === 'detailed' ? theme.heading : '#64748b', transition: 'all 0.2s'
+                }}
+              >
+                Detailed Vedic Analysis
+              </button>
             </div>
 
-            <div style={{ background: theme.cardBg, borderRadius: '0 0 20px 20px', padding: '30px', border: `1px solid ${theme.borderColor}`, borderTop: 'none', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-
-              {reading.elements_score && (
-                <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
-                  <h3 style={{ color: theme.heading, fontSize: '22px', marginBottom: '16px', textAlign: 'center' }}>✨ Elemental Balance</h3>
-                  <div style={{ width: '100%', height: '300px' }}>
-                    <ResponsiveContainer width="100%" height="100%">
-                      <RadarChart cx="50%" cy="50%" outerRadius="80%" data={reading.elements_score}>
-                        <PolarGrid stroke="#fecdd3" />
-                        <PolarAngleAxis dataKey="element" tick={{ fill: '#035a03ff', fontSize: 18, fontWeight: 'bold' }} />
-                        <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                        <Tooltip
-                          contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
-                          itemStyle={{ color: '#e11d48', fontWeight: 'bold' }}
-                        />
-                        <Radar name="Element Score" dataKey="value" stroke="#e11d48" fill="#e11d48" fillOpacity={0.4} />
-                      </RadarChart>
-                    </ResponsiveContainer>
-                  </div>
+            {/* CLASSIC VIEW TAB CONTENT */}
+            {activeTab === 'classic' && (
+              <>
+                <div style={{
+                  background: 'linear-gradient(135deg, #881337 0%, #be123c 100%)',
+                  color: 'white',
+                  padding: '30px',
+                  borderRadius: '20px 20px 0 0',
+                  textAlign: 'center'
+                }}>
+                  <h2 style={{ fontSize: '28px', fontStyle: 'italic', margin: '0 0 10px 0' }}>Your Face Reading Summary</h2>
+                  <p style={{ fontSize: '20px', lineHeight: '1.6', opacity: 0.9 }}>{reading.summary}</p>
                 </div>
-              )}
 
-              <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
-                <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>👤 Face Shape: {reading.face_shape.trait}</h3>
-                <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.face_shape.description}</p>
-              </div>
+                <div style={{ background: theme.cardBg, borderRadius: '0 0 20px 20px', padding: '30px', border: `1px solid ${theme.borderColor}`, borderTop: 'none', display: 'flex', flexDirection: 'column', gap: '20px' }}>
 
-              <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
-                <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>👁️ Eyes: {reading.eyes.trait}</h3>
-                <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.eyes.description}</p>
-              </div>
-
-              <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
-                <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>👃 Nose: {reading.nose.trait}</h3>
-                <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.nose.description}</p>
-              </div>
-
-              <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
-                <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>👄 Lips: {reading.lips.trait}</h3>
-                <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.lips.description}</p>
-              </div>
-
-              {reading.marriage_life && (
-                <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
-                  <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>💍 Marriage Life</h3>
-                  <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.marriage_life}</p>
-                </div>
-              )}
-
-              {reading.marriage_type && (
-                <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
-                  <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>💒 Marriage Type</h3>
-                  <p style={{ color: 'rgba(1, 21, 49, 1)', fontSize: '20px', lineHeight: '1.6' }}>{reading.marriage_type}</p>
-                </div>
-              )}
-
-              {reading.love_nature && (
-                <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
-                  <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>❤️ Nature in Love</h3>
-                  <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.love_nature}</p>
-                </div>
-              )}
-
-              {reading.career && (
-                <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
-                  <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>💼 Career Path</h3>
-                  <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.career}</p>
-                </div>
-              )}
-
-              {reading.wealth_prospects && (
-                <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
-                  <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>💰 Wealth & Finance</h3>
-                  <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.wealth_prospects}</p>
-                </div>
-              )}
-
-              {reading.marriage_timing && (
-                <div>
-                  <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>⏱️ Marriage Timing</h3>
-                  <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.marriage_timing}</p>
-                </div>
-              )}
-
-            </div>
-          </div>
-        )}
-
-        {/* Vedic Face Reading Guide */}
-        <div style={{
-          backgroundColor: '#fff',
-          borderRadius: '20px',
-          padding: '40px',
-          boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)',
-          border: `1px solid ${theme.borderColor}`,
-          marginTop: '40px',
-          animation: 'fadeInUp 0.8s ease-out'
-        }}>
-          <h2 style={{ fontSize: '28px', color: theme.heading, marginBottom: '20px', textAlign: 'center', fontWeight: 'bold' }}>Vedic Facial Astrology Guide</h2>
-
-          <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
-            {/* Lalat Rekha Section */}
-            <div style={{ flex: '1 1 300px' }}>
-              <h3 style={{ fontSize: '22px', color: theme.heading, marginBottom: '16px', borderBottom: `2px solid ${theme.borderColor}`, paddingBottom: '8px' }}>Lalat Rekha (Forehead Lines)</h3>
-              {landmarks?.detected_lines ? (
-                landmarks.detected_lines.length > 0 ? (
-                  <>
-                    <p style={{ color: '#475569', marginBottom: '16px', fontSize: '18px', lineHeight: '1.6' }}>Based on facial analysis, the following planetary lines were detected on your forehead:</p>
-                    <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                      {(() => {
-                        // Deduplicate lines by planet name
-                        const uniquePlanets = [];
-                        const seen = new Set();
-                        landmarks.detected_lines.forEach(line => {
-                          if (!seen.has(line.planet)) {
-                            seen.add(line.planet);
-                            uniquePlanets.push(line);
-                          }
-                        });
-                        return uniquePlanets.map((line, idx) => {
-                          let statusColor = '#3b82f6'; // Neutral (Blue)
-                          if (line.status === 'Good') statusColor = '#22c55e'; // Green
-                          if (line.status === 'Bad') statusColor = '#ef4444'; // Red
-                          
-                          return (
-                            <li key={idx} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                              <span style={{ background: statusColor, color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold' }}>{line.zone}</span> 
-                              <b style={{ color: statusColor }}>{line.planet}</b> 
-                              <span style={{ color: '#475569' }}>- Zone {line.zone} ({line.status})</span>
-                            </li>
-                          );
-                        });
-                      })()}
-                    </ul>
-                  </>
-                ) : (
-                  <p style={{ color: '#475569', marginBottom: '16px', fontSize: '18px', lineHeight: '1.6', fontStyle: 'italic' }}>No prominent lines detected on your forehead.</p>
-                )
-              ) : (
-                <>
-                  <p style={{ color: '#475569', marginBottom: '16px', fontSize: '18px', lineHeight: '1.6' }}>According to ancient sages, there are 7 horizontal lines on the forehead. From the hairline down to the eyebrows, their planetary lords are:</p>
-                  <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                    <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ background: getPlanetColor('Saturn'), color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold' }}>1</span> <b style={{ color: getPlanetColor('Saturn') }}>Saturn (Shani)</b> - Uppermost line</li>
-                    <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ background: getPlanetColor('Jupiter'), color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold' }}>2</span> <b style={{ color: getPlanetColor('Jupiter') }}>Jupiter (Guru)</b> - Second line</li>
-                    <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ background: getPlanetColor('Mars'), color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold' }}>3</span> <b style={{ color: getPlanetColor('Mars') }}>Mars (Mangal)</b> - Third line</li>
-                    <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ background: getPlanetColor('Sun'), color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '13px', fontWeight: 'bold' }}>4</span> <b style={{ color: getPlanetColor('Sun') }}>Sun (Surya)</b> - Fourth line</li>
-                    <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ background: getPlanetColor('Venus'), color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '13px', fontWeight: 'bold' }}>5</span> <b style={{ color: getPlanetColor('Venus') }}>Venus (Shukra)</b> - Fifth line</li>
-                    <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ background: getPlanetColor('Mercury'), color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '13px', fontWeight: 'bold' }}>6</span> <b style={{ color: getPlanetColor('Mercury') }}>Mercury (Budh)</b> - Sixth line</li>
-                    <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ background: getPlanetColor('Moon'), color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '13px', fontWeight: 'bold' }}>7</span> <b style={{ color: getPlanetColor('Moon') }}>Moon (Chandra)</b> - Lowest line</li>
-                  </ul>
-                </>
-              )}
-
-              {/* Legend for planetary colors */}
-              <div style={{ marginTop: '20px', padding: '12px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '13px', color: '#475569' }}>
-                <b>Color Key:</b>
-                <span style={{ color: '#22c55e', fontWeight: 'bold', marginLeft: '8px' }}>■ Green</span> (Good/Strong)
-                <span style={{ color: '#ef4444', fontWeight: 'bold', marginLeft: '8px' }}>■ Red</span> (Bad/Weak)
-                <span style={{ color: '#3b82f6', fontWeight: 'bold', marginLeft: '8px' }}>■ Blue</span> (Neutral)
-              </div>
-
-            </div>
-
-            {/* Visual Mapping / Zodiac Section */}
-            <div style={{ flex: '1 1 100%', marginTop: '40px' }}>
-              <h3 style={{ fontSize: '22px', color: theme.heading, marginBottom: '16px', borderBottom: `2px solid ${theme.borderColor}`, paddingBottom: '8px' }}>Your Facial Astrology Map</h3>
-
-              {previewUrl ? (
-                <div style={{ position: 'relative', width: '100%', maxWidth: '550px', margin: '0 auto', borderRadius: '12px', overflow: 'hidden', border: `2px solid ${theme.borderColor}`, boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
-                  <img src={previewUrl} alt="User Face" style={{ width: '100%', height: 'auto', display: 'block' }} />
-
-                  {landmarks ? (
-                    <>
-                      {/* Calculate Forehead Steps for Lalat Rekha */}
-                      {(() => {
-                        // MediaPipe's top-most point (landmark 10) is often too low (mid-upper forehead).
-                        // We extrapolate the true hairline based on the face height (eyebrows to chin).
-                        const ey = landmarks.eyebrows_right.y;
-                        const cy = landmarks.chin.y;
-                        const faceHeight = cy - ey;
-
-                        // Estimate hairline as 55% of the lower face height above the eyebrows
-                        const hy = Math.max(0.02, ey - (faceHeight * 0.55));
-                        const step = (ey - hy) / 8;
-                        const fw = Math.abs(landmarks.cheek_left.x - landmarks.cheek_right.x) * 100;
-                        const rx = landmarks.cheek_right.x * 100; // Viewer's left cheek
-                        const lx = landmarks.cheek_left.x * 100; // Viewer's right cheek
-
-                        return (
-                          <>
-                            {/* Dynamic/Static Lalat Rekha Forehead Lines */}
-                            {landmarks.detected_lines ? landmarks.detected_lines.map((line, index) => (
-                              <div key={`line-${index}`} style={{ position: 'absolute', top: `${line.y * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * (0.6 + ((line.zone || 1) * 0.05))}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
-                            )) : (
-                              <>
-                                <div style={{ position: 'absolute', top: `${(hy + 1 * step) * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * 0.6}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
-                                <div style={{ position: 'absolute', top: `${(hy + 2 * step) * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * 0.7}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
-                                <div style={{ position: 'absolute', top: `${(hy + 3 * step) * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * 0.8}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
-                                <div style={{ position: 'absolute', top: `${(hy + 4 * step) * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * 0.9}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
-                                <div style={{ position: 'absolute', top: `${(hy + 5 * step) * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * 0.9}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
-                                <div style={{ position: 'absolute', top: `${(hy + 6 * step) * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * 0.8}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
-                                <div style={{ position: 'absolute', top: `${(hy + 7 * step) * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * 0.7}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
-                              </>
-                            )}
-
-                            {/* Dynamic Planet Labels */}
-                            {landmarks.detected_lines && landmarks.detected_lines.map((line, index) => {
-                              const pStyle = {
-                                Saturn: { color: '#ee6e19ff', fontSize: '16px' },
-                                Mars: { color: '#ee6e19ff', fontSize: '16px' },
-                                Venus: { color: 'rgba(47, 16, 223, 1)', fontSize: '20px' },
-                                Moon: { color: 'hsla(327, 84%, 45%, 1.00)', fontSize: '16px' },
-                                Jupiter: { color: 'hsla(327, 84%, 45%, 1.00)', fontSize: '11px' },
-                                Sun: { color: 'hsla(327, 84%, 45%, 1.00)', fontSize: '11px' },
-                                Mercury: { color: 'hsla(327, 84%, 45%, 1.00)', fontSize: '11px' }
-                              }[line.planet] || { color: '#ee6e19ff', fontSize: '16px' };
-
-                              const isLeft = index % 2 === 0;
-                              if (isLeft) {
-                                return (
-                                  <div key={`planet-${index}`} style={{ position: 'absolute', top: `${line.y * 100}%`, left: `max(20%, ${rx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}>
-                                    <span style={{ fontSize: pStyle.fontSize, fontWeight: 'medium', color: pStyle.color, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>{line.planet}</span>
-                                    <div style={{ width: '20px', height: '1px', background: pStyle.color, marginLeft: '6px' }}></div>
-                                  </div>
-                                );
-                              } else {
-                                return (
-                                  <div key={`planet-${index}`} style={{ position: 'absolute', top: `${line.y * 100}%`, right: `max(20%, ${100 - lx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}>
-                                    <div style={{ width: '20px', height: '1px', background: pStyle.color, marginRight: '6px' }}></div>
-                                    <span style={{ fontSize: pStyle.fontSize, fontWeight: 'medium', color: pStyle.color, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>{line.planet}</span>
-                                  </div>
-                                );
-                              }
-                            })}
-
-                            {/* Left Side Static Labels (Fallback Planets & Zodiacs Interleaved) */}
-                            {!landmarks.detected_lines && (
-                              <>
-                                <div style={{ position: 'absolute', top: `${(hy + 1 * step) * 100}%`, left: `max(20%, ${rx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: '#ee6e19ff', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Saturn</span><div style={{ width: '20px', height: '1px', background: 'hsla(327, 84%, 45%, 1.00)', marginLeft: '6px' }}></div></div>
-                                <div style={{ position: 'absolute', top: `${(hy + 3 * step) * 100}%`, left: `max(20%, ${rx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: '#ee6e19ff', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Mars</span><div style={{ width: '20px', height: '1px', background: 'hsla(327, 84%, 45%, 1.00)', marginLeft: '6px' }}></div></div>
-                                <div style={{ position: 'absolute', top: `${(hy + 5 * step) * 100}%`, left: `max(20%, ${rx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: 'rgba(47, 16, 223, 1)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Venus</span><div style={{ width: '20px', height: '1px', background: 'hsla(327, 84%, 45%, 1.00)', marginLeft: '6px' }}></div></div>
-                                <div style={{ position: 'absolute', top: `${(hy + 7 * step) * 100}%`, left: `max(20%, ${rx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: 'hsla(327, 84%, 45%, 1.00)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Moon</span><div style={{ width: '20px', height: '1px', background: 'hsla(327, 84%, 45%, 1.00)', marginLeft: '6px' }}></div></div>
-                              </>
-                            )}
-
-                            <div style={{ position: 'absolute', top: `${(hy + 1.5 * step) * 100}%`, left: `max(2%, ${rx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: '#ee6e19ff', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Taurus</span><div style={{ width: '20px', height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
-                            <div style={{ position: 'absolute', top: `${(hy + 3.5 * step) * 100}%`, left: `max(2%, ${rx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: '#ee6e19ff', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Virgo</span><div style={{ width: '20px', height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
-                            <div style={{ position: 'absolute', top: `${(hy + 5.5 * step) * 100}%`, left: `max(2%, ${rx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Sagittarius</span><div style={{ width: '20px', height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
-                            <div style={{ position: 'absolute', top: `${landmarks.eye_right.y * 100}%`, left: `max(2%, ${rx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Leo</span><div style={{ width: '20px', height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
-                            <div style={{ position: 'absolute', top: `${landmarks.cheek_right.y * 100}%`, left: `max(2%, ${rx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Libra</span><div style={{ width: '20px', height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
-
-                            {/* Right Side Static Labels (Fallback Planets & Zodiacs Interleaved) */}
-                            {!landmarks.detected_lines && (
-                              <>
-                                <div style={{ position: 'absolute', top: `${(hy + 2 * step) * 100}%`, right: `max(20%, ${100 - lx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: 'hsla(327, 84%, 45%, 1.00)', marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: 'hsla(327, 84%, 45%, 1.00)', background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Jupiter</span></div>
-                                <div style={{ position: 'absolute', top: `${(hy + 4 * step) * 100}%`, right: `max(20%, ${100 - lx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: 'hsla(327, 84%, 45%, 1.00)', marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: 'hsla(327, 84%, 45%, 1.00)', background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Sun</span></div>
-                                <div style={{ position: 'absolute', top: `${(hy + 6 * step) * 100}%`, right: `max(20%, ${100 - lx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: 'hsla(327, 84%, 45%, 1.00)', marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: 'hsla(327, 84%, 45%, 1.00)', background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Mercury</span></div>
-                              </>
-                            )}
-
-                            <div style={{ position: 'absolute', top: `${(hy + 1.5 * step) * 100}%`, right: `max(2%, ${100 - lx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Cancer</span></div>
-                            <div style={{ position: 'absolute', top: `${(hy + 3.5 * step) * 100}%`, right: `max(2%, ${100 - lx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Pisces</span></div>
-                            <div style={{ position: 'absolute', top: `${(hy + 5.5 * step) * 100}%`, right: `max(2%, ${100 - lx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Scorpio</span></div>
-                            <div style={{ position: 'absolute', top: `${(hy + 7.5 * step) * 100}%`, right: `max(2%, ${100 - lx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Aquarius</span></div>
-                            <div style={{ position: 'absolute', top: `${landmarks.eye_left.y * 100}%`, right: `max(2%, ${100 - lx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Gemini</span></div>
-                            <div style={{ position: 'absolute', top: `${landmarks.cheek_left.y * 100}%`, right: `max(2%, ${100 - lx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Aries</span></div>
-
-                            {/* Center */}
-                            <div style={{ position: 'absolute', top: `${landmarks.chin.y * 100}%`, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}><div style={{ width: '1px', height: '20px', background: theme.text, marginBottom: '4px' }}></div><span style={{ fontSize: '11px', fontWeight: 'bold', color: theme.text, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Capricorn</span></div>
-                          </>
-                        );
-                      })()}
-                    </>
-                  ) : (
-                    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'rgba(255,255,255,0.9)', padding: '10px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 'bold', color: theme.text, border: `1px solid ${theme.borderColor}` }}>
-                      Click "Analyze Face" to map features
+                  {reading.elements_score && (
+                    <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
+                      <h3 style={{ color: theme.heading, fontSize: '22px', marginBottom: '16px', textAlign: 'center' }}>✨ Elemental Balance</h3>
+                      <div style={{ width: '100%', height: '300px' }}>
+                        <ResponsiveContainer width="100%" height="100%">
+                          <RadarChart cx="50%" cy="50%" outerRadius="80%" data={reading.elements_score}>
+                            <PolarGrid stroke="#fecdd3" />
+                            <PolarAngleAxis dataKey="element" tick={{ fill: '#035a03ff', fontSize: 18, fontWeight: 'bold' }} />
+                            <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                            <Tooltip
+                              contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                              itemStyle={{ color: '#e11d48', fontWeight: 'bold' }}
+                            />
+                            <Radar name="Element Score" dataKey="value" stroke="#e11d48" fill="#e11d48" fillOpacity={0.4} />
+                          </RadarChart>
+                        </ResponsiveContainer>
+                      </div>
                     </div>
                   )}
+
+                  <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
+                    <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>👤 Face Shape: {reading.face_shape.trait}</h3>
+                    <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.face_shape.description}</p>
+                  </div>
+
+                  <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
+                    <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>👁️ Eyes: {reading.eyes.trait}</h3>
+                    <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.eyes.description}</p>
+                  </div>
+
+                  <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
+                    <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>👃 Nose: {reading.nose.trait}</h3>
+                    <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.nose.description}</p>
+                  </div>
+
+                  <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
+                    <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>👄 Lips: {reading.lips.trait}</h3>
+                    <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.lips.description}</p>
+                  </div>
+
+                  {reading.marriage_life && (
+                    <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
+                      <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>💍 Marriage Life</h3>
+                      <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.marriage_life}</p>
+                    </div>
+                  )}
+
+                  {reading.marriage_type && (
+                    <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
+                      <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>💒 Marriage Type</h3>
+                      <p style={{ color: 'rgba(1, 21, 49, 1)', fontSize: '20px', lineHeight: '1.6' }}>{reading.marriage_type}</p>
+                    </div>
+                  )}
+
+                  {reading.love_nature && (
+                    <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
+                      <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>❤️ Nature in Love</h3>
+                      <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.love_nature}</p>
+                    </div>
+                  )}
+
+                  {reading.career && (
+                    <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
+                      <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>💼 Career Path</h3>
+                      <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.career}</p>
+                    </div>
+                  )}
+
+                  {reading.wealth_prospects && (
+                    <div style={{ borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '20px' }}>
+                      <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>💰 Wealth & Finance</h3>
+                      <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.wealth_prospects}</p>
+                    </div>
+                  )}
+
+                  {reading.marriage_timing && (
+                    <div>
+                      <h3 style={{ color: theme.heading, fontSize: '25px', marginBottom: '8px' }}>⏱️ Marriage Timing</h3>
+                      <p style={{ color: '#031c3fff', fontSize: '20px', lineHeight: '1.6' }}>{reading.marriage_timing}</p>
+                    </div>
+                  )}
+
                 </div>
-              ) : (
-                <>
-                  <p style={{ color: '#475569', marginBottom: '16px', fontSize: '15px', lineHeight: '1.6' }}>Upload your photo to see your personalized facial astrology map! The 12 Zodiac signs govern specific regions of the human face:</p>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '14px', color: '#334155' }}>
-                    <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Taurus:</b> Top Right Forehead</div>
-                    <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Cancer:</b> Top Left Forehead</div>
-                    <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Virgo:</b> Mid Right Forehead</div>
-                    <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Pisces:</b> Upper Left Forehead</div>
-                    <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Sagittarius:</b> Low Right Forehead</div>
-                    <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Scorpio:</b> Mid Left Forehead</div>
-                    <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Leo:</b> Right Eye</div>
-                    <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Aquarius:</b> Low Left Forehead</div>
-                    <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Libra:</b> Right Cheek</div>
-                    <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Gemini:</b> Left Eye</div>
-                    <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Capricorn:</b> Chin</div>
-                    <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Aries:</b> Left Cheek</div>
+
+                {/* Vedic Face Reading Guide */}
+                <div style={{
+                  backgroundColor: '#fff',
+                  borderRadius: '20px',
+                  padding: '40px',
+                  boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)',
+                  border: `1px solid ${theme.borderColor}`,
+                  marginTop: '40px',
+                  animation: 'fadeInUp 0.8s ease-out'
+                }}>
+                  <h2 style={{ fontSize: '28px', color: theme.heading, marginBottom: '20px', textAlign: 'center', fontWeight: 'bold' }}>Vedic Facial Astrology Guide</h2>
+
+                  <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
+                    {/* Lalat Rekha Section */}
+                    <div style={{ flex: '1 1 300px' }}>
+                      <h3 style={{ fontSize: '22px', color: theme.heading, marginBottom: '16px', borderBottom: `2px solid ${theme.borderColor}`, paddingBottom: '8px' }}>Lalat Rekha (Forehead Lines)</h3>
+                      {landmarks?.detected_lines ? (
+                        landmarks.detected_lines.length > 0 ? (
+                          <>
+                            <p style={{ color: '#475569', marginBottom: '16px', fontSize: '18px', lineHeight: '1.6' }}>Based on facial analysis, the following planetary lines were detected on your forehead:</p>
+                            <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                              {(() => {
+                                // Deduplicate lines by planet name
+                                const uniquePlanets = [];
+                                const seen = new Set();
+                                landmarks.detected_lines.forEach(line => {
+                                  if (!seen.has(line.planet)) {
+                                    seen.add(line.planet);
+                                    uniquePlanets.push(line);
+                                  }
+                                });
+                                return uniquePlanets.map((line, idx) => {
+                                  let statusColor = '#3b82f6'; // Neutral (Blue)
+                                  if (line.status === 'Good') statusColor = '#22c55e'; // Green
+                                  if (line.status === 'Bad') statusColor = '#ef4444'; // Red
+
+                                  return (
+                                    <li key={idx} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                      <span style={{ background: statusColor, color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold' }}>{line.zone}</span>
+                                      <b style={{ color: statusColor }}>{line.planet}</b>
+                                      <span style={{ color: '#475569' }}>- Zone {line.zone} ({line.status})</span>
+                                    </li>
+                                  );
+                                });
+                              })()}
+                            </ul>
+                          </>
+                        ) : (
+                          <p style={{ color: '#475569', marginBottom: '16px', fontSize: '18px', lineHeight: '1.6', fontStyle: 'italic' }}>No prominent lines detected on your forehead.</p>
+                        )
+                      ) : (
+                        <>
+                          <p style={{ color: '#475569', marginBottom: '16px', fontSize: '18px', lineHeight: '1.6' }}>According to ancient sages, there are 7 horizontal lines on the forehead. From the hairline down to the eyebrows, their planetary lords are:</p>
+                          <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                            <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ background: getPlanetColor('Saturn'), color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold' }}>1</span> <b style={{ color: getPlanetColor('Saturn') }}>Saturn (Shani)</b> - Uppermost line</li>
+                            <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ background: getPlanetColor('Jupiter'), color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold' }}>2</span> <b style={{ color: getPlanetColor('Jupiter') }}>Jupiter (Guru)</b> - Second line</li>
+                            <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ background: getPlanetColor('Mars'), color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '18px', fontWeight: 'bold' }}>3</span> <b style={{ color: getPlanetColor('Mars') }}>Mars (Mangal)</b> - Third line</li>
+                            <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ background: getPlanetColor('Sun'), color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '13px', fontWeight: 'bold' }}>4</span> <b style={{ color: getPlanetColor('Sun') }}>Sun (Surya)</b> - Fourth line</li>
+                            <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ background: getPlanetColor('Venus'), color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '13px', fontWeight: 'bold' }}>5</span> <b style={{ color: getPlanetColor('Venus') }}>Venus (Shukra)</b> - Fifth line</li>
+                            <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ background: getPlanetColor('Mercury'), color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '13px', fontWeight: 'bold' }}>6</span> <b style={{ color: getPlanetColor('Mercury') }}>Mercury (Budh)</b> - Sixth line</li>
+                            <li style={{ display: 'flex', alignItems: 'center', gap: '12px' }}><span style={{ background: getPlanetColor('Moon'), color: '#fff', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', justifyContent: 'center', alignItems: 'center', fontSize: '13px', fontWeight: 'bold' }}>7</span> <b style={{ color: getPlanetColor('Moon') }}>Moon (Chandra)</b> - Lowest line</li>
+                          </ul>
+                        </>
+                      )}
+
+                      {/* Legend for planetary colors */}
+                      <div style={{ marginTop: '20px', padding: '12px', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0', fontSize: '13px', color: '#475569' }}>
+                        <b>Color Key:</b>
+                        <span style={{ color: '#22c55e', fontWeight: 'bold', marginLeft: '8px' }}>■ Green</span> (Good/Strong)
+                        <span style={{ color: '#ef4444', fontWeight: 'bold', marginLeft: '8px' }}>■ Red</span> (Bad/Weak)
+                        <span style={{ color: '#3b82f6', fontWeight: 'bold', marginLeft: '8px' }}>■ Blue</span> (Neutral)
+                      </div>
+
+                    </div>
+
+                    {/* Visual Mapping / Zodiac Section */}
+                    <div style={{ flex: '1 1 100%', marginTop: '40px' }}>
+                      <h3 style={{ fontSize: '22px', color: theme.heading, marginBottom: '16px', borderBottom: `2px solid ${theme.borderColor}`, paddingBottom: '8px' }}>Your Facial Astrology Map</h3>
+
+                      {previewUrl ? (
+                        <div style={{ position: 'relative', width: '100%', maxWidth: '550px', margin: '0 auto', borderRadius: '12px', overflow: 'hidden', border: `2px solid ${theme.borderColor}`, boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
+                          <img src={previewUrl} alt="User Face" style={{ width: '100%', height: 'auto', display: 'block' }} />
+
+                          {landmarks ? (
+                            <>
+                              {/* Calculate Forehead Steps for Lalat Rekha */}
+                              {(() => {
+                                // MediaPipe's top-most point (landmark 10) is often too low (mid-upper forehead).
+                                // We extrapolate the true hairline based on the face height (eyebrows to chin).
+                                const ey = landmarks.eyebrows_right.y;
+                                const cy = landmarks.chin.y;
+                                const faceHeight = cy - ey;
+
+                                // Estimate hairline as 55% of the lower face height above the eyebrows
+                                const hy = Math.max(0.02, ey - (faceHeight * 0.55));
+                                const step = (ey - hy) / 8;
+                                const fw = Math.abs(landmarks.cheek_left.x - landmarks.cheek_right.x) * 100;
+                                const rx = landmarks.cheek_right.x * 100; // Viewer's left cheek
+                                const lx = landmarks.cheek_left.x * 100; // Viewer's right cheek
+
+                                return (
+                                  <>
+                                    {/* Dynamic/Static Lalat Rekha Forehead Lines */}
+                                    {landmarks.detected_lines ? landmarks.detected_lines.map((line, index) => (
+                                      <div key={`line-${index}`} style={{ position: 'absolute', top: `${line.y * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * (0.6 + ((line.zone || 1) * 0.05))}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
+                                    )) : (
+                                      <>
+                                        <div style={{ position: 'absolute', top: `${(hy + 1 * step) * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * 0.6}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
+                                        <div style={{ position: 'absolute', top: `${(hy + 2 * step) * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * 0.7}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
+                                        <div style={{ position: 'absolute', top: `${(hy + 3 * step) * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * 0.8}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
+                                        <div style={{ position: 'absolute', top: `${(hy + 4 * step) * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * 0.9}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
+                                        <div style={{ position: 'absolute', top: `${(hy + 5 * step) * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * 0.9}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
+                                        <div style={{ position: 'absolute', top: `${(hy + 6 * step) * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * 0.8}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
+                                        <div style={{ position: 'absolute', top: `${(hy + 7 * step) * 100}%`, left: '50%', transform: 'translateX(-50%)', width: `${fw * 0.7}%`, height: '15px', borderTop: '2px solid rgba(217, 119, 6, 0.7)', borderRadius: '50%' }}></div>
+                                      </>
+                                    )}
+
+                                    {/* Dynamic Planet Labels */}
+                                    {landmarks.detected_lines && landmarks.detected_lines.map((line, index) => {
+                                      const pStyle = {
+                                        Saturn: { color: '#ee6e19ff', fontSize: '16px' },
+                                        Mars: { color: '#ee6e19ff', fontSize: '16px' },
+                                        Venus: { color: 'rgba(47, 16, 223, 1)', fontSize: '20px' },
+                                        Moon: { color: 'hsla(327, 84%, 45%, 1.00)', fontSize: '16px' },
+                                        Jupiter: { color: 'hsla(327, 84%, 45%, 1.00)', fontSize: '11px' },
+                                        Sun: { color: 'hsla(327, 84%, 45%, 1.00)', fontSize: '11px' },
+                                        Mercury: { color: 'hsla(327, 84%, 45%, 1.00)', fontSize: '11px' }
+                                      }[line.planet] || { color: '#ee6e19ff', fontSize: '16px' };
+
+                                      const isLeft = index % 2 === 0;
+                                      if (isLeft) {
+                                        return (
+                                          <div key={`planet-${index}`} style={{ position: 'absolute', top: `${line.y * 100}%`, left: `max(20%, ${rx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}>
+                                            <span style={{ fontSize: pStyle.fontSize, fontWeight: 'medium', color: pStyle.color, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>{line.planet}</span>
+                                            <div style={{ width: '20px', height: '1px', background: pStyle.color, marginLeft: '6px' }}></div>
+                                          </div>
+                                        );
+                                      } else {
+                                        return (
+                                          <div key={`planet-${index}`} style={{ position: 'absolute', top: `${line.y * 100}%`, right: `max(20%, ${100 - lx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}>
+                                            <div style={{ width: '20px', height: '1px', background: pStyle.color, marginRight: '6px' }}></div>
+                                            <span style={{ fontSize: pStyle.fontSize, fontWeight: 'medium', color: pStyle.color, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>{line.planet}</span>
+                                          </div>
+                                        );
+                                      }
+                                    })}
+
+                                    {/* Left Side Static Labels (Fallback Planets & Zodiacs Interleaved) */}
+                                    {!landmarks.detected_lines && (
+                                      <>
+                                        <div style={{ position: 'absolute', top: `${(hy + 1 * step) * 100}%`, left: `max(20%, ${rx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: '#ee6e19ff', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Saturn</span><div style={{ width: '20px', height: '1px', background: 'hsla(327, 84%, 45%, 1.00)', marginLeft: '6px' }}></div></div>
+                                        <div style={{ position: 'absolute', top: `${(hy + 3 * step) * 100}%`, left: `max(20%, ${rx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: '#ee6e19ff', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Mars</span><div style={{ width: '20px', height: '1px', background: 'hsla(327, 84%, 45%, 1.00)', marginLeft: '6px' }}></div></div>
+                                        <div style={{ position: 'absolute', top: `${(hy + 5 * step) * 100}%`, left: `max(20%, ${rx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: 'rgba(47, 16, 223, 1)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Venus</span><div style={{ width: '20px', height: '1px', background: 'hsla(327, 84%, 45%, 1.00)', marginLeft: '6px' }}></div></div>
+                                        <div style={{ position: 'absolute', top: `${(hy + 7 * step) * 100}%`, left: `max(20%, ${rx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: 'hsla(327, 84%, 45%, 1.00)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Moon</span><div style={{ width: '20px', height: '1px', background: 'hsla(327, 84%, 45%, 1.00)', marginLeft: '6px' }}></div></div>
+                                      </>
+                                    )}
+
+                                    <div style={{ position: 'absolute', top: `${(hy + 1.5 * step) * 100}%`, left: `max(2%, ${rx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: '#ee6e19ff', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Taurus</span><div style={{ width: '20px', height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
+                                    <div style={{ position: 'absolute', top: `${(hy + 3.5 * step) * 100}%`, left: `max(2%, ${rx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: '#ee6e19ff', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Virgo</span><div style={{ width: '20px', height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
+                                    <div style={{ position: 'absolute', top: `${(hy + 5.5 * step) * 100}%`, left: `max(2%, ${rx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Sagittarius</span><div style={{ width: '20px', height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
+                                    <div style={{ position: 'absolute', top: `${landmarks.eye_right.y * 100}%`, left: `max(2%, ${rx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Leo</span><div style={{ width: '20px', height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
+                                    <div style={{ position: 'absolute', top: `${landmarks.cheek_right.y * 100}%`, left: `max(2%, ${rx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Libra</span><div style={{ width: '20px', height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
+
+                                    {/* Right Side Static Labels (Fallback Planets & Zodiacs Interleaved) */}
+                                    {!landmarks.detected_lines && (
+                                      <>
+                                        <div style={{ position: 'absolute', top: `${(hy + 2 * step) * 100}%`, right: `max(20%, ${100 - lx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: 'hsla(327, 84%, 45%, 1.00)', marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: 'hsla(327, 84%, 45%, 1.00)', background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Jupiter</span></div>
+                                        <div style={{ position: 'absolute', top: `${(hy + 4 * step) * 100}%`, right: `max(20%, ${100 - lx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: 'hsla(327, 84%, 45%, 1.00)', marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: 'hsla(327, 84%, 45%, 1.00)', background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Sun</span></div>
+                                        <div style={{ position: 'absolute', top: `${(hy + 6 * step) * 100}%`, right: `max(20%, ${100 - lx - 8}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: 'hsla(327, 84%, 45%, 1.00)', marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: 'hsla(327, 84%, 45%, 1.00)', background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Mercury</span></div>
+                                      </>
+                                    )}
+
+                                    <div style={{ position: 'absolute', top: `${(hy + 1.5 * step) * 100}%`, right: `max(2%, ${100 - lx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Cancer</span></div>
+                                    <div style={{ position: 'absolute', top: `${(hy + 3.5 * step) * 100}%`, right: `max(2%, ${100 - lx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Pisces</span></div>
+                                    <div style={{ position: 'absolute', top: `${(hy + 5.5 * step) * 100}%`, right: `max(2%, ${100 - lx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Scorpio</span></div>
+                                    <div style={{ position: 'absolute', top: `${(hy + 7.5 * step) * 100}%`, right: `max(2%, ${100 - lx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Aquarius</span></div>
+                                    <div style={{ position: 'absolute', top: `${landmarks.eye_left.y * 100}%`, right: `max(2%, ${100 - lx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Gemini</span></div>
+                                    <div style={{ position: 'absolute', top: `${landmarks.cheek_left.y * 100}%`, right: `max(2%, ${100 - lx - 25}%)`, display: 'flex', alignItems: 'center', transform: 'translateY(-50%)' }}><div style={{ width: '20px', height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '16px', fontWeight: 'medium', color: theme.text, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Aries</span></div>
+
+                                    {/* Center */}
+                                    <div style={{ position: 'absolute', top: `${landmarks.chin.y * 100}%`, left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}><div style={{ width: '1px', height: '20px', background: theme.text, marginBottom: '4px' }}></div><span style={{ fontSize: '11px', fontWeight: 'bold', color: theme.text, background: 'rgba(255,255,255,0.9)', padding: '2px 6px', borderRadius: '4px', boxShadow: '0 1px 3px rgba(0,0,0,0.2)', whiteSpace: 'nowrap' }}>Capricorn</span></div>
+                                  </>
+                                );
+                              })()}
+                            </>
+                          ) : (
+                            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'rgba(255,255,255,0.9)', padding: '10px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 'bold', color: theme.text, border: `1px solid ${theme.borderColor}` }}>
+                              Click "Analyze Face" to map features
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <>
+                          <p style={{ color: '#475569', marginBottom: '16px', fontSize: '15px', lineHeight: '1.6' }}>Upload your photo to see your personalized facial astrology map! The 12 Zodiac signs govern specific regions of the human face:</p>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '14px', color: '#334155' }}>
+                            <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Taurus:</b> Top Right Forehead</div>
+                            <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Cancer:</b> Top Left Forehead</div>
+                            <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Virgo:</b> Mid Right Forehead</div>
+                            <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Pisces:</b> Upper Left Forehead</div>
+                            <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Sagittarius:</b> Low Right Forehead</div>
+                            <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Scorpio:</b> Mid Left Forehead</div>
+                            <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Leo:</b> Right Eye</div>
+                            <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Aquarius:</b> Low Left Forehead</div>
+                            <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Libra:</b> Right Cheek</div>
+                            <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Gemini:</b> Left Eye</div>
+                            <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Capricorn:</b> Chin</div>
+                            <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Aries:</b> Left Cheek</div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+
+                    {/* Planetary Analysis Section (Full Width) */}
+                    {reading && reading.planetary_strength && (
+                      <div style={{ flex: '1 1 100%', marginTop: '20px', padding: '24px', background: '#fff', borderRadius: '12px', border: `1px solid ${theme.borderColor}`, boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+                        <h4 style={{ fontSize: '20px', color: theme.heading, marginBottom: '16px', fontWeight: 'bold' }}>Planetary Analysis</h4>
+
+                        {reading.planetary_strength.strong && reading.planetary_strength.strong.length > 0 && (
+                          <div style={{ marginBottom: '16px' }}>
+                            <b style={{ color: '#22c55e', fontSize: '18px' }}>Favorable Planets:</b>
+                            <ul style={{ listStyle: 'none', padding: 0, margin: '8px 0 0 0', fontSize: '18px', color: '#475569', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                              {reading.planetary_strength.strong.map((text, i) => (
+                                <li key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                                  <span style={{ color: '#22c55e', marginTop: '2px' }}>■</span> <span>{text}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {reading.planetary_strength.weak && reading.planetary_strength.weak.length > 0 && (
+                          <div>
+                            <b style={{ color: '#ef4444', fontSize: '18px' }}>Challenging Planets:</b>
+                            <ul style={{ listStyle: 'none', padding: 0, margin: '8px 0 0 0', fontSize: '18px', color: '#475569', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                              {reading.planetary_strength.weak.map((text, i) => (
+                                <li key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+                                  <span style={{ color: '#ef4444', marginTop: '2px' }}>■</span> <span>{text}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        <div style={{ marginTop: '16px', fontSize: '18px', color: 'rgba(218, 142, 29, 1)', fontStyle: 'italic', borderTop: `1px solid ${theme.borderColor}`, paddingTop: '12px' }}>
+                          * Planets not listed above are considered neutral and balanced in your reading.
+                        </div>
+                      </div>
+                    )}
                   </div>
-                </>
-              )}
-            </div>
 
-            {/* Planetary Analysis Section (Full Width) */}
-            {reading && reading.planetary_strength && (
-              <div style={{ flex: '1 1 100%', marginTop: '20px', padding: '24px', background: '#fff', borderRadius: '12px', border: `1px solid ${theme.borderColor}`, boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
-                <h4 style={{ fontSize: '20px', color: theme.heading, marginBottom: '16px', fontWeight: 'bold' }}>Planetary Analysis</h4>
+                  {/* Vedic Facial Astrology Guide Section */}
+                  <div style={{ marginTop: '40px', paddingTop: '30px', borderTop: `2px solid ${theme.borderColor}` }}>
 
-                {reading.planetary_strength.strong && reading.planetary_strength.strong.length > 0 && (
-                  <div style={{ marginBottom: '16px' }}>
-                    <b style={{ color: '#22c55e', fontSize: '18px' }}>Favorable Planets:</b>
-                    <ul style={{ listStyle: 'none', padding: 0, margin: '8px 0 0 0', fontSize: '18px', color: '#475569', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {reading.planetary_strength.strong.map((text, i) => (
-                        <li key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                          <span style={{ color: '#22c55e', marginTop: '2px' }}>■</span> <span>{text}</span>
-                        </li>
-                      ))}
-                    </ul>
+
+
+
+                    {/* Key Signs Personalized Output */}
+                    {reading && reading.forehead && (
+                      <div style={{ marginTop: '20px', padding: '20px', background: '#fff', borderRadius: '12px', border: `1px solid ${theme.borderColor}`, boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
+                        <h4 style={{ fontSize: '22px', color: '#a5700eff', marginBottom: '16px', borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '8px', fontWeight: 'bold' }}>Key Signs to Look For in Your Face</h4>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
+                          <div style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', borderLeft: '4px solid rgba(247, 92, 32, 1)' }}>
+                            <strong style={{ color: '#092147ff', fontSize: '18px', display: 'block', marginBottom: '4px' }}>Forehead: {reading.forehead.trait}</strong>
+                            <p style={{ margin: 0, fontSize: '18px', color: '#050704ff', lineHeight: '1.5' }}>{reading.forehead.description}</p>
+                          </div>
+                          <div style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', borderLeft: '4px solid rgba(247, 92, 32, 1)' }}>
+                            <strong style={{ color: '#092147ff', fontSize: '18px', display: 'block', marginBottom: '4px' }}>Eyes: {reading.eyes.trait}</strong>
+                            <p style={{ margin: 0, fontSize: '18px', color: 'hsla(210, 25%, 2%, 1.00)', lineHeight: '1.5' }}>{reading.eyes.description}</p>
+                          </div>
+                          <div style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', borderLeft: '4px solid rgba(247, 92, 32, 1)' }}>
+                            <strong style={{ color: '#1e293b', fontSize: '18px', display: 'block', marginBottom: '4px' }}>Nose: {reading.nose.trait}</strong>
+                            <p style={{ margin: 0, fontSize: '18px', color: 'rgba(0, 0, 0, 1)', lineHeight: '1.5' }}>{reading.nose.description}</p>
+                          </div>
+                          <div style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', borderLeft: '4px solid rgba(247, 92, 32, 1)' }}>
+                            <strong style={{ color: '#1e293b', fontSize: '18px', display: 'block', marginBottom: '4px' }}>Lips: {reading.lips.trait}</strong>
+                            <p style={{ margin: 0, fontSize: '18px', color: 'rgba(0, 0, 0, 1)', lineHeight: '1.5' }}>{reading.lips.description}</p>
+                          </div>
+                          <div style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', borderLeft: '4px solid rgba(247, 92, 32, 1)' }}>
+                            <strong style={{ color: '#1e293b', fontSize: '18px', display: 'block', marginBottom: '4px' }}>Jawline: {reading.jaw.trait}</strong>
+                            <p style={{ margin: 0, fontSize: '18px', color: 'rgba(0, 0, 0, 1)', lineHeight: '1.5' }}>{reading.jaw.description}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                )}
 
-                {reading.planetary_strength.weak && reading.planetary_strength.weak.length > 0 && (
-                  <div>
-                    <b style={{ color: '#ef4444', fontSize: '18px' }}>Challenging Planets:</b>
-                    <ul style={{ listStyle: 'none', padding: 0, margin: '8px 0 0 0', fontSize: '18px', color: '#475569', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                      {reading.planetary_strength.weak.map((text, i) => (
-                        <li key={i} style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
-                          <span style={{ color: '#ef4444', marginTop: '2px' }}>■</span> <span>{text}</span>
-                        </li>
-                      ))}
-                    </ul>
+                  {/* Medical Analysis Section */}
+                  <div style={{ marginTop: '40px', paddingTop: '30px', borderTop: `2px solid ${theme.borderColor}` }}>
+                    <h3 style={{ fontSize: '22px', color: theme.heading, marginBottom: '16px' }}>Medical Analysis</h3>
+
+                    {previewUrl ? (
+                      <div style={{ position: 'relative', width: '100%', maxWidth: '550px', margin: '0 auto', borderRadius: '12px', overflow: 'hidden', border: `2px solid ${theme.borderColor}`, boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
+                        <img src={previewUrl} alt="User Face" style={{ width: '100%', height: 'auto', display: 'block' }} />
+
+                        {landmarks ? (
+                          <>
+                            {/* Viewer's Left Labels */}
+                            <div style={{ position: 'absolute', top: `calc(${landmarks.hair.y * 100}% - 7px - 8%)`, left: '2%', width: `calc(${landmarks.hair.x * 100}% - 2%)`, display: 'flex', alignItems: 'center' }}><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Ketu - Hair</span><div style={{ flex: 1, height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
+
+                            <div style={{ position: 'absolute', top: `calc(${landmarks.eyebrows_right.y * 100}% - 7px)`, left: '2%', width: `calc(${landmarks.eyebrows_right.x * 100}% - 2%)`, display: 'flex', alignItems: 'center' }}><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Mars - Eyebrows</span><div style={{ flex: 1, height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
+
+                            <div style={{ position: 'absolute', top: `calc(${landmarks.eye_right.y * 100}% - 7px)`, left: '2%', width: `calc(${landmarks.eye_right.x * 100}% - 2%)`, display: 'flex', alignItems: 'center' }}><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Sun - Right eye</span><div style={{ flex: 1, height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
+
+                            <div style={{ position: 'absolute', top: `calc(${landmarks.cheek_right.y * 100}% - 7px)`, left: '2%', width: `calc(${landmarks.cheek_right.x * 100}% - 2%)`, display: 'flex', alignItems: 'center' }}><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Venus - Cheeks</span><div style={{ flex: 1, height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
+
+                            <div style={{ position: 'absolute', top: `calc(${landmarks.lower_lip.y * 100}% - 7px)`, left: '2%', width: `calc(${landmarks.lower_lip.x * 100}% - 2%)`, display: 'flex', alignItems: 'center' }}><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Mars - Teeth</span><div style={{ flex: 1, height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
+
+                            {/* Viewer's Right Labels */}
+                            <div style={{ position: 'absolute', top: `calc(${landmarks.forehead.y * 100}% - 7px)`, left: `${landmarks.forehead.x * 100}%`, width: `calc(98% - ${landmarks.forehead.x * 100}%)`, display: 'flex', alignItems: 'center' }}><div style={{ flex: 1, height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Mercury - Forehead</span></div>
+
+                            <div style={{ position: 'absolute', top: `calc(${landmarks.eye_left.y * 100}% - 7px - 2%)`, left: `${landmarks.eye_left.x * 100}%`, width: `calc(98% - ${landmarks.eye_left.x * 100}%)`, display: 'flex', alignItems: 'center' }}><div style={{ flex: 1, height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Moon - Left Eye</span></div>
+
+                            <div style={{ position: 'absolute', top: `calc(${landmarks.ear_left.y * 100}% - 7px + 4%)`, left: `${landmarks.ear_left.x * 100}%`, width: `calc(98% - ${landmarks.ear_left.x * 100}%)`, display: 'flex', alignItems: 'center' }}><div style={{ flex: 1, height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Rahu - Ears</span></div>
+
+                            <div style={{ position: 'absolute', top: `calc(${landmarks.nose.y * 100}% - 7px)`, left: `${landmarks.nose.x * 100}%`, width: `calc(98% - ${landmarks.nose.x * 100}%)`, display: 'flex', alignItems: 'center' }}><div style={{ flex: 1, height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Jupiter - Nose</span></div>
+
+                            <div style={{ position: 'absolute', top: `calc(${landmarks.upper_lip.y * 100}% - 7px)`, left: `${landmarks.upper_lip.x * 100}%`, width: `calc(98% - ${landmarks.upper_lip.x * 100}%)`, display: 'flex', alignItems: 'center' }}><div style={{ flex: 1, height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Rahu - Mouth-Lips</span></div>
+
+                            {/* Chin */}
+                            <div style={{ position: 'absolute', top: `${landmarks.chin.y * 100}%`, left: `${landmarks.chin.x * 100}%`, transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}><div style={{ width: '1px', height: '20px', background: theme.text, marginBottom: '4px' }}></div><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Saturn - Chin</span></div>
+                          </>
+                        ) : (
+                          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'rgba(255,255,255,0.9)', padding: '10px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 'bold', color: theme.text, border: `1px solid ${theme.borderColor}` }}>
+                            Click "Analyze Face" to map features
+                          </div>
+                        )}
+                      </div>
+                    ) : (
+                      <>
+                        <p style={{ color: '#475569', marginBottom: '16px', fontSize: '15px', lineHeight: '1.6' }}>Upload your photo to see your personalized medical facial astrology map! Different planets govern specific parts of the face:</p>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '14px', color: 'rgba(247, 92, 32, 1)' }}>
+                          <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Ketu:</b> Hair</div>
+                          <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Mercury:</b> Forehead</div>
+                          <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Moon:</b> Left Eye</div>
+                          <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Sun:</b> Right Eye</div>
+                          <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Mars:</b> Eyebrows & Teeth</div>
+                          <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Rahu:</b> Ears & Mouth-Lips</div>
+                          <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Venus:</b> Cheeks</div>
+                          <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Jupiter:</b> Nose</div>
+                          <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Saturn:</b> Chin</div>
+                        </div>
+                      </>
+                    )}
+
+                    {/* Personalized Health Precautions */}
+                    {reading && reading.planetary_strength && reading.planetary_strength.weak && (
+                      <div style={{ marginTop: '30px', padding: '20px', background: reading.planetary_strength.weak.length > 0 ? '#fff1f2' : '#f0fdf4', borderRadius: '12px', border: `1px solid ${reading.planetary_strength.weak.length > 0 ? theme.borderColor : '#bbf7d0'}` }}>
+                        <h4 style={{ fontSize: '18px', color: reading.planetary_strength.weak.length > 0 ? '#991b1b' : '#166534', marginBottom: '16px', fontWeight: 'bold' }}>
+                          {reading.planetary_strength.weak.length > 0 ? '⚠️ Personalized Health Alerts (Weak Planets)' : '✅ Excellent Health Status'}
+                        </h4>
+
+                        {reading.planetary_strength.weak.length > 0 ? (
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                            {reading.planetary_strength.weak.map((planet, idx) => {
+                              const insight = getMedicalInsight(planet);
+                              if (!insight) return null;
+                              return (
+                                <div key={idx} style={{ background: '#fff', padding: '15px', borderRadius: '8px', borderLeft: '4px solid #ef4444', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
+                                  <p style={{ fontSize: '18px', color: 'rgba(0, 0, 0, 1)', marginBottom: '6px' }}><strong>Vulnerable to:</strong> {insight.diseases}</p>
+                                  <p style={{ fontSize: '18px', color: '#166534', margin: 0 }}><strong>Precaution/Remedy:</strong> {insight.precautions}</p>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ) : (
+                          <div style={{ background: '#fff', padding: '15px', borderRadius: '8px', borderLeft: '4px solid #16a34a', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
+                            <p style={{ fontSize: '16px', color: '#1e293b', margin: 0, fontWeight: '500' }}>You Have Balanced Planets, No Major Diseases Detected.</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
-                )}
-
-                <div style={{ marginTop: '16px', fontSize: '18px', color: 'rgba(218, 142, 29, 1)', fontStyle: 'italic', borderTop: `1px solid ${theme.borderColor}`, paddingTop: '12px' }}>
-                  * Planets not listed above are considered neutral and balanced in your reading.
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Vedic Facial Astrology Guide Section */}
-          <div style={{ marginTop: '40px', paddingTop: '30px', borderTop: `2px solid ${theme.borderColor}` }}>
-
-
-
-
-            {/* Key Signs Personalized Output */}
-            {reading && reading.forehead && (
-              <div style={{ marginTop: '20px', padding: '20px', background: '#fff', borderRadius: '12px', border: `1px solid ${theme.borderColor}`, boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
-                <h4 style={{ fontSize: '22px', color: '#a5700eff', marginBottom: '16px', borderBottom: `1px solid ${theme.borderColor}`, paddingBottom: '8px', fontWeight: 'bold' }}>Key Signs to Look For in Your Face</h4>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
-                  <div style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', borderLeft: '4px solid rgba(247, 92, 32, 1)' }}>
-                    <strong style={{ color: '#092147ff', fontSize: '18px', display: 'block', marginBottom: '4px' }}>Forehead: {reading.forehead.trait}</strong>
-                    <p style={{ margin: 0, fontSize: '18px', color: '#050704ff', lineHeight: '1.5' }}>{reading.forehead.description}</p>
-                  </div>
-                  <div style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', borderLeft: '4px solid rgba(247, 92, 32, 1)' }}>
-                    <strong style={{ color: '#092147ff', fontSize: '18px', display: 'block', marginBottom: '4px' }}>Eyes: {reading.eyes.trait}</strong>
-                    <p style={{ margin: 0, fontSize: '18px', color: 'hsla(210, 25%, 2%, 1.00)', lineHeight: '1.5' }}>{reading.eyes.description}</p>
-                  </div>
-                  <div style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', borderLeft: '4px solid rgba(247, 92, 32, 1)' }}>
-                    <strong style={{ color: '#1e293b', fontSize: '18px', display: 'block', marginBottom: '4px' }}>Nose: {reading.nose.trait}</strong>
-                    <p style={{ margin: 0, fontSize: '18px', color: 'rgba(0, 0, 0, 1)', lineHeight: '1.5' }}>{reading.nose.description}</p>
-                  </div>
-                  <div style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', borderLeft: '4px solid rgba(247, 92, 32, 1)' }}>
-                    <strong style={{ color: '#1e293b', fontSize: '18px', display: 'block', marginBottom: '4px' }}>Lips: {reading.lips.trait}</strong>
-                    <p style={{ margin: 0, fontSize: '18px', color: 'rgba(0, 0, 0, 1)', lineHeight: '1.5' }}>{reading.lips.description}</p>
-                  </div>
-                  <div style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', borderLeft: '4px solid rgba(247, 92, 32, 1)' }}>
-                    <strong style={{ color: '#1e293b', fontSize: '18px', display: 'block', marginBottom: '4px' }}>Jawline: {reading.jaw.trait}</strong>
-                    <p style={{ margin: 0, fontSize: '18px', color: 'rgba(0, 0, 0, 1)', lineHeight: '1.5' }}>{reading.jaw.description}</p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Medical Analysis Section */}
-          <div style={{ marginTop: '40px', paddingTop: '30px', borderTop: `2px solid ${theme.borderColor}` }}>
-            <h3 style={{ fontSize: '22px', color: theme.heading, marginBottom: '16px' }}>Medical Analysis</h3>
-
-            {previewUrl ? (
-              <div style={{ position: 'relative', width: '100%', maxWidth: '550px', margin: '0 auto', borderRadius: '12px', overflow: 'hidden', border: `2px solid ${theme.borderColor}`, boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }}>
-                <img src={previewUrl} alt="User Face" style={{ width: '100%', height: 'auto', display: 'block' }} />
-
-                {landmarks ? (
-                  <>
-                    {/* Viewer's Left Labels */}
-                    <div style={{ position: 'absolute', top: `calc(${landmarks.hair.y * 100}% - 7px - 8%)`, left: '2%', width: `calc(${landmarks.hair.x * 100}% - 2%)`, display: 'flex', alignItems: 'center' }}><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Ketu - Hair</span><div style={{ flex: 1, height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
-
-                    <div style={{ position: 'absolute', top: `calc(${landmarks.eyebrows_right.y * 100}% - 7px)`, left: '2%', width: `calc(${landmarks.eyebrows_right.x * 100}% - 2%)`, display: 'flex', alignItems: 'center' }}><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Mars - Eyebrows</span><div style={{ flex: 1, height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
-
-                    <div style={{ position: 'absolute', top: `calc(${landmarks.eye_right.y * 100}% - 7px)`, left: '2%', width: `calc(${landmarks.eye_right.x * 100}% - 2%)`, display: 'flex', alignItems: 'center' }}><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Sun - Right eye</span><div style={{ flex: 1, height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
-
-                    <div style={{ position: 'absolute', top: `calc(${landmarks.cheek_right.y * 100}% - 7px)`, left: '2%', width: `calc(${landmarks.cheek_right.x * 100}% - 2%)`, display: 'flex', alignItems: 'center' }}><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Venus - Cheeks</span><div style={{ flex: 1, height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
-
-                    <div style={{ position: 'absolute', top: `calc(${landmarks.lower_lip.y * 100}% - 7px)`, left: '2%', width: `calc(${landmarks.lower_lip.x * 100}% - 2%)`, display: 'flex', alignItems: 'center' }}><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Mars - Teeth</span><div style={{ flex: 1, height: '1px', background: theme.text, marginLeft: '6px' }}></div></div>
-
-                    {/* Viewer's Right Labels */}
-                    <div style={{ position: 'absolute', top: `calc(${landmarks.forehead.y * 100}% - 7px)`, left: `${landmarks.forehead.x * 100}%`, width: `calc(98% - ${landmarks.forehead.x * 100}%)`, display: 'flex', alignItems: 'center' }}><div style={{ flex: 1, height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Mercury - Forehead</span></div>
-
-                    <div style={{ position: 'absolute', top: `calc(${landmarks.eye_left.y * 100}% - 7px - 2%)`, left: `${landmarks.eye_left.x * 100}%`, width: `calc(98% - ${landmarks.eye_left.x * 100}%)`, display: 'flex', alignItems: 'center' }}><div style={{ flex: 1, height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Moon - Left Eye</span></div>
-
-                    <div style={{ position: 'absolute', top: `calc(${landmarks.ear_left.y * 100}% - 7px + 4%)`, left: `${landmarks.ear_left.x * 100}%`, width: `calc(98% - ${landmarks.ear_left.x * 100}%)`, display: 'flex', alignItems: 'center' }}><div style={{ flex: 1, height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Rahu - Ears</span></div>
-
-                    <div style={{ position: 'absolute', top: `calc(${landmarks.nose.y * 100}% - 7px)`, left: `${landmarks.nose.x * 100}%`, width: `calc(98% - ${landmarks.nose.x * 100}%)`, display: 'flex', alignItems: 'center' }}><div style={{ flex: 1, height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Jupiter - Nose</span></div>
-
-                    <div style={{ position: 'absolute', top: `calc(${landmarks.upper_lip.y * 100}% - 7px)`, left: `${landmarks.upper_lip.x * 100}%`, width: `calc(98% - ${landmarks.upper_lip.x * 100}%)`, display: 'flex', alignItems: 'center' }}><div style={{ flex: 1, height: '1px', background: theme.text, marginRight: '6px' }}></div><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Rahu - Mouth-Lips</span></div>
-
-                    {/* Chin */}
-                    <div style={{ position: 'absolute', top: `${landmarks.chin.y * 100}%`, left: `${landmarks.chin.x * 100}%`, transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center' }}><div style={{ width: '1px', height: '20px', background: theme.text, marginBottom: '4px' }}></div><span style={{ fontSize: '18px', fontWeight: 'bold', color: 'rgba(18, 15, 172, 1)', whiteSpace: 'nowrap', textShadow: '0 0 4px white, 0 0 4px white' }}>Saturn - Chin</span></div>
-                  </>
-                ) : (
-                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', background: 'rgba(255,255,255,0.9)', padding: '10px 20px', borderRadius: '8px', fontSize: '14px', fontWeight: 'bold', color: theme.text, border: `1px solid ${theme.borderColor}` }}>
-                    Click "Analyze Face" to map features
-                  </div>
-                )}
-              </div>
-            ) : (
-              <>
-                <p style={{ color: '#475569', marginBottom: '16px', fontSize: '15px', lineHeight: '1.6' }}>Upload your photo to see your personalized medical facial astrology map! Different planets govern specific parts of the face:</p>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', fontSize: '14px', color: 'rgba(247, 92, 32, 1)' }}>
-                  <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Ketu:</b> Hair</div>
-                  <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Mercury:</b> Forehead</div>
-                  <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Moon:</b> Left Eye</div>
-                  <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Sun:</b> Right Eye</div>
-                  <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Mars:</b> Eyebrows & Teeth</div>
-                  <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Rahu:</b> Ears & Mouth-Lips</div>
-                  <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Venus:</b> Cheeks</div>
-                  <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Jupiter:</b> Nose</div>
-                  <div style={{ background: '#fff1f2', padding: '10px', borderRadius: '8px', border: `1px solid ${theme.borderColor}` }}><b>Saturn:</b> Chin</div>
                 </div>
               </>
             )}
 
-            {/* Personalized Health Precautions */}
-            {reading && reading.planetary_strength && reading.planetary_strength.weak && (
-              <div style={{ marginTop: '30px', padding: '20px', background: reading.planetary_strength.weak.length > 0 ? '#fff1f2' : '#f0fdf4', borderRadius: '12px', border: `1px solid ${reading.planetary_strength.weak.length > 0 ? theme.borderColor : '#bbf7d0'}` }}>
-                <h4 style={{ fontSize: '18px', color: reading.planetary_strength.weak.length > 0 ? '#991b1b' : '#166534', marginBottom: '16px', fontWeight: 'bold' }}>
-                  {reading.planetary_strength.weak.length > 0 ? '⚠️ Personalized Health Alerts (Weak Planets)' : '✅ Excellent Health Status'}
-                </h4>
+            {/* DETAILED VEDIC ANALYSIS TAB CONTENT */}
+            {activeTab === 'detailed' && reading.detailed && (
+              <div style={{ marginTop: '10px', padding: '20px', background: '#fff', borderRadius: '12px', border: `1px solid ${theme.borderColor}`, boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
 
-                {reading.planetary_strength.weak.length > 0 ? (
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                    {reading.planetary_strength.weak.map((planet, idx) => {
-                      const insight = getMedicalInsight(planet);
-                      if (!insight) return null;
+                {/* Cosmic Alignment (Synthesis Report) */}
+                {synthesisReport && !synthesisReport.error && (
+                  <div style={{ marginBottom: '30px', padding: '20px', background: 'linear-gradient(135deg, #fdf4ff, #fae8ff)', borderRadius: '12px', border: '1px solid #f0abfc' }}>
+                    <h3 style={{ fontSize: '26px', color: '#86198f', margin: '0 0 16px 0', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{ fontSize: '28px' }}>🌌</span> Cosmic Alignment: Birth Chart vs. Face
+                    </h3>
+                    <p style={{ fontSize: '20px', color: '#000000ff', lineHeight: '1.6', marginBottom: '20px' }}>
+                      Your Ascendant (Lagna) is <strong>{synthesisReport.ascendant}</strong>. By cross-referencing your astrological birth chart with your real-time facial geometry, we have synthesized the following deep insights about how your natal energies have physically manifested:
+                    </p>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '15px' }}>
+                      {synthesisReport.insights.map((insight, idx) => (
+                        <div key={idx} style={{ background: 'rgba(255, 255, 255, 0.7)', padding: '15px', borderRadius: '8px', borderLeft: '4px solid #c026d3' }}>
+                          <strong style={{ fontSize: '20px', color: '#701a75', display: 'block', marginBottom: '6px' }}>{insight.title}</strong>
+                          <p style={{ margin: 0, fontSize: '20px', color: 'rgba(0, 0, 0, 1)', lineHeight: '1.6' }}>{insight.description}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Detailed Facial Features Section */}
+                {reading && reading.detailed && reading.detailed.deep_dive_modules && (
+                  <div style={{ marginBottom: '30px' }}>
+                    <h3 style={{ fontSize: '24px', color: theme.heading, marginBottom: '16px', borderBottom: `2px solid ${theme.borderColor}`, paddingBottom: '8px' }}>Facial Features Deep Dive</h3>
+
+                    <div style={{ marginBottom: '20px', padding: '15px', background: '#fdf8f6', borderRadius: '8px', borderLeft: '4px solid #f97316' }}>
+                      <h4 style={{ margin: '0 0 8px 0', color: '#c2410c', fontSize: '18px' }}>The Science of Samudrika Shastra</h4>
+                      <p style={{ margin: 0, fontSize: '18px', color: '#431407', lineHeight: '1.6' }}>
+                        In Vedic Astrology, the planets represent specific energies that manifest physically in your body. By measuring the geometric proportions of your face, this tool identifies which planetary effects are dominant or challenged. The entire analysis below (from Career to Core Nature) is 100% uniquely generated by mapping your real-time physical features directly to their corresponding planetary rulers!
+                      </p>
+                    </div>
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px' }}>
+                      {reading.detailed.deep_dive_modules.map((mod, idx) => (
+                        <div key={idx} style={{ background: '#f8fafc', padding: '18px', borderRadius: '10px', borderLeft: `4px solid ${theme.heading}`, boxShadow: '0 2px 10px rgba(0,0,0,0.02)', display: 'flex', flexDirection: 'column' }}>
+                          <strong style={{ fontSize: '20px', color: '#1e293b', display: 'block', marginBottom: '4px' }}>{mod.module_name}: {mod.detected_value}</strong>
+                          <span style={{ fontSize: '20px', color: '#9f1239', fontWeight: 'bold', display: 'block', marginBottom: '12px', background: '#ffe4e6', padding: '4px 8px', borderRadius: '4px', alignSelf: 'flex-start' }}>{mod.planet}</span>
+                          <p style={{ margin: 0, fontSize: '20px', color: 'rgba(0, 0, 0, 1)', lineHeight: '1.6', flex: 1 }}>{mod.description}</p>
+                          <div style={{ marginTop: '12px', paddingTop: '10px', borderTop: '1px solid #cbd5e1' }}>
+                            <span style={{ fontSize: '20px', color: 'rgba(0, 0, 0, 1)', fontStyle: 'italic' }}><strong>Theme:</strong> {mod.theme}</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Personality Section */}
+                <div style={{ marginBottom: '30px' }}>
+                  <h3 style={{ fontSize: '24px', color: theme.heading, marginBottom: '16px', borderBottom: `2px solid ${theme.borderColor}`, paddingBottom: '8px' }}>Personality & Core Nature</h3>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '20px', fontSize: '20px', color: '#1e293b', lineHeight: '1.6' }}>
+                    {reading.detailed.coreNature.map((item, idx) => (
+                      <li key={idx} style={{ marginBottom: '8px' }}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                {/* Career Section */}
+                <div style={{ marginBottom: '30px' }}>
+                  <h3 style={{ fontSize: '24px', color: theme.heading, marginBottom: '16px', borderBottom: `2px solid ${theme.borderColor}`, paddingBottom: '8px' }}>Career Tendencies</h3>
+                  <div style={{ display: 'grid', gap: '20px' }}>
+                    {reading.detailed.career.map((career, idx) => {
+                      const careerDescriptions = {
+                        "Leadership": "Your natural ability to manage teams, take charge, and guide others.",
+                        "Communication": "How effectively you articulate ideas, negotiate, and connect with people.",
+                        "Creativity": "Your capacity for out-of-the-box thinking, design, and artistic expression.",
+                        "Analysis": "Your aptitude for logical problem-solving, data, and critical thinking.",
+                        "Entrepreneurship": "Your drive to start new ventures, take calculated risks, and build businesses.",
+                        "Public-facing": "Your comfort and charisma when dealing with crowds, public speaking, or clients."
+                      };
                       return (
-                        <div key={idx} style={{ background: '#fff', padding: '15px', borderRadius: '8px', borderLeft: '4px solid #ef4444', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
-                          <p style={{ fontSize: '18px', color: 'rgba(0, 0, 0, 1)', marginBottom: '6px' }}><strong>Vulnerable to:</strong> {insight.diseases}</p>
-                          <p style={{ fontSize: '18px', color: '#166534', margin: 0 }}><strong>Precaution/Remedy:</strong> {insight.precautions}</p>
+                        <div key={idx} style={{ display: 'flex', flexDirection: 'column', background: '#f8fafc', padding: '15px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                            <span style={{ width: '150px', fontSize: '18px', fontWeight: 'bold', color: '#334155' }}>{career.label}</span>
+                            <div style={{ flex: 1, background: '#e2e8f0', height: '14px', borderRadius: '7px', overflow: 'hidden', margin: '0 15px' }}>
+                              <div style={{ width: `${career.score}%`, background: theme.heading, height: '100%', borderRadius: '7px', transition: 'width 1s ease-out' }}></div>
+                            </div>
+                            <span style={{ fontSize: '18px', color: '#0f172a', fontWeight: 'bold', width: '45px', textAlign: 'right' }}>{career.score}%</span>
+                          </div>
+                          <p style={{ margin: '4px 0 0 0', fontSize: '18px', color: '#000000ff', fontStyle: 'italic', paddingLeft: '165px' }}>
+                            {careerDescriptions[career.label] || "Your aptitude in this specific career dimension."}
+                          </p>
                         </div>
                       );
                     })}
                   </div>
-                ) : (
-                  <div style={{ background: '#fff', padding: '15px', borderRadius: '8px', borderLeft: '4px solid #16a34a', boxShadow: '0 2px 5px rgba(0,0,0,0.05)' }}>
-                    <p style={{ fontSize: '16px', color: '#1e293b', margin: 0, fontWeight: '500' }}>You Have Balanced Planets, No Major Diseases Detected.</p>
+                </div>
+
+                {/* Finance Section */}
+                <div style={{ marginBottom: '30px' }}>
+                  <h3 style={{ fontSize: '24px', color: theme.heading, marginBottom: '16px', borderBottom: `2px solid ${theme.borderColor}`, paddingBottom: '8px' }}>Finance</h3>
+                  <p style={{ fontSize: '20px', color: '#1e293b', lineHeight: '1.6', margin: 0 }}>{reading.detailed.finance}</p>
+                </div>
+
+                {/* Relationships & Marriage Section */}
+                <div style={{ marginBottom: '30px' }}>
+                  <h3 style={{ fontSize: '24px', color: theme.heading, marginBottom: '16px', borderBottom: `2px solid ${theme.borderColor}`, paddingBottom: '8px' }}>Relationships & Marriage</h3>
+                  <div style={{ background: '#f8fafc', padding: '15px', borderRadius: '8px', borderLeft: '4px solid #3b82f6' }}>
+                    <p style={{ fontSize: '20px', color: '#1e293b', lineHeight: '1.6', margin: 0 }}>
+                      <Info size={16} style={{ display: 'inline', marginRight: '6px', verticalAlign: 'text-bottom', color: '#3b82f6' }} />
+                      {reading.detailed.marriage}
+                    </p>
                   </div>
-                )}
+                </div>
+
+                {/* Strengths and Challenges */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginBottom: '30px' }}>
+                  <div style={{ background: '#f0fdf4', padding: '20px', borderRadius: '12px', border: '1px solid #bbf7d0' }}>
+                    <h4 style={{ fontSize: '20px', color: '#166534', marginBottom: '12px' }}>Traditional Strengths</h4>
+                    <ol style={{ paddingLeft: '20px', fontSize: '20px', color: '#1e293b', lineHeight: '1.6', margin: 0 }}>
+                      {reading.detailed.strengths.map((str, idx) => (
+                        <li key={idx} style={{ marginBottom: '8px' }}>{str}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div style={{ background: '#fff1f2', padding: '20px', borderRadius: '12px', border: '1px solid #fecaca' }}>
+                    <h4 style={{ fontSize: '20px', color: '#991b1b', marginBottom: '12px' }}>Potential Challenges</h4>
+                    <ol style={{ paddingLeft: '20px', fontSize: '20px', color: '#1e293b', lineHeight: '1.6', margin: 0 }}>
+                      {reading.detailed.challenges.map((ch, idx) => (
+                        <li key={idx} style={{ marginBottom: '8px' }}>{ch}</li>
+                      ))}
+                    </ol>
+                  </div>
+                </div>
+
+                {/* Remedies Section */}
+                <div style={{ marginBottom: '20px' }}>
+                  <h3 style={{ fontSize: '24px', color: theme.heading, marginBottom: '16px', borderBottom: `2px solid ${theme.borderColor}`, paddingBottom: '8px' }}>Traditional Remedies</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {reading.detailed.remedies.map((remedy, idx) => (
+                      <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', background: '#f8fafc', padding: '15px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+                        <span style={{ fontSize: '20px', marginRight: '12px' }}>✨</span>
+                        <div>
+                          <strong style={{ display: 'block', fontSize: '20px', color: '#0f172a', marginBottom: '4px' }}>For {remedy.theme}:</strong>
+                          <span style={{ fontSize: '20px', color: '#000000ff' }}>{remedy.action}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
               </div>
             )}
-          </div>
 
-        </div>
+          </div>
+        )}
       </div>
+
       <style>{`
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(20px); }
