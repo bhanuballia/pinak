@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { getSearchOptions } from "../utils/searchConfig";
 import PlaceAutocomplete from "../components/PlaceAutocomplete";
 import ReportPreview from "../components/ReportPreview";
 import LanguageSwitcher from "../components/LanguageSwitcher";
@@ -39,6 +40,8 @@ export default function GenerateReport() {
   const [reportSuccess, setReportSuccess] = useState(false);
   const [showWelcomePoster, setShowWelcomePoster] = useState(true);
   const [onlyNameAndDate, setOnlyNameAndDate] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showSearchResults, setShowSearchResults] = useState(false);
 
   // MongoDB state
   const [savedProfiles, setSavedProfiles] = useState([]);
@@ -730,11 +733,49 @@ export default function GenerateReport() {
       loc: latLon?.display_name || ''
     });
     const win = window.open(`/?${params.toString()}`, 'RemedyViewer', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-    if (win) win.focus();
+  };
+
+  // Sync reportData with localStorage so global search can access it
+  useEffect(() => {
+    if (reportData) {
+      localStorage.setItem('worksheetData', JSON.stringify(reportData));
+    }
+  }, [reportData]);
+
+  const searchOptions = getSearchOptions(setError);
+
+  const filteredSearchOptions = searchQuery.trim()
+    ? searchOptions.filter(opt => {
+      const query = searchQuery.toLowerCase();
+      return opt.label.toLowerCase().includes(query) || opt.keywords.some(k => k.toLowerCase().includes(query));
+    })
+    : [];
+
+  const handleSearchSubmit = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (filteredSearchOptions.length > 0) {
+        filteredSearchOptions[0].action();
+        setSearchQuery("");
+        setShowSearchResults(false);
+      }
+    }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6 relative">
+    <div className="min-h-screen bg-gray-50 p-6  relative">
+      {/* Decorative Side Images */}
+      <img
+        src="/deities/bananatree.jpeg"
+        alt="Banana Tree Left"
+        className="hidden xl:block absolute left-4 2xl:left-16 top-1/4 w-48 2xl:w-72 h-auto object-contain rounded-3xl shadow-[0_0_40px_rgba(251,146,60,0.3)] mix-blend-multiply z-0"
+      />
+      <img
+        src="/deities/bananatree.jpeg"
+        alt="Banana Tree Right"
+        className="hidden xl:block absolute right-4 2xl:right-16 top-1/4 w-48 2xl:w-72 h-auto object-contain rounded-3xl shadow-[0_0_40px_rgba(251,146,60,0.3)] mix-blend-multiply z-0"
+      />
+
       {/* Welcome Poster Modal */}
       {showWelcomePoster && (
         <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-in fade-in duration-300">
@@ -778,6 +819,25 @@ export default function GenerateReport() {
         </div>
       )}
 
+      {/* Loading Modal with Video */}
+      {isSubmitting && (
+        <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center bg-slate-950/90 backdrop-blur-md transition-all duration-300">
+          <video
+            src="/deities/navgrah.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="w-72 h-72 object-cover rounded-full shadow-[0_0_80px_rgba(251,146,60,0.4)] border-[6px] border-orange-500/30"
+          />
+          <h2 className="mt-8 text-3xl font-black font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-orange-300 to-amber-500 tracking-widest animate-pulse">
+            {t('generating_kundali', 'CONSULTING THE STARS...')}
+          </h2>
+          <p className="mt-3 text-orange-200/60 text-lg font-medium tracking-wide uppercase text-center max-w-md">
+            Please wait while we mathematically generate your Vedic Astrology profile
+          </p>
+        </div>
+      )}
       {/* Success Toast */}
       {reportSuccess && (
         <div className="fixed top-6 left-1/2 -translate-x-1/2 z-[9999] animate-bounce">
@@ -844,7 +904,7 @@ export default function GenerateReport() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <label className="col-span-1">
-              <div className="text-sm text-gray-600">{t('full_name')}</div>
+              <div className="text-[18px] font-medium text-orange-900">{t('full_name')}</div>
               <input
                 className="mt-1 w-full border rounded p-2"
                 value={name}
@@ -854,7 +914,7 @@ export default function GenerateReport() {
             </label>
 
             <label>
-              <div className="text-sm text-gray-600">{t('gender')}</div>
+              <div className="text-[18px] font-medium text-orange-900">{t('gender')}</div>
               <select
                 className="mt-1 w-full border rounded p-2"
                 value={gender}
@@ -867,7 +927,7 @@ export default function GenerateReport() {
             </label>
 
             <label>
-              <div className="text-sm text-gray-600">{t('date_of_birth')}</div>
+              <div className="text-[18px] font-medium text-orange-900">{t('date_of_birth')}</div>
               <input
                 type="date"
                 className="mt-1 w-full border rounded p-2"
@@ -877,22 +937,49 @@ export default function GenerateReport() {
             </label>
 
             {!onlyNameAndDate && (
-              <label>
-                <div className="text-sm text-gray-600">{t('time_of_birth')}</div>
-                <input
-                  type="time"
-                  className="mt-1 w-full border rounded p-2"
-                  value={time}
-                  onChange={(e) => setTime(e.target.value)}
-                />
-              </label>
+              <>
+                <label>
+                  <div className="text-[18px] font-medium text-orange-900">{t('time_of_birth', 'Time of Birth')}</div>
+                  <input
+                    type="time"
+                    className="mt-1 w-full border rounded p-2"
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                  />
+                </label>
+
+                <label>
+                  <div className="text-[18px] font-medium text-orange-900">Timezone Offset (hrs)</div>
+                  <input
+                    type="number"
+                    step="0.5"
+                    className="mt-1 w-full border rounded p-2"
+                    value={tzOffset}
+                    onChange={(e) => setTzOffset(parseFloat(e.target.value))}
+                  />
+                </label>
+
+                <label>
+                  <div className="text-[18px] font-medium text-orange-900">Timezone (override)</div>
+                  <select
+                    className="mt-1 w-full border rounded p-2"
+                    value={customTimezone}
+                    onChange={(e) => setCustomTimezone(e.target.value)}
+                  >
+                    <option value="">Auto-detect from location</option>
+                    {timezones && timezones.map((tz, idx) => (
+                      <option key={idx} value={tz.name}>{tz.name}</option>
+                    ))}
+                  </select>
+                </label>
+              </>
             )}
           </div>
 
           {!onlyNameAndDate && (
             <>
               <div>
-                <div className="text-sm text-gray-600">{t('birth_place')}</div>
+                <div className="text-[18px] font-medium  text-orange-900">{t('birth_place')}</div>
                 <PlaceAutocomplete value={latLon?.display_name || ""} onSelect={onPlaceSelected} />
                 {latLon && (
                   <div className="mt-2 text-xs text-gray-500 space-y-1">
@@ -912,71 +999,15 @@ export default function GenerateReport() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                <label>
-                  <div className="text-sm text-gray-600">{t('timezone_offset')}</div>
-                  <input
-                    type="number"
-                    step="0.25"
-                    className="mt-1 w-full border rounded p-2"
-                    value={tzOffset}
-                    onChange={(e) => setTzOffset(parseFloat(e.target.value))}
-                  />
-                </label>
 
-                <label className="md:col-span-2">
-                  <div className="text-sm text-gray-600">{t('timezone_override')}</div>
-                  <select
-                    className="mt-1 w-full border rounded p-2"
-                    value={customTimezone}
-                    onChange={handleTimezoneSelect}
-                    disabled={timezonesLoading || !timezones.length}
-                  >
-                    <option value="">
-                      {timezonesLoading
-                        ? t('loading_timezones')
-                        : timezones.length
-                          ? t('select_timezone')
-                          : t('timezone_unavailable')}
-                    </option>
-                    {timezones.map((tz) => (
-                      <option key={tz.name} value={tz.name}>
-                        {tz.name}
-                        {typeof tz.tz_offset_hours === "number"
-                          ? ` (${formatOffset(tz.tz_offset_hours)})`
-                          : ""}
-                      </option>
-                    ))}
-                  </select>
-                  {timezonesError && <div className="text-xs text-red-500 mt-1">{timezonesError}</div>}
-                </label>
+
+
               </div>
             </>
           )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <label>
-              <div className="text-sm text-gray-600">{t('report_style')}</div>
-              <select
-                value={style}
-                onChange={(e) => setStyle(e.target.value)}
-                className="mt-1 w-full border rounded p-2"
-              >
-                <option value="minimal">{t('minimal_report')}</option>
-                <option value="premium">{t('premium_report')}</option>
-              </select>
-            </label>
 
-            <label>
-              <div className="text-sm text-gray-600">{t('language')}</div>
-              <select
-                value={languageMode}
-                onChange={(e) => setLanguageMode(e.target.value)}
-                className="mt-1 w-full border rounded p-2"
-              >
-                <option value="english">{t('english_default', 'English (Default)')}</option>
-                <option value="hi">{t('hindi', 'Hindi (Native)')}</option>
-              </select>
-            </label>
           </div>
 
           {error && <div className="text-red-600">{error}</div>}
@@ -985,20 +1016,76 @@ export default function GenerateReport() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:opacity-60"
+              className="bg-indigo-600 text-[22px] text-white px-4 py-2 rounded hover:bg-indigo-700 disabled:opacity-60"
             >
-              {isSubmitting ? t('generating', 'Generating...') : t('generate_pdf', 'Generate & Download PDF')}
+              {isSubmitting ? t('generating', 'Generating...') : t('generate_kundali', 'Generate Detailed Report')}
             </button>
 
 
           </div>
         </form>
 
+        {/* Search Dashboard Features */}
+        <div className="mt-8 mb-6 relative z-30">
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+              <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+              </svg>
+            </div>
+            <input
+              type="text"
+              placeholder=" Search Here: Try typing 'Lagna', 'D1', 'Marriage', or 'Horoscope'..."
+              className="w-full pl-12 pr-4 py-4 rounded-2xl border-2 border-indigo-600 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 text-lg transition-all shadow-sm"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setShowSearchResults(true);
+              }}
+              onFocus={() => setShowSearchResults(true)}
+              onKeyDown={handleSearchSubmit}
+              onBlur={() => setTimeout(() => setShowSearchResults(false), 200)}
+            />
+            {searchQuery && (
+              <button
+                className="absolute inset-y-0 right-0 pr-4 flex items-center text-gray-400 hover:text-gray-600"
+                onClick={() => setSearchQuery("")}
+              >
+                ✖
+              </button>
+            )}
+          </div>
+
+          {showSearchResults && searchQuery.trim() && (
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 max-h-60 overflow-y-auto z-40">
+              {filteredSearchOptions.length > 0 ? (
+                filteredSearchOptions.map((opt, i) => (
+                  <div
+                    key={i}
+                    className="px-4 py-3 hover:bg-indigo-50 cursor-pointer flex items-center justify-between border-b border-gray-50 last:border-0"
+                    onMouseDown={(e) => {
+                      e.preventDefault(); // prevent blur
+                      opt.action();
+                      setSearchQuery("");
+                      setShowSearchResults(false);
+                    }}
+                  >
+                    <span className="font-semibold text-gray-900">{opt.label}</span>
+                    <span className="text-[18px] text-indigo-600 font-medium">Open ↗</span>
+                  </div>
+                ))
+              ) : (
+                <div className="px-4 py-4 text-center text-gray-500">No matching reports found</div>
+              )}
+            </div>
+          )}
+        </div>
+
         <div className="mt-6 space-y-4">
           <div className="flex flex-col gap-3 border-b pb-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-xl font-semibold text-black">{t('preview_results')}</h2>
-              <div className="flex flex-wrap gap-2 justify-end">
+            <h2 className="text-xl font-semibold text-black">{t('preview_results')}</h2>
+            <div className="flex flex-col gap-4">
+              <div className="flex flex-wrap gap-3">
                 <button
                   onClick={handleOpenWorksheet}
                   className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-purple-100 text-black shadow hover:bg-purple-700 flex items-center gap-2"
@@ -1052,6 +1139,8 @@ export default function GenerateReport() {
                 >
                   <span>🖥️</span> {t('ishta_dev')}
                 </button>
+              </div>
+              <div className="flex flex-wrap gap-3">
                 <button
                   onClick={handleOpenMatchmaking}
                   className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-pink-100 text-black shadow hover:bg-pink-700 flex items-center gap-2"
@@ -1083,184 +1172,105 @@ export default function GenerateReport() {
                   <span>✨</span> {t('muhurt_calculator')}
                 </button>
               </div>
-            </div>
-            <div className="flex flex-wrap gap-2 justify-end">
-              <button
-                onClick={handleOpenPrashna}
-                className="px-4 py-1.5 rounded-full text-[15px]  font-bold transition-all bg-amber-100 text-black shadow hover:bg-amber-600 flex items-center gap-2"
-              >
-                <span>🔮</span> {t('ask_prashna')}
-              </button>
-              <button
-                onClick={handleOpenAshtamangala}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-red-100 text-black shadow hover:bg-red-700 flex items-center gap-2"
-              >
-                <span>🐚</span> Astamangala Prasna
-              </button>
-              <button
-                onClick={handleOpenBTR}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-indigo-100 text-black shadow hover:bg-indigo-700 flex items-center gap-2"
-              >
-                <span>⏱️</span> Birth Time Rectification
-              </button>
-              <button
-                onClick={handleOpenKPAstrology}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-teal-100 text-black shadow hover:bg-teal-700 flex items-center gap-2"
-              >
-                <span>⭐</span> KP Astrology
-              </button>
-              <button
-                onClick={handleOpenNadi}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-blue-100 text-black shadow hover:bg-blue-700 flex items-center gap-2"
-              >
-                <span>📜</span> {t('nadi_astrology')}
-              </button>
-              <button
-                onClick={handleOpenMantra}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-teal-100 text-black shadow hover:bg-teal-700 flex items-center gap-2"
-              >
-                <span>📿</span> {t('japa_mala')}
-              </button>
-              <button
-                onClick={handleOpenBrahmaMuhurt}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-orange-100 text-black shadow hover:bg-orange-700 flex items-center gap-2"
-              >
-                <span>🌅</span> {t('brahma_muhurt')}
-              </button>
-              <button
-                onClick={() => {
-                  const win = window.open('/?kurma_chakra=true', 'KurmaChakraViewer', 'width=1100,height=800,menubar=no,toolbar=no,location=no,status=no');
-                  if (win) win.focus();
-                }}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-indigo-100 text-black shadow hover:bg-indigo-700 flex items-center gap-2"
-              >
-                <span>🐢</span> Kurma Chakra
-              </button>
-              <button
-                onClick={() => {
-                  const win = window.open('/?chaitra_chart=true', 'ChaitraChartViewer', 'width=1200,height=800,menubar=no,toolbar=no,location=no,status=no');
-                  if (win) win.focus();
-                }}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-amber-100 text-black shadow hover:bg-amber-600 flex items-center gap-2"
-              >
-                <span>👑</span> Chaitra Chart (Yearly)
-              </button>
-              <button
-                onClick={() => {
-                  const win = window.open('/?sanghatta=true', 'SanghattaDashboard', 'width=1000,height=800,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes');
-                  if (win) win.focus();
-                }}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-100 text-black shadow hover:bg-rose-600 flex items-center gap-2"
-              >
-                <span>⚔️</span> Sanghatta Chakra
-              </button>
-              <button
-                onClick={handleOpenVastu}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-50 text-black shadow hover:bg-rose-600 flex items-center gap-2"
-              >
-                <span>🏡</span> Vastu Shastra
-              </button>
-              <button
-                onClick={handleOpenNumerology}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-50 text-black shadow hover:bg-rose-600 flex items-center gap-2"
-              >
-                <span>🔮</span> Numerology
-              </button>
-              <button
-                onClick={handleOpenFaceReading}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-50 text-black shadow hover:bg-rose-600 flex items-center gap-2"
-              >
-                <span>👤</span> Face Reading
-              </button>
-              <button
-                onClick={handleOpenPalmistry}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-50 text-black shadow hover:bg-rose-600 flex items-center gap-2"
-              >
-                <span>🖐️</span> Palmistry
-              </button>
-              <button
-                onClick={handleOpenPredictionNumerology}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-amber-100 text-amber-950 shadow hover:bg-amber-600 hover:text-white flex items-center gap-2 border border-amber-300"
-              >
-                <span>⭐</span> Special Yogas & Numerology Prediction Page
-              </button>
-              <button
-                onClick={handleOpenDailyNumerology}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-100 text-rose-950 shadow hover:bg-rose-600 hover:text-white flex items-center gap-2 border border-rose-300"
-              >
-                <span>☀️</span> Daily Numerology Forecast
-              </button>
-              <button
-                onClick={handleOpenRemedyNumerology}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-purple-100 text-purple-950 shadow hover:bg-purple-600 hover:text-white flex items-center gap-2 border border-purple-300"
-              >
-                <span>💎</span> Powerful Numerology Remedies
-              </button>
-              <button
-                onClick={handleOpenMedicalNumerology}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-emerald-100 text-emerald-950 shadow hover:bg-emerald-600 hover:text-white flex items-center gap-2 border border-emerald-300"
-              >
-                <span>🏥</span> Medical Numerology Diagnostics
-              </button>
-              <button
-                onClick={handleOpenPersonalityNumerology}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-sky-100 text-sky-950 shadow hover:bg-sky-600 hover:text-white flex items-center gap-2 border border-sky-300"
-              >
-                <span>🧠</span> Personality & Decision Numerology Matrix
-              </button>
-              <button
-                onClick={handleOpenMarriageNumerology}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-pink-100 text-pink-950 shadow hover:bg-pink-600 hover:text-white flex items-center gap-2 border border-pink-300"
-              >
-                <span>💖</span> Marriage & Love Numerology Prediction
-              </button>
-              <button
-                onClick={handleOpenCarrierNumerology}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-blue-100 text-blue-950 shadow hover:bg-blue-600 hover:text-white flex items-center gap-2 border border-blue-300"
-              >
-                <span>💼</span> Career & Wealth Numerology Prediction
-              </button>
-              <button
-                onClick={() => {
-                  const params = new URLSearchParams({
-                    numerology: 'true',
-                    tab: 'quantum',
-                    name: name || '',
-                    date: date || '',
-                    time: time || '',
-                    lat: latLon?.lat || '',
-                    lon: latLon?.lon || '',
-                    tz: tzOffset || '5.5',
-                    loc: latLon?.display_name || ''
-                  });
-                  const win = window.open(`/?${params.toString()}`, 'QuantumNumerologyDashboard', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-                  if (win) win.focus();
-                }}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-purple-100 text-purple-950 shadow hover:bg-purple-600 hover:text-white flex items-center gap-2 border border-purple-300"
-              >
-                <span>⚛️</span> Quantum Numerology
-              </button>
-              <button
-                onClick={() => {
-                  const params = new URLSearchParams({
-                    numerology: 'true',
-                    tab: 'mobile',
-                    name: name || '',
-                    date: date || '',
-                    time: time || '',
-                    lat: latLon?.lat || '',
-                    lon: latLon?.lon || '',
-                    tz: tzOffset || '5.5',
-                    loc: latLon?.display_name || ''
-                  });
-                  const win = window.open(`/?${params.toString()}`, 'MobileNumerologyDashboard', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-                  if (win) win.focus();
-                }}
-                className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-emerald-100 text-emerald-950 shadow hover:bg-emerald-600 hover:text-white flex items-center gap-2 border border-emerald-300"
-              >
-                <span>📱</span> Mobile Numerology
-              </button>
-
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={handleOpenNumerology}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-50 text-black shadow hover:bg-rose-600 flex items-center gap-2"
+                >
+                  <span>🔮</span> Numerology
+                </button>
+                <button
+                  onClick={handleOpenFaceReading}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-50 text-black shadow hover:bg-rose-600 flex items-center gap-2"
+                >
+                  <span>👤</span> Face Reading
+                </button>
+                <button
+                  onClick={handleOpenPalmistry}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-50 text-black shadow hover:bg-rose-600 flex items-center gap-2"
+                >
+                  <span>🖐️</span> Palmistry
+                </button>
+                <button
+                  onClick={handleOpenVastu}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-50 text-black shadow hover:bg-rose-600 flex items-center gap-2"
+                >
+                  <span>🏡</span> Vastu Shastra
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={handleOpenPrashna}
+                  className="px-4 py-1.5 rounded-full text-[15px]  font-bold transition-all bg-amber-100 text-black shadow hover:bg-amber-600 flex items-center gap-2"
+                >
+                  <span>🔮</span> {t('ask_prashna')}
+                </button>
+                <button
+                  onClick={handleOpenAshtamangala}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-red-100 text-black shadow hover:bg-red-700 flex items-center gap-2"
+                >
+                  <span>🐚</span> Astamangala Prasna
+                </button>
+                <button
+                  onClick={handleOpenKPAstrology}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-teal-100 text-black shadow hover:bg-teal-700 flex items-center gap-2"
+                >
+                  <span>⭐</span> KP Astrology
+                </button>
+                <button
+                  onClick={handleOpenNadi}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-blue-100 text-black shadow hover:bg-blue-700 flex items-center gap-2"
+                >
+                  <span>📜</span> {t('nadi_astrology')}
+                </button>
+              </div>
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={handleOpenBTR}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-indigo-100 text-black shadow hover:bg-indigo-700 flex items-center gap-2"
+                >
+                  <span>⏱️</span> Birth Time Rectification
+                </button>
+                <button
+                  onClick={handleOpenMantra}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-teal-100 text-black shadow hover:bg-teal-700 flex items-center gap-2"
+                >
+                  <span>📿</span> {t('japa_mala')}
+                </button>
+                <button
+                  onClick={handleOpenBrahmaMuhurt}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-orange-100 text-black shadow hover:bg-orange-700 flex items-center gap-2"
+                >
+                  <span>🌅</span> {t('brahma_muhurt')}
+                </button>
+                <button
+                  onClick={() => {
+                    const win = window.open('/?kurma_chakra=true', 'KurmaChakraViewer', 'width=1100,height=800,menubar=no,toolbar=no,location=no,status=no');
+                    if (win) win.focus();
+                  }}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-indigo-100 text-black shadow hover:bg-indigo-700 flex items-center gap-2"
+                >
+                  <span>🐢</span> Kurma Chakra
+                </button>
+                <button
+                  onClick={() => {
+                    const win = window.open('/?chaitra_chart=true', 'ChaitraChartViewer', 'width=1200,height=800,menubar=no,toolbar=no,location=no,status=no');
+                    if (win) win.focus();
+                  }}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-amber-100 text-black shadow hover:bg-amber-600 flex items-center gap-2"
+                >
+                  <span>👑</span> Chaitra Chart (Yearly)
+                </button>
+                <button
+                  onClick={() => {
+                    const win = window.open('/?sanghatta=true', 'SanghattaDashboard', 'width=1000,height=800,menubar=no,toolbar=no,location=no,status=no,scrollbars=yes,resizable=yes');
+                    if (win) win.focus();
+                  }}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-rose-100 text-black shadow hover:bg-rose-600 flex items-center gap-2"
+                >
+                  <span>⚔️</span> Sanghatta Chakra
+                </button>
+              </div>
             </div>
           </div>
 
