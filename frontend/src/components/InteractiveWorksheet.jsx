@@ -12,6 +12,7 @@ import VimsopakaAssessment from "./VimsopakaAssessment";
 import DashaDashboard from "../pages/DashaDashboard";
 import BhavbalaView from "./BhavbalaView";
 import VimshottariTable from "./VimshottariTable";
+import YoginiTable from "./YoginiTable";
 import VimshottariLifeTable from "./VimshottariLifeTable";
 import VimshottariGridTimeline from "./VimshottariGridTimeline";
 import { PLANET_IN_SIGN_EFFECTS } from '../data/planetInSign';
@@ -719,6 +720,7 @@ const CELL_CONTENTS = [
   { id: "advanced_nakshatra", label: "ADV. Nakshatra", category: "Misc" },
   { id: "shadbala", label: "Shadbala Chart", category: "Charts" },
   { id: "vimshottari", label: "Vimshottari", category: "Dasha" },
+  { id: "yogini", label: "Yogini Dasha", category: "Dasha" },
   { id: "vimsopaka", label: "Vimsopaka Bala", category: "Tables" },
   { id: "bhavbala", label: "Bhavbala", category: "Tables" },
   { id: "shodashvarga_summary", label: "Shodashvarga Summary", category: "Tables" },
@@ -4884,6 +4886,8 @@ const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSele
             </div>
           </div>
         );
+      case "yogini":
+        return <YoginiTable data={data} />;
       case "shadbala":
         return <ShadbalaChart data={data.strength} title="Shad Bala" onlyRatio={true} />;
       case "ashtakavarga":
@@ -6379,6 +6383,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                   </div>
                 </div>
               );
+              if (cid === 'yogini') return <div className="h-full overflow-y-auto"><YoginiTable data={data} /></div>;
               if (cid === 'shadbala') return <div className="p-10"><ShadbalaChart data={data.strength} onlyRatio={false} /></div>;
               if (cid === 'ashtakavarga') return <div className="h-[600px] overflow-hidden"><AshtakavargaViewer data={data} /></div>;
               if (cid === 'ashtakavarga_reduction') return <div className="w-full h-full overflow-y-auto bg-white p-4"><AsthavargaReduction data={data} /></div>;
@@ -6602,7 +6607,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                     Graha Dasha <span className="text-[10px]">▶</span>
                   </button>
                   <div className="absolute top-0 left-full ml-1 w-56 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/grahadasha:opacity-100 group-hover/grahadasha:visible transition-all duration-200 py-2 z-50">
-                    {CELL_CONTENTS.filter(c => ["vimshottari", "panch_pakshi", "shodashottari", "chaturshitisama", "ashtottari", "dwisaptatisama", "dwadashottari", "panchottari", "shatabdika", "shashtihayani"].includes(c.id)).map(c => (
+                    {CELL_CONTENTS.filter(c => ["vimshottari", "yogini", "panch_pakshi", "shodashottari", "chaturshitisama", "ashtottari", "dwisaptatisama", "dwadashottari", "panchottari", "shatabdika", "shashtihayani"].includes(c.id)).map(c => (
                       <button
                         key={c.id}
                         onClick={() => handleMaximizeInNewWindow(c.id)}
@@ -6665,7 +6670,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                   </div>
                 </div>
 
-                {CELL_CONTENTS.filter(c => c.category !== "System" && c.id !== "transit_compare" && !['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60', 'shadbala', 'bhavbala', 'vimsopaka', 'shodashvarga_summary', 'dignity', 'relationships', 'aspects_summary', 'ashtakavarga', 'ashtakavarga_reduction', 'krishnamurthy_chart', 'krishnamurthy_significators', 'planets_table', 'panchang', 'numerical', 'gemstones', 'transit_gemstones', 'vimshottari', 'shodashottari', 'chaturshitisama', 'ashtottari', 'dwisaptatisama', 'dwadashottari', 'panchottari', 'shatabdika', 'shashtihayani', 'chara', 'sthira', 'shoola', 'niryaana_shoola', 'mandooka', 'drig', 'sudasha', 'panch_pakshi', 'advanced_nakshatra', 'd11'].includes(c.id)).map(c => (
+                {CELL_CONTENTS.filter(c => c.category !== "System" && c.id !== "transit_compare" && !['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60', 'shadbala', 'bhavbala', 'vimsopaka', 'shodashvarga_summary', 'dignity', 'relationships', 'aspects_summary', 'ashtakavarga', 'ashtakavarga_reduction', 'krishnamurthy_chart', 'krishnamurthy_significators', 'planets_table', 'panchang', 'numerical', 'gemstones', 'transit_gemstones', 'vimshottari', 'yogini', 'shodashottari', 'chaturshitisama', 'ashtottari', 'dwisaptatisama', 'dwadashottari', 'panchottari', 'shatabdika', 'shashtihayani', 'chara', 'sthira', 'shoola', 'niryaana_shoola', 'mandooka', 'drig', 'sudasha', 'panch_pakshi', 'advanced_nakshatra', 'd11'].includes(c.id)).map(c => (
                   <button
                     key={c.id}
                     onClick={() => {

@@ -30,6 +30,7 @@ from dasha.dwadashottari import compute_dwadashottari
 from dasha.shatabdika import compute_shatabdika
 from dasha.dwisaptatisama import compute_dwisaptatisama
 from dasha.panchottari import compute_panchottari
+from dasha.yogini import compute_yogini_full
 from ashtakavarga.classical import compute_ashtakavarga_classical
 from reports.pdf_generator import generate_report_from_birth
 from reports.report_data import assemble_report_data
@@ -620,6 +621,7 @@ def api_all_nakshatra_dashas(payload: Dict = Body(...)):
         "panchottari": expand_dashas(compute_panchottari(start_planet=start_planet, years_ahead=105.0), 105, offset_years=offsets.get("panchottari", 0)),
         "shatabdika": expand_dashas(compute_shatabdika(moon_lon, years_ahead=100.0), 100, offset_years=offsets.get("shatabdika", 0)),
         "dwisaptatisama": expand_dashas(compute_dwisaptatisama(moon_lon, years_ahead=72.0), 72, offset_years=offsets.get("dwisaptatisama", 0)),
+        "yogini": compute_yogini_full(jd_ut, moon_lon, years_ahead=108.0) if jd_ut and moon_lon else [],
     }
 
     # Vimshottari returns nested dictionaries via `compute_vimshottari_full`.

@@ -149,6 +149,7 @@ export const getSearchOptions = (showError) => {
 
     // Graha Dasha Subcategory
     { label: "Vimshottari Dasha", keywords: ["vimshottari", "dasha", "mahadasha"], action: () => openVargaChart("vimshottari", "Vimshottari") },
+    { label: "Yogini Dasha", keywords: ["yogini", "dasha", "mahadasha"], action: () => openVargaChart("yogini", "YoginiDasha") },
     { label: "Panch Pakshi", keywords: ["panch", "pakshi", "birds", "time"], action: () => openVargaChart("panch_pakshi", "PanchPakshi") },
     { label: "Shodashottari Dasha", keywords: ["shodashottari", "dasha"], action: () => openVargaChart("shodashottari", "Shodashottari") },
     { label: "Chaturshitisama Dasha", keywords: ["chaturshitisama", "dasha"], action: () => openVargaChart("chaturshitisama", "Chaturshitisama") },

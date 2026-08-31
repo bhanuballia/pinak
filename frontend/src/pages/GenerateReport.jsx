@@ -4,6 +4,7 @@ import { getSearchOptions } from "../utils/searchConfig";
 import PlaceAutocomplete from "../components/PlaceAutocomplete";
 import ReportPreview from "../components/ReportPreview";
 import LanguageSwitcher from "../components/LanguageSwitcher";
+import FallingFlowers from "../components/FallingFlowers";
 
 import { createReport, fetchTimezones, fetchReportData, fetchShodashottari, fetchChaturshitisama, saveProfileToDB, fetchSavedProfiles, fetchProfileById } from "../services/api";
 
@@ -763,15 +764,16 @@ export default function GenerateReport() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6  relative">
+    <div className="min-h-screen bg-gray-50 p-6  relative overflow-hidden">
+      <FallingFlowers />
       {/* Decorative Side Images */}
       <img
-        src="/deities/bananatree.jpeg"
+        src="/deities/match1.jpg"
         alt="Banana Tree Left"
         className="hidden xl:block absolute left-4 2xl:left-16 top-1/4 w-48 2xl:w-72 h-auto object-contain rounded-3xl shadow-[0_0_40px_rgba(251,146,60,0.3)] mix-blend-multiply z-0"
       />
       <img
-        src="/deities/bananatree.jpeg"
+        src="/deities/jupiter.jpg"
         alt="Banana Tree Right"
         className="hidden xl:block absolute right-4 2xl:right-16 top-1/4 w-48 2xl:w-72 h-auto object-contain rounded-3xl shadow-[0_0_40px_rgba(251,146,60,0.3)] mix-blend-multiply z-0"
       />
@@ -848,7 +850,12 @@ export default function GenerateReport() {
       )}
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-8 border border-gray-100">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-serif italic font-black text-indigo-900 tracking-wide">{t('generate_kundali', 'Generate Kundali')}</h1>
+          <div>
+            <h1 className="text-3xl font-serif italic font-black text-indigo-900 tracking-wide">{t('generate_kundali', 'Generate Kundali')}</h1>
+            <p className="text-orange-700 font-bold text-sm mt-2 font-serif leading-relaxed">
+              आदित्यादिग्रहाः सर्वे नक्षत्राणि च राशयः।<br />आयुः कुर्वन्तु ते नित्यं यस्यैषा जन्मपत्रिका॥
+            </p>
+          </div>
           <div className="flex items-center gap-4">
             {dbStatus && <div className="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded animate-pulse">{dbStatus}</div>}
 
@@ -1289,5 +1296,6 @@ export default function GenerateReport() {
         </div>
       </div>
     </div>
+
   );
 }

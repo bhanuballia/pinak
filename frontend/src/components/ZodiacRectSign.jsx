@@ -336,7 +336,7 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, titleFontSize, variant =
 
                                     {/* Planet abbreviations — stacked at centroid */}
                                     {displayedPlanets.map((p, idx) => {
-                                        const pName = typeof p === 'object' ? p.name : p;
+                                        const pName = typeof p === 'object' ? (p.name || p.planet || "Unknown") : p;
                                         const isRetro = typeof p === 'object' ? p.is_retrograde : false;
                                         const isCombust = typeof p === 'object' ? p.is_combust : false;
 

@@ -3,6 +3,7 @@ import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import ZodiacChart from "./ZodiacChart";
 import VimshottariTable from "./VimshottariTable";
+import { fetchReportData } from "../services/api";
 
 const PLANETS = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
 const ABBREV = { Sun: "Su", Moon: "Mo", Mars: "Ma", Mercury: "Me", Jupiter: "Ju", Venus: "Ve", Saturn: "Sa", Rahu: "Ra", Ketu: "Ke" };
@@ -246,9 +247,10 @@ const getBaladiAge = (deg, signIdx) => {
     }
 };
 
-const DignityTable = ({ shadbalaData, worksheetData }) => {
+const DignityTable = ({ shadbalaData, worksheetData, pPos }) => {
     const rows = PLANETS.map(p => ({ id: p, name: p, color: PLANET_COLORS_CLASSIC[p] }));
-    const positionArray = Array.isArray(worksheetData?.planet_positions) ? worksheetData.planet_positions : Object.values(worksheetData?.planet_positions || {});
+    const sourcePositions = pPos || worksheetData?.planet_positions || {};
+    const positionArray = Array.isArray(sourcePositions) ? sourcePositions : Object.values(sourcePositions);
     const lagnaSignIndex = getLagnaSignIndex(worksheetData || {});
     const k7 = calculateJaiminiKarakas(positionArray);
     const sbRanks = getSBRanks(worksheetData?.strength?.planets);
@@ -344,6 +346,84 @@ export default function ClassicLayoutViewer3({ data: worksheetData }) {
     });
 
 
+    const [transitHouses, setTransitHouses] = useState(null);
+    const [transitPositions, setTransitPositions] = useState(null);
+
+    useEffect(() => {
+        const handleDashaChange = async (e) => {
+            const dasha = e.detail;
+            if (!dasha || !dasha.start_date || !worksheetData) return;
+            const dateStr = dasha.start_date;
+            let formattedDate = dateStr;
+            if (dateStr && typeof dateStr === 'string') {
+                const parts = dateStr.split('-');
+                if (parts.length === 3 && parts[2].length === 4) {
+                    formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+                }
+            }
+
+            const basic = worksheetData.basic_details || {};
+            const meta = worksheetData.meta || {};
+            const lat = parseFloat(basic.lat ?? meta.lat ?? 28.6);
+            const lon = parseFloat(basic.lon ?? meta.lon ?? 77.2);
+            const tz = parseFloat(basic.tz_offset ?? meta.tz_offset ?? 5.5);
+
+            try {
+                const data = await fetchReportData({
+                    name: "Transit",
+                    date: formattedDate,
+                    time: "12:00:00",
+                    lat,
+                    lon,
+                    tz_offset: tz
+                });
+
+                if (data && data.planet_positions) {
+                    const transitPlanetsList = Array.isArray(data.planet_positions) ? data.planet_positions : Object.values(data.planet_positions);
+                    setTransitPositions(transitPlanetsList);
+
+                    const newTransitHouses = {};
+                    const signToNatalHouse = {};
+                    for (let h = 1; h <= 12; h++) {
+                        const hData = d1Houses[h] || d1Houses[String(h)];
+                        if (hData && hData.sign_index !== undefined) {
+                            signToNatalHouse[hData.sign_index] = h;
+                        } else if (hData && hData.cusp_deg !== undefined) {
+                            signToNatalHouse[Math.floor(hData.cusp_deg / 30)] = h;
+                        }
+                    }
+
+
+
+                    transitPlanetsList.forEach(tp => {
+                        const signIdx = tp.sign_index !== undefined ? tp.sign_index : Math.floor((tp.normDegree || tp.degree || 0) / 30);
+                        const natalHouse = signToNatalHouse[signIdx];
+                        if (natalHouse) {
+                            if (!newTransitHouses[natalHouse]) {
+                                newTransitHouses[natalHouse] = { planets: [] };
+                            }
+                            newTransitHouses[natalHouse].planets.push(tp);
+                        }
+                    });
+
+                    for (let h = 1; h <= 12; h++) {
+                        if (!newTransitHouses[h]) newTransitHouses[h] = { planets: [] };
+                        const hData = d1Houses[h] || d1Houses[String(h)];
+                        const natalSign = hData?.sign_index !== undefined ? hData.sign_index : Math.floor((hData?.cusp_deg || 0) / 30);
+                        newTransitHouses[h].sign_index = natalSign;
+                    }
+
+                    setTransitHouses(newTransitHouses);
+                }
+            } catch (err) {
+                console.error("Failed to fetch transit data for dasha", err);
+            }
+        };
+
+        window.addEventListener('activeDashaChanged', handleDashaChange);
+        return () => window.removeEventListener('activeDashaChanged', handleDashaChange);
+    }, [worksheetData, d1Houses]);
+
     const handleExportPDF = async () => {
         const element = document.getElementById('pdf-classic-content');
         if (!element) return;
@@ -365,7 +445,7 @@ export default function ClassicLayoutViewer3({ data: worksheetData }) {
         <div id="pdf-classic-content" className="h-screen w-screen bg-[#fff0d6] font-sans flex flex-col overflow-y-auto overflow-x-hidden custom-scrollbar text-[#333]">
             <button onClick={handleExportPDF} className="absolute top-2 right-2 z-[100] bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-[12px] font-black uppercase shadow-lg border border-emerald-500/30 transition-all cursor-pointer">Export PDF</button>
             {/* Main Container: Left Block and Right Block */}
-            <div className="flex-1 flex gap-2 bg-[#f0f0f0] p-1 h-full w-full min-h-[900px]">
+            <div className="flex-1 flex gap-2 bg-[#f0f0f0] p-1 h-full w-full min-h-[500px]">
 
                 {/* Left Block: Fixed Width (54rem) for D1, D9, and Tables */}
                 <div className="w-[54rem] shrink-0 flex flex-col gap-1">
@@ -375,7 +455,7 @@ export default function ClassicLayoutViewer3({ data: worksheetData }) {
                         {/* Birth Chart */}
                         <div className="flex-1 bg-[#ffffe0] border border-[#8ec5e6] shadow-sm flex flex-col overflow-hidden rounded-sm min-h-0">
                             <div className="flex-1 p-0 flex items-center justify-center bg-white/50 min-h-0">
-                                <ZodiacChart houses={d1Houses} variant="legacy" title="Birth Chart" defaultRect={true} scaleText={1.5} />
+                                <ZodiacChart houses={transitHouses || d1Houses} variant="legacy" title="Birth Chart" defaultRect={true} hideOuterRect={true} hideLegend={true} scaleText={1.5} />
                             </div>
                         </div>
                     </div>
@@ -384,11 +464,11 @@ export default function ClassicLayoutViewer3({ data: worksheetData }) {
                     <div className="flex-[4.5] flex gap-1 min-h-0 w-full">
                         <div className="flex-1 border border-[#8ec5e6] shadow-sm flex flex-col overflow-hidden rounded-sm bg-white min-w-0">
                             <div className="bg-[#e6f3f7] border-b border-[#8ec5e6] px-3 py-1 text-[12px] text-[#0a4d7a] font-bold tracking-tight shrink-0">Birth Chart (Degrees)</div>
-                            <DegreeTable pPos={planetPositions} worksheetData={worksheetData} />
+                            <DegreeTable pPos={transitPositions || planetPositions} worksheetData={worksheetData} />
                         </div>
                         <div className="flex-1 border border-[#8ec5e6] shadow-sm flex flex-col overflow-hidden rounded-sm bg-white min-w-0">
                             <div className="bg-[#e6f3f7] border-b border-[#8ec5e6] px-3 py-1 text-[12px] text-[#0a4d7a] font-bold tracking-tight shrink-0">Birth Chart (Dignity)</div>
-                            <DignityTable shadbalaData={shadbalaData} worksheetData={worksheetData} />
+                            <DignityTable shadbalaData={shadbalaData} worksheetData={worksheetData} pPos={transitPositions || planetPositions} />
                         </div>
                     </div>
 
@@ -398,13 +478,13 @@ export default function ClassicLayoutViewer3({ data: worksheetData }) {
                 <div className="flex-1 flex flex-col gap-1 min-[220px] min-w-0">
                     <div className="flex-1 bg-[#ffffe0] border border-[#8ec5e6] shadow-sm flex flex-col overflow-hidden rounded-sm min-h-0">
                         <div className="flex-1 p-0 flex items-center justify-center bg-white/50 min-h-0">
-                            <ZodiacChart houses={d9Houses.length > 0 ? d9Houses : d1Houses} variant="legacy" title="D9 Navamsha (spouse)" defaultRect={true} scaleText={2.0} />
+                            <ZodiacChart houses={d9Houses.length > 0 ? d9Houses : d1Houses} variant="legacy" title="D9 Navamsha (spouse)" defaultRect={true} hideOuterRect={true} hideLegend={true} scaleText={2.0} />
                         </div>
                     </div>
                     <div className="flex-1 bg-white border border-[#8ec5e6] shadow-sm flex flex-col overflow-hidden rounded-sm min-h-0">
                         <VimshottariTable data={worksheetData} hideMarriageDasha={true} />
                     </div>
-                    <div className="flex-1 flex flex-col overflow-hidden shadow-sm rounded-sm min-h-0">
+                    <div className="flex-[0.6] flex flex-col overflow-hidden shadow-sm rounded-sm min-h-0">
                         <ShadbalaRatioChart title="Shad Bala" data={shadbalaData} />
                     </div>
                 </div>

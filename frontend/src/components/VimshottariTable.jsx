@@ -23,10 +23,21 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
   const [error, setError] = useState(null);
   const [page, setPage] = useState(0);
   const [currentIdx, setCurrentIdx] = useState(0);
+  const [selectedIdx, setSelectedIdx] = useState(0); // Added selectedIdx
   const [levels, setLevels] = useState(5); // 2 = MD-AD, 5 = Panchastariya
   const [showWindowsModal, setShowWindowsModal] = useState(false);
   const PAGE_SIZE = 12;
   const currentRowRef = useRef(null);
+
+  // Dispatch event whenever selectedIdx changes
+  useEffect(() => {
+    if (rows[selectedIdx]) {
+      try {
+        localStorage.setItem('activeVimshottariDasha', JSON.stringify(rows[selectedIdx]));
+        window.dispatchEvent(new CustomEvent('activeDashaChanged', { detail: rows[selectedIdx] }));
+      } catch (e) {}
+    }
+  }, [selectedIdx, rows]);
 
   useEffect(() => {
     if (!worksheetData) return;
@@ -70,13 +81,8 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
         const idx = fetchedRows.findIndex(r => r.is_current);
         const ci = idx >= 0 ? idx : 0;
         setCurrentIdx(ci);
+        setSelectedIdx(ci); // Initialize selectedIdx
         setPage(Math.floor(ci / PAGE_SIZE));
-        if (fetchedRows[ci]) {
-          try {
-            localStorage.setItem('activeVimshottariDasha', JSON.stringify(fetchedRows[ci]));
-            window.dispatchEvent(new CustomEvent('activeDashaChanged', { detail: fetchedRows[ci] }));
-          } catch (e) { }
-        }
         setLoading(false);
       })
       .catch(err => {
@@ -96,7 +102,9 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
   const pageRows = rows.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   const goToCurrent = () => {
-    setPage(Math.floor(currentIdx / PAGE_SIZE));
+    const newPage = Math.floor(currentIdx / PAGE_SIZE);
+    setPage(newPage);
+    setSelectedIdx(currentIdx);
   };
 
   if (loading) {
@@ -130,7 +138,9 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
     const currentDate = new Date(currentFirstRow.start_date);
 
     if (isNaN(currentDate.getTime())) {
-      setPage(p => Math.max(0, Math.min(totalPages - 1, p + Math.sign(yearsToAdd) * 5)));
+      const newPage = Math.max(0, Math.min(totalPages - 1, page + Math.sign(yearsToAdd) * 5));
+      setPage(newPage);
+      setSelectedIdx(newPage * PAGE_SIZE);
       return;
     }
 
@@ -151,7 +161,9 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
       }
     }
 
-    setPage(Math.floor(closestIdx / PAGE_SIZE));
+    const newPage = Math.floor(closestIdx / PAGE_SIZE);
+    setPage(newPage);
+    setSelectedIdx(closestIdx);
   };
   const nextMarriageRow = rows.slice(currentIdx).find(r => r.marriage_favorable);
   const getUpcomingWindows = () => {
@@ -172,13 +184,23 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
   };
   const upcomingWindows = getUpcomingWindows();
 
+  const handlePageChange = (updater) => {
+    setPage(prev => {
+      const newPage = typeof updater === 'function' ? updater(prev) : updater;
+      if (newPage !== prev) {
+        setSelectedIdx(newPage * PAGE_SIZE);
+      }
+      return newPage;
+    });
+  };
+
   return (
     <div className="flex flex-col h-full bg-white font-sans overflow-hidden">
       <Header
         page={page}
         totalPages={totalPages}
-        onPrev={() => setPage(p => Math.max(0, p - 1))}
-        onNext={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+        onPrev={() => handlePageChange(p => Math.max(0, p - 1))}
+        onNext={() => handlePageChange(p => Math.min(totalPages - 1, p + 1))}
         onFirst={() => jumpTime(-1)}
         onLast={() => jumpTime(1)}
         onCurrent={goToCurrent}
@@ -223,6 +245,7 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
         {pageRows.map((row, i) => {
           const globalIdx = page * PAGE_SIZE + i;
           const isCurrent = row.is_current;
+          const isSelected = globalIdx === selectedIdx;
           const tColors = TARA_COLORS[row.tara_name] || { bg: '', text: 'text-slate-600', badge: 'bg-slate-100' };
           const chainParts = (row.dasha_chain || '').split('-');
           const mdColor = PLANET_COLORS[row.md] || '#666';
@@ -231,10 +254,13 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
             <div
               key={globalIdx}
               ref={isCurrent ? currentRowRef : null}
-              className={`grid grid-cols-[2.0fr_0.35fr_0.9fr_0.5fr_0.8fr_0.75fr_1.5fr] text-[14px] border-black transition-all
-                ${isCurrent
-                  ? 'bg-amber-100 border-amber-300 shadow-inner'
-                  : i % 2 === 0 ? 'bg-rose-100 hover:bg-slate-50' : 'bg-rose-100 hover:bg-slate-100'
+              onClick={() => setSelectedIdx(globalIdx)}
+              className={`grid grid-cols-[2.0fr_0.35fr_0.9fr_0.5fr_0.8fr_0.75fr_1.5fr] text-[14px] border-black transition-all cursor-pointer
+                ${isSelected
+                  ? 'bg-blue-100 border-blue-400 shadow-inner'
+                  : isCurrent
+                    ? 'bg-amber-100 border-amber-300'
+                    : i % 2 === 0 ? 'bg-rose-100 hover:bg-slate-50' : 'bg-rose-100 hover:bg-slate-100'
                 }`}
             >
               {/* Dasha Chain */}

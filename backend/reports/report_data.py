@@ -13,6 +13,7 @@ from charts.rashi_chart import build_rashi_chart
 from charts.divisional import build_varga_chart
 from core.utils import get_sign_name, get_sign_index, ZODIAC_SIGNS
 from dasha.vimshottari import compute_vimshottari_full
+from dasha.yogini import compute_yogini_full
 from panchang.tithi_yoga_karana import compute_tithi, compute_nakshatra, compute_yoga, compute_karana
 from panchang.nakshatra import compute_nakshatra_from_lon
 from charts.dosha import check_kalsarpa_dosha, check_manglik_dosha, check_pitra_dosha, check_sadesati
@@ -868,6 +869,7 @@ def assemble_report_data(
         "drig": compute_drig(),
         "mandooka": compute_mandooka(),
         "sudasha": compute_sudasha(),
+        "yogini": compute_yogini_full(jd_ut, moon_lon, years_ahead=108.0),
         "panchang": panchang_data,
         "charts": {
             "lagna_grid": _lagna_grid(chart),
