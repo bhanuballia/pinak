@@ -37,18 +37,18 @@ export const RelationshipTable = ({ title, matrixData }) => {
   return (
     <div className="mb-2">
       {/* Table Header */}
-      <div className="border-[3px] border-[#3b82f6] rounded-[10px] bg-white mx-1 mb-1 shadow-sm px-3 py-0.5">
-        <h2 className="text-[#000000] font-serif text-[18px] leading-tight m-0">{title}</h2>
+      <div className="border-[3px] border-[#3b82f6] rounded-[10px] bg-white mx-1 mb-1 shadow-sm px-1 py-0.5">
+        <h2 className="text-[#000000] font-Times New Roman text-[18px] leading-tight m-0">{title}</h2>
       </div>
 
       {/* Table Body */}
       <div className="border-[2px] border-[#ff6b81] bg-[#ffffe6] mx-1">
-        <table className="w-full font-serif border-collapse">
+        <table className="w-full font-Times New Roman border-collapse">
           <thead>
             <tr>
               <th className="w-[8%] text-left pl-3 py-1 font-normal border-b border-transparent"></th>
               {PLANETS.map(p => (
-                <th key={p} className="w-[10%] text-left py-1 font-normal text-[15px]" style={{ color: PLANET_COLORS[p] }}>
+                <th key={p} className="w-[10%] text-left py-1 font-normal text-[12px]" style={{ color: PLANET_COLORS[p] }}>
                   {p}
                 </th>
               ))}
@@ -57,7 +57,7 @@ export const RelationshipTable = ({ title, matrixData }) => {
           <tbody>
             {PLANETS.map((pRow, idx) => (
               <tr key={pRow} className="leading-tight">
-                <td className="pl-3 py-[2px] font-normal text-[15px]" style={{ color: PLANET_COLORS[pRow] }}>
+                <td className="pl-3 py-[0.5px] font-normal text-[12px]" style={{ color: PLANET_COLORS[pRow] }}>
                   {pRow}
                 </td>
                 {PLANETS.map(pCol => {
@@ -68,7 +68,7 @@ export const RelationshipTable = ({ title, matrixData }) => {
                   const color = getRelationColor(relText);
 
                   return (
-                    <td key={pCol} className="py-[2px] text-[15px]" style={{ color }}>
+                    <td key={pCol} className="py-[2px] text-[12px]" style={{ color }}>
                       {relText}
                     </td>
                   );

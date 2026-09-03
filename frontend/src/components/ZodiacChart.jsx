@@ -465,7 +465,10 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, title
   };
 
   return (
-    <div ref={containerRef} style={{
+    <div 
+      ref={containerRef} 
+      onDoubleClick={() => window.dispatchEvent(new Event('open-time-machine'))}
+      style={{
       display: 'flex', flexDirection: 'column', width: '100%', height: '100%', background: bgColor || (isLegacy ? '#fdfbf7' : 'white'),
       transform: `scale(${zoom})`,
       transformOrigin: 'center center',

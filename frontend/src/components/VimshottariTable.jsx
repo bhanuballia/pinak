@@ -195,7 +195,10 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
   };
 
   return (
-    <div className="flex flex-col h-full bg-white font-sans overflow-hidden">
+    <div 
+      className="flex flex-col h-full bg-white font-sans overflow-hidden"
+      onDoubleClick={() => window.dispatchEvent(new Event('open-time-machine'))}
+    >
       <Header
         page={page}
         totalPages={totalPages}

@@ -39,10 +39,10 @@ const ShadbalaRatioChart = ({ title, data }) => {
 
 const NAKSHATRA_NAMES = [
     "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra",
-    "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni",
+    "Punarvasu", "Pushya", "Ashlesha", "Magha", "P.Phalguni", "U.Phalguni",
     "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshta",
-    "Moola", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha",
-    "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"
+    "Moola", "P.Ashadha", "U.Ashadha", "Shravana", "Dhanishta", "Shatabhisha",
+    "P.Bhadrapada", "U.Bhadrapada", "Revati"
 ];
 
 const NAKSHATRA_LORDS_ORDER = ["Ketu", "Venus", "Sun", "Moon", "Mars", "Rahu", "Jupiter", "Saturn", "Mercury"];
@@ -100,13 +100,13 @@ const DegreeTable = ({ pPos, worksheetData }) => {
             <table className="w-full text-[11px] font-serif text-left border-collapse">
                 <thead className="bg-[#f0f0f0] border-b border-[#cccccc] shadow-sm sticky top-0 z-10">
                     <tr>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]"></th>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]">Degree</th>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]">RC</th>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]">Nakshatra</th>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]">Nama</th>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]">p#,lrd/sb/ssb</th>
-                        <th className="font-normal px-2 py-1">Func.</th>
+                        <th className="font-normal text-black px-2 py-1 border-r border-[#cccccc]"></th>
+                        <th className="font-normal text-black px-2 py-1 border-r border-[#cccccc]">Degree</th>
+                        <th className="font-normal text-black px-2 py-1 border-r border-[#cccccc]">RC</th>
+                        <th className="font-normal text-black px-2 py-1 border-r border-[#cccccc]">Nakshatra</th>
+                        <th className="font-normal text-black px-2 py-1 border-r border-[#cccccc]">Nama</th>
+                        <th className="font-normal text-black px-2 py-1 border-r border-[#cccccc]">p#,lrd/sb/ssb</th>
+                        <th className="font-normal text-black px-2 py-1">Func.</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -134,7 +134,7 @@ const DegreeTable = ({ pPos, worksheetData }) => {
                         const degInNak = ((absDeg % 360 + 360) % 360) % (360 / 27);
                         const pada = Math.floor(degInNak / ((360 / 27) / 4)) + 1;
 
-                        const nakName = found?.nakshatra || NAKSHATRA_NAMES[nakIdx] || "Ashwini";
+                        const nakName = NAKSHATRA_NAMES[nakIdx] || found?.nakshatra || "Ashwini";
                         const namaAkshara = found?.nama_akshara || found?.nama || NAKSHATRA_NAMA_AKSHARAS[nakIdx]?.[pada - 1] || "-";
 
                         const starLord = found?.nakshatra_lord || found?.star_lord || NAKSHATRA_LORDS_ORDER[nakIdx % 9];
@@ -152,13 +152,13 @@ const DegreeTable = ({ pPos, worksheetData }) => {
 
                         return (
                             <tr key={r.id} className="border-b border-[#eeeeee] last:border-0 hover:bg-[#fffacd] transition-colors">
-                                <td className="px-2 py-1 font-bold border-r border-[#eeeeee]" style={{ color: r.color }}>{r.name}</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee] font-mono">{formatDegInSign(absDeg)}</td>
-                                <td className="px-2 py-1 text-red-700 font-bold border-r border-[#eeeeee]">{rc}</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">{nakName}</td>
-                                <td className="px-2 py-1 text-indigo-900 font-bold border-r border-[#eeeeee]">{namaAkshara}</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee] font-mono">{pLrdStr}</td>
-                                <td className={`px-2 py-1 ${funcColor}`}>{funcStr}</td>
+                                <td className="px-1 py-0.5 font-bold border-r border-[#eeeeee]" style={{ color: r.color }}>{r.name}</td>
+                                <td className="px-1 py-0.5 text-black border-r border-[#eeeeee] font-mono">{formatDegInSign(absDeg)}</td>
+                                <td className="px-1 py-0.5 text-red-700 font-bold border-r border-[#eeeeee]">{rc}</td>
+                                <td className="px-1 py-0.5 text-black border-r border-[#eeeeee]">{nakName}</td>
+                                <td className="px-1 py-0.5 text-indigo-900 font-bold border-r border-[#eeeeee]">{namaAkshara}</td>
+                                <td className="px-1 py-0.5 text-black border-r border-[#eeeeee] font-mono">{pLrdStr}</td>
+                                <td className={`px-2 py-0.5 ${funcColor}`}>{funcStr}</td>
                             </tr>
                         );
                     })}
@@ -261,16 +261,16 @@ const DignityTable = ({ shadbalaData, worksheetData, pPos }) => {
             <table className="w-full text-[11px] font-serif text-left border-collapse">
                 <thead className="bg-[#f0f0f0] border-b border-[#cccccc] shadow-sm sticky top-0 z-10">
                     <tr>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]"></th>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]">Dignity</th>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]">SB%</th>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]">SB#</th>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]">VB</th>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]">AV</th>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]">Av3</th>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]">Av5</th>
-                        <th className="font-normal px-2 py-1 border-r border-[#cccccc]">K7</th>
-                        <th className="font-normal px-2 py-1">Func.</th>
+                        <th className="font-normal text-black px-1 py-0.5 border-r border-[#cccccc]"></th>
+                        <th className="font-normal text-black px-1 py-0.5 border-r border-[#cccccc]">Dignity</th>
+                        <th className="font-normal text-black px-1 py-0.5 border-r border-[#cccccc]">SB%</th>
+                        <th className="font-normal text-black px-1 py-0.5 border-r border-[#cccccc]">SB#</th>
+                        <th className="font-normal text-black px-1 py-0.5 border-r border-[#cccccc]">VB</th>
+                        <th className="font-normal text-black px-1 py-0.5 border-r border-[#cccccc]">AV</th>
+                        <th className="font-normal text-black px-1 py-0.5 border-r border-[#cccccc]">Av3</th>
+                        <th className="font-normal text-black px-1 py-0.5 border-r border-[#cccccc]">Av5</th>
+                        <th className="font-normal text-black px-1 py-0.5 border-r border-[#cccccc]">K7</th>
+                        <th className="font-normal text-black px-1 py-0.5">Func.</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -298,10 +298,11 @@ const DignityTable = ({ shadbalaData, worksheetData, pPos }) => {
 
                         const pAv = avasthas[pName] || {};
                         const shyanadiParts = pAv.shyanadi ? pAv.shyanadi.split('\n') : [];
-                        const avasthaStr = shyanadiParts[1] ? shyanadiParts[1].replace(/[()]/g, '').trim() : (shyanadiParts[0] || p.avastha || "Awake");
+                        const avasthaFullName = shyanadiParts[1] ? shyanadiParts[1].replace(/[()]/g, '').trim() : (shyanadiParts[0] || p.avastha || "Awake");
+                        const avasthaStr = avasthaFullName.substring(0, 3);
 
                         const baladiParts = pAv.baladi ? pAv.baladi.split('\n') : [];
-                        const ageStr = baladiParts[1] ? baladiParts[1].replace(/[()]/g, '').trim() : (baladiParts[0] || getBaladiAge(p.degree || p.normDegree, Math.floor((p.degree || p.normDegree || 0) / 30)));
+                        const ageStr = getBaladiAge(p.degree || p.normDegree, Math.floor((p.degree || p.normDegree || 0) / 30));
 
                         const karakStr = ["Rahu", "Ketu"].includes(pName) ? "-" : (k7[pName] || "-");
                         const natureStr = getFunctionalNature(lagnaSignIndex, pName);
@@ -314,8 +315,8 @@ const DignityTable = ({ shadbalaData, worksheetData, pPos }) => {
                                 <td className="px-2 py-1 text-black border-r border-[#eeeeee] font-mono">{sbPct}</td>
                                 <td className="px-2 py-1 text-black border-r border-[#eeeeee] font-mono">{sbRank}</td>
                                 <td className="px-2 py-1 text-black border-r border-[#eeeeee] font-mono">{vbDisplay}</td>
-                                <td className="px-2 py-1 text-indigo-700 font-bold border-r border-[#eeeeee] font-mono">{av}</td>
-                                <td className="px-2 py-1 text-black border-r border-[#eeeeee]">{avasthaStr}</td>
+                                <td className="px-2 py-1 text-black font-bold border-r border-[#eeeeee] font-mono">{av}</td>
+                                <td className="px-2 py-1 text-black border-r border-[#eeeeee] cursor-help" title={avasthaFullName}>{avasthaStr}</td>
                                 <td className="px-2 py-1 text-black border-r border-[#eeeeee]">{ageStr}</td>
                                 <td className="px-2 py-1 text-black border-r border-[#eeeeee]">{karakStr}</td>
                                 <td className={`px-2 py-1 ${natureColor}`}>{natureStr}</td>

@@ -143,7 +143,10 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, titleFontSize, variant =
     };
 
     return (
-        <div ref={containerRef} style={{
+        <div 
+            ref={containerRef} 
+            onDoubleClick={() => window.dispatchEvent(new Event('open-time-machine'))}
+            style={{
             display: 'flex', flexDirection: 'column',
             width: '100%', height: '100%',
             background: bgColor !== undefined ? bgColor : (isLegacy ? 'transparent' : 'white'),

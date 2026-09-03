@@ -10,6 +10,14 @@ import io
 router = APIRouter()
 
 async def analyze_single_hand(image: Image.Image, hand_type: str, api_key: str):
+    # Step 1: Validate image using CV Extractor BEFORE calling expensive Gemini API
+    from api.services.cv_palm_extractor import extract_palm_features
+    try:
+        cv_features = extract_palm_features(image)
+    except ValueError as e:
+        # If the image is invalid (no hand, too small, upside down), raise a 400 error immediately
+        raise HTTPException(status_code=400, detail=str(e))
+        
     genai.configure(api_key=api_key)
     model = genai.GenerativeModel('gemini-2.5-flash')
     
@@ -55,14 +63,68 @@ async def analyze_single_hand(image: Image.Image, hand_type: str, api_key: str):
     
     prompt_suffix = """
       "lines": [
-        {"name": "Life Line", "interpretation": "Details here"},
-        {"name": "Heart Line", "interpretation": "Details here"},
-        {"name": "Head Line", "interpretation": "Details here"},
-        {"name": "Fate Line (Bhagya Rekha)", "interpretation": "Details here"}
+        {
+          "name": "Life Line", 
+          "interpretation": "Details here"
+        },
+        {
+          "name": "Heart Line", 
+          "interpretation": "Details here"
+        },
+        {
+          "name": "Head Line", 
+          "interpretation": "Details here"
+        },
+        {
+          "name": "Fate Line (Bhagya Rekha)", 
+          "interpretation": "Details here"
+        },
+        {
+          "name": "Marriage Line", 
+          "interpretation": "Details here"
+        },
+        {
+          "name": "Children Line", 
+          "interpretation": "Details here"
+        }
       ],
       "mounts": [
-        {"name": "Mount of Jupiter", "interpretation": "Details here"},
-        {"name": "Mount of Venus", "interpretation": "Details here"}
+        {
+          "name": "Mount of Jupiter", 
+          "interpretation": "Details here"
+        },
+        {
+          "name": "Mount of Saturn", 
+          "interpretation": "Details here"
+        },
+        {
+          "name": "Mount of Sun", 
+          "interpretation": "Details here"
+        },
+        {
+          "name": "Mount of Mercury", 
+          "interpretation": "Details here"
+        },
+        {
+          "name": "Mount of Venus", 
+          "interpretation": "Details here"
+        },
+        {
+          "name": "Mount of Moon", 
+          "interpretation": "Details here"
+        },
+        {
+          "name": "Mount of Mars", 
+          "interpretation": "Details here"
+        },
+        {
+          "name": "Mount of Rahu", 
+          "interpretation": "Details here"
+        },
+        {
+          "name": "Mount of Ketu", 
+          "interpretation": "Details here"
+        }
       ]
     }
     Only return the raw JSON object, without any markdown formatting or code blocks.
@@ -70,8 +132,7 @@ async def analyze_single_hand(image: Image.Image, hand_type: str, api_key: str):
     
     prompt = prompt_prefix + key_topics_schema + prompt_suffix
     
-    # We must run generation in a threadpool to not block the event loop, 
-    # since generate_content is synchronous.
+    # We must run generation in a threadpool to not block the event loop
     loop = asyncio.get_event_loop()
     response = await loop.run_in_executor(
         None,
@@ -88,10 +149,44 @@ async def analyze_single_hand(image: Image.Image, hand_type: str, api_key: str):
         text_response = text_response[3:-3].strip()
         
     try:
-        return json.loads(text_response)
+        result = json.loads(text_response)
+        
+        # Merge CV features (points/bounding_boxes) into the text reading
+        if "lines" in result:
+            for line in result["lines"]:
+                # Find matching line in cv_features
+                cv_line = next((l for l in cv_features.get("lines", []) if l["name"] == line["name"]), None)
+                if cv_line:
+                    line["points"] = cv_line["points"]
+                else:
+                    line["points"] = []
+                    
+            # Add any extra lines from CV (like Manibandh Rekha) that Gemini didn't know about
+            existing_line_names = {l["name"] for l in result["lines"]}
+            for cv_line in cv_features.get("lines", []):
+                if cv_line["name"] not in existing_line_names:
+                    result["lines"].append({
+                        "name": cv_line["name"],
+                        "interpretation": "",  # No Gemini reading for minor CV lines
+                        "points": cv_line["points"]
+                    })
+                    
+        if "mounts" in result:
+            for mount in result["mounts"]:
+                # Find matching mount
+                cv_mount = next((m for m in cv_features.get("mounts", []) if m["name"] == mount["name"]), None)
+                if cv_mount:
+                    mount["bounding_box"] = cv_mount["bounding_box"]
+                else:
+                    mount["bounding_box"] = []
+                    
+        # Inject the new labels array
+        result["labels"] = cv_features.get("labels", [])
+                    
+        return result
     except json.JSONDecodeError:
-        print(f"Failed to parse JSON from Gemini for {hand_type}: {{text_response}}")
-        raise HTTPException(status_code=500, detail=f"Failed to parse the reading for {{hand_type}}.")
+        print(f"Failed to parse JSON from Gemini for {hand_type}: {text_response}")
+        raise HTTPException(status_code=500, detail=f"Failed to parse the reading for {hand_type}.")
 
 @router.post("/analyze")
 async def analyze_palm(left_hand: UploadFile = File(...), right_hand: UploadFile = File(...)):

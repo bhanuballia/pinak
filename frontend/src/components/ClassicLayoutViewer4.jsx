@@ -206,6 +206,46 @@ export default function ClassicLayoutViewer4({ data }) {
     }, [data, transitPositions]);
 
     const d1Houses = data.charts?.houses || data.charts?.D1?.houses || [];
+
+    const lagnaHouse = d1Houses?.[1] || d1Houses?.["1"] || {};
+    let lagnaSignIndex = lagnaHouse.sign_index;
+    if (lagnaSignIndex === undefined && lagnaHouse.cusp_deg !== undefined) {
+        lagnaSignIndex = Math.floor(lagnaHouse.cusp_deg / 30);
+    }
+    if (lagnaSignIndex === undefined) {
+        lagnaSignIndex = data.charts?.ascendant_sign_index || 0;
+    }
+
+    const transitHouses = {};
+    if (transitPositions) {
+        let tPositionsArr = [];
+        if (Array.isArray(transitPositions)) {
+            tPositionsArr = transitPositions;
+        } else {
+            tPositionsArr = Object.entries(transitPositions).map(([key, val]) => ({
+                name: key,
+                degree: val.sidereal?.lon !== undefined ? val.sidereal.lon : (val.normDegree !== undefined ? val.normDegree : val.degree),
+                is_retrograde: val.is_retrograde !== undefined ? val.is_retrograde : val.isRetrograde
+            }));
+        }
+
+        for (let i = 1; i <= 12; i++) {
+            const signIdx = (lagnaSignIndex + i - 1) % 12;
+            transitHouses[i] = {
+                sign_index: signIdx,
+                planets: tPositionsArr
+                    .filter(p => {
+                        const deg = p.degree !== undefined ? p.degree : p.normDegree;
+                        return Math.floor(deg / 30) === signIdx;
+                    })
+                    .map(p => ({
+                        name: p.name || p.planet,
+                        degree: p.degree !== undefined ? p.degree : p.normDegree,
+                        is_retrograde: p.is_retrograde || p.isRetrograde
+                    }))
+            };
+        }
+    }
     const friendshipData = data.friendship_matrix || data.planetary_relationships || {};
     let compound = friendshipData.compound !== undefined ? friendshipData.compound : (Object.keys(friendshipData).length > 0 ? friendshipData : null);
 
@@ -236,20 +276,20 @@ export default function ClassicLayoutViewer4({ data }) {
     return (
         <div id="pdf-classic-content" className="h-screen w-screen bg-[#fff0d6] font-sans flex flex-col overflow-y-auto overflow-x-hidden custom-scrollbar text-[#333]">
             <button onClick={handleExportPDF} className="absolute top-2 right-2 z-[100] bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-[12px] font-black uppercase shadow-lg border border-emerald-500/30 transition-all cursor-pointer">Export PDF</button>
-            <div className="flex-1 flex flex-col gap-1 p-2 h-full w-full min-h-[900px]">
+            <div className="flex-1 flex flex-col gap-1 p-2 h-full w-full min-h-[600px]">
 
                 {/* Top Row: Compound Relationships */}
-                <div className="flex-[3] min-h-0 bg-white">
+                <div className="flex-[2.8] min-h-0 bg-white">
                     <RelationshipTable title="Compound Relationships (Panchadha)" matrixData={compound} />
                 </div>
 
                 {/* Middle Row: Vargavimshopaka */}
-                <div className="flex-[2] min-h-0 mt-1">
+                <div className="flex-[1.8] min-h-0 mt-1">
                     <VargavimshopakaTable vimsopakaData={vimsopakaData} data={data} />
                 </div>
 
                 {/* Bottom Row: Vimshottari | D1 | Transit */}
-                <div className="flex-[5] flex gap-1 min-h-0 mt-1">
+                <div className="flex-[2.8] flex gap-1 min-h-0 mt-1">
                     {/* Left: Vimshottari Table */}
                     <div className="flex-1 border-2 border-green-700/50 shadow-sm flex flex-col overflow-hidden rounded-sm bg-white min-w-0">
                         <VimshottariTable data={data} hideMarriageDasha={true} />
@@ -258,13 +298,19 @@ export default function ClassicLayoutViewer4({ data }) {
                     {/* Middle: Birth Chart */}
                     <div className="flex-1 bg-[#ffffe0] border border-green-700/50 shadow-sm flex flex-col overflow-hidden rounded-sm min-h-0">
                         <div className="flex-1 p-0 flex items-center justify-center bg-white/50 min-h-0">
-                            <ZodiacChart houses={d1Houses} variant="legacy" title="Birth Chart" />
+                            <ZodiacChart houses={d1Houses} variant="legacy" title="Birth Chart" defaultRect={true} scaleText={1.8} hideOuterRect={true} hideLegend={true} />
                         </div>
                     </div>
 
                     {/* Right: Transit Chart */}
                     <div className="flex-1 flex flex-col min-h-0 border border-green-700/50 bg-[#ffffe0] overflow-hidden">
-                        <TransitPanel data={data} transitPositions={transitPositions} fullSize={true} />
+                        <div className="flex-1 p-0 flex items-center justify-center bg-white/50 min-h-0">
+                            {transitPositions ? (
+                                <ZodiacChart houses={transitHouses} variant="legacy" title="Today's Transit (Gochar)" defaultRect={true} scaleText={1.8} hideOuterRect={true} hideLegend={true} />
+                            ) : (
+                                <div className="text-slate-400 italic font-serif text-sm flex items-center justify-center h-full">Loading Transit...</div>
+                            )}
+                        </div>
                     </div>
                 </div>
 

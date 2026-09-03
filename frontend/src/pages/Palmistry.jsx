@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { Upload, RefreshCw, AlertCircle, Camera } from 'lucide-react';
+import PalmImageOverlay from '../components/PalmImageOverlay';
 
 export default function Palmistry() {
   const [leftImage, setLeftImage] = useState(null);
@@ -12,6 +13,9 @@ export default function Palmistry() {
   const [error, setError] = useState(null);
 
   const [activeTab, setActiveTab] = useState('left'); // 'left' or 'right'
+  const [activeItem, setActiveItem] = useState(null);
+  
+  const [gender, setGender] = useState('male'); // 'male' or 'female'
 
   const leftFileInputRef = useRef(null);
   const rightFileInputRef = useRef(null);
@@ -68,6 +72,9 @@ export default function Palmistry() {
 
       const data = await response.json();
       setReading(data);
+      
+      // Automatically switch to the active hand tab based on gender
+      setActiveTab(gender === 'male' ? 'right' : 'left');
     } catch (err) {
       console.error('Error during analysis:', err);
       setError(err.message || 'An unexpected error occurred.');
@@ -99,9 +106,40 @@ export default function Palmistry() {
           </p>
         </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {/* Left Column: Upload & Preview */}
+        <div className="flex flex-col gap-8">
+          {/* Top Section: Upload & Preview */}
           <div className="bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-700">
+            
+            {/* Gender Selection */}
+            <div className="mb-6 flex flex-col items-center border-b border-slate-700 pb-6">
+              <h3 className="text-lg font-medium text-amber-200 mb-3">Select Your Gender</h3>
+              <div className="flex gap-4">
+                <button
+                  onClick={() => setGender('male')}
+                  className={`px-6 py-2 rounded-full font-medium transition-all ${
+                    gender === 'male' 
+                      ? 'bg-amber-500 text-slate-900 shadow-[0_0_15px_rgba(245,158,11,0.4)]' 
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  Male
+                </button>
+                <button
+                  onClick={() => setGender('female')}
+                  className={`px-6 py-2 rounded-full font-medium transition-all ${
+                    gender === 'female' 
+                      ? 'bg-amber-500 text-slate-900 shadow-[0_0_15px_rgba(245,158,11,0.4)]' 
+                      : 'bg-slate-700 text-slate-300 hover:bg-slate-600'
+                  }`}
+                >
+                  Female
+                </button>
+              </div>
+              <p className="text-xs text-slate-400 mt-3 text-center max-w-md">
+                In Vedic Palmistry, lines and planetary mounts are analyzed on the <strong>Right Hand for males</strong> and the <strong>Left Hand for females</strong>. Please upload both hands, but the primary analysis will focus on your active hand.
+              </p>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
               {/* Left Hand Upload */}
@@ -228,8 +266,8 @@ export default function Palmistry() {
             </button>
           </div>
 
-          {/* Right Column: Results */}
-          <div className="bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-700 h-[600px] flex flex-col">
+          {/* Bottom Section: Results */}
+          <div className="bg-slate-800 rounded-2xl p-6 shadow-xl border border-slate-700 flex flex-col">
             <div className="flex items-center justify-between mb-6 sticky top-0 bg-slate-800 pb-4 border-b border-slate-700 z-10 shrink-0">
               <h2 className="text-xl font-semibold text-amber-100 flex items-center gap-2">
                 <span>✨</span> Analysis Results
@@ -298,9 +336,22 @@ export default function Palmistry() {
 
                 return (
                   <div className="space-y-6 animate-fade-in">
-                    <div className="bg-emerald-900/20 border border-emerald-500/30 rounded-xl p-5">
-                      <h3 className="text-lg font-medium text-emerald-300 mb-2">Overall Summary ({activeTab === 'left' ? 'Left' : 'Right'} Hand)</h3>
-                      <p className="text-slate-300 leading-relaxed">{currentReading.overall_summary}</p>
+
+                    <div className="w-full max-w-xs mx-auto mb-6">
+                      <PalmImageOverlay
+                        imageUrl={activeTab === 'left' ? leftPreviewUrl : rightPreviewUrl}
+                        reading={
+                          (gender === 'male' && activeTab === 'right') || (gender === 'female' && activeTab === 'left')
+                            ? currentReading 
+                            : null
+                        }
+                        activeItem={activeItem}
+                      />
+                    </div>
+
+                    <div className="bg-white border border-emerald-500/30 rounded-xl p-5">
+                      <h3 className="text-[18px] font-medium text-emerald-900 mb-2">Overall Summary ({activeTab === 'left' ? 'Left' : 'Right'} Hand)</h3>
+                      <p className="text-slate-900 leading-relaxed">{currentReading.overall_summary}</p>
                     </div>
 
                     {currentReading.key_topics && currentReading.key_topics.length > 0 && (
@@ -308,12 +359,12 @@ export default function Palmistry() {
                         <h3 className="text-lg font-medium text-amber-300 mt-2 border-b border-slate-700 pb-2">Key Life Topics Analyzed</h3>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                           {currentReading.key_topics.map((topic, idx) => (
-                            <div key={idx} className="bg-slate-700/30 rounded-lg p-4 border border-slate-600/50 flex flex-col">
+                            <div key={idx} className="bg-white rounded-lg p-4 border border-slate-600/50 flex flex-col">
                               <div className="flex items-center gap-2 mb-2">
                                 <span className="text-2xl">{topic.icon}</span>
-                                <h4 className="font-semibold text-amber-100 text-md leading-tight">{topic.topic}</h4>
+                                <h4 className="font-semibold text-emerald-900 text-[20px] leading-tight">{topic.topic}</h4>
                               </div>
-                              <p className="text-slate-300 mt-1 text-sm">{topic.interpretation}</p>
+                              <p className="text-slate-900 mt-1 text-[18px]">{topic.interpretation}</p>
                             </div>
                           ))}
                         </div>
@@ -323,25 +374,39 @@ export default function Palmistry() {
                     <div className="grid gap-4">
                       <h3 className="text-lg font-medium text-amber-200 mt-2 border-b border-slate-700 pb-2">Major Lines</h3>
                       {currentReading.lines?.map((line, idx) => (
-                        <div key={idx} className="bg-slate-700/30 rounded-lg p-4 border border-slate-600/50">
+                        <div
+                          key={idx}
+                          className={`bg-white rounded-lg p-4 border transition-colors cursor-default
+                            ${activeItem === line.name ? 'border-amber-400 bg-white' : 'border-slate-600/50 hover:border-slate-500'}
+                          `}
+                          onMouseEnter={() => setActiveItem(line.name)}
+                          onMouseLeave={() => setActiveItem(null)}
+                        >
                           <div className="flex items-center gap-2 mb-2">
-                            <div className="w-8 h-8 rounded bg-blue-900/50 flex items-center justify-center text-blue-300">
+                            <div className="w-8 h-8 rounded bg-white flex items-center justify-center text-blue-900">
                               〰️
                             </div>
-                            <h4 className="font-semibold text-blue-200 text-lg">{line.name}</h4>
+                            <h4 className="font-semibold text-blue-900 text-[18px]">{line.name}</h4>
                           </div>
-                          <p className="text-slate-300 mt-2">{line.interpretation}</p>
+                          <p className="text-slate-900 mt-2">{line.interpretation}</p>
                         </div>
                       ))}
                     </div>
 
                     <div className="grid gap-4">
-                      <h3 className="text-lg font-medium text-amber-200 mt-4 border-b border-slate-700 pb-2">Planetary Mounts</h3>
+                      <h3 className="text-[22px] font-medium text-amber-200 mt-4 border-b border-slate-700 pb-2">Planetary Mounts</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {currentReading.mounts?.map((mount, idx) => (
-                          <div key={idx} className="bg-slate-700/30 rounded-lg p-4 border border-slate-600/50">
-                            <h4 className="font-semibold text-purple-300 mb-1">{mount.name}</h4>
-                            <p className="text-sm text-slate-300">{mount.interpretation}</p>
+                          <div
+                            key={idx}
+                            className={`bg-white rounded-lg p-4 border transition-colors cursor-default
+                              ${activeItem === mount.name ? 'border-amber-400 bg-white' : 'border-slate-600/50 hover:border-slate-500'}
+                            `}
+                            onMouseEnter={() => setActiveItem(mount.name)}
+                            onMouseLeave={() => setActiveItem(null)}
+                          >
+                            <h4 className="font-semibold text-purple-900 mb-1">{mount.name}</h4>
+                            <p className="text-[18px] text-slate-900">{mount.interpretation}</p>
                           </div>
                         ))}
                       </div>

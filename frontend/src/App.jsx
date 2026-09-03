@@ -145,6 +145,19 @@ function App() {
     const [lagnasMode, setLagnasMode] = useState(false);
     const [jaiminiKarakasMode, setJaiminiKarakasMode] = useState(false);
     const [worksheetData, setWorksheetData] = useState(null);
+
+    // Global Time Machine Refetch Listener
+    useEffect(() => {
+        const handleUpdate = (e) => {
+            if (e.detail) {
+                setWorksheetData(e.detail);
+                // Also update horoscopeData if it's currently loaded
+                setHoroscopeData(prev => prev ? e.detail : prev);
+            }
+        };
+        window.addEventListener('update-worksheet-data', handleUpdate);
+        return () => window.removeEventListener('update-worksheet-data', handleUpdate);
+    }, []);
     const [ishtaDevMode, setIshtaDevMode] = useState(false);
     const [ishtaDevData, setIshtaDevData] = useState(null);
     const [oracleMode, setOracleMode] = useState(false);
