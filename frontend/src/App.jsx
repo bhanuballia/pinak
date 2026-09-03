@@ -114,6 +114,7 @@ import MarriageNumerology from './pages/marriageNumerology';
 import CarrierNumerology from './pages/carrierNumerology';
 import FaceReader from './pages/FaceReader.jsx';
 import Palmistry from './pages/Palmistry.jsx';
+import TarotReading from './pages/TarotReading.jsx';
 import VimshottariExplanation from './components/VimshottariExplanation';
 import DashaDashboard from './pages/DashaDashboard';
 import LegalMattersViewer from './components/LegalMattersViewer.jsx';
@@ -244,6 +245,7 @@ function App() {
     const [remedyMode, setRemedyMode] = useState(false);
     const [faceReadingMode, setFaceReadingMode] = useState(false);
     const [palmistryMode, setPalmistryMode] = useState(false);
+    const [tarotMode, setTarotMode] = useState(false);
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
@@ -705,6 +707,8 @@ function App() {
             setFaceReadingMode(true);
         } else if (params.get('palmistry') === 'true') {
             setPalmistryMode(true);
+        } else if (params.get('tarot') === 'true') {
+            setTarotMode(true);
         } else if (params.get('numerology') === 'true') {
             setNumerologyMode(true);
         } else if (params.get('prediction_numerology') === 'true') {
@@ -1266,6 +1270,12 @@ function App() {
     if (palmistryMode) {
         return (
             <Palmistry />
+        );
+    }
+
+    if (tarotMode) {
+        return (
+            <TarotReading />
         );
     }
 
