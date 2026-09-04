@@ -1755,6 +1755,27 @@ def assemble_report_data(
         print(f"Error generating Lal Kitab data: {e}")
         report_data["lalkitab"] = {"chart": {}, "debts": []}
 
+    # 24. Current Transits
+    try:
+        import datetime as dt_module
+        
+        now_utc = dt_module.datetime.now(dt_module.timezone.utc).replace(tzinfo=None)
+        current_jd = datetime_to_julian(now_utc)
+        current_chart = build_rashi_chart(current_jd, lat, lon)
+        
+        transit_positions = {}
+        if "signs" in current_chart:
+            for i in range(12):
+                sign_data = current_chart["signs"].get(i, current_chart["signs"].get(str(i), {}))
+                sign_name = sign_data.get("sign_name", "")
+                if sign_name:
+                    planets = sign_data.get("planets", [])
+                    transit_positions[sign_name] = [p["name"] for p in planets if "name" in p]
+        
+        report_data["current_transit"] = transit_positions
+    except Exception as e:
+        print(f"Error generating current transits: {e}")
+
     # Save to cache before returning
     cache_chart(report_data)
 

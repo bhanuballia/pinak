@@ -61,6 +61,7 @@ from api.routes import career
 from api.routes import finance
 from api.routes import prashna
 from api.routes import nadi
+from api.routes import garga
 from api.routes import mantra
 from api.routes import numerology
 from api.routes import astrology_comp
@@ -189,6 +190,7 @@ app.include_router(panchang.router, prefix="/api/panchang", tags=["Panchang"])
 app.include_router(prashna.router, prefix="/api/prashna", tags=["Prashna Kundali"])
 app.include_router(finance.router, prefix="/api/finance", tags=["Finance"])
 app.include_router(nadi.router, prefix="/api/nadi", tags=["Nadi Astrology"])
+app.include_router(garga.router, prefix="/api/prediction", tags=["Garga Sutras"])
 app.include_router(mantra.router, prefix="/api/mantra", tags=["Mantra Tracker"])
 app.include_router(synastry.router, prefix="/api/synastry", tags=["Synastry Matrix"])
 app.include_router(marriage.router, prefix="/api/marriage", tags=["Marriage"])

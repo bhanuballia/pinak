@@ -119,7 +119,7 @@ const PLANET_COLORS = {
   "Ascendant": "#000000"   // Black
 };
 
-const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, titleFontSize, variant = "modern", planetEffects = {}, scaleText = 1, planetPositions = [], defaultRect = false, hideLegend = false, hideOuterRect, defaultLang = "en", showFullscreenButton = false, onPopOut, bgColor, stackLayout = false, showNakshatra = false, showDegree = false, hideTranslation = false }) => {
+const ZodiacChart = ({ houses, transitHouses = null, currentTransit = null, onPlanetClick, title, titleFontSize, variant = "modern", planetEffects = {}, scaleText = 1, planetPositions = [], defaultRect = false, hideLegend = false, hideOuterRect, defaultLang = "en", showFullscreenButton = false, onPopOut, bgColor, stackLayout = false, showNakshatra = false, showDegree = false, hideTranslation = false }) => {
   const isMainChart = title && (
     title.toLowerCase().includes('birth') ||
     title.toLowerCase().includes('lagna') ||
@@ -584,6 +584,36 @@ const ZodiacChart = ({ houses, transitHouses = null, onPlanetClick, title, title
               }
             }
             return null;
+          })}
+
+          {/* Interactive House Areas for Tooltips */}
+          {entries.map(({ houseNum, signDisplay, planets }) => {
+            const polyPoints = isDoubleChart ? INNER_HOUSE_POLYGON[houseNum] : HOUSE_POLYGON[houseNum];
+            if (!polyPoints) return null;
+            
+            const signNameIndexMap = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+            
+            let tooltipText = `House ${houseNum}`;
+            if (signDisplay) {
+               const sName = signNameIndexMap[signDisplay - 1];
+               const currentPlanetsInSign = currentTransit && currentTransit[sName] ? currentTransit[sName] : [];
+               
+               const natalNames = planets.map(p => typeof p === 'object' ? p.name : p).join(', ') || 'None';
+               const transitNames = currentPlanetsInSign.join(', ') || 'None';
+               
+               tooltipText = `House ${houseNum} (Zodiac Sign ${signDisplay} - ${sName})\nNatal Planets: ${natalNames}\nCurrent Transits: ${transitNames}`;
+            }
+
+            return (
+              <polygon
+                key={`interactive-${houseNum}`}
+                points={polyPoints}
+                fill="transparent"
+                style={{ cursor: 'help' }}
+              >
+                <title>{tooltipText}</title>
+              </polygon>
+            );
           })}
 
           {/* Outer square */}

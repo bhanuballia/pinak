@@ -7,6 +7,8 @@ import LanguageSwitcher from "../components/LanguageSwitcher";
 import FallingFlowers from "../components/FallingFlowers";
 
 import { createReport, fetchTimezones, fetchReportData, fetchShodashottari, fetchChaturshitisama, saveProfileToDB, fetchSavedProfiles, fetchProfileById } from "../services/api";
+import ZodiacChart from "../components/ZodiacChart";
+import { X, Edit } from "lucide-react";
 
 const formatOffset = (offset) => {
   if (typeof offset !== "number" || Number.isNaN(offset)) return "";
@@ -39,6 +41,8 @@ export default function GenerateReport() {
   const [timezonesError, setTimezonesError] = useState(null);
   const [showPreview, setShowPreview] = useState(false);
   const [reportSuccess, setReportSuccess] = useState(false);
+  const [showKundaliModal, setShowKundaliModal] = useState(false);
+  const [isEditingKundali, setIsEditingKundali] = useState(false);
   const [showWelcomePoster, setShowWelcomePoster] = useState(true);
   const [onlyNameAndDate, setOnlyNameAndDate] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
@@ -210,6 +214,8 @@ export default function GenerateReport() {
 
       // Show success toast
       setReportSuccess(true);
+      setShowKundaliModal(true);
+      setIsEditingKundali(false);
       setTimeout(() => setReportSuccess(false), 4000);
 
 
@@ -388,6 +394,11 @@ export default function GenerateReport() {
 
   const handleOpenNadi = () => {
     const win = window.open('/?nadi=true', 'NadiViewer', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no');
+    if (win) win.focus();
+  };
+
+  const handleOpenGarga = () => {
+    const win = window.open('/?garga=true', 'GargaSutrasViewer', 'width=1000,height=800,menubar=no,toolbar=no,location=no,status=no');
     if (win) win.focus();
   };
 
@@ -1244,6 +1255,12 @@ export default function GenerateReport() {
                 >
                   <span>📜</span> {t('nadi_astrology')}
                 </button>
+                <button
+                  onClick={handleOpenGarga}
+                  className="px-4 py-1.5 rounded-full text-[15px] font-bold transition-all bg-purple-100 text-black shadow hover:bg-purple-700 flex items-center gap-2"
+                >
+                  <span>🕉️</span> Garg Shutra
+                </button>
               </div>
               <div className="flex flex-wrap gap-3">
                 <button
@@ -1300,6 +1317,171 @@ export default function GenerateReport() {
               <div>
                 <h3 className="text-lg font-medium text-gray-700 mb-2">{t('pdf_preview')}</h3>
                 <ReportPreview fileUrl={reportFileUrl} />
+              </div>
+            </div>
+          )}
+
+          {showKundaliModal && reportData && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+              <div className="bg-white rounded-2xl shadow-2xl w-full max-w-5xl overflow-hidden relative animate-fade-in flex flex-col md:flex-row">
+                <button
+                  onClick={() => setShowKundaliModal(false)}
+                  className="absolute top-4 right-4 text-black hover:text-red-800 bg-red-400 hover:bg-slate-200 rounded-full p-2 transition-all z-10"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+
+                {/* Left Side: Details */}
+                <div className="w-full md:w-1/2 p-8 bg-amber-50/50 border-r border-amber-100/50 relative">
+                  <div className="flex justify-between items-center mb-6 border-b border-indigo-100 pb-4">
+                    <h2 className="text-3xl font-serif font-black text-indigo-900">Profile Summary</h2>
+                    <button
+                      onClick={() => setIsEditingKundali(!isEditingKundali)}
+                      className="text-sm font-semibold flex items-center gap-1 px-3 py-1.5 rounded-full border border-indigo-200 text-indigo-600 hover:bg-indigo-50 transition-colors"
+                    >
+                      {isEditingKundali ? "Cancel Edit" : <><Edit className="w-4 h-4" /> Edit</>}
+                    </button>
+                  </div>
+
+                  {(() => {
+                    let ascendant = "Unknown", sunSign = "Unknown", moonSign = "Unknown", moonDegree = 0;
+                    const positions = Array.isArray(reportData.planet_positions)
+                      ? reportData.planet_positions
+                      : Object.values(reportData.planet_positions || {});
+
+                    positions.forEach(p => {
+                      const pname = p.name || p.planet;
+                      if (pname === "Ascendant" || pname === "Lagna") {
+                        ascendant = p.sign || p.sign_name || p.rashi || "Unknown";
+                      }
+                      if (pname === "Sun") sunSign = p.sign || p.sign_name || p.rashi || "Unknown";
+                      if (pname === "Moon") {
+                        moonSign = p.sign || p.sign_name || p.rashi || "Unknown";
+                        moonDegree = p.degree || p.normDegree || 0;
+                      }
+                    });
+
+                    // Fallback for Ascendant from charts.houses if not found in planet_positions
+                    if (ascendant === "Unknown" && reportData.charts?.houses) {
+                      const d1Houses = reportData.charts.houses || reportData.charts.D1?.houses;
+                      if (d1Houses && d1Houses[1]) {
+                        ascendant = d1Houses[1].sign || d1Houses[1].sign_name || "Unknown";
+                      }
+                    }
+
+                    const NAKSHATRAS = ["Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"];
+                    const nak_index = Math.floor((moonDegree * 60) / 800);
+                    const birthNakshatra = NAKSHATRAS[nak_index] || "Unknown";
+
+                    let currentDasha = "Unknown";
+
+                    // Try to get from dasha.current directly first
+                    if (reportData.dasha?.current) {
+                      const md = reportData.dasha.current.mahadasha || reportData.dasha.current;
+                      const mdLord = md.lord || md.planet || md.name || "Unknown";
+                      const ad = reportData.dasha.current.antardasha;
+                      const adLord = ad ? (ad.lord || ad.planet || ad.name) : null;
+                      currentDasha = adLord ? `${mdLord} - ${adLord}` : mdLord;
+                    }
+
+                    // Fallback to finding from list
+                    if (currentDasha === "Unknown") {
+                      const dashaList = reportData.dasha?.list || reportData.dashas || [];
+                      if (dashaList.length > 0) {
+                        const nowJD = (new Date().getTime() / 86400000) + 2440587.5; // current julian date approx
+                        const active = dashaList.find(d => d.start_jd <= nowJD && d.end_jd >= nowJD);
+                        if (active) {
+                          const mdLord = active.lord || active.planet || active.name || "Unknown";
+                          let adLord = null;
+                          if (active.antardashas && active.antardashas.length > 0) {
+                            const activeAD = active.antardashas.find(ad => ad.start_jd <= nowJD && ad.end_jd >= nowJD);
+                            if (activeAD) adLord = activeAD.lord || activeAD.planet || activeAD.name;
+                          }
+                          currentDasha = adLord ? `${mdLord} - ${adLord}` : mdLord;
+                        }
+                      }
+                    }
+
+                    const doshas = [];
+                    if (reportData.manglik?.is_present || reportData.manglik?.is_manglik) doshas.push("Manglik Dosha");
+                    if (reportData.kalsarp?.is_present || reportData.kalsarp?.present) doshas.push("Kalsarp Dosha");
+                    if (reportData.pitra_dosha?.is_present) doshas.push("Pitra Dosha");
+                    const doshaStr = doshas.length > 0 ? doshas.join(", ") : "No Major Doshas Detected";
+
+                    if (isEditingKundali) {
+                      return (
+                        <div className="space-y-4">
+                          <div className="space-y-2">
+                            <label className="text-sm font-semibold text-slate-600 block">{t('name')}</label>
+                            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-indigo-500 outline-none" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-semibold text-slate-600 block">{t('date_of_birth')}</label>
+                            <input type="date" value={date} onChange={(e) => setDate(e.target.value)} className="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-indigo-500 outline-none" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-semibold text-slate-600 block">{t('time_of_birth')}</label>
+                            <input type="time" value={time} onChange={(e) => setTime(e.target.value)} className="w-full p-2 border border-slate-300 rounded-md focus:ring-2 focus:ring-indigo-500 outline-none" />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-semibold text-slate-600 block">{t('location')}</label>
+                            <PlaceAutocomplete value={latLon?.display_name || ""} onSelect={onPlaceSelected} />
+                          </div>
+
+                          <div className="pt-6">
+                            <button
+                              onClick={(e) => {
+                                setIsEditingKundali(false);
+                                handleSubmit({ preventDefault: () => { } });
+                              }}
+                              disabled={isSubmitting}
+                              className="w-full py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2 shadow-lg"
+                            >
+                              {isSubmitting ? "Generating..." : "Save & Regenerate Kundali"}
+                            </button>
+                            <p className="text-xs text-center text-slate-500 mt-3">This will update your main profile and regenerate the chart.</p>
+                          </div>
+                        </div>
+                      );
+                    }
+
+                    const formattedDate = date ? date.split("-").reverse().join("-") : "";
+
+                    return (
+                      <div className="space-y-4">
+                        <div className="flex justify-between border-b border-amber-100 pb-2"><span className="font-semibold text-slate-600">Name:</span> <span className="font-bold text-slate-800">{name || "Native"}</span></div>
+                        <div className="flex justify-between border-b border-amber-100 pb-2"><span className="font-semibold text-slate-600">Date of Birth:</span> <span className="font-bold text-slate-800">{formattedDate}</span></div>
+                        <div className="flex justify-between border-b border-amber-100 pb-2"><span className="font-semibold text-slate-600">Time:</span> <span className="font-bold text-slate-800">{time}</span></div>
+                        <div className="flex justify-between border-b border-amber-100 pb-2"><span className="font-semibold text-slate-600">Location:</span> <span className="font-bold text-slate-800 text-right max-w-[200px] truncate" title={latLon?.display_name}>{latLon?.display_name}</span></div>
+                        <div className="flex justify-between border-b border-amber-100 pb-2"><span className="font-semibold text-slate-600">Ascendant:</span> <span className="font-bold text-slate-800">{ascendant}</span></div>
+                        <div className="flex justify-between border-b border-amber-100 pb-2"><span className="font-semibold text-slate-600">Sun Sign:</span> <span className="font-bold text-slate-800">{sunSign}</span></div>
+                        <div className="flex justify-between border-b border-amber-100 pb-2"><span className="font-semibold text-slate-600">Moon Sign:</span> <span className="font-bold text-slate-800">{moonSign}</span></div>
+                        <div className="flex justify-between border-b border-amber-100 pb-2"><span className="font-semibold text-slate-600">Birth Nakshatra:</span> <span className="font-bold text-slate-800">{birthNakshatra}</span></div>
+                        <div className="flex justify-between border-b border-amber-100 pb-2"><span className="font-semibold text-slate-600">Current Dasha:</span> <span className="font-bold text-slate-800">{currentDasha}</span></div>
+                        <div className="flex justify-between pb-2"><span className="font-semibold text-slate-600">Doshas:</span> <span className="font-bold text-red-600 text-right">{doshaStr}</span></div>
+                      </div>
+                    );
+                  })()}
+                </div>
+
+                {/* Right Side: Lagna Chart */}
+                <div className="w-full md:w-1/2 p-6 flex flex-col items-center justify-center bg-white min-h-[400px]">
+                  {reportData.charts ? (
+                    <div className="w-full h-full max-w-md mx-auto aspect-square relative">
+                      <ZodiacChart
+                        houses={reportData.charts?.houses || reportData.charts?.D1?.houses || []}
+                        currentTransit={reportData.current_transit || {}}
+                        variant="legacy"
+                        defaultRect={false}
+                        scaleText={1.3}
+                        bgColor="rgba(245, 224, 222, 1)"
+                        title="Lagna Kundali (D1)"
+                      />
+                    </div>
+                  ) : (
+                    <div className="text-slate-400 font-medium">Chart data unavailable</div>
+                  )}
+                </div>
               </div>
             </div>
           )}

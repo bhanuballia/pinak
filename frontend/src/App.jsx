@@ -93,6 +93,7 @@ import NotificationManager from './components/NotificationManager';
 import PrashnaEngine from './components/PrashnaEngine';
 import KPEngine from './components/KPEngine';
 import NadiViewer from './components/NadiViewer';
+import GargaSutrasViewer from './components/GargaSutrasViewer';
 import MantraTracker from './components/MantraTracker';
 import SynastryDashboard from './components/SynastryDashboard';
 import BrahmaMuhurtViewer from './components/BrahmaMuhurtViewer';
@@ -846,7 +847,8 @@ function App() {
                     setWorksheetData(JSON.parse(savedData));
                 } catch (e) { }
             }
-        } else if (params.get('nadi') === 'true' || params.get('synastry') === 'true') {
+        } else if (params.get('nadi') === 'true' || params.get('synastry') === 'true' || params.get('garga') === 'true') {
+            document.title = 'Vedic Astrology Viewer';
             const savedData = localStorage.getItem('worksheetData');
             if (savedData) {
                 try {
@@ -949,6 +951,7 @@ function App() {
     const isPrashnaMode = new URLSearchParams(window.location.search).get('prashna') === 'true';
     const isKPAstrologyMode = new URLSearchParams(window.location.search).get('kp_astrology') === 'true';
     const isNadiMode = new URLSearchParams(window.location.search).get('nadi') === 'true';
+    const isGargaMode = new URLSearchParams(window.location.search).get('garga') === 'true';
     const isMantraMode = new URLSearchParams(window.location.search).get('mantra') === 'true';
     const isSynastryMode = new URLSearchParams(window.location.search).get('synastry') === 'true';
     const isBrahmaMuhurtMode = new URLSearchParams(window.location.search).get('brahma_muhurt') === 'true';
@@ -982,6 +985,17 @@ function App() {
             );
         }
         return <NadiViewer data={worksheetData} />;
+    }
+
+    if (isGargaMode) {
+        if (!worksheetData) {
+            return (
+                <div className="min-h-screen bg-slate-900 flex items-center justify-center p-8">
+                    <div className="text-purple-500 animate-pulse">Loading Chart Data...</div>
+                </div>
+            );
+        }
+        return <GargaSutrasViewer data={worksheetData} />;
     }
 
     if (isPrashnaMode) {
