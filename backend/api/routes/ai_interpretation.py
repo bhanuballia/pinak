@@ -40,9 +40,9 @@ def get_gemini_model():
       "top_k": 40,
       "max_output_tokens": 8192,
     }
-    # Using gemini-2.5-flash
+    # Using gemini-3.6-flash
     return genai.GenerativeModel(
-      model_name="gemini-2.5-flash",
+      model_name="gemini-3.6-flash",
       generation_config=generation_config,
     )
 

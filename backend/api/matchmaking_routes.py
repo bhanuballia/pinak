@@ -134,7 +134,7 @@ async def get_marriage_activation(request: ActivationRequest):
             return {"analysis": "<div class='p-4 text-rose-500 font-bold'>AI Service not available or API key not set. Cannot perform COMPLETE MARRIAGE ACTIVATION ANALYSIS.</div>"}
             
         genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        model = genai.GenerativeModel("gemini-3.6-flash")
         
         if request.groom:
             person_data = request.groom
@@ -217,7 +217,7 @@ async def generate_ai_compatibility_report(request: MatchmakingRequest):
             return {"report": "<div class='p-4 text-rose-500 font-bold'>AI Service not available or API key not set. Cannot generate AI Report.</div>"}
             
         genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
-        model = genai.GenerativeModel("gemini-2.5-flash")
+        model = genai.GenerativeModel("gemini-3.6-flash")
         
         # Generate full report data for both
         bride_report = assemble_report_data(

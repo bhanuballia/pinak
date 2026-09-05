@@ -19,7 +19,7 @@ async def analyze_single_hand(image: Image.Image, hand_type: str, api_key: str):
         raise HTTPException(status_code=400, detail=str(e))
         
     genai.configure(api_key=api_key)
-    model = genai.GenerativeModel('gemini-2.5-flash')
+    model = genai.GenerativeModel('gemini-3.6-flash')
     
     if hand_type == "Left Hand":
         key_topics_schema = """
