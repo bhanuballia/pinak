@@ -789,12 +789,12 @@ export default function GenerateReport() {
       <img
         src="/deities/match1.jpg"
         alt="Banana Tree Left"
-        className="hidden xl:block absolute left-4 2xl:left-16 top-1/4 w-48 2xl:w-72 h-auto object-contain rounded-3xl shadow-[0_0_40px_rgba(251,146,60,0.3)] mix-blend-multiply z-0"
+        className="hidden md:block absolute -left-12 lg:left-4 xl:left-8 2xl:left-16 top-1/4 w-40 lg:w-48 xl:w-56 2xl:w-72 h-auto object-contain rounded-3xl shadow-[0_0_40px_rgba(251,146,60,0.3)] mix-blend-multiply z-0 opacity-40 xl:opacity-100 transition-all duration-500"
       />
       <img
         src="/deities/jupiter.jpg"
         alt="Banana Tree Right"
-        className="hidden xl:block absolute right-4 2xl:right-16 top-1/4 w-48 2xl:w-72 h-auto object-contain rounded-3xl shadow-[0_0_40px_rgba(251,146,60,0.3)] mix-blend-multiply z-0"
+        className="hidden md:block absolute -right-12 lg:right-4 xl:right-8 2xl:right-16 top-1/4 w-40 lg:w-48 xl:w-56 2xl:w-72 h-auto object-contain rounded-3xl shadow-[0_0_40px_rgba(251,146,60,0.3)] mix-blend-multiply z-0 opacity-40 xl:opacity-100 transition-all duration-500"
       />
 
       {/* Welcome Poster Modal */}
@@ -867,7 +867,7 @@ export default function GenerateReport() {
           </div>
         </div>
       )}
-      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-8 border border-gray-100">
+      <div className="relative z-10 max-w-4xl mx-auto bg-white rounded-lg shadow-xl p-8 border border-gray-100">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="text-3xl font-serif italic font-black text-indigo-900 tracking-wide">{t('generate_kundali', 'Generate Kundali')}</h1>
