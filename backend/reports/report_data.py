@@ -1755,10 +1755,30 @@ def assemble_report_data(
         print(f"Error generating Lal Kitab data: {e}")
         report_data["lalkitab"] = {"chart": {}, "debts": []}
 
-    # 24. Current Transits
+    # 24. Current Transits and Avasthas
     try:
+        from core.analysis.shadbala_engine import get_compound_dignity
         import datetime as dt_module
         
+        def get_avastha(chart_obj, p_name, sign_name):
+            if p_name in ["Ascendant", "Uranus", "Neptune", "Pluto"]: return ""
+            try:
+                dig = get_compound_dignity(chart_obj, p_name, sign_name)
+                if dig in ["EXALTED", "MOOLATRIKONA", "OWN_SIGN"]: return "Awake"
+                if dig in ["GREAT_FRIEND", "FRIEND", "NEUTRAL"]: return "Sleep"
+                return "Dead"
+            except:
+                return ""
+
+        # Enrich natal chart with avastha
+        if "houses" in chart:
+            for h, info in chart["houses"].items():
+                s_name = info.get("sign_name", "")
+                if s_name:
+                    for p in info.get("planets", []):
+                        if "name" in p:
+                            p["avastha"] = get_avastha(chart, p["name"], s_name)
+                            
         now_utc = dt_module.datetime.now(dt_module.timezone.utc).replace(tzinfo=None)
         current_jd = datetime_to_julian(now_utc)
         current_chart = build_rashi_chart(current_jd, lat, lon)
@@ -1770,11 +1790,135 @@ def assemble_report_data(
                 sign_name = sign_data.get("sign_name", "")
                 if sign_name:
                     planets = sign_data.get("planets", [])
-                    transit_positions[sign_name] = [p["name"] for p in planets if "name" in p]
+                    arr = []
+                    for p in planets:
+                        if "name" not in p: continue
+                        avastha = get_avastha(current_chart, p["name"], sign_name)
+                        arr.append({
+                            "name": p["name"], 
+                            "nakshatra": p.get("nakshatra", ""),
+                            "avastha": avastha
+                        })
+                    transit_positions[sign_name] = arr
         
         report_data["current_transit"] = transit_positions
     except Exception as e:
-        print(f"Error generating current transits: {e}")
+        print(f"Error generating current transits/avasthas: {e}")
+
+    # 25. Calculate Yamakantaka
+    try:
+        from panchang.tithi_yoga_karana import compute_sunrise_sunset_for_date
+        import datetime as dt_module
+        
+        sr_ss = compute_sunrise_sunset_for_date(dt_local.date(), lat, lon, tz_offset)
+        sr_dt = dt_module.datetime.fromisoformat(sr_ss["sunrise_local"]).replace(tzinfo=None) if sr_ss.get("sunrise_local") else dt_local.replace(hour=6, minute=0, second=0)
+        ss_dt = dt_module.datetime.fromisoformat(sr_ss["sunset_local"]).replace(tzinfo=None) if sr_ss.get("sunset_local") else dt_local.replace(hour=18, minute=0, second=0)
+        
+        py_wd = dt_local.weekday()
+        vedic_wd = (py_wd + 1) % 7
+        is_daytime = sr_dt <= dt_local < ss_dt
+        
+        if dt_local < sr_dt:
+            vedic_wd = (vedic_wd - 1) % 7
+            is_daytime = False
+            start_time = ss_dt - dt_module.timedelta(days=1)
+            end_time = sr_dt
+        elif dt_local >= ss_dt:
+            is_daytime = False
+            start_time = ss_dt
+            end_time = sr_dt + dt_module.timedelta(days=1)
+        else:
+            start_time = sr_dt
+            end_time = ss_dt
+            
+        day_parts = {0: 5, 1: 4, 2: 3, 3: 2, 4: 1, 5: 7, 6: 6}
+        night_parts = {0: 1, 1: 7, 2: 6, 3: 5, 4: 4, 5: 3, 6: 2}
+        
+        yama_part = day_parts[vedic_wd] if is_daytime else night_parts[vedic_wd]
+        
+        duration = end_time - start_time
+        part_duration = duration / 8
+        yama_dt_local = start_time + part_duration * (yama_part - 1)
+        yama_dt_utc = yama_dt_local - dt_module.timedelta(hours=tz_offset)
+        yama_jd_ut = datetime_to_julian(yama_dt_utc)
+        
+        yama_chart = build_rashi_chart(yama_jd_ut, lat, lon, house_system="W", style="north")
+        yama_asc_idx = yama_chart["ascendant_sign_index"]
+        natal_asc_idx = chart["ascendant_sign_index"]
+        yama_house = ((yama_asc_idx - natal_asc_idx) % 12) + 1
+        
+        report_data["yamakantaka"] = {
+            "sign": yama_asc_idx,
+            "sign_name": ZODIAC_SIGNS[yama_asc_idx],
+            "house": yama_house,
+            "time": yama_dt_local.strftime("%I:%M %p")
+        }
+        
+        # Mandi parts
+        mandi_day_parts = {0: 2, 1: 1, 2: 7, 3: 6, 4: 5, 5: 4, 6: 3}
+        mandi_night_parts = {0: 6, 1: 5, 2: 4, 3: 3, 4: 2, 5: 1, 6: 7}
+        mandi_part = mandi_day_parts[vedic_wd] if is_daytime else mandi_night_parts[vedic_wd]
+        mandi_dt_local = start_time + part_duration * (mandi_part - 1)
+        mandi_jd_ut = datetime_to_julian(mandi_dt_local - dt_module.timedelta(hours=tz_offset))
+        mandi_chart = build_rashi_chart(mandi_jd_ut, lat, lon, house_system="W", style="north")
+        mandi_asc_idx = mandi_chart["ascendant_sign_index"]
+        mandi_house = ((mandi_asc_idx - natal_asc_idx) % 12) + 1
+        
+        report_data["mandi"] = {
+            "sign": mandi_asc_idx,
+            "sign_name": ZODIAC_SIGNS[mandi_asc_idx],
+            "house": mandi_house,
+            "time": mandi_dt_local.strftime("%I:%M %p")
+        }
+
+        # Gulika parts
+        gulika_day_parts = {0: 7, 1: 6, 2: 5, 3: 4, 4: 3, 5: 2, 6: 1}
+        gulika_night_parts = {0: 3, 1: 2, 2: 1, 3: 7, 4: 6, 5: 5, 6: 4}
+        gulika_part = gulika_day_parts[vedic_wd] if is_daytime else gulika_night_parts[vedic_wd]
+        gulika_dt_local = start_time + part_duration * (gulika_part - 1)
+        gulika_jd_ut = datetime_to_julian(gulika_dt_local - dt_module.timedelta(hours=tz_offset))
+        gulika_chart = build_rashi_chart(gulika_jd_ut, lat, lon, house_system="W", style="north")
+        gulika_asc_idx = gulika_chart["ascendant_sign_index"]
+        gulika_house = ((gulika_asc_idx - natal_asc_idx) % 12) + 1
+        
+        report_data["gulika"] = {
+            "sign": gulika_asc_idx,
+            "sign_name": ZODIAC_SIGNS[gulika_asc_idx],
+            "house": gulika_house,
+            "time": gulika_dt_local.strftime("%I:%M %p")
+        }
+
+        # Upaketu (Sikhi)
+        sun_lon = chart["planet_positions"]["Sun"]["sidereal"]["lon"]
+        upaketu_lon = (sun_lon - 30.0) % 360.0
+        upaketu_asc_idx = int(upaketu_lon / 30.0)
+        upaketu_house = ((upaketu_asc_idx - natal_asc_idx) % 12) + 1
+        
+        report_data["upaketu"] = {
+            "lon": round(upaketu_lon, 2),
+            "sign": upaketu_asc_idx,
+            "sign_name": ZODIAC_SIGNS[upaketu_asc_idx],
+            "house": upaketu_house
+        }
+
+        # Indrachapa (Kodanda)
+        indrachapa_lon = (sun_lon - 46.666666) % 360.0
+        indrachapa_asc_idx = int(indrachapa_lon / 30.0)
+        indrachapa_house = ((indrachapa_asc_idx - natal_asc_idx) % 12) + 1
+        
+        report_data["indrachapa"] = {
+            "lon": round(indrachapa_lon, 2),
+            "sign": indrachapa_asc_idx,
+            "sign_name": ZODIAC_SIGNS[indrachapa_asc_idx],
+            "house": indrachapa_house
+        }
+    except Exception as e:
+        print(f"Error calculating Upagrahas: {e}")
+        report_data["yamakantaka"] = None
+        report_data["mandi"] = None
+        report_data["gulika"] = None
+        report_data["upaketu"] = None
+        report_data["indrachapa"] = None
 
     # Save to cache before returning
     cache_chart(report_data)

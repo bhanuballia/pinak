@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createPortal } from "react-dom";
 import ZodiacRectSign from "./ZodiacRectSign";
 // North Indian chart — SVG 0-100 coordinate space.
 // House 1 = top-center diamond; houses go clockwise.
@@ -119,7 +120,7 @@ const PLANET_COLORS = {
   "Ascendant": "#000000"   // Black
 };
 
-const ZodiacChart = ({ houses, transitHouses = null, currentTransit = null, onPlanetClick, title, titleFontSize, variant = "modern", planetEffects = {}, scaleText = 1, planetPositions = [], defaultRect = false, hideLegend = false, hideOuterRect, defaultLang = "en", showFullscreenButton = false, onPopOut, bgColor, stackLayout = false, showNakshatra = false, showDegree = false, hideTranslation = false }) => {
+const ZodiacChart = ({ houses, transitHouses = null, currentTransit = null, vimsopakaBala = null, onPlanetClick, title, titleFontSize, variant = "modern", planetEffects = {}, scaleText = 1, planetPositions = [], defaultRect = false, hideLegend = false, hideOuterRect, defaultLang = "en", showFullscreenButton = false, onPopOut, bgColor, stackLayout = false, showNakshatra = false, showDegree = false, hideTranslation = false }) => {
   const isMainChart = title && (
     title.toLowerCase().includes('birth') ||
     title.toLowerCase().includes('lagna') ||
@@ -138,6 +139,7 @@ const ZodiacChart = ({ houses, transitHouses = null, currentTransit = null, onPl
   const [isRect, setIsRect] = useState(defaultRect);
   const [zoom, setZoom] = useState(1);
   const [useOriginalColors, setUseOriginalColors] = useState(false);
+  const [hoveredTooltip, setHoveredTooltip] = useState(null);
 
   const isLegacy = variant === "legacy";
 
@@ -465,18 +467,18 @@ const ZodiacChart = ({ houses, transitHouses = null, currentTransit = null, onPl
   };
 
   return (
-    <div 
-      ref={containerRef} 
+    <div
+      ref={containerRef}
       onDoubleClick={() => window.dispatchEvent(new Event('open-time-machine'))}
       style={{
-      display: 'flex', flexDirection: 'column', width: '100%', height: '100%', background: bgColor || (isLegacy ? '#fdfbf7' : 'white'),
-      transform: `scale(${zoom})`,
-      transformOrigin: 'center center',
-      zIndex: zoom > 1 ? 50 : 1,
-      position: zoom > 1 ? 'relative' : 'static',
-      transition: 'transform 0.2s ease-in-out',
-      boxShadow: zoom > 1 ? '0 25px 50px -12px rgba(0, 0, 0, 0.25)' : 'none'
-    }}>
+        display: 'flex', flexDirection: 'column', width: '100%', height: '100%', background: bgColor || (isLegacy ? '#fdfbf7' : 'white'),
+        transform: `scale(${zoom})`,
+        transformOrigin: 'center center',
+        zIndex: zoom > 1 ? 50 : 1,
+        position: zoom > 1 ? 'relative' : 'static',
+        transition: 'transform 0.2s ease-in-out',
+        boxShadow: zoom > 1 ? '0 25px 50px -12px rgba(0, 0, 0, 0.25)' : 'none'
+      }}>
       {title && (
         <div style={{
           display: 'flex',
@@ -590,108 +592,138 @@ const ZodiacChart = ({ houses, transitHouses = null, currentTransit = null, onPl
           {entries.map(({ houseNum, signDisplay, planets }) => {
             const polyPoints = isDoubleChart ? INNER_HOUSE_POLYGON[houseNum] : HOUSE_POLYGON[houseNum];
             if (!polyPoints) return null;
-            
+
             const signNameIndexMap = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
-            
-            let tooltipText = `House ${houseNum}`;
+
+            let tooltipTitle = `House ${houseNum}`;
+            let tooltipContent = "";
             if (signDisplay) {
-               const sName = signNameIndexMap[signDisplay - 1];
-               const currentPlanetsInSign = currentTransit && currentTransit[sName] ? currentTransit[sName] : [];
-               
-               const natalNames = planets.map(p => typeof p === 'object' ? p.name : p).join(', ') || 'None';
-               const transitNames = currentPlanetsInSign.join(', ') || 'None';
-               
-               tooltipText = `House ${houseNum} (Zodiac Sign ${signDisplay} - ${sName})\nNatal Planets: ${natalNames}\nCurrent Transits: ${transitNames}`;
+              const sName = signNameIndexMap[signDisplay - 1];
+              const currentPlanetsInSign = currentTransit && currentTransit[sName] ? currentTransit[sName] : [];
+
+              const formatPlanet = (p, isTransit = false) => {
+                let pName = typeof p === 'object' ? p.name : p;
+                let nature = pName !== "Ascendant" ? (["Mars", "Saturn", "Rahu", "Ketu", "Sun"].includes(pName) ? "Malefic" : "Benefic") : "";
+
+                let vimScore = !isTransit && vimsopakaBala && vimsopakaBala[pName] !== undefined ? `Vimsopaka: ${vimsopakaBala[pName].toFixed(1)}` : "";
+
+                if (typeof p === 'object') {
+                  let avasthaStr = p.avastha ? ` (${p.avastha})` : "";
+                  let extra = [nature ? `[${nature}]` : "", avasthaStr, vimScore ? `[${vimScore}]` : ""].filter(Boolean).join(" ");
+                  extra = extra ? ` ${extra}` : "";
+                  return p.nakshatra ? `${p.name}${extra} in ${p.nakshatra} Nakshatra` : `${p.name}${extra}`;
+                }
+
+                let extra = [nature ? `[${nature}]` : "", vimScore ? `[${vimScore}]` : ""].filter(Boolean).join(" ");
+                extra = extra ? ` ${extra}` : "";
+                return `${p}${extra}`;
+              };
+
+              const natalNames = planets.length > 0 ? planets.map(p => formatPlanet(p, false)).join('\n  - ') : 'None';
+              const transitNames = currentPlanetsInSign.length > 0 ? currentPlanetsInSign.map(p => formatPlanet(p, true)).join('\n  - ') : 'None';
+
+              tooltipTitle = `House ${houseNum} (Zodiac Sign ${signDisplay} - ${sName})`;
+              tooltipContent = `Natal Planets:\n  - ${natalNames}\n\nCurrent Transits:\n  - ${transitNames}`;
             }
 
             return (
               <polygon
                 key={`interactive-${houseNum}`}
                 points={polyPoints}
-                fill="transparent"
+                fill="none"
+                pointerEvents="all"
                 style={{ cursor: 'help' }}
-              >
-                <title>{tooltipText}</title>
-              </polygon>
+                onMouseMove={(e) => {
+                  setHoveredTooltip({
+                    title: tooltipTitle,
+                    content: tooltipContent,
+                    x: e.clientX,
+                    y: e.clientY
+                  });
+                }}
+                onMouseLeave={() => setHoveredTooltip(null)}
+              />
             );
           })}
 
-          {/* Outer square */}
-          {!finalHideOuterRect && (
-            <rect
-              x="5" y="5" width="90" height="90"
-              fill="none"
-              stroke="#000"
-              strokeWidth={isLegacy ? "0.3" : "0.3"}
-            />
-          )}
-
-          {isDoubleChart ? (
-            <>
-              {/* Inner square for Combined Birth + Transit chart */}
+          {/* Outer square and grid lines */}
+          <g pointerEvents="none">
+            {!finalHideOuterRect && (
               <rect
-                x="20" y="20" width="60" height="60"
-                fill="none"
-                stroke="#000"
-                strokeWidth="0.3"
-              />
-
-              {/* Outer grid boundary lines for the 12 transit boxes */}
-              {/* Perpendicular midlines */}
-              {/* Top-edge dividers */}
-              <line x1="40" y1="5" x2="40" y2="20" stroke="#000" strokeWidth="0.3" />
-              <line x1="60" y1="5" x2="60" y2="20" stroke="#000" strokeWidth="0.3" />
-
-              {/* Bottom-edge dividers */}
-              <line x1="40" y1="80" x2="40" y2="95" stroke="#000" strokeWidth="0.3" />
-              <line x1="60" y1="80" x2="60" y2="95" stroke="#000" strokeWidth="0.3" />
-
-              {/* Left-edge dividers */}
-              <line x1="5" y1="40" x2="20" y2="40" stroke="#000" strokeWidth="0.3" />
-              <line x1="5" y1="60" x2="20" y2="60" stroke="#000" strokeWidth="0.3" />
-
-              {/* Right-edge dividers */}
-              <line x1="80" y1="40" x2="95" y2="40" stroke="#000" strokeWidth="0.3" />
-              <line x1="80" y1="60" x2="95" y2="60" stroke="#000" strokeWidth="0.3" />
-
-
-
-              {/* Corner diagonal lines */}
-              <line x1="5" y1="5" x2="20" y2="20" stroke="#000" strokeWidth="0.3" />
-              <line x1="80" y1="20" x2="95" y2="5" stroke="#000" strokeWidth="0.3" />
-              <line x1="5" y1="95" x2="20" y2="80" stroke="#000" strokeWidth="0.3" />
-              <line x1="80" y1="80" x2="95" y2="95" stroke="#000" strokeWidth="0.3" />
-
-              {/* Inner Diamond (scaled) */}
-              <polygon
-                points="50,20 80,50 50,80 20,50"
-                fill="none"
-                stroke="#000"
-                strokeWidth="0.3"
-              />
-
-              {/* Diagonals extending from outermost corners (5,5) to (95,95) for authentic style */}
-              <line x1="5" y1="5" x2="95" y2="95" stroke="rgba(26, 3, 3, 1)" strokeWidth="0.3" />
-              <line x1="95" y1="5" x2="5" y2="95" stroke="#0e0b0bff" strokeWidth="0.3" />
-            </>
-          ) : (
-            <>
-              {/* Standard single diamond connecting midpoints */}
-              <polygon
-                points="50,5 95,50 50,95 5,50"
+                x="5" y="5" width="90" height="90"
                 fill="none"
                 stroke="#000"
                 strokeWidth={isLegacy ? "0.3" : "0.3"}
               />
-              {/* Center cross lines */}
+            )}
+
+            {isDoubleChart ? (
+              <>
+                {/* Inner square for Combined Birth + Transit chart */}
+                <rect
+                  x="20" y="20" width="60" height="60"
+                  fill="none"
+                  stroke="#000"
+                  strokeWidth="0.3"
+                />
+
+                {/* Outer grid boundary lines for the 12 transit boxes */}
+                {/* Perpendicular midlines */}
+                {/* Top-edge dividers */}
+                <line x1="40" y1="5" x2="40" y2="20" stroke="#000" strokeWidth="0.3" />
+                <line x1="60" y1="5" x2="60" y2="20" stroke="#000" strokeWidth="0.3" />
+
+                {/* Bottom-edge dividers */}
+                <line x1="40" y1="80" x2="40" y2="95" stroke="#000" strokeWidth="0.3" />
+                <line x1="60" y1="80" x2="60" y2="95" stroke="#000" strokeWidth="0.3" />
+
+                {/* Left-edge dividers */}
+                <line x1="5" y1="40" x2="20" y2="40" stroke="#000" strokeWidth="0.3" />
+                <line x1="5" y1="60" x2="20" y2="60" stroke="#000" strokeWidth="0.3" />
+
+                {/* Right-edge dividers */}
+                <line x1="80" y1="40" x2="95" y2="40" stroke="#000" strokeWidth="0.3" />
+                <line x1="80" y1="60" x2="95" y2="60" stroke="#000" strokeWidth="0.3" />
 
 
 
-              {/* Diagonal corner lines */}
-              <line x1="5" y1="5" x2="95" y2="95" stroke="#000" strokeWidth="0.3" />
-              <line x1="95" y1="5" x2="5" y2="95" stroke="#000" strokeWidth="0.3" />
-            </>
-          )}
+                {/* Corner diagonal lines */}
+                <line x1="5" y1="5" x2="20" y2="20" stroke="#000" strokeWidth="0.3" />
+                <line x1="80" y1="20" x2="95" y2="5" stroke="#000" strokeWidth="0.3" />
+                <line x1="5" y1="95" x2="20" y2="80" stroke="#000" strokeWidth="0.3" />
+                <line x1="80" y1="80" x2="95" y2="95" stroke="#000" strokeWidth="0.3" />
+
+                {/* Inner Diamond (scaled) */}
+                <polygon
+                  points="50,20 80,50 50,80 20,50"
+                  fill="none"
+                  stroke="#000"
+                  strokeWidth="0.3"
+                />
+
+                {/* Diagonals extending from outermost corners (5,5) to (95,95) for authentic style */}
+                <line x1="5" y1="5" x2="95" y2="95" stroke="rgba(26, 3, 3, 1)" strokeWidth="0.3" />
+                <line x1="95" y1="5" x2="5" y2="95" stroke="#0e0b0bff" strokeWidth="0.3" />
+              </>
+            ) : (
+              <>
+                {/* Standard single diamond connecting midpoints */}
+                <polygon
+                  points="50,5 95,50 50,95 5,50"
+                  fill="none"
+                  stroke="#000"
+                  strokeWidth={isLegacy ? "0.3" : "0.3"}
+                />
+                {/* Center cross lines */}
+
+
+
+                {/* Diagonal corner lines */}
+                <line x1="5" y1="5" x2="95" y2="95" stroke="#000" strokeWidth="0.3" />
+                <line x1="95" y1="5" x2="5" y2="95" stroke="#000" strokeWidth="0.3" />
+              </>
+            )}
+          </g>
 
           {/* Drishti (Aspect) Lines between inner house centroids */}
 
@@ -811,8 +843,31 @@ const ZodiacChart = ({ houses, transitHouses = null, currentTransit = null, onPl
           )}
         </svg>
       </div>
+      {/* Custom Tooltip */}
+      {hoveredTooltip && typeof document !== 'undefined' && createPortal(
+        <div
+          className="fixed z-[9999] bg-white border border-slate-200 shadow-2xl rounded-xl p-4 pointer-events-none transition-opacity duration-150"
+          style={{
+            left: hoveredTooltip.x + 15,
+            top: hoveredTooltip.y + 15,
+            transform: "translate(0, 0)",
+            color: '#1e293b',
+            whiteSpace: 'pre-line',
+            pointerEvents: 'none'
+          }}
+        >
+          <div className="font-bold text-lg text-indigo-900 border-b border-indigo-100 pb-2 mb-2">
+            {hoveredTooltip.title}
+          </div>
+          <div className="text-[15px] leading-relaxed">
+            {hoveredTooltip.content}
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
-};
+}
+
 
 export default ZodiacChart;

@@ -1471,6 +1471,7 @@ export default function GenerateReport() {
                       <ZodiacChart
                         houses={reportData.charts?.houses || reportData.charts?.D1?.houses || []}
                         currentTransit={reportData.current_transit || {}}
+                        vimsopakaBala={reportData.vimsopaka_bala?.shodashavarga || reportData.vimsopaka_bala?.dasavarga || reportData.vimsopaka_bala?.shadvarga || {}}
                         variant="legacy"
                         defaultRect={false}
                         scaleText={1.3}

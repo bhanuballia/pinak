@@ -53,6 +53,10 @@ import BhriguBinduAnalysis from "./BhriguBinduAnalysis";
 import AIOraclePanel from "./AIOraclePanel";
 import DynamicVargaAnalysis from "./DynamicVargaAnalysis";
 import SphutaDrishtiViewer from "./SphutaDrishtiViewer";
+import YamakantakaAnalysis from "./worksheet/YamakantakaAnalysis";
+import MandiGulikaAnalysis from "./worksheet/MandiGulikaAnalysis";
+import UpaketuAnalysis from "./worksheet/UpaketuAnalysis";
+import IndrachapaAnalysis from "./worksheet/IndrachapaAnalysis";
 
 const BulletInterpretation = ({ text, colorClass = "text-slate-600" }) => {
   if (!text) return null;
@@ -4831,6 +4835,10 @@ const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSele
             <div className="px-2 pb-4">
               <HouseEffectTable data={data} planetEffects={planetEffects} />
               <ConjunctionAnalysis houses={data.charts?.houses} />
+              <YamakantakaAnalysis yamakantaka={data.yamakantaka} />
+              <MandiGulikaAnalysis mandi={data.mandi} gulika={data.gulika} />
+              <UpaketuAnalysis upaketu={data.upaketu} />
+              <IndrachapaAnalysis indrachapa={data.indrachapa} />
             </div>
           </div>
         );
@@ -5543,6 +5551,10 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                     <DrishtiTable houses={((timeControlledPositions || transitPositions) && showStandaloneTransit) ? computedTransitHouses : data.charts?.houses} reportData={data} />
                     <HouseEffectTable data={data} planetEffects={effects} customPositions={formattedTransitPositions} />
                     <ConjunctionAnalysis houses={((timeControlledPositions || transitPositions) && showStandaloneTransit) ? computedTransitHouses : data.charts?.houses} />
+                    <YamakantakaAnalysis yamakantaka={data.yamakantaka} />
+              <MandiGulikaAnalysis mandi={data.mandi} gulika={data.gulika} />
+              <UpaketuAnalysis upaketu={data.upaketu} />
+              <IndrachapaAnalysis indrachapa={data.indrachapa} />
                   </div>
                 </div>
               );
@@ -6278,10 +6290,10 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                       onChartClick={() => setShowVimshottariTransitControl(true)}
                       hideAnalysis={cid === 'transit_compare2'}
                     />
-                    
+
                     {/* Add Sun button below transit panel */}
                     <div className="mt-4 flex justify-center">
-                      <button 
+                      <button
                         onClick={() => setShowSunAnalysisPopup(true)}
                         className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 px-6 rounded-full shadow-lg border-2 border-orange-300 transition-transform hover:scale-105 flex items-center gap-2"
                       >
@@ -6985,6 +6997,10 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                     <DrishtiTable houses={data.charts?.houses} reportData={data} />
                     <HouseEffectTable data={data} planetEffects={planetEffects} />
                     <ConjunctionAnalysis houses={data.charts?.houses} />
+                    <YamakantakaAnalysis yamakantaka={data.yamakantaka} />
+              <MandiGulikaAnalysis mandi={data.mandi} gulika={data.gulika} />
+              <UpaketuAnalysis upaketu={data.upaketu} />
+              <IndrachapaAnalysis indrachapa={data.indrachapa} />
                   </div>
                 </div>
               </div>
