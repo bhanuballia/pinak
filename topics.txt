@@ -1,0 +1,105 @@
+
+                          <Sparkles className="w-5 h-5 text-amber-600" /> Primary Gemstone vs Upratna (Substitute)
+                        
+
+                          <Layers className="w-5 h-5 text-rose-700" /> Carat Weight Dosage (Based on {bodyWeightKg} Kg)
+                        
+
+                        <BookOpen className="w-6 h-6 text-amber-700" /> Step-by-Step Pran Pratishta (Consecration) Ritual Guide
+                      
+📋 Personalized Kundali Remedies Report
+Key Auspicious Gemstones
+
+                        <Sparkles className="w-5 h-5 text-amber-900" /> 1. Real-Time Transit-Based Remedies (Gochar Remedial Guide)
+                      
+
+                        <Gem className="w-5 h-5 text-amber-900" /> 2. Prescribed Auspicious Gemstones (Ratna)
+                      
+
+                        <BookOpen className="w-5 h-5 text-amber-900" /> 3. Beneficial Deities & Vedic Invocation Mantras
+                      
+
+                        <Layers className="w-5 h-5 text-amber-900" /> 4. Recommended Rudraksha Beads
+                      
+
+                        <Leaf className="w-5 h-5 text-amber-900" /> 5. Navagraha Plant Remedies
+                      
+
+                        <Calendar className="w-5 h-5 text-amber-900" /> 6. Planetary Relief Remedies
+                      
+
+                        <Palette className="w-5 h-5 text-amber-900" /> 7. Color Therapy & Lifestyle Guide
+                      
+
+                        <Compass className="w-5 h-5 text-amber-900" /> 8. Prescribed Yantras & Sacred Geometries
+                      
+
+                            <Moon className="w-5 h-5 text-amber-900" /> 8. Zodiac Sign ({selectedLagna}) Specific Remedies
+                          
+
+                        <Heart className="w-5 h-5 text-rose-700" /> 10. Lal Kitab House Remedies, Debts & Warnings
+                      
+
+                            <Wind className="w-5 h-5 text-amber-900" /> 11. Vastu, Fengshui & Pyramid Recommendations (Element: {lagnaElement})
+                          
+
+                        <Sparkles className="w-5 h-5 text-amber-900" /> 12. Prescribed Crystals, Lockets & Rosaries (Mala)
+                      
+
+                        <BookOpen className="w-5 h-5 text-amber-900" /> 13. Sacred Mantra Sadhana & Code of Conduct
+                      
+
+                            <ShieldAlert className="w-5 h-5 text-amber-400" /> 14. Kundali Dosha Remedies (कुण्डली दोष निवारण उपाय)
+                          
+{lagnaInfo.lifeStone}
+{lagnaInfo.karakaStone}
+{lagnaInfo.luckyStone}
+{gemInfo.gem}
+
+                    <span>📿</span> Rudraksha Beads (1 to 21 Mukhi)
+                  
+
+                        <span>📿</span> Complete Rudraksha Directory (1 to 21 Mukhi + Combination Beads)
+                      
+
+                    <span>☸️</span> Sacred Yantras & Cosmic Geometries
+                  
+
+                    <span>🌿</span> Navagraha Plant Remedies
+                  
+
+                    <span>🪐</span> Planetary Relief Remedies
+                  
+
+                    <span>♈️</span> Zodiac Sign Remedies
+                  
+
+                      <span>📜</span> Lal Kitab System, Astro-Palmistry & Age Milestones
+                    
+
+                            Lagna Ascendant: <span className="text-green-700 font-bold">{userAscendant || 'Aries'}</span>
+                          
+
+                      Deities & Avatars for {deityInfo.planet}
+                    
+
+                      <span>🚩</span> Philosophy of Fasting (Upa-vaas) & Universal Vratas
+                    
+
+                      <Palette className="w-6 h-6 text-green-900" /> Color Therapy, VIBGYOR & Solarized Water Healing
+                    
+
+                      <span>🧘</span> Science of Meditation, Sound Vibrations & Kundalini
+                    
+
+                      <Sparkles className="w-6 h-6 text-amber-900" /> Sacred Crystals & Lockets
+                    
+
+                      <Layers className="w-6 h-6 text-amber-900" /> Holy Rosaries (Mala)
+                    
+
+                      <Wind className="w-6 h-6 text-amber-900" /> Fengshui Products & Remedies
+                    
+
+                      <Triangle className="w-6 h-6 text-amber-400" /> Pyramids
+                    

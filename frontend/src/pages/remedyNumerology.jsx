@@ -340,8 +340,8 @@ export default function RemedyNumerology() {
       <div className="max-w-7xl mx-auto space-y-8">
 
         {/* Header Bar */}
-        <div className="flex items-center justify-between border-b border-rose-200 pb-5">
-          <div className="flex items-center space-x-3">
+        <div className="flex flex-col md:flex-row items-center justify-between border-b border-rose-200 pb-5 gap-4">
+          <div className="flex items-center space-x-3 w-full md:w-auto">
             <button
               onClick={() => window.history.back()}
               className="p-2.5 bg-white border border-rose-200 hover:bg-rose-100 rounded-2xl transition-all text-slate-800 shadow-xs"
@@ -359,6 +359,78 @@ export default function RemedyNumerology() {
                 Navagraha Planetary Roles, Crystals, Bija Mantras, Solfeggio Sound Therapy & Energy Circles
               </p>
             </div>
+          </div>
+
+
+          <div className="w-full md:w-auto min-w-[250px] ml-auto">
+            <select
+              value=""
+              onChange={(e) => {
+                const val = e.target.value;
+                if (!val) return;
+                const urlParams = new URLSearchParams(window.location.search);
+                const nameParam = urlParams.get('name') || '';
+                const dobParam = urlParams.get('date') || urlParams.get('dob') || '';
+                
+                const newParams = new URLSearchParams({
+                  name: nameParam,
+                  date: dobParam
+                });
+
+                if (val.startsWith('ext_')) {
+                  switch (val) {
+                    case 'ext_remedy':
+                      newParams.append('remedy_numerology', 'true');
+                      break;
+                    case 'ext_medical':
+                      newParams.append('medical_numerology', 'true');
+                      break;
+                    case 'ext_personality':
+                      newParams.append('personality_numerology', 'true');
+                      break;
+                    case 'ext_career':
+                      newParams.append('carrier_numerology', 'true');
+                      break;
+                    case 'ext_prediction':
+                      newParams.append('prediction_numerology', 'true');
+                      break;
+                    case 'ext_daily':
+                      newParams.append('daily_numerology', 'true');
+                      break;
+                    default:
+                      break;
+                  }
+                  window.location.href = '/?' + newParams.toString();
+                } else {
+                  newParams.append('numerology', 'true');
+                  newParams.append('tab', val);
+                  window.location.href = '/?' + newParams.toString();
+                }
+              }}
+              className="w-full bg-white border border-rose-300 text-rose-950 font-bold px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 text-[14px] md:text-[16px] shadow-sm appearance-none cursor-pointer"
+              style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23881337\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.75rem center', backgroundSize: '1.2em' }}
+            >
+              <option value="" disabled>Navigate Numerology...</option>
+              <optgroup label="Dashboard Views">
+                <option value="report">⭐ Detailed Report</option>
+                <option value="prediction">✨ Special Yogas</option>
+                <option value="correction">🖋️ Name Correction</option>
+                <option value="compatibility">💍 Marriage Match</option>
+                <option value="vastu">🧭 Vastu & Yogas</option>
+                <option value="analytics">📊 Numerology Grid</option>
+                <option value="cycles">📅 Life Cycles</option>
+                <option value="quantum">🌌 Quantum Sync</option>
+                <option value="mobile">📱 Mobile Numerology</option>
+              </optgroup>
+              <optgroup label="Advanced External Reports">
+                <option value="ext_remedy">💎 Powerful Remedies</option>
+                <option value="ext_medical">🏥 Medical Diagnostics</option>
+                <option value="ext_personality">🧠 Personality Matrix</option>
+                <option value="ext_career">💼 Career & Wealth</option>
+                <option value="ext_prediction">⭐ Car & Home Prediction</option>
+                <option value="ext_daily">☀️ Daily Forecast</option>
+              </optgroup>
+            </select>
           </div>
         </div>
 

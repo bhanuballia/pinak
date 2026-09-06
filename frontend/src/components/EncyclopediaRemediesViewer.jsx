@@ -688,33 +688,51 @@ export default function EncyclopediaRemediesViewer() {
                   </div>
 
                   {/* Pagination Controls for Screen View */}
-                  <div className="print:hidden flex flex-wrap items-center justify-between gap-4 bg-rose-50/50 p-4 rounded-2xl border border-rose-200">
+                  <div className="print:hidden flex flex-col sm:flex-row flex-wrap items-center justify-between gap-4 bg-rose-50/50 p-4 rounded-2xl border border-rose-200">
                     <button
                       onClick={() => setActiveReportTopic(prev => Math.max(1, prev - 1))}
                       disabled={activeReportTopic === 1}
-                      className="px-4 py-2 bg-white text-rose-950 font-bold rounded-xl border border-rose-300 disabled:opacity-50 transition-all hover:bg-rose-100 shadow-sm"
+                      className="px-4 py-2 bg-white text-rose-950 font-bold rounded-xl border border-rose-300 disabled:opacity-50 transition-all hover:bg-rose-100 shadow-sm whitespace-nowrap"
                     >
-                      &larr; Previous Topic
+                      &larr; Prev
                     </button>
 
-                    <div className="flex gap-1.5 flex-wrap justify-center">
-                      {Array.from({ length: totalReportTopics }, (_, i) => i + 1).map(num => (
-                        <button
-                          key={num}
-                          onClick={() => setActiveReportTopic(num)}
-                          className={`w-10 h-10 flex items-center justify-center font-bold rounded-full transition-all border shadow-sm ${activeReportTopic === num ? 'bg-rose-700 text-white border-rose-800' : 'bg-white text-rose-900 border-rose-200 hover:bg-rose-100'}`}
-                        >
-                          {num}
-                        </button>
-                      ))}
+                    <div className="flex-1 min-w-[250px] w-full max-w-lg mx-auto">
+                      <select
+                        value={activeReportTopic}
+                        onChange={(e) => setActiveReportTopic(Number(e.target.value))}
+                        className="w-full bg-white border border-rose-300 text-rose-950 font-bold px-4 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 text-[15px] md:text-[16px] shadow-sm appearance-none cursor-pointer"
+                        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23881337'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1.2em' }}
+                      >
+                        {[
+                          "1. Real-Time Transit-Based Remedies (Gochar)",
+                          "2. Prescribed Auspicious Gemstones (Ratna)",
+                          "3. Beneficial Deities & Vedic Mantras",
+                          "4. Recommended Rudraksha Beads",
+                          "5. Navagraha Plant Remedies",
+                          "6. Planetary Relief Remedies",
+                          "7. Color Therapy & Lifestyle Guide",
+                          "8. Prescribed Yantras & Sacred Geometries",
+                          "9. Zodiac Sign Specific Remedies",
+                          "10. Lal Kitab House Remedies & Debts",
+                          "11. Vastu, Fengshui & Pyramids",
+                          "12. Crystals, Lockets & Rosaries",
+                          "13. Sacred Mantra Sadhana",
+                          "14. Kundali Dosha Remedies (कुण्डली दोष)"
+                        ].map((topicName, idx) => (
+                          <option key={idx + 1} value={idx + 1}>
+                            {topicName}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     <button
                       onClick={() => setActiveReportTopic(prev => Math.min(totalReportTopics, prev + 1))}
                       disabled={activeReportTopic === totalReportTopics}
-                      className="px-4 py-2 bg-rose-700 text-white font-bold rounded-xl border border-rose-800 disabled:opacity-50 transition-all hover:bg-rose-800 shadow-sm"
+                      className="px-4 py-2 bg-rose-700 text-white font-bold rounded-xl border border-rose-800 disabled:opacity-50 transition-all hover:bg-rose-800 shadow-sm whitespace-nowrap"
                     >
-                      Next Topic &rarr;
+                      Next &rarr;
                     </button>
                   </div>
 

@@ -2748,13 +2748,87 @@ export default function NumerologyDashboard() {
             </p>
           </div>
         </div>
-        <button
-          onClick={handleClose}
-          className="flex items-center space-x-1.5 px-4 py-2 bg-rose-100 hover:bg-rose-200 text-rose-900 rounded-xl font-bold transition-all text-sm border border-rose-200"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          <span>Close Dashboard</span>
-        </button>
+        <div className="flex flex-wrap md:flex-nowrap items-center gap-3">
+          {result && (
+            <div className="p-1 bg-rose-50/60 border border-rose-200 rounded-xl shadow-xs">
+              <select
+                value={activeTab}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  const urlParams = new URLSearchParams({
+                    name: name || '',
+                    date: dob || ''
+                  });
+
+                  if (val.startsWith('ext_')) {
+                    // Handle external popup reports
+                    switch (val) {
+                      case 'ext_remedy':
+                        urlParams.append('remedy_numerology', 'true');
+                        window.open(`/?${urlParams.toString()}`, 'RemedyNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')?.focus();
+                        break;
+                      case 'ext_medical':
+                        urlParams.append('medical_numerology', 'true');
+                        window.open(`/?${urlParams.toString()}`, 'MedicalNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')?.focus();
+                        break;
+                      case 'ext_personality':
+                        urlParams.append('personality_numerology', 'true');
+                        window.open(`/?${urlParams.toString()}`, 'PersonalityNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')?.focus();
+                        break;
+                      case 'ext_career':
+                        urlParams.append('carrier_numerology', 'true');
+                        window.open(`/?${urlParams.toString()}`, 'CarrierNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')?.focus();
+                        break;
+                      case 'ext_prediction':
+                        urlParams.append('prediction_numerology', 'true');
+                        window.open(`/?${urlParams.toString()}`, 'PredictionNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')?.focus();
+                        break;
+                      case 'ext_daily':
+                        urlParams.append('daily_numerology', 'true');
+                        window.open(`/?${urlParams.toString()}`, 'DailyNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')?.focus();
+                        break;
+                      default:
+                        break;
+                    }
+                  } else {
+                    // Internal tabs
+                    setActiveTab(val);
+                  }
+                }}
+                className="w-full bg-white border border-rose-300 text-rose-950 font-bold px-3 py-1.5 rounded-lg focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm shadow-sm appearance-none cursor-pointer pr-8"
+                style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23881337'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.5rem center', backgroundSize: '1em' }}
+              >
+                <optgroup label="Dashboard Views">
+                  <option value="report">Detailed Report</option>
+                  <option value="prediction">Special Yogas</option>
+                  <option value="correction">Name Correction</option>
+                  <option value="compatibility">Marriage Match</option>
+                  <option value="vastu">Vastu & Yogas</option>
+                  <option value="analytics">Numerology Grid (Analytics)</option>
+                  <option value="cycles">Life Cycles & Years</option>
+                  <option value="quantum">Quantum Sync</option>
+                  <option value="mobile">Mobile Numerology</option>
+                </optgroup>
+                <optgroup label="Advanced External Reports">
+                  <option value="ext_remedy"> Remedy Numerology</option>
+                  <option value="ext_medical"> Medical Diagnostics</option>
+                  <option value="ext_personality"> Personality Matrix</option>
+                  <option value="ext_career"> Career Prediction</option>
+                  <option value="ext_prediction"> Car & Home Prediction</option>
+                  <option value="ext_daily"> Daily Forecast</option>
+                </optgroup>
+              </select>
+            </div>
+          )}
+          <button
+            onClick={handleClose}
+            className="flex items-center justify-center space-x-1.5 px-4 py-2 bg-rose-100 hover:bg-rose-200 text-rose-900 rounded-xl font-bold transition-all text-sm border border-rose-200 shrink-0 h-full"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span className="hidden md:inline">Close Dashboard</span>
+            <span className="md:hidden">Close</span>
+          </button>
+        </div>
       </div>
 
       {
@@ -2811,346 +2885,83 @@ export default function NumerologyDashboard() {
           </div>
         ) : (
           <div className="space-y-6">
-            {/* Navigation Tabs (Flex Wrap Grid for Zero Horizontal Scrolling) */}
-            <div className="flex flex-wrap gap-2 p-2 bg-rose-50/60 border border-rose-200 rounded-2xl shadow-xs">
-              <button
-                onClick={() => setActiveTab("report")}
-                className={`py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm transition-all flex items-center gap-1.5 shadow-2xs ${activeTab === "report"
-                  ? "bg-rose-600 text-white shadow-md ring-2 ring-rose-300"
-                  : "bg-white text-slate-800 hover:bg-rose-100 border border-rose-200/80"
-                  }`}
-              >
-                <Award className="w-4 h-4" />
-                <span>Detailed Report</span>
-              </button>
 
-              <button
-                onClick={() => setActiveTab("prediction")}
-                className={`py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm transition-all flex items-center gap-1.5 shadow-2xs ${activeTab === "prediction"
-                  ? "bg-amber-600 text-white shadow-md ring-2 ring-amber-300"
-                  : "bg-white text-slate-800 hover:bg-amber-100 border border-rose-200/80"
-                  }`}
-              >
-                <Star className="w-4 h-4 text-amber-500 fill-amber-400" />
-                <span>Special Yogas</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab("correction")}
-                className={`py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm transition-all flex items-center gap-1.5 shadow-2xs ${activeTab === "correction"
-                  ? "bg-rose-600 text-white shadow-md ring-2 ring-rose-300"
-                  : "bg-white text-slate-800 hover:bg-rose-100 border border-rose-200/80"
-                  }`}
-              >
-                <Sparkles className="w-4 h-4 text-rose-500" />
-                <span>Name Correction</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab("compatibility")}
-                className={`py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm transition-all flex items-center gap-1.5 shadow-2xs ${activeTab === "compatibility"
-                  ? "bg-rose-600 text-white shadow-md ring-2 ring-rose-300"
-                  : "bg-white text-slate-800 hover:bg-rose-100 border border-rose-200/80"
-                  }`}
-              >
-                <Heart className="w-4 h-4 text-rose-500 fill-rose-400" />
-                <span>Marriage Match</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab("vastu")}
-                className={`py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm transition-all flex items-center gap-1.5 shadow-2xs ${activeTab === "vastu"
-                  ? "bg-rose-600 text-white shadow-md ring-2 ring-rose-300"
-                  : "bg-white text-slate-800 hover:bg-rose-100 border border-rose-200/80"
-                  }`}
-              >
-                <Compass className="w-4 h-4 text-rose-500" />
-                <span>Vastu & Yogas</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab("analytics")}
-                className={`py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm transition-all flex items-center gap-1.5 shadow-2xs ${activeTab === "analytics"
-                  ? "bg-rose-600 text-white shadow-md ring-2 ring-rose-300"
-                  : "bg-white text-slate-800 hover:bg-rose-100 border border-rose-200/80"
-                  }`}
-              >
-                <AlertCircle className="w-4 h-4 text-rose-500" />
-                <span>Analytics</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab("cycles")}
-                className={`py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm transition-all flex items-center gap-1.5 shadow-2xs ${activeTab === "cycles"
-                  ? "bg-rose-600 text-white shadow-md ring-2 ring-rose-300"
-                  : "bg-white text-slate-800 hover:bg-rose-100 border border-rose-200/80"
-                  }`}
-              >
-                <Calendar className="w-4 h-4 text-rose-500" />
-                <span>Cycles & Years</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab("quantum")}
-                className={`py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm transition-all flex items-center gap-1.5 shadow-2xs ${activeTab === "quantum"
-                  ? "bg-purple-600 text-white shadow-md ring-2 ring-purple-300"
-                  : "bg-white text-purple-900 hover:bg-purple-100 border border-rose-200/80"
-                  }`}
-              >
-                <Sparkles className="w-4 h-4 text-purple-500" />
-                <span>Quantum Sync</span>
-              </button>
-
-              <button
-                onClick={() => setActiveTab("mobile")}
-                className={`py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm transition-all flex items-center gap-1.5 shadow-2xs ${activeTab === "mobile"
-                  ? "bg-emerald-600 text-white shadow-md ring-2 ring-emerald-300"
-                  : "bg-white text-emerald-900 hover:bg-emerald-100 border border-rose-200/80"
-                  }`}
-              >
-                <Zap className="w-4 h-4 text-emerald-500" />
-                <span>Mobile Numerology</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  const params = new URLSearchParams({
-                    remedy_numerology: 'true',
-                    name: name || '',
-                    date: dob || ''
-                  });
-                  const win = window.open(`/?${params.toString()}`, 'RemedyNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-                  if (win) win.focus();
-                }}
-                className="py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 transition-all flex items-center gap-1.5 shadow-xs border border-purple-400"
-              >
-                <span>💎 Remedies</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  const params = new URLSearchParams({
-                    medical_numerology: 'true',
-                    name: name || '',
-                    date: dob || ''
-                  });
-                  const win = window.open(`/?${params.toString()}`, 'MedicalNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-                  if (win) win.focus();
-                }}
-                className="py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm bg-gradient-to-r from-emerald-600 to-teal-600 text-black hover:from-emerald-700 hover:to-teal-700 transition-all flex items-center gap-1.5 shadow-xs border border-emerald-400"
-              >
-                <Activity className="w-4 h-4 text-emerald-200" />
-                <span>🏥 Medical Diagnostics</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  const params = new URLSearchParams({
-                    personality_numerology: 'true',
-                    name: name || '',
-                    date: dob || ''
-                  });
-                  const win = window.open(`/?${params.toString()}`, 'PersonalityNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-                  if (win) win.focus();
-                }}
-                className="py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm bg-gradient-to-r from-sky-600 to-blue-600 text-white hover:from-sky-700 hover:to-blue-700 transition-all flex items-center gap-1.5 shadow-xs border border-sky-400"
-              >
-                <span>🧠 Personality Matrix</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  const params = new URLSearchParams({
-                    carrier_numerology: 'true',
-                    name: name || '',
-                    date: dob || ''
-                  });
-                  const win = window.open(`/?${params.toString()}`, 'CarrierNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-                  if (win) win.focus();
-                }}
-                className="py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transition-all flex items-center gap-1.5 shadow-xs border border-blue-400"
-              >
-                <span>💼 Career Prediction</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  const params = new URLSearchParams({
-                    prediction_numerology: 'true',
-                    name: name || '',
-                    date: dob || ''
-                  });
-                  const win = window.open(`/?${params.toString()}`, 'PredictionNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-                  if (win) win.focus();
-                }}
-                className="py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm bg-gradient-to-r from-amber-500 to-orange-600 text-white hover:from-amber-600 hover:to-orange-700 transition-all flex items-center gap-1.5 shadow-xs border border-amber-400"
-              >
-                <Star className="w-4 h-4 text-amber-200 fill-amber-200" />
-                <span>⭐ Special Yogas Page</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  const params = new URLSearchParams({
-                    daily_numerology: 'true',
-                    name: name || '',
-                    date: dob || ''
-                  });
-                  const win = window.open(`/?${params.toString()}`, 'DailyNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-                  if (win) win.focus();
-                }}
-                className="py-2 px-3.5 rounded-xl font-bold text-xs md:text-sm bg-gradient-to-r from-rose-500 to-pink-600 text-white hover:from-rose-600 hover:to-pink-700 transition-all flex items-center gap-1.5 shadow-xs border border-rose-400"
-              >
-                <Sun className="w-4 h-4 text-amber-200 fill-amber-200" />
-                <span>Daily Forecast</span>
-              </button>
-            </div>
 
             {activeTab === "report" && (
               <div className="space-y-6">
                 {/* Sticky Quick-Jump Sub-Nav Bar */}
-                <div className="sticky top-2 z-20 bg-white/95 backdrop-blur-md border border-rose-200/80 rounded-2xl p-2.5 shadow-md flex items-center gap-2 overflow-x-auto scrollbar-thin scrollbar-thumb-rose-300">
-                  <span className="text-xs font-black text-rose-900 uppercase tracking-wider px-2 shrink-0 flex items-center gap-1">
+                <div className="sticky top-2 z-20 bg-white/95 backdrop-blur-md border border-rose-200/80 rounded-2xl p-2.5 shadow-md flex items-center gap-4">
+                  <span className="text-[18px] font-black text-rose-900 uppercase tracking-wider pl-2 shrink-0 flex items-center gap-1">
                     <span>📍</span> Quick Jump:
                   </span>
-                  <button
-                    onClick={() => document.getElementById("num-sec-core")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                    className="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-900 hover:bg-rose-600 hover:text-white transition-all text-[16px] font-bold shrink-0 border border-rose-100 flex items-center gap-1"
-                  >
-                    <span>⭐</span> Core Numbers
-                  </button>
-                  <button
-                    onClick={() => document.getElementById("num-sec-profile")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                    className="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-900 hover:bg-rose-600 hover:text-white transition-all text-[16px] font-bold shrink-0 border border-rose-100 flex items-center gap-1"
-                  >
-                    <span>🏆</span> Profile Analysis
-                  </button>
-                  <button
-                    onClick={() => document.getElementById("num-sec-loshugrid")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                    className="px-3 py-1.5 rounded-xl bg-amber-50 text-amber-900 hover:bg-amber-600 hover:text-white transition-all text-[16px] font-bold shrink-0 border border-amber-200 flex items-center gap-1"
-                  >
-                    <span>🔮</span> Loshu Grid
-                  </button>
-                  <button
-                    onClick={() => document.getElementById("num-sec-repeateddob")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                    className="px-3 py-1.5 rounded-xl bg-orange-50 text-orange-950 hover:bg-orange-600 hover:text-white transition-all text-[16px] font-bold shrink-0 border border-orange-200 flex items-center gap-1"
-                  >
-                    <span>🔢</span> Repeated DOB
-                  </button>
-                  <button
-                    onClick={() => document.getElementById("num-sec-planes")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                    className="px-3 py-1.5 rounded-xl bg-teal-50 text-teal-900 hover:bg-teal-600 hover:text-white transition-all text-[16px] font-bold shrink-0 border border-teal-200 flex items-center gap-1"
-                  >
-                    <span>🧭</span> Grid Planes
-                  </button>
-                  <button
-                    onClick={() => document.getElementById("num-sec-cycles")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                    className="px-3 py-1.5 rounded-xl bg-rose-50 text-rose-900 hover:bg-rose-600 hover:text-white transition-all text-xs font-bold shrink-0 border border-rose-100 flex items-center gap-1"
-                  >
-                    <span>📅</span> Cycles & Predictions
-                  </button>
-                  <button
-                    onClick={() => document.getElementById("num-sec-domains")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                    className="px-3 py-1.5 rounded-xl bg-purple-50 text-purple-900 hover:bg-purple-600 hover:text-white transition-all text-[16px] font-bold shrink-0 border border-purple-200 flex items-center gap-1"
-                  >
-                    <span>✨</span> Life Domains
-                  </button>
-                  <button
-                    onClick={() => document.getElementById("num-sec-remedies")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                    className="px-3 py-1.5 rounded-xl bg-emerald-50 text-emerald-900 hover:bg-emerald-600 hover:text-white transition-all text-[16px] font-bold shrink-0 border border-emerald-200 flex items-center gap-1"
-                  >
-                    <span>🛡️</span> Missing Remedies
-                  </button>
-                  <button
-                    onClick={() => {
-                      const params = new URLSearchParams({
-                        remedy_numerology: 'true',
+                  <select
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (!val) return;
+
+                      const urlParams = new URLSearchParams({
                         name: name || '',
                         date: dob || ''
                       });
-                      const win = window.open(`/?${params.toString()}`, 'RemedyNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-                      if (win) win.focus();
+
+                      if (val.startsWith('ext_')) {
+                        switch (val) {
+                          case 'ext_remedy':
+                            urlParams.append('remedy_numerology', 'true');
+                            window.open(`/?${urlParams.toString()}`, 'RemedyNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')?.focus();
+                            break;
+                          case 'ext_medical':
+                            urlParams.append('medical_numerology', 'true');
+                            window.open(`/?${urlParams.toString()}`, 'MedicalNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')?.focus();
+                            break;
+                          case 'ext_personality':
+                            urlParams.append('personality_numerology', 'true');
+                            window.open(`/?${urlParams.toString()}`, 'PersonalityNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')?.focus();
+                            break;
+                          case 'ext_career':
+                            urlParams.append('carrier_numerology', 'true');
+                            window.open(`/?${urlParams.toString()}`, 'CarrierNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')?.focus();
+                            break;
+                          case 'ext_prediction':
+                            urlParams.append('prediction_numerology', 'true');
+                            window.open(`/?${urlParams.toString()}`, 'PredictionNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')?.focus();
+                            break;
+                          case 'ext_daily':
+                            urlParams.append('daily_numerology', 'true');
+                            window.open(`/?${urlParams.toString()}`, 'DailyNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no')?.focus();
+                            break;
+                          default:
+                            break;
+                        }
+                      } else {
+                        document.getElementById(val)?.scrollIntoView({ behavior: "smooth", block: "start" });
+                      }
+                      e.target.value = ""; // Reset to placeholder
                     }}
-                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:from-purple-700 hover:to-indigo-700 transition-all text-[16px] font-bold shrink-0 shadow-xs flex items-center gap-1"
+                    className="flex-0.5 min-w-[200px] bg-white border border-rose-300 text-rose-950 font-bold px-3 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 text-sm shadow-sm appearance-none cursor-pointer"
+                    style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23881337'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.75rem center', backgroundSize: '1em' }}
                   >
-                    <span>💎</span> Powerful Remedies
-                  </button>
-                  <button
-                    onClick={() => {
-                      const params = new URLSearchParams({
-                        medical_numerology: 'true',
-                        name: name || '',
-                        date: dob || ''
-                      });
-                      const win = window.open(`/?${params.toString()}`, 'MedicalNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-                      if (win) win.focus();
-                    }}
-                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white hover:from-emerald-700 hover:to-teal-700 transition-all text-[16px] font-bold shrink-0 shadow-xs flex items-center gap-1"
-                  >
-                    <span>🏥</span> Medical Diagnostics
-                  </button>
-                  <button
-                    onClick={() => {
-                      const params = new URLSearchParams({
-                        personality_numerology: 'true',
-                        name: name || '',
-                        date: dob || ''
-                      });
-                      const win = window.open(`/?${params.toString()}`, 'PersonalityNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-                      if (win) win.focus();
-                    }}
-                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 text-white hover:from-sky-700 hover:to-blue-700 transition-all text-[16px] font-bold shrink-0 shadow-xs flex items-center gap-1"
-                  >
-                    <span>🧠</span> Personality Matrix
-                  </button>
-                  <button
-                    onClick={() => {
-                      const params = new URLSearchParams({
-                        carrier_numerology: 'true',
-                        name: name || '',
-                        date: dob || ''
-                      });
-                      const win = window.open(`/?${params.toString()}`, 'CarrierNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-                      if (win) win.focus();
-                    }}
-                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 transition-all text-[16px] font-bold shrink-0 shadow-xs flex items-center gap-1"
-                  >
-                    <span>💼</span> Career & Wealth
-                  </button>
-                  <button
-                    onClick={() => {
-                      const params = new URLSearchParams({
-                        prediction_numerology: 'true',
-                        name: name || '',
-                        date: dob || ''
-                      });
-                      const win = window.open(`/?${params.toString()}`, 'PredictionNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-                      if (win) win.focus();
-                    }}
-                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white hover:from-amber-600 hover:to-orange-700 transition-all text-[16px] font-bold shrink-0 shadow-xs flex items-center gap-1"
-                  >
-                    <span>⭐</span> Special Yogas Page
-                  </button>
-                  <button
-                    onClick={() => {
-                      const params = new URLSearchParams({
-                        daily_numerology: 'true',
-                        name: name || '',
-                        date: dob || ''
-                      });
-                      const win = window.open(`/?${params.toString()}`, 'DailyNumerology', 'width=1400,height=900,menubar=no,toolbar=no,location=no,status=no');
-                      if (win) win.focus();
-                    }}
-                    className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 text-white hover:from-rose-600 hover:to-pink-700 transition-all text-[16px] font-bold shrink-0 shadow-xs flex items-center gap-1"
-                  >
-                    <span>☀️</span> Daily Forecast
-                  </button>
-                  <button
-                    onClick={() => document.getElementById("num-sec-matrix")?.scrollIntoView({ behavior: "smooth", block: "start" })}
-                    className="px-3 py-1.5 rounded-xl bg-indigo-50 text-indigo-900 hover:bg-indigo-600 hover:text-white transition-all text-[16px] font-bold shrink-0 border border-indigo-200 flex items-center gap-1"
-                  >
-                    <span>🗓️</span> Lucky Dates
-                  </button>
+                    <option value="" disabled selected>Jump to section...</option>
+                    <optgroup label="Page Sections">
+                      <option value="num-sec-core"> Core Numbers</option>
+                      <option value="num-sec-profile"> Profile Analysis</option>
+                      <option value="num-sec-loshugrid"> Loshu Grid</option>
+                      <option value="num-sec-repeateddob"> Repeated DOB</option>
+                      <option value="num-sec-planes"> Grid Planes</option>
+                      <option value="num-sec-cycles"> Cycles & Predictions</option>
+                      <option value="num-sec-domains"> Life Domains</option>
+                      <option value="num-sec-remedies"> Missing Remedies</option>
+                      <option value="num-sec-matrix"> Lucky Dates</option>
+                    </optgroup>
+                    <optgroup label="Advanced External Reports">
+                      <option value="ext_remedy"> Powerful Remedies</option>
+                      <option value="ext_medical"> Medical Diagnostics</option>
+                      <option value="ext_personality"> Personality Matrix</option>
+                      <option value="ext_career"> Career & Wealth</option>
+                      <option value="ext_prediction"> Special Yogas Page</option>
+                      <option value="ext_daily"> Daily Forecast</option>
+                    </optgroup>
+                  </select>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

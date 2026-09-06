@@ -127,6 +127,13 @@ export default function PredictionNumerology() {
   const [vehInput, setVehInput] = useState("");
   const [vehResult, setVehResult] = useState(null);
 
+  // Custom Car Color State
+  const [customCarColor, setCustomCarColor] = useState("");
+  const [showCarRemedy, setShowCarRemedy] = useState(false);
+
+  // Active Prediction Tab
+  const [activePredictionTab, setActivePredictionTab] = useState('vehicle');
+
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const urlName = params.get("name");
@@ -259,7 +266,7 @@ export default function PredictionNumerology() {
     if (!mulank) return { topPicks: [], secondaryPicks: [] };
     const mulFriendly = FRIENDLY_NUMBERS[mulank] || [];
     const bhagFriendly = FRIENDLY_NUMBERS[bhagyank] || [];
-    
+
     // Intersection = Highest Priority (Best)
     const topPicks = mulFriendly.filter(n => bhagFriendly.includes(n));
     // Remaining Friendly
@@ -283,10 +290,10 @@ export default function PredictionNumerology() {
   return (
     <div className="min-h-screen bg-rose-50 text-slate-900 p-4 md:p-8">
       <div className="max-w-7xl mx-auto space-y-8">
-        
+
         {/* Header Bar */}
-        <div className="flex items-center justify-between border-b border-rose-200 pb-5">
-          <div className="flex items-center space-x-3">
+        <div className="flex flex-col md:flex-row items-center justify-between border-b border-rose-200 pb-5 gap-4">
+          <div className="flex items-center space-x-3 w-full md:w-auto">
             <button
               onClick={() => window.history.back()}
               className="p-2.5 bg-white border border-rose-200 hover:bg-rose-100 rounded-2xl transition-all text-slate-800 shadow-xs"
@@ -304,6 +311,78 @@ export default function PredictionNumerology() {
                 Dedicated planetary combinations, Raj Yogas, Foreign Travel, House & Vehicle Numerology
               </p>
             </div>
+          </div>
+
+
+          <div className="w-full md:w-auto min-w-[250px] ml-auto">
+            <select
+              value=""
+              onChange={(e) => {
+                const val = e.target.value;
+                if (!val) return;
+                const urlParams = new URLSearchParams(window.location.search);
+                const nameParam = urlParams.get('name') || '';
+                const dobParam = urlParams.get('date') || urlParams.get('dob') || '';
+
+                const newParams = new URLSearchParams({
+                  name: nameParam,
+                  date: dobParam
+                });
+
+                if (val.startsWith('ext_')) {
+                  switch (val) {
+                    case 'ext_remedy':
+                      newParams.append('remedy_numerology', 'true');
+                      break;
+                    case 'ext_medical':
+                      newParams.append('medical_numerology', 'true');
+                      break;
+                    case 'ext_personality':
+                      newParams.append('personality_numerology', 'true');
+                      break;
+                    case 'ext_career':
+                      newParams.append('carrier_numerology', 'true');
+                      break;
+                    case 'ext_prediction':
+                      newParams.append('prediction_numerology', 'true');
+                      break;
+                    case 'ext_daily':
+                      newParams.append('daily_numerology', 'true');
+                      break;
+                    default:
+                      break;
+                  }
+                  window.location.href = '/?' + newParams.toString();
+                } else {
+                  newParams.append('numerology', 'true');
+                  newParams.append('tab', val);
+                  window.location.href = '/?' + newParams.toString();
+                }
+              }}
+              className="w-full bg-white border border-rose-300 text-rose-950 font-bold px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500 text-[14px] md:text-[16px] shadow-sm appearance-none cursor-pointer"
+              style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' fill=\'none\' viewBox=\'0 0 24 24\' stroke=\'%23881337\'%3E%3Cpath stroke-linecap=\'round\' stroke-linejoin=\'round\' stroke-width=\'2\' d=\'M19 9l-7 7-7-7\'%3E%3C/path%3E%3C/svg%3E")', backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.75rem center', backgroundSize: '1.2em' }}
+            >
+              <option value="" disabled>Navigate Numerology...</option>
+              <optgroup label="Dashboard Views">
+                <option value="report">⭐ Detailed Report</option>
+                <option value="prediction">✨ Special Yogas</option>
+                <option value="correction">🖋️ Name Correction</option>
+                <option value="compatibility">💍 Marriage Match</option>
+                <option value="vastu">🧭 Vastu & Yogas</option>
+                <option value="analytics">📊 Numerology Grid</option>
+                <option value="cycles">📅 Life Cycles</option>
+                <option value="quantum">🌌 Quantum Sync</option>
+                <option value="mobile">📱 Mobile Numerology</option>
+              </optgroup>
+              <optgroup label="Advanced External Reports">
+                <option value="ext_remedy">💎 Powerful Remedies</option>
+                <option value="ext_medical">🏥 Medical Diagnostics</option>
+                <option value="ext_personality">🧠 Personality Matrix</option>
+                <option value="ext_career">💼 Career & Wealth</option>
+                <option value="ext_prediction">⭐ Car & Home Prediction</option>
+                <option value="ext_daily">☀️ Daily Forecast</option>
+              </optgroup>
+            </select>
           </div>
         </div>
 
@@ -351,7 +430,7 @@ export default function PredictionNumerology() {
           </div>
         ) : (
           <div className="space-y-8 animate-in fade-in duration-300">
-            
+
             {/* Header Banner */}
             <div className="bg-gradient-to-r from-rose-900 via-pink-900 to-slate-900 text-white rounded-3xl p-6 md:p-8 shadow-xl relative overflow-hidden">
               <div className="absolute right-0 top-0 opacity-10 pointer-events-none transform translate-x-8 -translate-y-8">
@@ -362,7 +441,7 @@ export default function PredictionNumerology() {
                   <Star className="w-4 h-4 text-rose-300" /> Vedic Planetary Combinations
                 </span>
                 <h2 className="text-2xl md:text-[30px] font-bold text-white">
-                  Special Yogas & Predictive Matrix
+                  Car & Home Number Predictions
                 </h2>
                 <p className="text-slate-200 text-sm md:text-[18px] leading-relaxed font-medium">
                   Calculated for <strong className="text-rose-200">{name || "Birth Profile"}</strong> (DOB: {dob}). Mulank (Psychic) Number: <strong className="text-rose-200">{mulank}</strong> | Bhagyank (Destiny) Number: <strong className="text-rose-200">{bhagyank}</strong>.
@@ -370,66 +449,27 @@ export default function PredictionNumerology() {
               </div>
             </div>
 
-            {/* Special Yogas Output Card */}
-            <div className="bg-white border border-rose-200 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-              <div className="flex items-center justify-between border-b border-rose-100 pb-4">
-                <div>
-                  <h3 className="text-[18px] font-bold text-slate-900 flex items-center gap-2">
-                    <span>🔮</span> Active Vedic Yogas Detected
-                  </h3>
-                  <p className="text-[18px] text-slate-700 font-bold mt-1">
-                    Derived from Date of Birth numbers present in your planetary grid matrix.
-                  </p>
-                </div>
-                <span className="text-[18px] font-black text-rose-900 bg-rose-100 px-3.5 py-1.5 rounded-full border border-rose-200">
-                  {yogaList.length} Yogas Detected
-                </span>
-              </div>
 
-              {yogaList.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {yogaList.map((y, idx) => (
-                    <div
-                      key={idx}
-                      className={`p-6 rounded-2xl border flex flex-col justify-between space-y-4 ${
-                        y.type === "ROYAL"
-                          ? "bg-gradient-to-br from-amber-50/80 via-yellow-50/40 to-white border-amber-200"
-                          : y.type === "TRAVEL"
-                          ? "bg-gradient-to-br from-blue-50/80 via-cyan-50/40 to-white border-blue-200"
-                          : y.type === "SPIRITUAL"
-                          ? "bg-gradient-to-br from-purple-50/80 via-indigo-50/40 to-white border-purple-200"
-                          : y.type === "INTELLECT"
-                          ? "bg-gradient-to-br from-teal-50/80 via-emerald-50/40 to-white border-teal-200"
-                          : "bg-gradient-to-br from-rose-50/80 via-orange-50/40 to-white border-rose-200"
-                      }`}
-                    >
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-[18px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-white border border-slate-200 text-slate-900 shadow-2xs">
-                            {y.badge}
-                          </span>
-                        </div>
-                        <h4 className="text-[18px] font-bold text-slate-900">{y.title}</h4>
-                        <p className="text-[18px] font-black text-amber-900">{y.summary}</p>
-                        <p className="text-[18px] text-slate-800 leading-relaxed font-bold">{y.desc}</p>
-                      </div>
-                      <div className="bg-white/90 p-3.5 rounded-xl border border-slate-200 text-[18px] font-bold">
-                        <span className="font-bold text-rose-900 block mb-0.5">🌿 Vedic Remedy:</span>
-                        <span className="text-[18px] text-slate-800">{y.remedy}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="bg-rose-50/50 border border-rose-100 p-8 rounded-2xl text-center space-y-2">
-                  <p className="text-[18px] font-bold text-slate-900">No Heavy Doshas or Multi-Plane Raj Yogas Detected.</p>
-                  <p className="text-[18px] text-slate-700 font-semibold">Your profile operates primarily on your single digit Mulank ({mulank}) and Bhagyank ({bhagyank}) vibrations.</p>
-                </div>
-              )}
+            {/* Toggle Switch */}
+            <div className="flex justify-center my-6">
+              <div className="bg-slate-100 p-1.5 rounded-full flex gap-2 shadow-inner border border-slate-200">
+                <button
+                  onClick={() => setActivePredictionTab('vehicle')}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold text-[18px] transition-all duration-300 ${activePredictionTab === 'vehicle' ? 'bg-cyan-600 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'}`}
+                >
+                  <Car className="w-5 h-5" /> Vehicle & License Plate Guide
+                </button>
+                <button
+                  onClick={() => setActivePredictionTab('home')}
+                  className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold text-[18px] transition-all duration-300 ${activePredictionTab === 'home' ? 'bg-rose-600 text-white shadow-md' : 'text-slate-600 hover:text-slate-900'}`}
+                >
+                  <Home className="w-5 h-5" /> House & Nameplate Guide
+                </button>
+              </div>
             </div>
 
             {/* Lucky Vehicle Number & Car Buying Guide Card */}
-            {(() => {
+            {activePredictionTab === 'vehicle' && (() => {
               const { topPicks, secondaryPicks } = getRecommendedVehicleNumbers();
               return (
                 <div className="bg-gradient-to-br from-blue-500/10 via-cyan-50 to-white border border-cyan-300 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
@@ -448,6 +488,190 @@ export default function PredictionNumerology() {
                   </div>
 
                   <div className="space-y-4">
+                    {/* Lucky Vehicle Registration Number Analyzer Input */}
+                    <div className="bg-white/80 backdrop-blur-sm border border-cyan-200 rounded-2xl p-6 shadow-sm space-y-6 mb-8">
+                      <div className="border-b border-cyan-100 pb-4">
+                        <h3 className="text-[18px] font-bold text-rose-900 flex items-center gap-2 bg-indigo-300 border border-rose-200 px-6 py-2 rounded-full w-fit shadow-sm">
+                          <Zap className="w-5 h-5 text-cyan-600" /> LICENSE PLATE & VEHICLE NUMBER ANALYZER
+                        </h3>
+                        <p className="text-[18px] text-black font-semibold mt-1">
+                          Enter full license plate (e.g. MH 12 AB 3456) or 4-digit number (e.g. 3456) to check vibration.
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <input
+                          type="text"
+                          value={vehInput}
+                          onChange={(e) => setVehInput(e.target.value)}
+                          placeholder="e.g. MH 12 AB 3456 or 7890"
+                          className="flex-1 px-4 py-3 bg-cyan-50/40 border border-cyan-900 rounded-2xl font-bold text-slate-900 focus:outline-none focus:border-cyan-500 text-[18px]"
+                        />
+                        <button
+                          onClick={handleAnalyzeVehicle}
+                          className="px-6 py-3 bg-yellow-300 hover:bg-cyan-800 text-black font-bold rounded-2xl transition-all shadow-md flex items-center justify-center gap-2 text-[18px]"
+                        >
+                          <Search className="w-4 h-4" />
+                          <span>Analyze Vehicle Energy</span>
+                        </button>
+                      </div>
+
+                      {vehResult && (
+                        <div className="p-6 bg-gradient-to-br from-cyan-50/80 via-blue-50/40 to-white rounded-2xl border border-cyan-200 space-y-4 animate-in slide-in-from-bottom-2 duration-300">
+                          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-cyan-100 pb-4">
+                            <div>
+                              <span className="text-[18px] font-extrabold text-slate-500 uppercase tracking-wider block">License Plate Number</span>
+                              <span className="text-[18px] font-black text-cyan-950">{vehInput.toUpperCase()}</span>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <div className="text-center bg-white px-4 py-2 rounded-2xl border border-cyan-200 shadow-2xs">
+                                <span className="text-[18px] font-bold text-slate-400 uppercase block">Single Vibration</span>
+                                <span className="text-[18px] font-black text-cyan-600">{vehResult.singleDigit}</span>
+                              </div>
+                              <div className="text-center bg-white px-4 py-2 rounded-2xl border border-cyan-200 shadow-2xs">
+                                <span className="text-[18px] font-bold text-slate-400 uppercase block">Ruling Planet</span>
+                                <span className="text-[18px] font-black text-slate-800">{vehResult.info.planet}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Compatibility Status Banner */}
+                          {(() => {
+                            const isMulFriendly = VEHICLE_FRIENDLY_NUMBERS[mulank]?.includes(vehResult.singleDigit);
+                            const isBhagFriendly = VEHICLE_FRIENDLY_NUMBERS[bhagyank]?.includes(vehResult.singleDigit);
+
+                            return (
+                              <div className="space-y-4">
+                                <div className={`p-4 rounded-2xl border flex items-center gap-3 ${isMulFriendly && isBhagFriendly
+                                  ? "bg-emerald-50 border-emerald-200 text-emerald-950"
+                                  : isMulFriendly || isBhagFriendly
+                                    ? "bg-amber-50 border-amber-200 text-amber-950"
+                                    : "bg-rose-50 border-rose-200 text-rose-950"
+                                  }`}>
+                                  <CheckCircle className="w-6 h-6 shrink-0 text-cyan-600" />
+                                  <div className="text-[18px] font-medium space-y-0.5">
+                                    <span className="font-extrabold text-[18px] block">
+                                      {isMulFriendly && isBhagFriendly
+                                        ? "🌟 Highly Auspicious Vehicle Alignment!"
+                                        : isMulFriendly || isBhagFriendly
+                                          ? "⚖️ Good Harmonious Balance"
+                                          : "⚠️ Challenging Vehicle Vibration Alignment"}
+                                    </span>
+                                    <p>
+                                      Vehicle Number sum {vehResult.singleDigit} is{" "}
+                                      {isMulFriendly ? <strong className="text-emerald-700">Harmonious with Psychic ({mulank})</strong> : "Neutral/Hostile with Psychic"}{" "}
+                                      and{" "}
+                                      {isBhagFriendly ? <strong className="text-emerald-700">Harmonious with Destiny ({bhagyank})</strong> : "Neutral/Hostile with Destiny"}.
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                  <div className="p-4 bg-white rounded-2xl border border-cyan-100 space-y-1">
+                                    <span className="font-bold text-[18px] text-cyan-900 uppercase block">Vehicle Energy & Driving Traits:</span>
+                                    <p className="text-slate-700 text-[18px] leading-relaxed font-semibold">{vehResult.info.desc}</p>
+                                  </div>
+                                  <div className="p-4 bg-white rounded-2xl border border-cyan-100 space-y-1">
+                                    <span className="font-bold text-[18px] text-cyan-900 uppercase block">Sample Auspicious Plates:</span>
+                                    <p className="text-slate-800 text-[18px] font-bold leading-relaxed">{vehResult.info.samplePlates}</p>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Lucky Vehicle Colors Section */}
+                    <div className="pb-6 mb-6 border-b border-cyan-100">
+                      <span className="text-[18px] font-bold text-rose-900 uppercase tracking-wider block mb-4 bg-indigo-300 border border-rose-200 px-6 py-2 rounded-full w-fit shadow-sm">
+                        🎨 Highly Recommended Vehicle Colors (Based on Mulank {mulank}):
+                      </span>
+                      <div className="flex flex-wrap gap-4">
+                        {(() => {
+                          const luckyColorsMap = {
+                            1: [{ name: 'Golden Yellow', bg: 'bg-yellow-400', text: 'text-yellow-950' }, { name: 'Royal Orange', bg: 'bg-orange-500', text: 'text-white' }, { name: 'Copper Red', bg: 'bg-red-700', text: 'text-white' }],
+                            2: [{ name: 'Pearl White', bg: 'bg-slate-50', text: 'text-slate-800 border-slate-200 border' }, { name: 'Silver Metallic', bg: 'bg-gray-300', text: 'text-gray-900 border-gray-400 border' }, { name: 'Light Blue', bg: 'bg-blue-200', text: 'text-blue-900 border-blue-300 border' }],
+                            3: [{ name: 'Yellow', bg: 'bg-yellow-300', text: 'text-yellow-900' }, { name: 'Light Pink', bg: 'bg-pink-200', text: 'text-pink-900' }, { name: 'Golden', bg: 'bg-yellow-500', text: 'text-yellow-950' }],
+                            4: [{ name: 'Metallic Grey', bg: 'bg-gray-400', text: 'text-gray-900' }, { name: 'Light Blue', bg: 'bg-blue-300', text: 'text-blue-900' }, { name: 'Silver Metallic', bg: 'bg-slate-300', text: 'text-slate-900' }],
+                            5: [{ name: 'Emerald Green', bg: 'bg-emerald-500', text: 'text-white' }, { name: 'Pearl White', bg: 'bg-slate-50', text: 'text-slate-800 border-slate-200 border' }, { name: 'Light Brown', bg: 'bg-amber-700', text: 'text-white' }],
+                            6: [{ name: 'Silver', bg: 'bg-gray-300', text: 'text-gray-900' }, { name: 'Luxurious White', bg: 'bg-slate-50', text: 'text-slate-800 border-slate-200 border' }, { name: 'Sky Blue', bg: 'bg-sky-300', text: 'text-sky-900' }],
+                            7: [{ name: 'Light Green', bg: 'bg-green-200', text: 'text-green-900' }, { name: 'Pale Yellow', bg: 'bg-yellow-100', text: 'text-yellow-900' }, { name: 'Smokey Grey', bg: 'bg-gray-500', text: 'text-white' }],
+                            8: [{ name: 'Midnight Black', bg: 'bg-zinc-900', text: 'text-white' }, { name: 'Dark Navy Blue', bg: 'bg-blue-900', text: 'text-white' }, { name: 'Steel Grey', bg: 'bg-slate-600', text: 'text-white' }],
+                            9: [{ name: 'Racing Red', bg: 'bg-red-600', text: 'text-white' }, { name: 'Maroon', bg: 'bg-rose-900', text: 'text-white' }, { name: 'Metallic Copper', bg: 'bg-orange-800', text: 'text-white' }]
+                          };
+                          const colors = luckyColorsMap[mulank] || luckyColorsMap[1];
+                          return colors.map((col, idx) => (
+                            <div key={idx} className={`flex items-center gap-2 px-4 py-2 rounded-xl shadow-sm border border-transparent ${col.bg} ${col.text}`}>
+                              <span className="font-bold text-[18px]">{col.name}</span>
+                            </div>
+                          ));
+                        })()}
+                      </div>
+                    </div>
+
+                    {/* Custom Color Remedy Section */}
+                    <div className="pb-6 mb-6 border-b border-cyan-100 space-y-4">
+                      <span className="text-[18px] font-bold text-slate-700 block">
+                        Didn't find your desired color? Check remedies for other colors:
+                      </span>
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <select
+                          value={customCarColor}
+                          onChange={(e) => {
+                            setCustomCarColor(e.target.value);
+                            setShowCarRemedy(false);
+                          }}
+                          className="flex-1 px-4 py-3 bg-white border border-cyan-200 rounded-2xl font-bold text-slate-700 focus:outline-none focus:border-cyan-500 text-[16px]"
+                        >
+                          <option value="">Select your desired car color...</option>
+                          <option value="Black">Black</option>
+                          <option value="White">White</option>
+                          <option value="Silver">Silver</option>
+                          <option value="Red">Red</option>
+                          <option value="Blue">Blue</option>
+                          <option value="Grey">Grey</option>
+                          <option value="Yellow">Yellow</option>
+                          <option value="Green">Green</option>
+                          <option value="Brown">Brown</option>
+                        </select>
+                        <button
+                          onClick={() => {
+                            if (customCarColor) setShowCarRemedy(true);
+                          }}
+                          className="px-6 py-3 bg-yellow-300 hover:bg-cyan-200 text-cyan-900 font-bold rounded-2xl transition-all border border-cyan-300 flex items-center justify-center gap-2 text-[16px]"
+                        >
+                          <Search className="w-4 h-4" />
+                          <span>Check Remedy</span>
+                        </button>
+                      </div>
+
+                      {showCarRemedy && customCarColor && (
+                        <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl animate-in fade-in duration-300">
+                          <h4 className="text-[18px] font-bold text-amber-900 flex items-center gap-2 mb-2">
+                            <Shield className="w-5 h-5 text-amber-600" /> Protective Remedy for {customCarColor} Car
+                          </h4>
+                          <p className="text-[16px] text-amber-950 font-medium leading-relaxed">
+                            {(() => {
+                              const remedies = {
+                                'Black': 'Black (Saturn): Tie a black or dark blue thread on the steering column, and keep a small piece of iron or a horseshoe in the trunk to absorb heavy energies.',
+                                'White': 'White (Moon/Venus): Keep a small silver coin or a white crystal (like Clear Quartz or Moonstone) in the dashboard for emotional balance and safe travels.',
+                                'Silver': 'Silver (Moon/Rahu): Place a small silver pyramid or a metallic wind chime inside the car to deflect sudden negative impacts.',
+                                'Red': 'Red (Mars): Tie a red thread on the steering wheel or keep a small copper coin/yantra in the glove box to calm aggressive driving energy.',
+                                'Blue': 'Blue (Saturn/Rahu): Keep a blue evil eye (Nazar Battu) hanging from the rearview mirror to ward off jealousy and protect from accidents.',
+                                'Grey': 'Grey (Rahu/Ketu): Keep a small piece of sandalwood or a wooden rudraksha hanging in the car to bring grounding and focus while driving.',
+                                'Yellow': 'Yellow (Jupiter): Keep a yellow cloth or a small brass yantra in the dashboard. Avoid driving on an empty stomach on Thursdays.',
+                                'Green': 'Green (Mercury): Keep a small green plant (like a lucky bamboo in a spill-proof container) or a green jade crystal in the car to maintain focus and agility.',
+                                'Brown': 'Brown (Rahu): Place a small grounding stone like Tiger\'s Eye or Black Tourmaline in the car to keep you grounded and avoid rash decisions.'
+                              };
+                              return remedies[customCarColor] || 'Keep your vehicle clean, perform regular servicing, and always keep a small clear quartz crystal in the glove compartment for overall protection and positive energy.';
+                            })()}
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
                     <div>
                       <span className="text-[18px] font-extrabold text-cyan-950 uppercase tracking-wider block mb-2">
                         🚗 Top Lucky License Plate Vibrations (Dual Compatibility):
@@ -486,108 +710,17 @@ export default function PredictionNumerology() {
                         </div>
                       </div>
                     )}
+
+
                   </div>
                 </div>
               );
             })()}
 
-            {/* Lucky Vehicle Registration Number Analyzer Input */}
-            <div className="bg-white border border-cyan-200 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-              <div className="border-b border-cyan-100 pb-4">
-                <h3 className="text-[18px] font-bold text-slate-900 flex items-center gap-2">
-                  <Zap className="w-5 h-5 text-cyan-600" /> License Plate & Vehicle Number Analyzer
-                </h3>
-                <p className="text-[18px] text-slate-600 font-semibold mt-1">
-                  Enter full license plate (e.g. MH 12 AB 3456) or 4-digit number (e.g. 3456) to check vibration.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="text"
-                  value={vehInput}
-                  onChange={(e) => setVehInput(e.target.value)}
-                  placeholder="e.g. MH 12 AB 3456 or 7890"
-                  className="flex-1 px-4 py-3 bg-cyan-50/40 border border-cyan-200 rounded-2xl font-bold text-slate-900 focus:outline-none focus:border-cyan-500 text-[18px]"
-                />
-                <button
-                  onClick={handleAnalyzeVehicle}
-                  className="px-6 py-3 bg-cyan-700 hover:bg-cyan-800 text-white font-bold rounded-2xl transition-all shadow-md flex items-center justify-center gap-2 text-[18px]"
-                >
-                  <Search className="w-4 h-4" />
-                  <span>Analyze Vehicle Energy</span>
-                </button>
-              </div>
-
-              {vehResult && (
-                <div className="p-6 bg-gradient-to-br from-cyan-50/80 via-blue-50/40 to-white rounded-2xl border border-cyan-200 space-y-4 animate-in slide-in-from-bottom-2 duration-300">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-cyan-100 pb-4">
-                    <div>
-                      <span className="text-[18px] font-extrabold text-slate-500 uppercase tracking-wider block">License Plate Number</span>
-                      <span className="text-[18px] font-black text-cyan-950">{vehInput.toUpperCase()}</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-center bg-white px-4 py-2 rounded-2xl border border-cyan-200 shadow-2xs">
-                        <span className="text-[18px] font-bold text-slate-400 uppercase block">Single Vibration</span>
-                        <span className="text-[18px] font-black text-cyan-600">{vehResult.singleDigit}</span>
-                      </div>
-                      <div className="text-center bg-white px-4 py-2 rounded-2xl border border-cyan-200 shadow-2xs">
-                        <span className="text-[18px] font-bold text-slate-400 uppercase block">Ruling Planet</span>
-                        <span className="text-[18px] font-black text-slate-800">{vehResult.info.planet}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Compatibility Status Banner */}
-                  {(() => {
-                    const isMulFriendly = VEHICLE_FRIENDLY_NUMBERS[mulank]?.includes(vehResult.singleDigit);
-                    const isBhagFriendly = VEHICLE_FRIENDLY_NUMBERS[bhagyank]?.includes(vehResult.singleDigit);
-
-                    return (
-                      <div className="space-y-4">
-                        <div className={`p-4 rounded-2xl border flex items-center gap-3 ${isMulFriendly && isBhagFriendly
-                          ? "bg-emerald-50 border-emerald-200 text-emerald-950"
-                          : isMulFriendly || isBhagFriendly
-                            ? "bg-amber-50 border-amber-200 text-amber-950"
-                            : "bg-rose-50 border-rose-200 text-rose-950"
-                          }`}>
-                          <CheckCircle className="w-6 h-6 shrink-0 text-cyan-600" />
-                          <div className="text-[18px] font-medium space-y-0.5">
-                            <span className="font-extrabold text-[18px] block">
-                              {isMulFriendly && isBhagFriendly
-                                ? "🌟 Highly Auspicious Vehicle Alignment!"
-                                : isMulFriendly || isBhagFriendly
-                                  ? "⚖️ Good Harmonious Balance"
-                                  : "⚠️ Challenging Vehicle Vibration Alignment"}
-                            </span>
-                            <p>
-                              Vehicle Number sum {vehResult.singleDigit} is{" "}
-                              {isMulFriendly ? <strong className="text-emerald-700">Harmonious with Psychic ({mulank})</strong> : "Neutral/Hostile with Psychic"}{" "}
-                              and{" "}
-                              {isBhagFriendly ? <strong className="text-emerald-700">Harmonious with Destiny ({bhagyank})</strong> : "Neutral/Hostile with Destiny"}.
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                          <div className="p-4 bg-white rounded-2xl border border-cyan-100 space-y-1">
-                            <span className="font-bold text-[18px] text-cyan-900 uppercase block">Vehicle Energy & Driving Traits:</span>
-                            <p className="text-slate-700 text-[18px] leading-relaxed font-semibold">{vehResult.info.desc}</p>
-                          </div>
-                          <div className="p-4 bg-white rounded-2xl border border-cyan-100 space-y-1">
-                            <span className="font-bold text-[18px] text-cyan-900 uppercase block">Sample Auspicious Plates:</span>
-                            <p className="text-slate-800 text-[18px] font-bold leading-relaxed">{vehResult.info.samplePlates}</p>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })()}
-                </div>
-              )}
-            </div>
-
             {/* Lucky House Recommendation & Buyer's Guide Card */}
-            {(() => {
+            {activePredictionTab === 'home' && (
+              <div className="space-y-8 animate-in fade-in duration-300">
+                {(() => {
               const { topPicks, secondaryPicks } = getRecommendedHouseNumbers();
               return (
                 <div className="bg-gradient-to-br from-amber-500/10 via-rose-50 to-white border border-amber-300 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
@@ -607,6 +740,133 @@ export default function PredictionNumerology() {
 
                   {/* Recommended Numbers Grid */}
                   <div className="space-y-4">
+                    {/* Lucky House Number Calculator Card */}
+                    <div className="bg-white/80 backdrop-blur-sm border border-rose-200 rounded-2xl p-6 shadow-sm space-y-6 mb-8">
+                      <div className="border-b border-rose-100 pb-4">
+                        <h3 className="text-[18px] font-bold text-slate-900 flex items-center gap-2">
+                          <Home className="w-5 h-5 text-rose-600" /> Lucky House & Flat Number Analyzer
+                        </h3>
+                        <p className="text-[18px] text-slate-600 font-semibold mt-1">
+                          Evaluates home address vibrations against your Psychic Mulank ({mulank}) & Destiny Bhagyank ({bhagyank}) numbers using Chaldean Numerology.
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row gap-3">
+                        <input
+                          type="text"
+                          value={houseInput}
+                          onChange={(e) => setHouseInput(e.target.value)}
+                          placeholder="e.g. 42, Flat 1204, or 302-B"
+                          className="flex-1 px-4 py-3 bg-rose-50/50 border border-rose-200 rounded-2xl font-bold text-slate-900 focus:outline-none focus:border-rose-500 text-[18px]"
+                        />
+                        <button
+                          onClick={handleAnalyzeHouse}
+                          className="px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl transition-all shadow-md flex items-center justify-center gap-2 text-[18px]"
+                        >
+                          <Search className="w-4 h-4" />
+                          <span>Analyze House Energy</span>
+                        </button>
+                      </div>
+
+                      {houseResult && (
+                        <div className="p-6 bg-gradient-to-br from-rose-50/80 via-pink-50/40 to-white rounded-2xl border border-rose-200 space-y-4 animate-in slide-in-from-bottom-2 duration-300">
+                          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-rose-100 pb-4">
+                            <div>
+                              <span className="text-[18px] font-extrabold text-slate-500 uppercase tracking-wider block">House / Flat Address</span>
+                              <span className="text-[18px] font-black text-rose-950">{houseInput.toUpperCase()}</span>
+                            </div>
+                            <div className="flex items-center gap-4">
+                              <div className="text-center bg-white px-4 py-2 rounded-2xl border border-rose-200 shadow-2xs">
+                                <span className="text-[18px] font-bold text-slate-400 uppercase block">Single Vibration</span>
+                                <span className="text-[18px] font-black text-rose-600">{houseResult.singleDigit}</span>
+                              </div>
+                              <div className="text-center bg-white px-4 py-2 rounded-2xl border border-rose-200 shadow-2xs">
+                                <span className="text-[18px] font-bold text-slate-400 uppercase block">Ruling Planet</span>
+                                <span className="text-[18px] font-black text-slate-800">{houseResult.info.planet}</span>
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Compatibility Status Banner */}
+                          {(() => {
+                            const isMulFriendly = FRIENDLY_NUMBERS[mulank]?.includes(houseResult.singleDigit);
+                            const isBhagFriendly = FRIENDLY_NUMBERS[bhagyank]?.includes(houseResult.singleDigit);
+
+                            return (
+                              <div className="space-y-4">
+                                <div className={`p-4 rounded-2xl border flex items-center gap-3 ${isMulFriendly && isBhagFriendly
+                                  ? "bg-emerald-50 border-emerald-200 text-emerald-950"
+                                  : isMulFriendly || isBhagFriendly
+                                    ? "bg-amber-50 border-amber-200 text-amber-950"
+                                    : "bg-rose-50 border-rose-200 text-rose-950"
+                                  }`}>
+                                  <CheckCircle className="w-6 h-6 shrink-0 text-rose-600" />
+                                  <div className="text-[18px] font-medium space-y-0.5">
+                                    <span className="font-extrabold text-[18px] block">
+                                      {isMulFriendly && isBhagFriendly
+                                        ? "🌟 Highly Auspicious House Alignment!"
+                                        : isMulFriendly || isBhagFriendly
+                                          ? "⚖️ Good Harmonious Balance"
+                                          : "⚠️ Challenging Vibration Alignment"}
+                                    </span>
+                                    <p>
+                                      House Number sum {houseResult.singleDigit} is{" "}
+                                      {isMulFriendly ? <strong className="text-emerald-700">Harmonious with Psychic ({mulank})</strong> : "Neutral/Hostile with Psychic"}{" "}
+                                      and{" "}
+                                      {isBhagFriendly ? <strong className="text-emerald-700">Harmonious with Destiny ({bhagyank})</strong> : "Neutral/Hostile with Destiny"}.
+                                    </p>
+                                  </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                                  <div className="p-4 bg-white rounded-2xl border border-rose-100 space-y-1">
+                                    <span className="font-bold text-[18px] text-rose-900 uppercase block">Core Atmosphere & Energy:</span>
+                                    <p className="text-slate-700 text-[18px] leading-relaxed font-semibold">{houseResult.info.desc}</p>
+                                  </div>
+                                  <div className="p-4 bg-white rounded-2xl border border-rose-100 space-y-1">
+                                    <span className="font-bold text-[18px] text-rose-900 uppercase block">Best Suited For:</span>
+                                    <p className="text-slate-800 text-[18px] font-bold leading-relaxed">{houseResult.info.bestFor}</p>
+                                  </div>
+                                </div>
+
+                                {/* Structural & Decor Enhancements */}
+                                <div className="pt-6 mt-4 border-t border-rose-100">
+                                  <h4 className="text-[18px] font-bold text-slate-900 mb-4">
+                                    Structural & Decor Enhancements (Based on Single-Digit House Vibration):
+                                  </h4>
+                                  <div className="grid grid-cols-1 gap-4">
+                                    {[
+                                      { num: 1, vibe: "Independence & Ambition", decor: "Keep lighting bright; use bold accent pieces; great for solo dwellers or entrepreneurs." },
+                                      { num: 2, vibe: "Harmony & Cooperation", decor: "Use soft textures, pairs of items (like two identical vases), and warm colors to foster relationships." },
+                                      { num: 3, vibe: "Creativity & Expression", decor: "Create an entertainment space; use vibrant colors; display art and books." },
+                                      { num: 4, vibe: "Stability & Grounding", decor: "Incorporate wooden furniture, plants, and earthy tones; keep structure and organization high." },
+                                      { num: 5, vibe: "Change & Adventure", decor: "Keep spaces open and uncluttered; use travel decor; ensure plenty of windows and airflow." },
+                                      { num: 6, vibe: "Family & Nurturing", decor: "Focus on a large dining table, comfortable seating, and family photos; ideal for nesting." },
+                                      { num: 7, vibe: "Spirituality & Reflection", decor: "Set up a quiet reading or meditation nook; use cool colors like blue or green; limit chaotic tech." },
+                                      { num: 8, vibe: "Abundance & Power", decor: "Use high-quality materials; keep the entrance pristine to invite wealth; balance luxury with tidiness." },
+                                      { num: 9, vibe: "Universal Love & Healing", decor: "Incorporate eco-friendly materials, community spaces, and neutral, welcoming tones." },
+                                    ].filter(item => item.num === houseResult.singleDigit).map((item, i) => (
+                                      <div key={i} className="p-5 bg-rose-50 rounded-2xl border border-rose-200 shadow-sm space-y-3 animate-in fade-in">
+                                        <div className="flex items-center gap-3 border-b border-rose-100 pb-3">
+                                          <span className="w-10 h-10 rounded-full bg-rose-600 text-white font-black flex items-center justify-center text-[18px] shrink-0 shadow-md">
+                                            {item.num}
+                                          </span>
+                                          <span className="font-black text-[18px] text-rose-950 leading-tight">{item.vibe}</span>
+                                        </div>
+                                        <p className="text-[16px] text-slate-800 font-bold leading-relaxed">
+                                          {item.decor}
+                                        </p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })()}
+                        </div>
+                      )}
+                    </div>
+
                     <div>
                       <span className="text-[18px] font-extrabold text-amber-900 uppercase tracking-wider block mb-2">
                         🌟 Top Recommended House Vibrations (Perfect Dual Synergy):
@@ -673,12 +933,14 @@ export default function PredictionNumerology() {
                 </h4>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {[
-                    { title: "Fire Element (Sum 1 & 9)", planet: "Sun / Mars", material: "Brass, Copper, Rich Teak Wood", colors: "Gold, Warm Yellow, Deep Orange, Red", icon: "🔥" },
-                    { title: "Water Element (Sum 2 & 7)", planet: "Moon / Ketu", material: "White Marble, Acrylic, Frosted Glass", colors: "Pure White, Silver, Cream, Off-White", icon: "💧" },
-                    { title: "Wood Element (Sum 3 & 5)", planet: "Jupiter / Mercury", material: "Solid Teak Wood, Green Jade, Acrylic", colors: "Yellow, Gold, Emerald Green, Light Wood", icon: "🌿" },
-                    { title: "Metal / Luxury (Sum 6)", planet: "Venus (Shukra)", material: "Silver, Mirror Finish, Crystal Glass", colors: "Metallic White, Rose Gold, Bright Silver", icon: "💎" },
-                    { title: "Earth / Metal (Sum 4 & 8)", planet: "Rahu / Saturn", material: "Stainless Steel, Slate Stone, Cast Iron", colors: "Metallic Grey, Silver, Dark Slate, Charcoal", icon: "🪨" },
-                  ].map((mat, i) => (
+                    { sums: [1, 9], title: "Fire Element (Sum 1 & 9)", planet: "Sun / Mars", material: "Brass, Copper, Rich Teak Wood", colors: "Gold, Warm Yellow, Deep Orange, Red", icon: "🔥" },
+                    { sums: [2, 7], title: "Water Element (Sum 2 & 7)", planet: "Moon / Ketu", material: "White Marble, Acrylic, Frosted Glass", colors: "Pure White, Silver, Cream, Off-White", icon: "💧" },
+                    { sums: [3, 5], title: "Wood Element (Sum 3 & 5)", planet: "Jupiter / Mercury", material: "Solid Teak Wood, Green Jade, Acrylic", colors: "Yellow, Gold, Emerald Green, Light Wood", icon: "🌿" },
+                    { sums: [6], title: "Metal / Luxury (Sum 6)", planet: "Venus (Shukra)", material: "Silver, Mirror Finish, Crystal Glass", colors: "Metallic White, Rose Gold, Bright Silver", icon: "💎" },
+                    { sums: [4, 8], title: "Earth / Metal (Sum 4 & 8)", planet: "Rahu / Saturn", material: "Stainless Steel, Slate Stone, Cast Iron", colors: "Metallic Grey, Silver, Dark Slate, Charcoal", icon: "🪨" },
+                  ]
+                  .filter(mat => !houseResult || mat.sums.includes(houseResult.singleDigit))
+                  .map((mat, i) => (
                     <div key={i} className="p-4 bg-purple-50/40 rounded-2xl border border-purple-100 space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="text-[18px] font-bold text-purple-900">{mat.icon} {mat.title}</span>
@@ -719,115 +981,26 @@ export default function PredictionNumerology() {
                 </div>
               </div>
             </div>
-
-            {/* Lucky House Number Calculator Card */}
-            <div className="bg-white border border-rose-200 rounded-3xl p-6 md:p-8 shadow-sm space-y-6">
-              <div className="border-b border-rose-100 pb-4">
-                <h3 className="text-[18px] font-bold text-slate-900 flex items-center gap-2">
-                  <Home className="w-5 h-5 text-rose-600" /> Lucky House & Flat Number Analyzer
-                </h3>
-                <p className="text-[18px] text-slate-600 font-semibold mt-1">
-                  Evaluates home address vibrations against your Psychic Mulank ({mulank}) & Destiny Bhagyank ({bhagyank}) numbers using Chaldean Numerology.
-                </p>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="text"
-                  value={houseInput}
-                  onChange={(e) => setHouseInput(e.target.value)}
-                  placeholder="e.g. 42, Flat 1204, or 302-B"
-                  className="flex-1 px-4 py-3 bg-rose-50/50 border border-rose-200 rounded-2xl font-bold text-slate-900 focus:outline-none focus:border-rose-500 text-[18px]"
-                />
-                <button
-                  onClick={handleAnalyzeHouse}
-                  className="px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl transition-all shadow-md flex items-center justify-center gap-2 text-[18px]"
-                >
-                  <Search className="w-4 h-4" />
-                  <span>Analyze House Energy</span>
-                </button>
-              </div>
-
-              {houseResult && (
-                <div className="p-6 bg-gradient-to-br from-rose-50/80 via-pink-50/40 to-white rounded-2xl border border-rose-200 space-y-4 animate-in slide-in-from-bottom-2 duration-300">
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-rose-100 pb-4">
-                    <div>
-                      <span className="text-[18px] font-extrabold text-slate-500 uppercase tracking-wider block">House / Flat Address</span>
-                      <span className="text-[18px] font-black text-rose-950">{houseInput.toUpperCase()}</span>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <div className="text-center bg-white px-4 py-2 rounded-2xl border border-rose-200 shadow-2xs">
-                        <span className="text-[18px] font-bold text-slate-400 uppercase block">Single Vibration</span>
-                        <span className="text-[18px] font-black text-rose-600">{houseResult.singleDigit}</span>
-                      </div>
-                      <div className="text-center bg-white px-4 py-2 rounded-2xl border border-rose-200 shadow-2xs">
-                        <span className="text-[18px] font-bold text-slate-400 uppercase block">Ruling Planet</span>
-                        <span className="text-[18px] font-black text-slate-800">{houseResult.info.planet}</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Compatibility Status Banner */}
-                  {(() => {
-                    const isMulFriendly = FRIENDLY_NUMBERS[mulank]?.includes(houseResult.singleDigit);
-                    const isBhagFriendly = FRIENDLY_NUMBERS[bhagyank]?.includes(houseResult.singleDigit);
-
-                    return (
-                      <div className="space-y-4">
-                        <div className={`p-4 rounded-2xl border flex items-center gap-3 ${isMulFriendly && isBhagFriendly
-                          ? "bg-emerald-50 border-emerald-200 text-emerald-950"
-                          : isMulFriendly || isBhagFriendly
-                            ? "bg-amber-50 border-amber-200 text-amber-950"
-                            : "bg-rose-50 border-rose-200 text-rose-950"
-                          }`}>
-                          <CheckCircle className="w-6 h-6 shrink-0 text-rose-600" />
-                          <div className="text-[18px] font-medium space-y-0.5">
-                            <span className="font-extrabold text-[18px] block">
-                              {isMulFriendly && isBhagFriendly
-                                ? "🌟 Highly Auspicious House Alignment!"
-                                : isMulFriendly || isBhagFriendly
-                                  ? "⚖️ Good Harmonious Balance"
-                                  : "⚠️ Challenging Vibration Alignment"}
-                            </span>
-                            <p>
-                              House Number sum {houseResult.singleDigit} is{" "}
-                              {isMulFriendly ? <strong className="text-emerald-700">Harmonious with Psychic ({mulank})</strong> : "Neutral/Hostile with Psychic"}{" "}
-                              and{" "}
-                              {isBhagFriendly ? <strong className="text-emerald-700">Harmonious with Destiny ({bhagyank})</strong> : "Neutral/Hostile with Destiny"}.
-                            </p>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
-                          <div className="p-4 bg-white rounded-2xl border border-rose-100 space-y-1">
-                            <span className="font-bold text-[18px] text-rose-900 uppercase block">Core Atmosphere & Energy:</span>
-                            <p className="text-slate-700 text-[18px] leading-relaxed font-semibold">{houseResult.info.desc}</p>
-                          </div>
-                          <div className="p-4 bg-white rounded-2xl border border-rose-100 space-y-1">
-                            <span className="font-bold text-[18px] text-rose-900 uppercase block">Best Suited For:</span>
-                            <p className="text-slate-800 text-[18px] font-bold leading-relaxed">{houseResult.info.bestFor}</p>
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })()}
-                </div>
-              )}
             </div>
-
-            {/* Recalculate Button */}
-            <div className="flex justify-center">
-              <button
-                onClick={() => setHasCalculated(false)}
-                className="px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl shadow-md transition-all flex items-center gap-2 text-[18px]"
-              >
-                <RefreshCw className="w-4 h-4 text-white" />
-                <span>Analyze Another Date of Birth</span>
-              </button>
-            </div>
+            )}
           </div>
         )}
+
+
+
+        {/* Recalculate Button */}
+        <div className="flex justify-center">
+          <button
+            onClick={() => setHasCalculated(false)}
+            className="px-6 py-3 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl shadow-md transition-all flex items-center gap-2 text-[18px]"
+          >
+            <RefreshCw className="w-4 h-4 text-white" />
+            <span>Analyze Another Date of Birth</span>
+          </button>
+        </div>
       </div>
+
     </div>
+
   );
 }
