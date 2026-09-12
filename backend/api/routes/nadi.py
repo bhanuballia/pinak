@@ -14,15 +14,20 @@ async def analyze_nadi(payload: Dict = Body(...)):
     try:
         planet_positions = payload.get("planet_positions")
         gender = payload.get("gender", "Male")
+        age = payload.get("age")
         
         if not planet_positions:
             raise HTTPException(status_code=400, detail="planet_positions is required.")
             
         # Calculate Nadi Yogas
+        import json
+        with open(r"C:\Users\PC\.gemini\antigravity-ide\brain\90967aec-5c72-41ee-9046-31573b35be66\scratch\debug_nadi_payload.json", "w") as f:
+            json.dump(planet_positions, f)
+            
         nadi_data = get_nadi_yogas(planet_positions)
         
         # Generate AI Reading
-        reading = generate_nadi_reading(nadi_data, gender)
+        reading = generate_nadi_reading(nadi_data, gender, age)
         
         return {
             "nadi_data": nadi_data,
@@ -45,6 +50,7 @@ async def ask_nadi_question(payload: Dict = Body(...)):
         planet_positions = payload.get("planet_positions")
         gender = payload.get("gender", "Male")
         question = payload.get("question")
+        age = payload.get("age")
         
         if not planet_positions or not question:
             raise HTTPException(status_code=400, detail="planet_positions and question are required.")
@@ -53,7 +59,7 @@ async def ask_nadi_question(payload: Dict = Body(...)):
         nadi_data = get_nadi_yogas(planet_positions)
         
         # Generate QA AI Reading
-        answer = generate_nadi_qa_reading(nadi_data, gender, question)
+        answer = generate_nadi_qa_reading(nadi_data, gender, question, age)
         
         return {
             "nadi_data": nadi_data,

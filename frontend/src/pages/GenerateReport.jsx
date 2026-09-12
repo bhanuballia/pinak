@@ -388,12 +388,68 @@ export default function GenerateReport() {
   };
 
   const handleOpenKPAstrology = () => {
-    const win = window.open('/?kp_astrology=true', 'KPEngine', 'width=1000,height=800,menubar=no,toolbar=no,location=no,status=no');
+    if (reportData) {
+      try { localStorage.setItem('worksheetData', JSON.stringify(reportData)); } catch (e) { }
+    }
+    const params = new URLSearchParams({
+      kp_astrology: 'true',
+      name: name || '',
+      date: date || '',
+      time: time || '',
+      lat: latLon?.lat || '',
+      lon: latLon?.lon || '',
+      tz: tzOffset || '0',
+      gender: gender || 'Male'
+    });
+    const win = window.open(`/?${params.toString()}`, 'KPEngine', 'width=1100,height=850,menubar=no,toolbar=no,location=no,status=no');
     if (win) win.focus();
   };
 
   const handleOpenNadi = () => {
-    const win = window.open('/?nadi=true', 'NadiViewer', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no');
+    // Determine active date from form or loaded reportData
+    const activeDate = date || reportData?.basic_details?.birth_date || reportData?.basic_details?.Date || '';
+    if (!activeDate) {
+      alert("Please enter at least your Date of Birth in the Generate Kundali form.");
+      return;
+    }
+
+    const isDobOnly = Boolean(!time || !latLon || onlyNameAndDate);
+    const finalTime = isDobOnly ? "12:00" : time;
+    const finalLat = (latLon && latLon.lat) ? latLon.lat : 28.6139;
+    const finalLon = (latLon && latLon.lon) ? latLon.lon : 77.2090;
+    const finalTz = tzOffset !== undefined && tzOffset !== null ? tzOffset : 5.5;
+    const locName = latLon?.display_name || (isDobOnly ? "Standard (12:00 Noon Ephemeris)" : "Birth Location");
+
+    try {
+      localStorage.setItem('kundaliFormData', JSON.stringify({
+        name: name || '',
+        date: activeDate,
+        time: isDobOnly ? '' : time,
+        lat: isDobOnly ? '' : (latLon?.lat || ''),
+        lon: isDobOnly ? '' : (latLon?.lon || ''),
+        tz: finalTz,
+        gender: gender || 'Male',
+        location_name: locName,
+        is_dob_only: isDobOnly
+      }));
+      if (reportData) {
+        localStorage.setItem('worksheetData', JSON.stringify(reportData));
+      }
+    } catch (e) { }
+
+    const params = new URLSearchParams({
+      nadi: 'true',
+      name: name || '',
+      date: activeDate,
+      time: isDobOnly ? '' : time,
+      lat: isDobOnly ? '' : (latLon?.lat || ''),
+      lon: isDobOnly ? '' : (latLon?.lon || ''),
+      tz: String(finalTz),
+      gender: gender || 'Male',
+      dob_only: isDobOnly ? 'true' : 'false',
+      loc: locName
+    });
+    const win = window.open(`/?${params.toString()}`, 'NadiViewer', 'width=1250,height=920,menubar=no,toolbar=no,location=no,status=no');
     if (win) win.focus();
   };
 

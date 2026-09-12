@@ -29,10 +29,15 @@ def vimshottari(
     dt_utc = dt - datetime.timedelta(hours=float(tz_offset))
     jd = datetime_to_julian(dt_utc)
 
-    nak = get_nakshatra(jd)
-    nak_index = nak["nakshatra_index"]
-    sequence = compute_vimshottari(jd, nak_index, years_ahead=150)
-    return {"birth_jd": jd, "nakshatra_index": nak_index, "vimshottari": sequence}
+    # We need the moon's exact longitude to calculate exact dasha balance
+    import swisseph as swe
+    from astronomy.sidereal import set_ayanamsa
+    set_ayanamsa()
+    res = swe.calc_ut(jd, swe.MOON, swe.FLG_SIDEREAL)
+    moon_lon = res[0][0]
+
+    sequence = compute_vimshottari(jd, moon_lon, years_ahead=150)
+    return {"birth_jd": jd, "moon_lon": moon_lon, "vimshottari": sequence}
 
 from fastapi import Body
 from typing import Dict

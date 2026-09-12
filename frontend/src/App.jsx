@@ -766,11 +766,94 @@ function App() {
             }
         } else if (params.get('kp_chart') === 'true') {
             setKpChartMode(true);
-            const savedData = localStorage.getItem('worksheetData');
-            if (savedData) {
+        } else if (params.get('nadi') === 'true' || params.get('synastry') === 'true' || params.get('garga') === 'true') {
+            const urlDate = params.get("date");
+            const urlTime = params.get("time");
+            const urlLat = params.get("lat");
+            const urlLon = params.get("lon");
+            const urlName = params.get("name") || "";
+            const urlTz = params.get("tz_offset") || params.get("tz");
+            const urlGender = params.get("gender") || "Male";
+            const urlDobOnly = params.get("dob_only") === "true";
+            const urlLoc = params.get("loc") || "";
+
+            let activeDate = urlDate;
+            let activeTime = urlTime;
+            let activeLat = urlLat;
+            let activeLon = urlLon;
+            let activeTz = urlTz;
+            let activeName = urlName;
+            let activeGender = urlGender;
+            let isDobOnly = urlDobOnly || (!urlTime && !urlLat);
+
+            if (!activeDate) {
                 try {
-                    setWorksheetData(JSON.parse(savedData));
+                    const storedKundali = localStorage.getItem('kundaliFormData');
+                    if (storedKundali) {
+                        const parsed = JSON.parse(storedKundali);
+                        if (parsed.date) {
+                            activeDate = parsed.date;
+                            activeTime = parsed.time;
+                            activeLat = parsed.lat;
+                            activeLon = parsed.lon;
+                            activeTz = parsed.tz;
+                            activeName = parsed.name || activeName;
+                            activeGender = parsed.gender || activeGender;
+                            isDobOnly = parsed.is_dob_only !== undefined ? parsed.is_dob_only : (!parsed.time && !parsed.lat);
+                        }
+                    }
                 } catch (e) { }
+            }
+
+            if (activeDate) {
+                const finalTime = (!isDobOnly && activeTime) ? activeTime : "12:00";
+                const finalLat = (!isDobOnly && activeLat) ? parseFloat(activeLat) : 28.6139;
+                const finalLon = (!isDobOnly && activeLon) ? parseFloat(activeLon) : 77.2090;
+                const tzVal = (activeTz && activeTz !== "0") ? parseFloat(activeTz) : 5.5;
+
+                const payload = {
+                    name: activeName || (isDobOnly ? "Nadi Chart (DOB Only)" : "Nadi Chart"),
+                    date: activeDate,
+                    time: finalTime,
+                    tz_offset: tzVal,
+                    lat: finalLat,
+                    lon: finalLon,
+                    style: "minimal",
+                    language: "english",
+                    gender: activeGender,
+                    location_name: urlLoc || (isDobOnly ? "Standard (12:00 Noon Ephemeris)" : "Birth Location"),
+                    is_approximate: isDobOnly
+                };
+
+                (async () => {
+                    try {
+                        const detailedData = await fetchReportData(payload);
+                        detailedData.is_dob_only = isDobOnly;
+                        detailedData.calculation_basis = isDobOnly ? "dob_only" : "full";
+                        detailedData.user_inputs = {
+                            name: activeName,
+                            date: activeDate,
+                            time: isDobOnly ? "" : activeTime,
+                            lat: isDobOnly ? "" : activeLat,
+                            lon: isDobOnly ? "" : activeLon,
+                            location_name: urlLoc || (isDobOnly ? "Standard (12:00 Noon Ephemeris)" : ""),
+                            tz: tzVal,
+                            gender: activeGender,
+                            is_dob_only: isDobOnly
+                        };
+                        setWorksheetData(detailedData);
+                        localStorage.setItem('worksheetData', JSON.stringify(detailedData));
+                    } catch (e) {
+                        console.error("Failed to dynamically fetch report data:", e);
+                    }
+                })();
+            } else {
+                const savedData = localStorage.getItem('worksheetData');
+                if (savedData) {
+                    try {
+                        setWorksheetData(JSON.parse(savedData));
+                    } catch (e) { }
+                }
             }
         } else if (params.get('sunrise_chart') === 'true') {
             setSunriseChartMode(true);
@@ -847,14 +930,7 @@ function App() {
                     setWorksheetData(JSON.parse(savedData));
                 } catch (e) { }
             }
-        } else if (params.get('nadi') === 'true' || params.get('synastry') === 'true' || params.get('garga') === 'true') {
-            document.title = 'Vedic Astrology Viewer';
-            const savedData = localStorage.getItem('worksheetData');
-            if (savedData) {
-                try {
-                    setWorksheetData(JSON.parse(savedData));
-                } catch (e) { }
-            }
+
         } else if (params.get('dasa_timeline') === 'true') {
             setDasaTimelineMode(true);
             const savedData = localStorage.getItem('worksheetData');

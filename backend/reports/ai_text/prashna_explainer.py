@@ -131,19 +131,72 @@ def generate_prashna_reading(
         outcome = "YES" if math_score > 0 else "NO" if math_score < 0 else "MAYBE / DELAYED"
         return f"Outcome: {outcome}\nReasoning: {reasoning}"
 
+def _generate_kp_classical_reading(
+    question: str,
+    category: str,
+    ascendant_degree: float,
+    nakshatra_name: str,
+    sub_lord: str,
+    kp_context: str,
+    reasoning: str = "",
+    target_house: int = 1,
+    lagna_lord: str = "",
+    target_lord: str = "",
+    score: int = 0
+) -> str:
+    """Provides an authentic, detailed KP Horary reading when AI model is offline or rate-limited."""
+    sub_lord_qualities = {
+        "Jupiter": "expansive, auspicious, and supportive of growth, higher wisdom, and legitimate gain",
+        "Venus": "harmonious, fruitful, and conducive to partnerships, finance, and creative success",
+        "Mercury": "analytical, communicative, swift, and highly favorable for negotiations, intellect, and contracts",
+        "Sun": "authoritative, clear, dignified, and promising recognition, government favor, and self-confidence",
+        "Moon": "sensitive, receptive, fluctuating, and indicating emotional fulfillment and timely changes",
+        "Mars": "energetic, decisive, action-oriented, requiring patience to overcome competitive friction",
+        "Saturn": "disciplined, enduring, demanding meticulous effort, indicating success through perseverance and delay",
+        "Rahu": "transformational, ambitious, unconventional, indicating sudden opportunities and unconventional pathways",
+        "Ketu": "introspective, spiritual, detachment-inducing, requiring sharp intuition and clarity of purpose"
+    }
+    sl_trait = sub_lord_qualities.get(sub_lord, "dynamic and influential in deciding the query matter")
+    
+    context_note = f"\n\nClassical Nakshatra Lore ({nakshatra_name}):\n{kp_context}" if kp_context.strip() else ""
+    outcome_str = "YES / FAVORABLE" if score > 0 else "NO / OBSTACLES" if score < 0 else "MAYBE / DELAYED"
+
+    reasoning_section = f"\n\n2. Key Planetary Connections:\n{reasoning}" if reasoning.strip() else ""
+
+    return (
+        f"⭐ KP Horary Assessment for: \"{question}\"\n"
+        f"Category: {category} | Outcome: {outcome_str}\n\n"
+        f"1. Ascendant & Ruling Sub-Lord:\n"
+        f"The Prashna Ascendant falls at {ascendant_degree:.2f}° in the constellation of {nakshatra_name}, governed by Sub-Lord {sub_lord}. "
+        f"In Krishnamurti Paddhati (KP) astrology, the Ascendant Sub-Lord is the ultimate key determining whether the querent's intention manifests favorably. "
+        f"The Sub-Lord {sub_lord} is {sl_trait}. For {category.lower()} inquiries (Target House {target_house}), {sub_lord} serves as the primary significator."
+        f"{reasoning_section}\n\n"
+        f"3. Astrological Guidance:\n"
+        f"Review the 4-Level Significators and House Cusps below to examine the specific house connections (2, 6, 10, 11 for career/wealth; 2, 7, 11 for relationships; 4, 9, 11 for education). "
+        f"Remain focused, take practical steps aligned with {sub_lord}'s virtues, and proceed with calm confidence.{context_note}"
+    )
+
 def generate_kp_reading(
     question: str,
     category: str,
     ascendant_degree: float,
     nakshatra_name: str,
     sub_lord: str,
-    kp_context: str
+    kp_context: str,
+    reasoning: str = "",
+    target_house: int = 1,
+    lagna_lord: str = "",
+    target_lord: str = "",
+    score: int = 0
 ) -> str:
     """
     Generates a highly specific reading based on KP Astrology (Nakshatra and Sub-lord).
     """
     if not _HAS_GEMINI or not os.getenv("GEMINI_API_KEY"):
-        return f"KP Data points to Nakshatra {nakshatra_name} and Sub-lord {sub_lord}. Details: {kp_context}"
+        return _generate_kp_classical_reading(
+            question, category, ascendant_degree, nakshatra_name, sub_lord, kp_context,
+            reasoning=reasoning, target_house=target_house, lagna_lord=lagna_lord, target_lord=target_lord, score=score
+        )
         
     try:
         api_key = os.getenv("GEMINI_API_KEY")
@@ -154,26 +207,32 @@ def generate_kp_reading(
         You are an expert in Krishnamurti Paddhati (KP) Astrology.
         
         The user asked: "{question}"
-        Category: {category}
+        Category: {category} (Target House: {target_house})
         
-        Here is the astronomical data for the exact moment they asked the question:
+        Astronomical & Astrological Findings:
         - Ascendant Degree: {ascendant_degree:.2f}°
         - Ascendant Nakshatra (Star): {nakshatra_name}
         - Ascendant Sub-Lord: {sub_lord}
+        - Ascendant Lord (Querent): {lagna_lord}
+        - Target House ({target_house}) Lord (Quesited): {target_lord}
+        - Planetary Rule Analysis: {reasoning}
         
-        Here are the specific life traits associated with {nakshatra_name} from classical KP literature:
+        Classical Nakshatra Lore:
         {kp_context}
         
-        Write a compassionate, insightful 3-4 paragraph response to the user.
+        Write a clear, compassionate, and insightful 3-4 paragraph response in simple words.
         Structure:
-        1. Start with a direct answer based on the nature of the Sub-lord and Nakshatra traits.
-        2. Explain the astrological reasoning, specifically mentioning the Ascendant Nakshatra ({nakshatra_name}), the Sub-Lord ({sub_lord}), and how their traits (from the provided text) apply to the user's question.
-        3. End with a compassionate piece of advice for the user based on the outcome.
-        
-        Focus deeply on the KP context provided. Do not use overly complex jargon without brief context. Make it sound mystical but clear.
+        1. Start with a direct, plain-English summary of what the planetary connections reveal (clearly explaining the Ascendant lord, target house lord, and planetary conditions).
+        2. Explain the astrological reasoning clearly, mentioning the Sub-Lord ({sub_lord}) and how its traits apply to the question.
+        3. End with actionable, compassionate guidance for the user.
+        Make it easy to understand for someone who is not an astrologer, while preserving authentic KP depth.
         """
         response = model.generate_content(prompt)
         return response.text.strip()
     except Exception as e:
-        print(f"[PRASHNA EXPLAINER] AI KP reading failed: {e}")
-        return f"KP Data points to Nakshatra {nakshatra_name} and Sub-lord {sub_lord}. Details: {kp_context}"
+        print(f"[PRASHNA EXPLAINER] AI KP reading fallback triggered: {e}")
+        return _generate_kp_classical_reading(
+            question, category, ascendant_degree, nakshatra_name, sub_lord, kp_context,
+            reasoning=reasoning, target_house=target_house, lagna_lord=lagna_lord, target_lord=target_lord, score=score
+        )
+

@@ -109,6 +109,7 @@ def calculate_kp_chart(payload: Dict[str, Any] = Body(...)):
         lat = float(payload["lat"])
         lon = float(payload["lon"])
         tz_offset = float(payload.get("tz_offset", 0.0))
+        horary_number = payload.get("horary_number")
         
         y, m, d = [int(x) for x in date.split("-")]
         tp = [int(x) for x in time.split(":")]
@@ -116,12 +117,41 @@ def calculate_kp_chart(payload: Dict[str, Any] = Body(...)):
         dt_utc = dt_local - datetime.timedelta(hours=tz_offset)
         jd_ut = datetime_to_julian(dt_utc)
         
+        target_asc = None
+        if horary_number:
+            try:
+                h_num = int(horary_number)
+                if 1 <= h_num <= 249:
+                    from core.astrology.generate_249 import get_249
+                    # Generate or import 249 table. Since it's fast, we can just call it or import it.
+                    # We wrote it to generate_249.py in the previous step.
+                    import sys, os
+                    sys.path.append(os.path.join(os.path.dirname(__file__), '../../core/astrology'))
+                    try:
+                        from generate_249 import KP_249_TABLE
+                    except ImportError:
+                        from core.astrology.generate_249 import KP_249_TABLE
+                    
+                    target_asc = next((item['start_deg'] for item in KP_249_TABLE if item['num'] == h_num), None)
+            except Exception as e:
+                print(f"[API WARN] Failed to process horary number: {e}")
+
         # 1. Get Placidus House Cusps
-        # get_house_cusps returns {"cusps": [None, c1, c2 ... c12], ...}
-        house_data = get_house_cusps(jd_ut, lat, lon, house_system="P")
+        if target_asc is not None:
+            jd_ut_cusps = jd_ut
+            for _ in range(15):
+                curr_asc = get_house_cusps(jd_ut_cusps, lat, lon, house_system="P")["ascendant_deg"]
+                diff = (target_asc - curr_asc + 180) % 360 - 180
+                if abs(diff) < 0.00001:
+                    break
+                jd_ut_cusps += (diff / 360.0) * 0.99726958
+            house_data = get_house_cusps(jd_ut_cusps, lat, lon, house_system="P")
+        else:
+            house_data = get_house_cusps(jd_ut, lat, lon, house_system="P")
+            
         cusps = house_data["cusps"]
         
-        # 2. Get Standard Rashi Chart for Planet positions
+        # 2. Get Standard Rashi Chart for Planet positions (uses original jd_ut)
         chart = build_rashi_chart(jd_ut, lat, lon)
         planets_data = chart.get("planet_positions", {})
         
@@ -274,6 +304,7 @@ def calculate_kp_chart(payload: Dict[str, Any] = Body(...)):
         asc = next((p for p in kp_planets if p["planet"] == "Ascendant"), None)
         moon = next((p for p in kp_planets if p["planet"] == "Moon"), None)
         sun = next((p for p in kp_planets if p["planet"] == "Sun"), None)
+        saturn = next((p for p in kp_planets if p["planet"] == "Saturn"), None)
         
         ruling_planets = {
             "day_lord": day_lord,
@@ -285,6 +316,50 @@ def calculate_kp_chart(payload: Dict[str, Any] = Body(...)):
             "moon_sub_lord": moon["sub_lord"] if moon else ""
         }
         
+        # Punarphoo Dosha Indicator (Saturn-Moon connection)
+        punarphoo_present = False
+        punarphoo_reason = ""
+        if moon and saturn:
+            moon_sign = get_sign_index(moon["longitude"])
+            sat_sign = get_sign_index(saturn["longitude"])
+            sign_diff = (moon_sign - sat_sign) % 12
+            
+            if moon["star_lord"] == "Saturn":
+                punarphoo_present = True
+                punarphoo_reason = "Moon is in Saturn's Star."
+            elif saturn["star_lord"] == "Moon":
+                punarphoo_present = True
+                punarphoo_reason = "Saturn is in Moon's Star."
+            elif sign_diff == 0:
+                punarphoo_present = True
+                punarphoo_reason = "Moon and Saturn are in the same Sign (Conjunction)."
+            elif sign_diff == 6:
+                punarphoo_present = True
+                punarphoo_reason = "Moon and Saturn are aspecting each other (7th aspect)."
+            elif sign_diff == 2:
+                punarphoo_present = True
+                punarphoo_reason = "Saturn aspects Moon (3rd aspect)."
+            elif sign_diff == 9:
+                punarphoo_present = True
+                punarphoo_reason = "Saturn aspects Moon (10th aspect)."
+
+        punarphoo_effects = None
+        if punarphoo_present:
+            punarphoo_effects = {
+                "title": "Punarphoo Dosha (Saturn-Moon Karmic Connection)",
+                "summary": "In KP Astrology, Punarphoo occurs when Saturn and Moon form an intimate connection. The word 'Punar' means repetition. It signifies that significant events in life rarely materialize on the first attempt; initial negotiations or talks may stall, undergo postponement, or break at the eleventh hour, but materialize upon a subsequent attempt.",
+                "marriage_impact": "Noticeable delays in marriage, cancellation or hesitation in initial marriage proposals, or uncertainty before final settlement. Marriages finalize after patience and renegotiation.",
+                "career_impact": "Delays in expected promotions, job offers, payments, or contract approvals. Key milestones usually require a second attempt or follow-up before culmination.",
+                "emotional_impact": "Tendency toward overthinking, anxiety, mood swings, self-doubt, or feeling unsupported when events slow down, due to Saturn's cold gaze upon the sensitive Moon.",
+                "positive_side": "Delay is never denial. Punarphoo bestows profound emotional resilience, practical maturity, meticulous planning, and enduring long-term stability once commitments are finalized.",
+                "remedies": [
+                    "Worship Lord Shiva regularly; perform water or milk abhishek on Mondays to soothe the Moon.",
+                    "Recite the Hanuman Chalisa on Tuesdays and Saturdays to alleviate Saturn's restrictive pressure.",
+                    "Do not abandon endeavors when an initial attempt pauses—the subsequent effort is destined to succeed.",
+                    "Practice mindfulness, meditation, and avoid making hasty emotional decisions during periods of stress."
+                ]
+            }
+                
         # Fortuna (Ascendant + Moon - Sun)
         fortuna = 0
         if asc and moon and sun:
@@ -296,6 +371,108 @@ def calculate_kp_chart(payload: Dict[str, Any] = Body(...)):
         ayanamsha = swe.get_ayanamsa_ut(jd_ut)
         swe.set_sid_mode(swe.SIDM_LAHIRI) # reset
         
+        # Aspect Calculations (KP Major Aspects: 0, 30, 60, 90, 120, 150, 180)
+        ASPECT_TYPES = [
+            (0, "Conjunction", 6.0, "neutral"),
+            (30, "Semi-Sextile", 2.0, "benefic"),
+            (60, "Sextile", 4.0, "benefic"),
+            (90, "Square", 4.0, "malefic"),
+            (120, "Trine", 6.0, "benefic"),
+            (150, "Quincunx", 2.0, "malefic"),
+            (180, "Opposition", 6.0, "malefic")
+        ]
+
+        aspects_list = []
+        # Planet to Planet aspects
+        for i, p1 in enumerate(kp_planets):
+            for p2 in kp_planets[i+1:]:
+                if p1["planet"] == "Ascendant" or p2["planet"] == "Ascendant":
+                    continue
+                diff = abs(p1["longitude"] - p2["longitude"])
+                if diff > 180:
+                    diff = 360 - diff
+                
+                for angle, name, orb, nature in ASPECT_TYPES:
+                    if abs(diff - angle) <= orb:
+                        aspects_list.append({
+                            "body1": p1["planet"],
+                            "body2": p2["planet"],
+                            "type": name,
+                            "angle": round(diff, 2),
+                            "exact_angle": angle,
+                            "orb": round(abs(diff - angle), 2),
+                            "nature": nature
+                        })
+
+        # Planet to Cusp aspects
+        for p in kp_planets:
+            if p["planet"] == "Ascendant":
+                continue
+            for c in kp_cusps:
+                diff = abs(p["longitude"] - c["longitude"])
+                if diff > 180:
+                    diff = 360 - diff
+                for angle, name, orb, nature in ASPECT_TYPES:
+                    if abs(diff - angle) <= (orb * 0.75):
+                        aspects_list.append({
+                            "body1": p["planet"],
+                            "body2": f"House {c['house']} Cusp",
+                            "type": name,
+                            "angle": round(diff, 2),
+                            "exact_angle": angle,
+                            "orb": round(abs(diff - angle), 2),
+                            "nature": nature
+                        })
+
+        # 5. KP Rule Analyzer (House Sub-Lord Promises)
+        rule_analyzer = {}
+        kp_topics = {
+            1: {"title": "Health & Personality", "pos": [1, 5, 11], "neg": [6, 8, 12]},
+            2: {"title": "Wealth & Family", "pos": [2, 6, 11], "neg": [5, 8, 12]},
+            4: {"title": "Property & Education", "pos": [4, 9, 11], "neg": [3, 8, 12]},
+            5: {"title": "Children & Romance", "pos": [2, 5, 11], "neg": [1, 4, 10]},
+            6: {"title": "Disease & Service/Job", "pos": [6, 10, 11], "neg": [1, 5, 12]},
+            7: {"title": "Marriage & Partnership", "pos": [2, 7, 11], "neg": [1, 6, 10]},
+            9: {"title": "Higher Learning & Travel", "pos": [3, 9, 12], "neg": [4, 11]},
+            10: {"title": "Career & Status", "pos": [2, 6, 10, 11], "neg": [1, 5, 9]},
+            11: {"title": "Gains & Desires", "pos": [2, 6, 11], "neg": [1, 5, 12]},
+            12: {"title": "Foreign Settlement & Losses", "pos": [3, 9, 12], "neg": [2, 11]}
+        }
+
+        for house_num, topic_info in kp_topics.items():
+            sub_lord = kp_cusps[house_num - 1]["sub_lord"]
+            # Find sub_lord planet object
+            sl_planet = next((p for p in kp_planets if p["planet"] == sub_lord), None)
+            sl_star_lord = sl_planet["star_lord"] if sl_planet else ""
+            
+            # Houses signified by Sub-Lord's Star Lord
+            star_lord_sigs = planet_significators.get(sl_star_lord, {"A": [], "B": [], "C": [], "D": []})
+            all_signified_houses = sorted(list(set(star_lord_sigs["A"] + star_lord_sigs["B"] + star_lord_sigs["C"] + star_lord_sigs["D"])))
+
+            matched_pos = [h for h in all_signified_houses if h in topic_info["pos"]]
+            matched_neg = [h for h in all_signified_houses if h in topic_info["neg"]]
+
+            if len(matched_pos) > len(matched_neg):
+                status = "Highly Favorable"
+            elif len(matched_pos) == len(matched_neg) and len(matched_pos) > 0:
+                status = "Mixed / Neutral"
+            elif len(matched_neg) > len(matched_pos):
+                status = "Unfavorable / Obstacles"
+            else:
+                status = "Moderate / Conditional"
+
+            rule_analyzer[house_num] = {
+                "topic": topic_info["title"],
+                "sub_lord": sub_lord,
+                "star_lord": sl_star_lord,
+                "signified_houses": all_signified_houses,
+                "positive_houses": topic_info["pos"],
+                "negating_houses": topic_info["neg"],
+                "matched_positive": matched_pos,
+                "matched_negating": matched_neg,
+                "status": status
+            }
+
         # Compile response
         return {
             "planets": kp_planets,
@@ -306,7 +483,12 @@ def calculate_kp_chart(payload: Dict[str, Any] = Body(...)):
             "planet_significators": planet_significators,
             "ruling_planets": ruling_planets,
             "fortuna": fortuna,
-            "ayanamsha": ayanamsha
+            "ayanamsha": ayanamsha,
+            "punarphoo_present": punarphoo_present,
+            "punarphoo_reason": punarphoo_reason,
+            "punarphoo_effects": punarphoo_effects,
+            "aspects": aspects_list,
+            "rule_analyzer": rule_analyzer
         }
         
     except Exception as e:

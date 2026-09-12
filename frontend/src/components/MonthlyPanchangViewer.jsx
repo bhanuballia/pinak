@@ -1025,13 +1025,13 @@ export default function MonthlyPanchangViewer() {
                     {dayData ? (
                         <div style={{ fontSize: '13px', color: 'hsla(0, 16%, 8%, 0.70)', display: 'flex', flexDirection: 'column', gap: '3px' }}>
                             {navratriDayInfo && (
-                                <div style={{ background: 'rgba(219,39,119,0.15)', color: '#9d174d', fontWeight: 'bold', padding: '5px 10px', borderRadius: '6px', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', border: '1px solid rgba(219,39,119,0.3)', boxShadow: '0 2px 4px rgba(219,39,119,0.05)', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                <div style={{ background: 'rgba(219,39,119,0.15)', color: '#9d174d', fontWeight: 'bold', padding: '5px 10px', borderRadius: '6px', marginBottom: '4px', display: 'flex', gap: '5px', fontSize: '12px', border: '1px solid rgba(219,39,119,0.3)', boxShadow: '0 2px 4px rgba(219,39,119,0.05)', flexDirection: 'column', alignItems: 'flex-start' }}>
                                     <span>🌸 {navratriDayInfo}</span>
                                     {navratriDayInfoHindi && <span style={{ fontSize: '11px', opacity: 0.85 }}>{navratriDayInfoHindi}</span>}
                                 </div>
                             )}
                             {majorFestival && !navratriDayInfo && (
-                                <div style={{ background: 'rgba(220,38,38,0.15)', color: '#991b1b', fontWeight: 'bold', padding: '5px 10px', borderRadius: '6px', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '5px', fontSize: '12px', border: '1px solid rgba(220,38,38,0.3)', boxShadow: '0 2px 4px rgba(220,38,38,0.05)', flexDirection: 'column', alignItems: 'flex-start' }}>
+                                <div style={{ background: 'rgba(220,38,38,0.15)', color: '#991b1b', fontWeight: 'bold', padding: '5px 10px', borderRadius: '6px', marginBottom: '4px', display: 'flex', gap: '5px', fontSize: '12px', border: '1px solid rgba(220,38,38,0.3)', boxShadow: '0 2px 4px rgba(220,38,38,0.05)', flexDirection: 'column', alignItems: 'flex-start' }}>
                                     <span>🪔 {majorFestival}</span>
                                     {majorFestivalHindi && <span style={{ fontSize: '11px', opacity: 0.85 }}>{majorFestivalHindi}</span>}
                                 </div>
@@ -1378,7 +1378,7 @@ export default function MonthlyPanchangViewer() {
                                                 "Leo": "सिंह (Leo)", "Virgo": "कन्या (Virgo)", "Libra": "तुला (Libra)", "Scorpio": "वृश्चिक (Scorpio)",
                                                 "Sagittarius": "धनु (Sagittarius)", "Capricorn": "मकर (Capricorn)", "Aquarius": "कुंभ (Aquarius)", "Pisces": "मीन (Pisces)",
                                                 "Ari": "मेष (Aries)", "Tau": "वृषभ (Taurus)", "Gem": "मिथुन (Gemini)", "Can": "कर्क (Cancer)",
-                                                "Leo": "सिंह (Leo)", "Vir": "कन्या (Virgo)", "Lib": "तुला (Libra)", "Sco": "वृश्चिक (Scorpio)",
+                                                "Vir": "कन्या (Virgo)", "Lib": "तुला (Libra)", "Sco": "वृश्चिक (Scorpio)",
                                                 "Sag": "धनु (Sagittarius)", "Cap": "मकर (Capricorn)", "Aqu": "कुंभ (Aquarius)", "Pis": "मीन (Pisces)"
                                             };
 

@@ -13,7 +13,7 @@ FastAPI application wiring for the Vedic Astrology App.
 Exposes endpoints for Kundali, Panchang, Dasha, Ashtakavarga, and PDF report generation.
 """
 
-from fastapi import FastAPI, HTTPException, Body
+from fastapi import FastAPI, HTTPException, Body, Query
 from fastapi.responses import FileResponse, JSONResponse
 import tempfile, os
 from typing import Dict, Any
@@ -317,6 +317,30 @@ def api_panchang(payload: Dict = Body(...)):
     yoga = compute_yoga(jd_ut)
     karana = compute_karana(jd_ut)
     return {"tithi": tithi, "nakshatra": nak, "yoga": yoga, "karana": karana}
+
+@app.get("/api/dasha/vimshottari")
+def api_vimshottari_get(
+    date: str = Query(...),
+    time: str = Query("00:00:00"),
+    tz_offset: float = Query(0.0),
+):
+    import datetime
+    from astronomy.julian import datetime_to_julian
+    try:
+        dt = datetime.datetime.fromisoformat(date + " " + time)
+    except Exception as exc:
+        raise HTTPException(status_code=400, detail=f"Invalid date/time: {exc}")
+    dt_utc = dt - datetime.timedelta(hours=float(tz_offset))
+    jd = datetime_to_julian(dt_utc)
+
+    import swisseph as swe
+    from astronomy.sidereal import set_ayanamsa
+    set_ayanamsa()
+    res = swe.calc_ut(jd, swe.MOON, swe.FLG_SIDEREAL)
+    moon_lon = res[0][0]
+
+    sequence = compute_vimshottari_full(jd, moon_lon, years_ahead=120)
+    return JSONResponse({"birth_jd": jd, "moon_lon": moon_lon, "vimshottari": sequence})
 
 @app.post("/api/dasha/vimshottari")
 def api_vimshottari(payload: Dict = Body(...)):

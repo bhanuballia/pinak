@@ -407,6 +407,16 @@ export async function fetchAshtamangala(payload) {
   return res.json();
 }
 
+export async function fetchCurrentAscendant(lat, lon) {
+  const url = `${BASE}/api/prashna/current-ascendant?lat=${lat ?? 19.0760}&lon=${lon ?? 72.8777}`;
+  const res = await fetch(url);
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(errorText || "Failed to fetch current ascendant");
+  }
+  return res.json();
+}
+
 export async function fetchWeeklyRelationshipHoroscope(payload) {
   const url = `${BASE}/api/astrology/compatibility/weekly-horoscope`;
   const res = await fetch(url, {
