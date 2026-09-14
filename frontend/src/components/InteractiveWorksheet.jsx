@@ -15,6 +15,7 @@ import VimshottariTable from "./VimshottariTable";
 import YoginiTable from "./YoginiTable";
 import VimshottariLifeTable from "./VimshottariLifeTable";
 import VimshottariGridTimeline from "./VimshottariGridTimeline";
+import { synthesizeHouseAnalysis } from '../utils/synthesisEngine';
 import { PLANET_IN_SIGN_EFFECTS } from '../data/planetInSign';
 import { D2_INTERPRETATIONS } from '../data/d2HouseInterpretations';
 import { D3_INTERPRETATIONS } from '../data/d3HouseInterpretations';
@@ -234,7 +235,7 @@ const ConjunctionAnalysis = ({ houses }) => {
   if (conjunctions.length === 0) return null;
 
   return (
-    <div className="space-y-12 mt-12 border-t border-indigo-200 pt-12">
+    <div id="section-house-conjunction-analysis" className="space-y-12 mt-12 border-t border-indigo-200 pt-12 scroll-mt-6">
       <div className="flex items-center gap-4">
         <div className="w-12 h-12 bg-indigo-900 rounded-lg flex items-center justify-center text-2xl shadow-lg border-2 border-white/20">💠</div>
         <div>
@@ -410,12 +411,12 @@ const HouseEffectTable = ({ data, planetEffects, customPositions = null }) => {
   };
 
   return (
-    <div className="mt-12 space-y-12">
+    <div id="section-house-effect-analysis" className="mt-12 space-y-12 scroll-mt-6">
       <div className="flex items-center gap-4">
         <div className="w-12 h-12 bg-amber-600 rounded-lg flex items-center justify-center text-2xl shadow-lg border-2 border-white/20">🏠</div>
         <div>
-          <h4 className="text-xl font-black text-slate-800 uppercase tracking-tighter leading-none">House-by-House Interpretations</h4>
-          <div className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mt-1">Lagna Chart Placements</div>
+          <h4 className="text-xl font-black text-slate-800 uppercase tracking-tighter leading-none"><span>House-by-House Interpretations</span></h4>
+          <div className="text-[9px] font-bold text-indigo-700 uppercase tracking-widest mt-1"><span>Lagna Chart Placements</span></div>
         </div>
       </div>
       <div className="space-y-12">
@@ -438,9 +439,9 @@ const HouseEffectTable = ({ data, planetEffects, customPositions = null }) => {
                 <div className="flex-1 flex justify-between items-center">
                   <div>
                     <h4 className="text-lg font-black uppercase tracking-tight leading-none" style={{ color: PLANET_COLORS[p.planet] || "#000" }}>
-                      {p.planet}{p.is_retrograde ? '*' : ''}{p.is_combust ? '#' : ''} Placement
+                      <span>{`${p.planet}${p.is_retrograde ? '*' : ''}${p.is_combust ? '#' : ''} Placement`}</span>
                     </h4>
-                    <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1">House {p.house} Analysis</div>
+                    <div className="text-[9px] font-bold text-slate-500 uppercase tracking-widest mt-1"><span>{`House ${p.house} Analysis`}</span></div>
                   </div>
                   <span className={`text-[7px] px-2 py-1 rounded font-black uppercase tracking-widest ${statusColor} shadow-sm`}>
                     {status}
@@ -462,7 +463,7 @@ const HouseEffectTable = ({ data, planetEffects, customPositions = null }) => {
                 {statusText && (
                   <div className={`p-4 rounded-lg border ${statusBoxBg} mt-3`}>
                     <div className="text-[9px] font-black uppercase tracking-widest mb-1.5 opacity-75">
-                      {status} Manifestation Analysis
+                      <span>{`${status} Manifestation Analysis`}</span>
                     </div>
                     <BulletInterpretation
                       text={statusText}
@@ -760,6 +761,19 @@ const CELL_CONTENTS = [
   { id: "empty", label: "Empty Cell", category: "System" }
 ];
 
+export const D1_SECTIONS = [
+  { id: "section-d1-chart", label: "D1 Birth Chart (Lagna)" },
+  { id: "section-birth-chart-details", label: "Birth Chart Details" },
+  { id: "section-planetary-drishti", label: "Planetary Drishti (Aspect)" },
+  { id: "section-jaimini-rashi-drishti", label: "Jaimini Rashi Drishti (Sign aspect)" },
+  { id: "section-sphuta-drishti", label: "Sphuta Drishti (Aspect Strength)" },
+  { id: "section-house-effect-analysis", label: "House Effect Analysis" },
+  { id: "section-house-conjunction-analysis", label: "House Conjunction Analysis" },
+  { id: "section-yamakantaka-analysis", label: "Yamakantaka Analysis" },
+  { id: "section-mandi-gulika-analysis", label: "Mandi & Gulika Analysis" },
+  { id: "section-upaketu-analysis", label: "Upaketu Analysis" },
+  { id: "section-indrachapa-analysis", label: "Indrachapa Analysis" },
+];
 
 const calculatePlanetEffects = (data) => {
   const effects = {};
@@ -1548,7 +1562,7 @@ const DREKKANA_PLANET_DESCRIPTIONS = {
 };
 
 const PlanetTable = ({ data, onPlanetClick }) => (
-  <div className="flex flex-col h-full bg-[#fdfbf7]">
+  <div id="section-birth-chart-details" className="flex flex-col h-full bg-[#fdfbf7] scroll-mt-6">
     <div className="w-full text-center py-1 border-b bg-[#e2e8f0] border-[#94a3b8] text-[#1e293b] font-serif font-bold text-xs uppercase">Birth Chart Details</div>
     <div className="overflow-auto flex-1 text-[18px] font-mono leading-tight">
       <table className="w-full">
@@ -1822,7 +1836,7 @@ const DrishtiTable = ({ houses, reportData, hideGraha = false, hideJaimini = fal
     <div className="flex flex-col gap-12">
       {/* Planetary Graha Drishti Table */}
       {!hideGraha && (
-        <div className="space-y-6">
+        <div id="section-planetary-drishti" className="space-y-6 scroll-mt-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-indigo-900 rounded-lg flex items-center justify-center text-2xl shadow-lg border-2 border-white/20">👁️</div>
             <div>
@@ -1946,16 +1960,16 @@ const DrishtiTable = ({ houses, reportData, hideGraha = false, hideJaimini = fal
                     return (
                       <tr key={`${row.planet}-${row.relativeAspect}-${idx}`} className="hover:bg-indigo-50/30 transition-colors">
                         <td className="p-4 font-bold flex items-center gap-2" style={{ color: color }}>
-                          <span>✨</span> {row.planet} {row.is_retrograde ? '*' : ''}
+                          <span>✨</span> <span>{`${row.planet} ${row.is_retrograde ? '*' : ''}`}</span>
                         </td>
                         <td className="p-4 font-semibold text-slate-900">
-                          House {row.occupiedHouse}
+                          <span>{`House ${row.occupiedHouse}`}</span>
                         </td>
                         <td className="p-4 text-[16px] font-mono font-bold text-slate-900">
-                          {row.relativeAspect}th Aspect
+                          <span>{`${row.relativeAspect}th Aspect`}</span>
                         </td>
                         <td className="p-4 font-bold text-indigo-900">
-                          House {row.targetHouse}
+                          <span>{`House ${row.targetHouse}`}</span>
                         </td>
                         <td className="p-4">
                           {residingPlanets.length > 0 ? (
@@ -1966,7 +1980,7 @@ const DrishtiTable = ({ houses, reportData, hideGraha = false, hideJaimini = fal
                                 return (
                                   <div key={planet} className="flex items-center justify-between gap-2 text-xs border border-indigo-50 bg-indigo-50/10 p-1 rounded">
                                     <span className="font-bold text-[14px]" style={{ color: planetColor }}>{planet}</span>
-                                    <span className={`px-1 py-0.5 border text-[7px] font-black uppercase rounded ${rel.bg}`}>
+                                    <span className={`px-1 py-0.5 border text-[12px] font-black uppercase rounded ${rel.bg}`}>
                                       {rel.label}
                                     </span>
                                   </div>
@@ -2000,7 +2014,7 @@ const DrishtiTable = ({ houses, reportData, hideGraha = false, hideJaimini = fal
 
       {/* Jaimini Rasi Drishti Table */}
       {!hideJaimini && (
-        <div className="space-y-6">
+        <div id="section-jaimini-rashi-drishti" className="space-y-6 scroll-mt-6">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-indigo-900 rounded-lg flex items-center justify-center text-2xl shadow-lg border-2 border-white/20">📐</div>
             <div>
@@ -2059,10 +2073,10 @@ const DrishtiTable = ({ houses, reportData, hideGraha = false, hideJaimini = fal
                     return (
                       <tr key={row.houseNum} className="hover:bg-indigo-50/30 transition-colors">
                         <td className="p-4 font-bold text-slate-800 text-[16px]">
-                          House {row.houseNum}
+                          <span>{`House ${row.houseNum}`}</span>
                         </td>
                         <td className="p-4 font-bold text-indigo-950 text-[18px]">
-                          {row.signName}
+                          <span>{row.signName}</span>
                         </td>
                         <td className="p-4">
                           <span className={`px-2.5 py-1 border text-[13px] font-black uppercase tracking-wider rounded-full ${badgeColor}`}>
@@ -2111,7 +2125,7 @@ const DrishtiTable = ({ houses, reportData, hideGraha = false, hideJaimini = fal
 
       {/* Sphuta Drishti (Mathematical Aspect Strength Heatmap) */}
       {!hideSphuta && (
-        <div className="space-y-6">
+        <div id="section-sphuta-drishti" className="space-y-6 scroll-mt-6">
           <SphutaDrishtiViewer
             sphutaDrishtiData={reportData?.sphuta_drishti}
             planetPositions={reportData?.planet_positions || reportData?.chart?.planet_positions}
@@ -4226,6 +4240,14 @@ const CurrentPositionsDashboard = ({ initialData }) => {
   const [isFetching, setIsFetching] = useState(false);
   const [currentTab, setCurrentTab] = useState('map');
 
+  useEffect(() => {
+    const handleTabChange = (e) => {
+      setCurrentTab(e.detail);
+    };
+    window.addEventListener('change-current-position-tab', handleTabChange);
+    return () => window.removeEventListener('change-current-position-tab', handleTabChange);
+  }, []);
+
   const addTime = (amount, unit) => {
     setCurrentDate(prev => {
       const d = new Date(prev);
@@ -4314,14 +4336,14 @@ const CurrentPositionsDashboard = ({ initialData }) => {
   };
 
   return (
-    <div className="min-h-screen bg-[#fdfbf7] p-4 md:p-10 font-serif overflow-auto custom-scrollbar">
-      <div className="max-w-7xl mx-auto space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-        <div className="bg-slate-200 p-8 md:p-10 rounded-[3rem] text-amber-600 shadow-2xl relative overflow-hidden group">
+    <div className="min-h-screen bg-[#fdfbf7] p-4 md:p-1 font-serif overflow-auto custom-scrollbar">
+      <div className="max-w-7xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+        <div className="bg-slate-200 p-6 rounded-[2rem] text-amber-600 shadow-2xl relative overflow-hidden group">
           <div className="absolute top-0 right-0 p-8 opacity-10 text-[10rem] font-serif pointer-events-none group-hover:scale-110 transition-transform duration-1000 uppercase">NOW</div>
 
-          <div className="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+          <div className="relative z-10 flex flex-col xl:flex-row xl:items-center justify-between gap-4">
             <div>
-              <h2 className="text-3xl md:text-4xl font-black italic tracking-tighter uppercase mb-1">Transit Analysis</h2>
+              <h2 className="text-3xl font-black italic tracking-tighter uppercase mb-1">Transit Analysis</h2>
               <div className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.2em] text-indigo-600">
                 <span>Planetary Movements</span>
                 <span className="w-6 h-[1px] bg-indigo-800"></span>
@@ -4329,137 +4351,46 @@ const CurrentPositionsDashboard = ({ initialData }) => {
               </div>
             </div>
 
-            {/* Navigation Sub-Tabs displayed directly adjacent to Transit Analysis */}
-            <div className="flex flex-wrap gap-2 items-center bg-white/70 p-2 rounded-2xl border border-slate-300 shadow-sm backdrop-blur-sm">
-              <button
-                onClick={() => setCurrentTab('map')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'map'
-                  ? 'bg-indigo-300 text-white shadow-md scale-105'
-                  : 'text-slate-700 hover:text-indigo-900 hover:bg-white'
-                  }`}
-              >
-                <span>🗺️</span> Gochar Map & Coordinates
-              </button>
-
-              <button
-                onClick={() => setCurrentTab('planetary_drishti')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'planetary_drishti'
-                  ? 'bg-indigo-900 text-white shadow-md scale-105'
-                  : 'text-slate-700 hover:text-indigo-900 hover:bg-white'
-                  }`}
-              >
-                <span>🪐</span> Planetary Drishti (Graha)
-              </button>
-
-              <button
-                onClick={() => setCurrentTab('jaimini_drishti')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'jaimini_drishti'
-                  ? 'bg-indigo-900 text-white shadow-md scale-105'
-                  : 'text-slate-700 hover:text-indigo-900 hover:bg-white'
-                  }`}
-              >
-                <span>♈</span> Jaimini Rasi Drishti
-              </button>
-
-              <button
-                onClick={() => setCurrentTab('sphuta_drishti')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'sphuta_drishti'
-                  ? 'bg-indigo-900 text-white shadow-md scale-105'
-                  : 'text-slate-700 hover:text-indigo-900 hover:bg-white'
-                  }`}
-              >
-                <span>🔮</span> Sphuta Drishti Matrix
-              </button>
-
-              <button
-                onClick={() => setCurrentTab('rashi_timeline')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'rashi_timeline'
-                  ? 'bg-amber-600 text-white shadow-md scale-105'
-                  : 'text-amber-900 hover:bg-amber-100/60'
-                  }`}
-              >
-                <span>📅</span> Rashi Transit Timeline
-              </button>
-
-              <button
-                onClick={() => setCurrentTab('asth_uday')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'asth_uday'
-                  ? 'bg-rose-900 text-white shadow-md scale-105'
-                  : 'text-rose-900 hover:bg-rose-100/60'
-                  }`}
-              >
-                <span>☀️</span> Asth & Uday Analysis
-              </button>
-
-              <button
-                onClick={() => setCurrentTab('vakri_insights')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'vakri_insights'
-                  ? 'bg-amber-600 text-white shadow-md scale-105'
-                  : 'text-amber-900 hover:bg-amber-100/60'
-                  }`}
-              >
-                <span>🌀</span> Vakri & Margi Insights
-              </button>
-
-              <button
-                onClick={() => setCurrentTab('all_aspects')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-1.5 cursor-pointer ${currentTab === 'all_aspects'
-                  ? 'bg-amber-600 text-white shadow-md scale-105'
-                  : 'text-amber-800 hover:bg-amber-100/60'
-                  }`}
-              >
-                <span>✨</span> All Aspect Analytics
-              </button>
-            </div>
-          </div>
-
-          {/* Time Controls Row */}
-          <div className="relative z-10 mt-6 flex flex-wrap gap-4 items-center bg-slate-800/10 p-4 rounded-2xl border border-slate-700/50 backdrop-blur-sm">
-            <button onClick={resetToNow} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold uppercase tracking-widest rounded-lg transition-colors shadow-lg">Live Now</button>
-            <div className="w-px h-8 bg-amber-400 mx-2 hidden sm:block"></div>
-            <div className="flex gap-2 items-center">
-              <span className="text-black text-[14px] font-bold uppercase tracking-widest mr-1">Hour</span>
-              <button onClick={() => addTime(-1, 'hour')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">-</button>
-              <button onClick={() => addTime(1, 'hour')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">+</button>
-            </div>
-            <div className="flex gap-2 items-center">
-              <span className="text-black text-[14px] font-bold uppercase tracking-widest mr-1 ml-2">Day</span>
-              <button onClick={() => addTime(-1, 'day')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">-</button>
-              <button onClick={() => addTime(1, 'day')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">+</button>
-            </div>
-            <div className="flex gap-2 items-center">
-              <span className="text-black text-[14px] font-bold uppercase tracking-widest mr-1 ml-2">Month</span>
-              <button onClick={() => addTime(-1, 'month')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">-</button>
-              <button onClick={() => addTime(1, 'month')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">+</button>
-            </div>
-            <div className="flex gap-2 items-center">
-              <span className="text-black text-[14px] font-bold uppercase tracking-widest mr-1 ml-2">Year</span>
-              <button onClick={() => addTime(-1, 'year')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">-</button>
-              <button onClick={() => addTime(1, 'year')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">+</button>
+            {/* Time Controls Row adjacent to Transit Analysis */}
+            <div className="flex flex-wrap gap-3 items-center bg-slate-800/10 p-3 rounded-xl border border-slate-700/50 backdrop-blur-sm mt-4 xl:mt-0">
+              <button onClick={resetToNow} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold uppercase tracking-widest rounded-lg transition-colors shadow-lg">Live Now</button>
+              <div className="w-px h-8 bg-amber-400 mx-2 hidden sm:block"></div>
+              <div className="flex gap-2 items-center">
+                <span className="text-black text-[12px] font-bold uppercase tracking-widest mr-1">Hour</span>
+                <button onClick={() => addTime(-1, 'hour')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">-</button>
+                <button onClick={() => addTime(1, 'hour')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">+</button>
+              </div>
+              <div className="flex gap-2 items-center">
+                <span className="text-black text-[12px] font-bold uppercase tracking-widest mr-1 ml-2">Day</span>
+                <button onClick={() => addTime(-1, 'day')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">-</button>
+                <button onClick={() => addTime(1, 'day')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">+</button>
+              </div>
+              <div className="flex gap-2 items-center">
+                <span className="text-black text-[12px] font-bold uppercase tracking-widest mr-1 ml-2">Month</span>
+                <button onClick={() => addTime(-1, 'month')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">-</button>
+                <button onClick={() => addTime(1, 'month')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">+</button>
+              </div>
+              <div className="flex gap-2 items-center">
+                <span className="text-black text-[12px] font-bold uppercase tracking-widest mr-1 ml-2">Year</span>
+                <button onClick={() => addTime(-1, 'year')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">-</button>
+                <button onClick={() => addTime(1, 'year')} className="w-7 h-7 flex items-center justify-center bg-rose-100 hover:bg-slate-600 rounded text-slate-300 transition-colors">+</button>
+              </div>
             </div>
           </div>
         </div>
 
 
 
-        <button
-          onClick={() => setCurrentTab('all_aspects')}
-          className={`px-5 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wider transition-all flex items-center gap-2 ${currentTab === 'all_aspects'
-            ? 'bg-amber-600 text-white shadow-lg scale-105'
-            : 'text-amber-800 hover:bg-amber-100/60'
-            }`}
-        >
-          <span>✨</span> All Aspect Analytics
-        </button>
+
       </div>
 
 
       {/* Tab 1: Gochar Map & Coordinates */}
       {currentTab === 'map' && (
-        <div className={`flex flex-col gap-8 max-w-4xl mx-auto transition-opacity duration-500 ${isFetching ? 'opacity-50 blur-sm' : 'opacity-100'}`}>
-          <div className="bg-white p-6 rounded-[2.5rem] border border-slate-200 shadow-xl relative overflow-hidden">
-            <div className="absolute top-4 left-6 z-20 px-4 py-1.5 bg-indigo-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">Current Gochar Map</div>
-            <div className="mt-8">
+        <div className={`flex flex-col gap-6 max-w-4xl mx-auto transition-opacity duration-500 ${isFetching ? 'opacity-50 blur-sm' : 'opacity-100'}`}>
+          <div className="bg-white p-4 md:p-6 rounded-[2rem] border border-slate-200 shadow-xl relative overflow-hidden">
+            <div className="absolute top-4 left-6 z-20 px-3 py-1 bg-indigo-900 text-white rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">Current Gochar Map</div>
+            <div className="mt-6">
               <ZodiacChart
                 planetPositions={formattedTransitPositions}
                 houses={activeHouses}
@@ -4977,7 +4908,161 @@ const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSele
   );
 };
 
+const FullHouseReportModal = ({ show, onClose, data }) => {
+  const [conjunctionData, setConjunctionData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [isMinimized, setIsMinimized] = useState(false);
 
+  useEffect(() => {
+    if (!show || !data?.charts?.houses) return;
+    let isMounted = true;
+
+    const fetchConjs = async () => {
+      setLoading(true);
+      const newConjData = {};
+      const allHouses = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+      for (const hNum of allHouses) {
+        const houseObj = data.charts.houses[hNum];
+        if (houseObj && houseObj.planets) {
+          const cleanPlanets = houseObj.planets
+            .map(p => typeof p === 'string' ? p : (p.planet || p.name))
+            .filter(p => p && p !== "Ascendant" && p !== "Lagna" && p !== "L");
+
+          if (cleanPlanets.length >= 2) {
+            const sorted = [...cleanPlanets].sort();
+            let url = "";
+            if (sorted.length === 2) url = `/api/conjunction/detail/${sorted[0]}/${sorted[1]}`;
+            else if (sorted.length === 3) url = `/api/conjunction/triple/detail/${sorted[0]}/${sorted[1]}/${sorted[2]}`;
+            else if (sorted.length >= 4) url = `/api/conjunction/four/detail/${sorted[0]}/${sorted[1]}/${sorted[2]}/${sorted[3]}`;
+
+            if (url) {
+              try {
+                const res = await fetch(url);
+                if (res.ok) {
+                  const result = await res.json();
+                  newConjData[hNum] = {
+                    planets: sorted,
+                    detail: result
+                  };
+                }
+              } catch (err) {
+                console.error("Failed to fetch conjunction for house", hNum, err);
+              }
+            }
+          }
+        }
+      }
+
+      if (isMounted) {
+        setConjunctionData(newConjData);
+        setLoading(false);
+      }
+    };
+
+    fetchConjs();
+    return () => { isMounted = false; };
+  }, [show, data]);
+
+  if (!show) return null;
+
+  if (isMinimized) {
+    return (
+      <div className="fixed bottom-6 right-6 z-[9999]">
+        <button
+          onClick={() => setIsMinimized(false)}
+          className="bg-indigo-900 text-white shadow-2xl px-6 py-4 rounded-xl flex items-center gap-3 hover:bg-indigo-800 transition-all border-2 border-indigo-300 group"
+        >
+          <span className="text-2xl group-hover:scale-110 transition-transform">🔮</span>
+          <div className="text-left">
+            <div className="font-bold text-sm tracking-wide">Synthesize Report</div>
+            <div className="text-xs text-indigo-200">Click to Maximize</div>
+          </div>
+        </button>
+      </div>
+    );
+  }
+
+  const effects = calculatePlanetEffects(data);
+  const interpMap = {
+    "Sun": SUN_HOUSE_INTERPRETATIONS,
+    "Moon": MOON_HOUSE_INTERPRETATIONS,
+    "Mars": MARS_HOUSE_INTERPRETATIONS,
+    "Mercury": MERCURY_HOUSE_INTERPRETATIONS,
+    "Jupiter": JUPITER_HOUSE_INTERPRETATIONS,
+    "Venus": VENUS_HOUSE_INTERPRETATIONS,
+    "Saturn": SATURN_HOUSE_INTERPRETATIONS,
+    "Rahu": RAHU_HOUSE_INTERPRETATIONS,
+    "Ketu": KETU_HOUSE_INTERPRETATIONS
+  };
+  const allHouses = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+
+  return (
+    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 overflow-y-auto">
+      <div className="bg-[#fdfbf7] w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+        <div className="bg-indigo-900 px-6 py-4 flex justify-between items-center sticky top-0 z-10 shadow-md">
+          <h3 className="text-2xl font-bold text-white flex items-center gap-3">
+            <span className="text-3xl">🔮</span>
+            Full Astrological Synthesis Report (D1)
+          </h3>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setIsMinimized(true)}
+              className="text-white hover:text-indigo-200 bg-white/10 hover:bg-white/20 rounded-full w-8 h-8 flex items-center justify-center transition-colors font-bold pb-2"
+              title="Minimize"
+            >
+              _
+            </button>
+            <button
+              onClick={onClose}
+              className="text-white hover:text-red-300 bg-white/10 hover:bg-white/20 rounded-full w-8 h-8 flex items-center justify-center transition-colors"
+              title="Close"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+        <div className="p-6 overflow-y-auto custom-scrollbar space-y-12">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <div className="animate-spin text-4xl mb-4">🔮</div>
+              <p className="text-slate-500 font-serif text-lg">Synthesizing chart alignments...</p>
+            </div>
+          ) : (
+            allHouses.map(hNum => {
+              const synthesis = synthesizeHouseAnalysis(hNum, data, interpMap, parseInterpretationString, PLANET_IN_SIGN_EFFECTS, effects, conjunctionData[hNum]);
+              if (!synthesis || synthesis.length === 0) return null;
+
+              return (
+                <div key={hNum} className="bg-white rounded-xl shadow-md border border-indigo-100 overflow-hidden">
+                  <div className="bg-indigo-50 border-b border-indigo-100 px-6 py-3">
+                    <h4 className="text-lg font-black text-indigo-900 flex items-center gap-2">
+                      <span className="text-xl">🏠</span> House {hNum} Analysis
+                    </h4>
+                  </div>
+                  <div className="p-6 space-y-4">
+                    {synthesis.map((item, idx) => (
+                      <div key={idx} className="flex flex-col sm:flex-row gap-4 border-b border-slate-100 pb-4 last:border-0 last:pb-0">
+                        <div className="sm:w-1/4 shrink-0">
+                          <span className="inline-block px-3 py-1 bg-slate-100 text-slate-700 text-xs font-bold uppercase tracking-wider rounded-md border border-slate-200">
+                            {item.type}
+                          </span>
+                        </div>
+                        <div className="sm:w-3/4 text-slate-800 font-serif leading-relaxed text-[15px] whitespace-pre-line">
+                          {item.content}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, isBlankSheet = false }) => {
   useEffect(() => {
@@ -5013,6 +5098,44 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
   const [showSunAnalysisPopup, setShowSunAnalysisPopup] = useState(false);
   const [showExternalApps, setShowExternalApps] = useState(true);
   const [showOracleTools, setShowOracleTools] = useState(true);
+  const [isD1DropdownOpen, setIsD1DropdownOpen] = useState(false);
+  const [showFullHouseReportModal, setShowFullHouseReportModal] = useState(false);
+
+  const navigateToSection = (sectionId) => {
+    if (!sectionId) return;
+    const elem = document.getElementById(sectionId);
+    if (elem) {
+      const container = document.getElementById('d1-main-scroll-container');
+      if (container && container.contains(elem)) {
+        const containerRect = container.getBoundingClientRect();
+        const elemRect = elem.getBoundingClientRect();
+        const offset = elemRect.top - containerRect.top + container.scrollTop - 20;
+        container.scrollTo({ top: Math.max(0, offset), behavior: 'smooth' });
+      } else {
+        elem.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      elem.classList.add('ring-4', 'ring-amber-400', 'bg-amber-50/50', 'transition-all', 'duration-500');
+      setTimeout(() => {
+        elem.classList.remove('ring-4', 'ring-amber-400', 'bg-amber-50/50');
+      }, 2500);
+    } else {
+      try {
+        localStorage.setItem('worksheetData', JSON.stringify(data));
+      } catch (err) { }
+      window.open(`/?worksheet=true&fullScreen=d1#${sectionId}`, `Full_d1_${Date.now()}`, 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no');
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && window.location.hash) {
+      const targetId = window.location.hash.replace('#', '');
+      const timer = setTimeout(() => {
+        navigateToSection(targetId);
+      }, 800);
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const processVedicData = (incoming) => {
     if (!incoming) return null;
@@ -5359,6 +5482,15 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
   const urlCid = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('fullScreen') : null;
   const cid = fullScreenInitial || urlCid;
 
+  useEffect(() => {
+    if (cid === 'd1') {
+      const timer = setTimeout(() => {
+        setShowFullHouseReportModal(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [cid]);
+
   const handleStandaloneExportPDF = async () => {
     const element = document.getElementById('pdf-content-standalone');
     if (!element) return;
@@ -5411,31 +5543,63 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
       }
     }
   };
+
+
+
   if (cid) {
     const effects = calculatePlanetEffects(data);
 
     return (
-      <div id="pdf-content-standalone" className="h-screen w-screen bg-[#fdfbf7] flex flex-col overflow-hidden">
+      <div id="pdf-content-standalone" className="w-full h-screen relative bg-[#fdfbf7] flex flex-col overflow-hidden">
         <style>{`
           button, button span, button div, button p, button h4 {
             color: black !important;
           }
         `}</style>
 
-        <div className="bg-white px-6 py-3 flex justify-between items-center shrink-0 shadow-lg z-50">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center text-black font-bold">✨</div>
+        <div className="bg-white px-4 py-3 flex flex-wrap lg:flex-nowrap justify-between items-center gap-4 shrink-0 shadow-lg z-50">
+          <div className="flex items-center gap-3 shrink-0">
+            <div className="w-8 h-8 bg-indigo-600 rounded flex items-center justify-center text-white font-bold">✨</div>
             <div>
               <h2 className="text-slate-900 text-[15px] font-bold font-serif italic tracking-widest uppercase leading-none">
-                {CELL_CONTENTS.find(c => c.id === cid)?.label || cid.toUpperCase()}
+                <span>{CELL_CONTENTS.find(c => c.id === cid)?.label || cid.toUpperCase()}</span>
               </h2>
-              <p className="text-[10px] text-black font-black uppercase tracking-[0.3em] mt-0.5">Standalone Diagnostic View</p>
+              <p className="text-[16px] text-slate-900 font-black uppercase tracking-[0.3em] mt-0.5">
+
+              </p>
+
+              <div>
+                {(cid === 'lagna' || cid === 'd1') && (
+                  <div className="relative mt-2">
+                    <select
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          if (e.target.value === 'synthesize_full_house_report') {
+                            setShowFullHouseReportModal(true);
+                          } else {
+                            navigateToSection(e.target.value);
+                          }
+                          e.target.value = "";
+                        }
+                      }}
+                      defaultValue=""
+                      className="bg-rose-50 text-stone-900 font-bold text-[16px] px-3 py-2.5 rounded-lg border border-indigo-200 hover:border-indigo-400 focus:ring-2 focus:ring-indigo-400 cursor-pointer shadow-sm uppercase tracking-tight"
+                    >
+                      <option value="" disabled>Jump to Analysis Section...</option>
+                      <option value="synthesize_full_house_report">🔮 Synthesize Full House Report</option>
+                      {D1_SECTIONS.map(s => (
+                        <option key={s.id} value={s.id}>{s.icon} {s.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
           {(cid === 'lagna' || cid === 'd1') && (
-            <div className="flex-1 px-4 flex justify-center">
-              <div className="flex flex-row items-center gap-4 bg-indigo-50/50 px-5 py-1 rounded-full border border-indigo-100 shadow-inner h-[50px]">
+            <div className="flex-1 flex flex-wrap justify-center items-center gap-3 min-w-[200px]">
+              <div className="flex flex-row items-center gap-3 bg-indigo-50/50 px-4 py-1 rounded-full border border-indigo-100 shadow-inner h-[50px] shrink-0">
                 <div className="text-[10px] font-black text-indigo-900 uppercase tracking-widest flex items-center gap-1.5 shrink-0">
                   <span className="text-sm">⏱️</span> Transit
                 </div>
@@ -5452,18 +5616,38 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
             </div>
           )}
 
-          <button
-            onClick={handleStandaloneExportPDF}
-            className="bg-rose-100 hover:bg-indigo-700 text-black px-4 py-1.5 rounded-lg text-[14px] font-black uppercase tracking-widest transition-all border border-emerald-500/30 shrink-0 mr-2"
-          >
-            Export PDF
-          </button>
-          <button
-            onClick={() => window.close()}
-            className="bg-white/75 hover:bg-white/20 text-black px-4 py-1.5 rounded-lg text-[14px] font-black uppercase tracking-widest transition-all border border-white/10 shrink-0"
-          >
-            Close Window
-          </button>
+          <div className="flex items-center gap-2 shrink-0 ml-auto lg:ml-0">
+            {cid === 'current_positions' && (
+              <select
+                className="bg-white hover:bg-indigo-100 text-slate-900 px-3 py-1.5 rounded-lg text-[16px] font-bold uppercase tracking-widest transition-all border border-indigo-200 shrink-0 focus:outline-none focus:ring-2 focus:ring-indigo-500 cursor-pointer"
+                onChange={(e) => {
+                  window.dispatchEvent(new CustomEvent('change-current-position-tab', { detail: e.target.value }));
+                }}
+              >
+                <option value="" disabled hidden>Quick Navigate</option>
+                <option value="map">Gochar Map & Coordinates</option>
+                <option value="planetary_drishti">Planetary Drishti (Graha)</option>
+                <option value="jaimini_drishti">Jaimini Rasi Drishti</option>
+                <option value="sphuta_drishti">Sphuta Drishti Matrix</option>
+                <option value="rashi_timeline">Rashi Transit Timeline</option>
+                <option value="asth_uday">Asth & Uday Analysis</option>
+                <option value="vakri_insights">Vakri & Margi Insights</option>
+                <option value="all_aspects">All Aspect Analytics</option>
+              </select>
+            )}
+            <button
+              onClick={handleStandaloneExportPDF}
+              className="bg-rose-100 hover:bg-indigo-700 hover:text-white text-black px-3 py-1.5 rounded-lg text-[12px] font-black uppercase tracking-widest transition-all border border-emerald-500/30 shrink-0"
+            >
+              Export PDF
+            </button>
+            <button
+              onClick={() => window.close()}
+              className="bg-slate-100 hover:bg-slate-200 text-black px-3 py-1.5 rounded-lg text-[12px] font-black uppercase tracking-widest transition-all border border-slate-200 shrink-0"
+            >
+              Close Window
+            </button>
+          </div>
         </div>
 
         <div className={`flex-1 overflow-auto custom-scrollbar ${(cid === 'transit_compare' || cid === 'vimshottari') ? '' : 'p-4 md:p-8 flex flex-col items-center'}`}>
@@ -5527,7 +5711,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
 
               return (
                 <div className="flex flex-col items-center gap-8 animate-in fade-in duration-700 w-full">
-                  <div className="w-full max-w-full bg-white p-10 rounded-[3rem] border border-slate-200 shadow-2xl relative">
+                  <div id="section-d1-chart" className="w-full max-w-full bg-white p-10 rounded-[3rem] border border-slate-200 shadow-2xl relative scroll-mt-6">
                     <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-[15rem] font-serif pointer-events-none -mr-10 -mt-10">D1</div>
 
                     <ZodiacChart
@@ -5543,7 +5727,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                     />
                   </div>
 
-                  <div className="w-full bg-white p-8 rounded-[3rem] shadow-2xl border border-slate-200">
+                  <div id="section-birth-chart-details" className="w-full bg-white p-8 rounded-[3rem] shadow-2xl border border-slate-200 scroll-mt-6">
                     <PlanetTable data={{ ...data, planet_positions: formattedTransitPositions }} onPlanetClick={handlePlanetClick} />
                   </div>
 
@@ -5551,10 +5735,20 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                     <DrishtiTable houses={((timeControlledPositions || transitPositions) && showStandaloneTransit) ? computedTransitHouses : data.charts?.houses} reportData={data} />
                     <HouseEffectTable data={data} planetEffects={effects} customPositions={formattedTransitPositions} />
                     <ConjunctionAnalysis houses={((timeControlledPositions || transitPositions) && showStandaloneTransit) ? computedTransitHouses : data.charts?.houses} />
-                    <YamakantakaAnalysis yamakantaka={data.yamakantaka} />
-              <MandiGulikaAnalysis mandi={data.mandi} gulika={data.gulika} />
-              <UpaketuAnalysis upaketu={data.upaketu} />
-              <IndrachapaAnalysis indrachapa={data.indrachapa} />
+                    <div id="section-upagrahas-analysis" className="scroll-mt-6 space-y-4">
+                      <div id="section-yamakantaka-analysis" className="scroll-mt-6">
+                        <YamakantakaAnalysis yamakantaka={data.yamakantaka} />
+                      </div>
+                      <div id="section-mandi-gulika-analysis" className="scroll-mt-6">
+                        <MandiGulikaAnalysis mandi={data.mandi} gulika={data.gulika} />
+                      </div>
+                      <div id="section-upaketu-analysis" className="scroll-mt-6">
+                        <UpaketuAnalysis upaketu={data.upaketu} />
+                      </div>
+                      <div id="section-indrachapa-analysis" className="scroll-mt-6">
+                        <IndrachapaAnalysis indrachapa={data.indrachapa} />
+                      </div>
+                    </div>
                   </div>
                 </div>
               );
@@ -6419,6 +6613,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
         <div className="p-3 bg-gray-50 border-t border-gray-200 text-center">
           <p className="text-[10px] text-gray-500 italic uppercase">Astro Consult : Independent Viewport Mode</p>
         </div>
+        <FullHouseReportModal show={showFullHouseReportModal} onClose={() => setShowFullHouseReportModal(false)} data={data} />
       </div>
     );
   }
@@ -6533,19 +6728,71 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                 VARGA CHARTS <span className="text-[10px]">▼</span>
               </button>
 
-              <div className="absolute top-full left-0 mt-2 w-48 max-h-[60vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/varga:opacity-100 group-hover/varga:visible transition-all duration-200 py-2">
-                <button onClick={() => window.open('/?chart_view_1=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Chart View 1</button>
-                <button onClick={() => window.open('/?chart_view_2=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Chart View 2</button>
-                <button onClick={() => window.open('/?chart_view_3=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Chart View 3</button>
-                {['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60'].map(v => (
-                  <button
-                    key={v}
-                    onClick={() => handleMaximizeInNewWindow(v)}
-                    className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight"
-                  >
-                    {v.toUpperCase()} Chart
+              <div className="absolute top-full left-0 mt-2 w-72 max-h-[75vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/varga:opacity-100 group-hover/varga:visible transition-all duration-200 py-2 divide-y divide-slate-100">
+                <div className="pb-1">
+                  <button onClick={() => window.open('/?chart_view_1=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight flex items-center gap-2">
+                    <span>📐</span> Chart View 1
                   </button>
-                ))}
+                  <button onClick={() => window.open('/?chart_view_2=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight flex items-center gap-2">
+                    <span>📐</span> Chart View 2
+                  </button>
+                  <button onClick={() => window.open('/?chart_view_3=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight flex items-center gap-2">
+                    <span>📐</span> Chart View 3
+                  </button>
+                </div>
+
+                {/* D1 Chart with Dropdown Feature */}
+                <div className="py-1">
+                  <div className="flex items-center justify-between px-3 py-1.5 hover:bg-indigo-50/80 rounded-lg transition-colors mx-1">
+                    <button
+                      onClick={() => setIsD1DropdownOpen(!isD1DropdownOpen)}
+                      className="flex-1 text-left text-[12px] font-black text-indigo-950 uppercase tracking-tight flex items-center gap-2 hover:text-indigo-600"
+                    >
+                      <span className="text-amber-500 text-sm"></span> D1 Chart
+                      <span className={`text-[12px] text-indigo-900 font-bold transition-transform duration-200 ${isD1DropdownOpen ? 'rotate-180' : ''}`}></span>
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMaximizeInNewWindow('d1');
+                      }}
+                      title="Open Fullscreen D1 Standalone Window"
+                      className="text-[10px] text-slate-500 hover:text-indigo-900 px-2 py-0.5 hover:bg-indigo-100 rounded font-bold uppercase tracking-wider flex items-center gap-1 border border-indigo-100"
+                    >
+                      ↗
+                    </button>
+                  </div>
+
+                  {/* D1 Headings List */}
+                  {isD1DropdownOpen && (
+                    <div className="ml-3 my-1 pl-2 border-l-2 border-indigo-300 space-y-0.5 bg-indigo-50/40 py-1.5 rounded-r-lg pr-1">
+                      {D1_SECTIONS.map((sec) => (
+                        <button
+                          key={sec.id}
+                          onClick={() => navigateToSection(sec.id)}
+                          className="w-full text-left px-2.5 py-1.5 text-[11px] font-semibold text-slate-900 hover:bg-white hover:text-indigo-900 rounded-md transition-all flex items-center gap-2 group/item shadow-sm hover:shadow"
+                        >
+                          <span className="text-xs group-hover/item:scale-125 transition-transform">{sec.icon}</span>
+                          <span className="truncate">{sec.label}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Remaining Varga Charts */}
+                <div className="pt-1">
+                  {['d2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60'].map(v => (
+                    <button
+                      key={v}
+                      onClick={() => handleMaximizeInNewWindow(v)}
+                      className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight flex items-center justify-between"
+                    >
+                      <span>{v.toUpperCase()} Chart</span>
+                      <span className="text-[10px] text-slate-400 opacity-60">↗</span>
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
 
@@ -6990,17 +7237,38 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
               </div>
 
               <div className="flex-1 bg-[#fdfbf7] rounded-xl border border-gray-300 shadow-inner overflow-hidden relative group">
-                <div className="h-full flex flex-col overflow-auto custom-scrollbar">
-                  <ZodiacChart planetPositions={data?.planet_positions} houses={data.charts?.houses} onPlanetClick={handlePlanetClick} variant="legacy" title="Main Birth Chart (D1)" defaultRect={true} planetEffects={planetEffects} scaleText={1.5} hideLegend={true} showFullscreenButton={true} onPopOut={() => handleMaximizeInNewWindow('d1')} />
+                <div id="d1-main-scroll-container" className="h-full flex flex-col overflow-auto custom-scrollbar">
+                  <div id="section-d1-chart" className="scroll-mt-6">
+                    <ZodiacChart planetPositions={data?.planet_positions} houses={data.charts?.houses} onPlanetClick={handlePlanetClick} variant="legacy" title="Main Birth Chart (D1)" defaultRect={true} planetEffects={planetEffects} scaleText={1.5} hideLegend={true} showFullscreenButton={true} onPopOut={() => handleMaximizeInNewWindow('d1')} />
+                  </div>
                   <div className="px-4 pb-4">
-                    <DynamicVargaAnalysis data={data} cid="d1" />
+                    <div id="section-dynamic-varga" className="scroll-mt-6">
+                      <DynamicVargaAnalysis data={data} cid="d1" />
+                    </div>
+
+                    {/* Birth Chart Details (Planets Table) */}
+                    <div id="section-birth-chart-details" className="my-6 bg-white rounded-2xl border border-slate-200 shadow-xl overflow-hidden scroll-mt-6">
+                      <PlanetTable data={data} onPlanetClick={handlePlanetClick} />
+                    </div>
+
                     <DrishtiTable houses={data.charts?.houses} reportData={data} />
                     <HouseEffectTable data={data} planetEffects={planetEffects} />
                     <ConjunctionAnalysis houses={data.charts?.houses} />
-                    <YamakantakaAnalysis yamakantaka={data.yamakantaka} />
-              <MandiGulikaAnalysis mandi={data.mandi} gulika={data.gulika} />
-              <UpaketuAnalysis upaketu={data.upaketu} />
-              <IndrachapaAnalysis indrachapa={data.indrachapa} />
+
+                    <div id="section-upagrahas-analysis" className="scroll-mt-6 space-y-4">
+                      <div id="section-yamakantaka-analysis" className="scroll-mt-6">
+                        <YamakantakaAnalysis yamakantaka={data.yamakantaka} />
+                      </div>
+                      <div id="section-mandi-gulika-analysis" className="scroll-mt-6">
+                        <MandiGulikaAnalysis mandi={data.mandi} gulika={data.gulika} />
+                      </div>
+                      <div id="section-upaketu-analysis" className="scroll-mt-6">
+                        <UpaketuAnalysis upaketu={data.upaketu} />
+                      </div>
+                      <div id="section-indrachapa-analysis" className="scroll-mt-6">
+                        <IndrachapaAnalysis indrachapa={data.indrachapa} />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -7327,6 +7595,9 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
             </div>
           </div>
         )}
+
+        {/* Full House Report Modal */}
+        <FullHouseReportModal show={showFullHouseReportModal} onClose={() => setShowFullHouseReportModal(false)} data={data} />
       </div>
     </div>
   );

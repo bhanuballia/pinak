@@ -143,20 +143,20 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, titleFontSize, variant =
     };
 
     return (
-        <div 
-            ref={containerRef} 
+        <div
+            ref={containerRef}
             onDoubleClick={() => window.dispatchEvent(new Event('open-time-machine'))}
             style={{
-            display: 'flex', flexDirection: 'column',
-            width: '100%', height: '100%',
-            background: bgColor !== undefined ? bgColor : (isLegacy ? 'transparent' : 'white'),
-            transform: `scale(${zoom})`,
-            transformOrigin: 'center center',
-            zIndex: zoom > 1 ? 50 : 1,
-            position: zoom > 1 ? 'relative' : 'static',
-            transition: 'transform 0.2s ease-in-out',
-            boxShadow: zoom > 1 ? '0 25px 50px -12px rgba(0, 0, 0, 0.25)' : 'none'
-        }}>
+                display: 'flex', flexDirection: 'column',
+                width: '100%', height: '100%',
+                background: bgColor !== undefined ? bgColor : (isLegacy ? 'transparent' : 'white'),
+                transform: `scale(${zoom})`,
+                transformOrigin: 'center center',
+                zIndex: zoom > 1 ? 50 : 1,
+                position: zoom > 1 ? 'relative' : 'static',
+                transition: 'transform 0.2s ease-in-out',
+                boxShadow: zoom > 1 ? '0 25px 50px -12px rgba(0, 0, 0, 0.25)' : 'none'
+            }}>
             {Boolean(title && title.trim()) && (
                 <div style={{
                     display: 'flex',
@@ -299,7 +299,7 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, titleFontSize, variant =
                                     dominantBaseline="middle"
                                     fontSize="2.9"
                                     fill="#3a0000ff"
-                                    fontFamily="serif"
+                                    fontFamily="'Times New Roman', Times, serif"
                                 >
                                     {`${h}${ord[h]} h.${scoreText}`}
                                 </text>
@@ -331,7 +331,7 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, titleFontSize, variant =
                                         fontSize={3.5 * scaleText}
                                         fill="#0e0c0cff"
                                         fontWeight="normal"
-                                        fontFamily="serif"
+                                        fontFamily="'Times New Roman', Times, serif"
                                         style={{ userSelect: 'none', pointerEvents: 'none' }}
                                     >
                                         {signDisplay}
@@ -395,16 +395,16 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, titleFontSize, variant =
                                                     onPlanetClick?.(pName, houseNum);
                                                 }}
                                             >
-                                                <tspan fontSize={3.9 * scaleText} fill={color} fontWeight="semibold" fontFamily="Arial, sans-serif">
+                                                <tspan fontSize={3.9 * scaleText} fill={color} fontWeight="semibold" fontFamily="'Times New Roman', Times, serif">
                                                     {abbrev}
                                                 </tspan>
                                                 {(isMainChart || showDegree) && degreeStr && (
-                                                    <tspan dx="1.5" fontSize={2.8 * scaleText} fill="rgba(87, 6, 53, 1)" fontWeight="normal" fontFamily="Arial, sans-serif">
+                                                    <tspan dx="1.5" fontSize={2.8 * scaleText} fill="rgba(87, 6, 53, 1)" fontWeight="normal" fontFamily="'Times New Roman', Times, serif">
                                                         {degreeStr}
                                                     </tspan>
                                                 )}
                                                 {(isMainChart || showNakshatra) && nakText && (
-                                                    <tspan dx="1.5" fontSize={2.9 * scaleText} fill="#000000" fontWeight="normal" fontFamily="Arial, sans-serif">
+                                                    <tspan dx="1.5" fontSize={2.9 * scaleText} fill="#000000" fontWeight="normal" fontFamily="'Times New Roman', Times, serif">
                                                         {nakText}
                                                     </tspan>
                                                 )}
@@ -424,7 +424,7 @@ const ZodiacRectSign = ({ houses, onPlanetClick, title, titleFontSize, variant =
                         fontSize: '11px',
                         color: 'rgba(241, 15, 15, 1)',
                         fontWeight: '500',
-                        fontFamily: 'Arial, sans-serif',
+                        fontFamily: "'Times New Roman', Times, serif",
                         fontStyle: 'italic',
                         flexShrink: 0
                     }}>

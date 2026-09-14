@@ -279,7 +279,7 @@ export default function ClassicLayoutViewer2({ data: worksheetData }) {
                     <div className="flex-1 bg-white border border-[#8ec5e6] flex flex-col overflow-hidden">
                         <div className="flex-1 relative p-1 flex items-center justify-center bg-white">
                             {transitData ? (
-                                <div className="w-full h-full flex flex-col [&_text]:!font-['Times_New_Roman'] [&_div]:!font-['Times_New_Roman'] [&_text]:!font-bold">
+                                <div className="w-full h-full flex flex-col [&_text]:!font-bold" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                                     <ZodiacChart key="today-lagna-rect" houses={todayFromLagnaHouses || d1Houses} variant="legacy" defaultRect={true} hideOuterRect={true} hideLegend={true} showNakshatra={false} scaleText={2.5} title="Today From Lagna" titleFontSize="16px" />
                                 </div>
                             ) : (
@@ -293,7 +293,7 @@ export default function ClassicLayoutViewer2({ data: worksheetData }) {
                     {/* Today From Moon */}
                     <div className="flex-1 bg-white border border-[#8ec5e6] flex flex-col overflow-hidden">
                         <div className="flex-1 relative p-1 flex items-center justify-center bg-white">
-                            <div className="w-full h-full flex flex-col [&_text]:!font-['Times_New_Roman'] [&_div]:!font-['Times_New_Roman'] [&_text]:!font-bold">
+                            <div className="w-full h-full flex flex-col [&_text]:!font-bold" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                                 <ZodiacChart key="today-moon-rect" houses={todayFromMoonHouses || d1Houses} variant="legacy" defaultRect={true} hideOuterRect={true} scaleText={2.5} title="Today From Moon" titleFontSize="16px" />
                             </div>
                         </div>
@@ -301,8 +301,8 @@ export default function ClassicLayoutViewer2({ data: worksheetData }) {
                     {/* Bhinnashtaka */}
                     <div className="flex-1 bg-white border border-[#8ec5e6] flex flex-col overflow-hidden">
                         {avData ? (
-                            <div className="w-full h-full flex flex-col [&_text]:!font-['Times_New_Roman'] [&_div]:!font-['Times_New_Roman'] font-size-[16px]">
-                                <AshtakavargaChart title="Bhinnashtaka Varga for Mars" housesData={marsBhinna} defaultRect={false} scaleText={2.0} hideOuterFrame={true} titleFontSize="12px" />
+                            <div className="w-full h-full flex flex-col" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
+                                <AshtakavargaChart title="Bhinnashtaka Varga for Mars" housesData={marsBhinna} defaultRect={false} scaleText={2.0} hideOuterFrame={true} titleFontSize="14px" />
                             </div>
                         ) : <div className="p-2 text-xs">Loading AV...</div>}
                     </div>

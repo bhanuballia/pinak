@@ -196,7 +196,8 @@ export default function VimshottariTable({ data: worksheetData, transitDate, hid
 
   return (
     <div 
-      className="flex flex-col h-full bg-white font-sans overflow-hidden"
+      className="flex flex-col h-full bg-white font-serif overflow-hidden"
+      style={{ fontFamily: "'Times New Roman', Times, serif" }}
       onDoubleClick={() => window.dispatchEvent(new Event('open-time-machine'))}
     >
       <Header

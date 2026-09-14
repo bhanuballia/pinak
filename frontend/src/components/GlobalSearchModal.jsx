@@ -6,7 +6,7 @@ export default function GlobalSearchModal() {
   const [searchQuery, setSearchQuery] = useState("");
   const [showError, setShowError] = useState("");
   const inputRef = useRef(null);
-  
+
   const searchOptions = getSearchOptions((err) => {
     setShowError(err);
     setTimeout(() => setShowError(""), 3000);
@@ -20,17 +20,17 @@ export default function GlobalSearchModal() {
         e.preventDefault();
         setIsOpen((prev) => !prev);
       }
-      
+
       // Close on Escape
       if (e.key === 'Escape' && isOpen) {
         setIsOpen(false);
       }
     };
-    
+
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen]);
-  
+
   // Auto-focus input when modal opens
   useEffect(() => {
     if (isOpen) {
@@ -39,7 +39,7 @@ export default function GlobalSearchModal() {
       setShowError("");
     }
   }, [isOpen]);
-  
+
   const filteredSearchOptions = searchQuery.trim()
     ? searchOptions.filter(opt => {
       const query = searchQuery.toLowerCase();
@@ -64,7 +64,7 @@ export default function GlobalSearchModal() {
   return (
     <>
       {/* Floating Action Button (FAB) */}
-      <button 
+      <button
         onClick={() => setIsOpen(true)}
         className="fixed bottom-6 right-6 w-14 h-14 bg-indigo-600 text-white rounded-full shadow-[0_4px_20px_rgba(79,70,229,0.5)] flex items-center justify-center hover:bg-indigo-700 hover:scale-105 transition-all z-[9998] group focus:outline-none focus:ring-4 focus:ring-indigo-300"
         title="Search Dashboard (Ctrl+K)"
@@ -79,11 +79,11 @@ export default function GlobalSearchModal() {
       {isOpen && (
         <div className="fixed inset-0 z-[9999] flex items-start justify-center pt-[15vh] px-4 sm:px-6">
           {/* Backdrop */}
-          <div 
+          <div
             className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
             onClick={() => setIsOpen(false)}
           />
-          
+
           {/* Modal Container */}
           <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
             <form onSubmit={handleSearchSubmit} className="relative">
@@ -120,9 +120,8 @@ export default function GlobalSearchModal() {
                     {filteredSearchOptions.map((opt, idx) => (
                       <div
                         key={idx}
-                        className={`px-4 py-3 cursor-pointer flex items-center justify-between transition-colors ${
-                          idx === 0 ? "bg-indigo-50/70 hover:bg-indigo-100" : "hover:bg-slate-50"
-                        }`}
+                        className={`px-4 py-3 cursor-pointer flex items-center justify-between transition-colors ${idx === 0 ? "bg-indigo-50/70 hover:bg-indigo-100" : "hover:bg-slate-50"
+                          }`}
                         onClick={() => handleOptionClick(opt)}
                       >
                         <div className="flex items-center gap-3">
@@ -148,7 +147,7 @@ export default function GlobalSearchModal() {
                 )}
               </div>
             )}
-            
+
             {/* Default State (Empty Search) */}
             {!searchQuery.trim() && (
               <div className="border-t border-gray-100 px-6 py-8 bg-slate-50/50">

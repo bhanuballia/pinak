@@ -350,39 +350,70 @@ export default function DailyPanchangViewer() {
                     onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
                     onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
                 >
-                    Click To Know Shubh Chaughadiya Muhurt (शुभ चौघड़िया मुहूर्त)
+
                 </button>
-                <button
-                    onClick={() => {
-                        const element = document.getElementById('auspicious-time-advisor-section');
-                        if (element) {
-                            element.scrollIntoView({ behavior: 'smooth' });
-                        }
-                    }}
-                    style={{
-                        position: 'absolute',
-                        top: '0',
-                        right: '0',
-                        background: '#e11d48',
-                        color: '#ffffff',
-                        border: 'none',
-                        padding: '12px 24px',
-                        borderRadius: '30px',
-                        fontSize: '16px',
-                        fontWeight: '900',
-                        cursor: 'pointer',
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: '8px',
-                        zIndex: 10,
-                        boxShadow: '0 4px 14px rgba(225, 29, 72, 0.3)',
-                        transition: 'transform 0.2s',
-                    }}
-                    onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
-                    onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
-                >
-                    Click To Know Auspicious Time Advisor (शुभ समय परामर्श)
-                </button>
+                <div style={{ position: 'fixed', top: '20px', right: '30px', display: 'flex', gap: '10px', alignItems: 'center', zIndex: 100 }}>
+                    <select
+                        style={{
+                            background: '#ffffff',
+                            color: 'rgba(5, 1, 2, 1)',
+                            border: '1px solid #e11d48',
+                            padding: '12px 16px',
+                            borderRadius: '30px',
+                            fontSize: '16px',
+                            fontWeight: '900',
+                            textTransform: 'uppercase',
+                            cursor: 'pointer',
+                            boxShadow: '0 4px 14px rgba(225, 29, 72, 0.1)',
+                            outline: 'none'
+                        }}
+                        onChange={(e) => {
+                            if (e.target.value === 'top') {
+                                window.scrollTo({ top: 0, behavior: 'smooth' });
+                            } else {
+                                const element = document.getElementById(e.target.value);
+                                if (element) {
+                                    element.scrollIntoView({ behavior: 'smooth' });
+                                }
+                            }
+                            e.target.value = "";
+                        }}
+                    >
+                        <option value="" disabled selected>QUICK NAVIGATE</option>
+                        <option value="top">Daily Panchang Overview</option>
+                        <option value="shubh-chaughadiya-muhurt-section">Shubh Chaughadiya Muhurt</option>
+                        <option value="auspicious-time-advisor-section">Auspicious Time Advisor</option>
+                        <option value="advanced-dosha-exceptions-section">Advanced Dosha & Exception</option>
+                        <option value="advanced-transit-forecast-section">Advanced Transit Forecast</option>
+                    </select>
+                    <button
+                        onClick={() => {
+                            const element = document.getElementById('auspicious-time-advisor-section');
+                            if (element) {
+                                element.scrollIntoView({ behavior: 'smooth' });
+                            }
+                        }}
+                        style={{
+                            background: '#e11d48',
+                            color: '#ffffff',
+                            border: 'none',
+                            padding: '12px 24px',
+                            borderRadius: '30px',
+                            fontSize: '16px',
+                            fontWeight: '900',
+                            cursor: 'pointer',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '8px',
+                            boxShadow: '0 4px 14px rgba(253, 253, 253, 1)',
+                            transition: 'transform 0.2s',
+                        }}
+                        onMouseOver={(e) => e.target.style.transform = 'scale(1.05)'}
+                        onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+                    >
+
+                    </button>
+                </div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '60px', alignItems: 'flex-start', paddingTop: '60px' }}>
 
                     <div style={{ flex: '1 1 400px', textAlign: 'center' }}>
@@ -496,7 +527,7 @@ export default function DailyPanchangViewer() {
                         </div>
                     </div>
 
-                    <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                    <div id="advanced-dosha-exceptions-section" style={{ marginTop: '20px', textAlign: 'center' }}>
                         <button
                             onClick={() => {
                                 const popupSettings = 'width=1100,height=850,menubar=no,toolbar=no,location=no,status=no';
@@ -777,7 +808,7 @@ export default function DailyPanchangViewer() {
                             </div>
 
                             {/* Advanced Transit Forecast Section */}
-                            <div style={{ marginTop: '40px', padding: '40px', background: theme.cardBg, borderRadius: '35px', border: `1px solid ${theme.borderColor}`, textAlign: 'left', boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)', width: '100%', maxWidth: '1200px', margin: '30px auto 0 auto' }}>
+                            <div id="advanced-transit-forecast-section" style={{ marginTop: '40px', padding: '40px', background: theme.cardBg, borderRadius: '35px', border: `1px solid ${theme.borderColor}`, textAlign: 'left', boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)', width: '100%', maxWidth: '1200px', margin: '30px auto 0 auto' }}>
                                 <div style={{ color: '#881337', fontSize: '24px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                                     <span>🪐</span> Advanced Transit Forecast (पारगमन गोचर)
                                 </div>

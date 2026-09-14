@@ -27,35 +27,35 @@ const CompatibilityHub = () => {
     },
     {
       id: 'name-numerology',
-      title: 'Name Numerology Compatibility',
+      title: 'Match Compatibility By Name ',
       description: 'Check compatibility using the Chaldean method based on names.',
       icon: <Sparkles className="w-6 h-6 text-amber-500" />,
       component: <NameNumerologyCalculator onBack={() => setActiveCalculator(null)} />
     },
     {
       id: 'moon-sign',
-      title: 'Moon Sign Compatibility',
+      title: 'Match Compatibility By Moon Sign',
       description: 'Analyze emotional compatibility based on Moon signs.',
       icon: <Moon className="w-6 h-6 text-blue-500" />,
       component: <MoonSignCalculator onBack={() => setActiveCalculator(null)} />
     },
     {
       id: 'sun-sign',
-      title: 'Sun Sign Compatibility',
+      title: 'Match Compatibility By Sun Sign',
       description: 'Analyze core personality and ego alignment.',
       icon: <Sun className="w-6 h-6 text-orange-500" />,
       component: <SunSignCalculator onBack={() => setActiveCalculator(null)} />
     },
     {
       id: 'name-horoscope',
-      title: 'Name Horoscope Compatibility',
+      title: 'Match Compatibility By Name',
       description: 'Astrological compatibility using name initials.',
       icon: <Star className="w-6 h-6 text-yellow-500" />,
       component: <NameHoroscopeCalculator onBack={() => setActiveCalculator(null)} />
     },
     {
       id: 'birth-numerology',
-      title: 'Birth Date Numerology Compatibility',
+      title: 'Match Compatibility By Birth Date',
       description: 'Compatibility based on Life Path and Birth numbers.',
       icon: <Calendar className="w-6 h-6 text-green-500" />,
       component: <BirthNumerologyCalculator onBack={() => setActiveCalculator(null)} />
@@ -134,26 +134,6 @@ const CompatibilityHub = () => {
             </p>
           </div>
 
-          {/* Master Report Banner */}
-          <div
-            onClick={() => setActiveCalculator('complete-report')}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl p-8 md:p-12 shadow-[0_0_40px_rgba(217,70,239,0.3)] cursor-pointer transform hover:-translate-y-2 hover:scale-[1.01] transition-all duration-300 relative overflow-hidden group border border-pink-400/50 my-10"
-          >
-            <div className="absolute top-0 right-0 p-8 opacity-20 transform group-hover:scale-110 transition-transform duration-700">
-              <FileText className="w-48 h-48" />
-            </div>
-            <div className="relative z-10">
-              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-1 rounded-full text-white font-bold text-sm mb-4 border border-white/30">
-                <Sparkles className="w-4 h-4" /> RECOMMENDED
-              </div>
-              <h2 className="text-4xl md:text-5xl font-black text-white mb-4">Generate Master Love Report</h2>
-              <p className="text-xl text-pink-100 max-w-2xl">Don't want to click through all calculators? Run them all simultaneously and generate a beautiful, printable PDF summary in one click.</p>
-              <div className="mt-8 flex items-center gap-3 text-white font-bold text-lg group-hover:gap-5 transition-all">
-                Start Generation <ArrowLeft className="w-6 h-6 rotate-180" />
-              </div>
-            </div>
-          </div>
-
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
             {calculators.filter(c => !c.special).map((calc) => (
               <button
@@ -183,6 +163,26 @@ const CompatibilityHub = () => {
                 </div>
               </button>
             ))}
+          </div>
+
+          {/* Master Report Banner */}
+          <div
+            onClick={() => setActiveCalculator('complete-report')}
+            className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-3xl p-8 md:p-12 shadow-[0_0_40px_rgba(217,70,239,0.3)] cursor-pointer transform hover:-translate-y-2 hover:scale-[1.01] transition-all duration-300 relative overflow-hidden group border border-pink-400/50 my-10"
+          >
+            <div className="absolute top-0 right-0 p-8 opacity-20 transform group-hover:scale-110 transition-transform duration-700">
+              <FileText className="w-48 h-48" />
+            </div>
+            <div className="relative z-10">
+              <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm px-4 py-1 rounded-full text-white font-bold text-sm mb-4 border border-white/30">
+                <Sparkles className="w-4 h-4" /> RECOMMENDED
+              </div>
+              <h2 className="text-4xl md:text-5xl font-black text-white mb-4">Generate Master Love Report</h2>
+              <p className="text-xl text-pink-100 max-w-2xl">Don't want to click through all calculators? Run them all simultaneously and generate a beautiful, printable PDF summary in one click.</p>
+              <div className="mt-8 flex items-center gap-3 text-white font-bold text-lg group-hover:gap-5 transition-all">
+                Start Generation <ArrowLeft className="w-6 h-6 rotate-180" />
+              </div>
+            </div>
           </div>
 
           <footer className="w-full text-center py-8 text-slate-500 text-xs font-semibold mt-12 border-t border-slate-700/30">

@@ -52,12 +52,12 @@ export default function ChartView2({ data }) {
                 <span>Astro Consult - Chart View 2</span>
             </div>
 
-            <div className="flex-1 grid grid-cols-3 grid-rows-3 gap-2 pb-2 min-h-[900px]">
+            <div className="flex-1 grid grid-cols-3 grid-rows-3 gap-2 pb-2 min-h-[600px]">
                 {chartsToRender.map((chart) => (
                     <div key={chart.id} className="bg-[#fbf9f1] border-2 border-indigo-900/30 rounded-lg relative p-1 flex flex-col shadow-sm overflow-hidden h-full">
                         <div className="flex-1 relative">
                             <div className="absolute inset-0 flex items-center justify-center p-0">
-                                <ZodiacChart houses={getHouses(chart.id)} variant="legacy" defaultRect={true} scaleText={1.8} title={chart.title} />
+                                <ZodiacChart houses={getHouses(chart.id)} variant="legacy" defaultRect={true} scaleText={1.9} title={chart.title} hideOuterRect={true} hideLegend={true} hideTranslation={true} />
                             </div>
                         </div>
                     </div>

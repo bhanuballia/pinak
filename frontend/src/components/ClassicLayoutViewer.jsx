@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 import ZodiacChart from "./ZodiacChart";
+import VimshottariTable from "./VimshottariTable";
 
 const PLANETS = ["Ascendant", "Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
 
 const PLANET_ABBREV = {
-    "Sun": "Su", "Moon": "Mo", "Mars": "Ma", "Mercury": "Me",
-    "Jupiter": "Ju", "Venus": "Ve", "Saturn": "Sa",
-    "Rahu": "Ra", "Ketu": "Ke", "Ascendant": "As"
+    "Sun": "Sun", "Moon": "Moon", "Mars": "Mars", "Mercury": "Mercury",
+    "Jupiter": "Jupiter", "Venus": "Venus", "Saturn": "Saturn",
+    "Rahu": "Rahu", "Ketu": "Ketu", "Ascendant": "Ascendant"
 };
 
 const getPlanetColor = (planet) => {
@@ -158,68 +159,38 @@ export default function ClassicLayoutViewer({ data }) {
                 <span>Astro Consult - Classic Workspace</span>
             </div>
 
-            <div className="flex flex-col gap-2 flex-1 min-h-0">
-                {/* Top Row: 50% Height */}
-                <div className="flex gap-2 flex-1 min-[300px]">
+            <div className="flex flex-col gap-2 flex-1 min-h-[200px]">
+                {/* Top Row: 35% Height */}
+                <div className="flex gap-2 min-h-0" style={{ flex: 0.70 }}>
 
                     {/* Left: Birth Chart */}
                     <div className="flex-1 bg-[#fbf9f1] border-2 border-indigo-900/30 rounded-lg relative p-1 flex flex-col shadow-sm overflow-hidden">
                         <div className="flex-1 relative">
                             <div className="absolute inset-0 flex items-center justify-center p-0">
-                                <ZodiacChart houses={d1Houses} variant="legacy" defaultRect={true} scaleText={1.5} title="Birth Chart (Lagna)" />
+                                <ZodiacChart houses={d1Houses} variant="legacy" defaultRect={true} scaleText={1.9} title="Birth Chart (Lagna)" hideOuterRect={true} hideTranslation={true} hideLegend={true} />
                             </div>
                         </div>
                     </div>
 
                     {/* Middle: Dynamic Varga Chart */}
-                    <div className="flex-1 bg-[#fbf9f1] border-2 border-indigo-900/30 rounded-lg relative p-1 flex flex-col shadow-sm overflow-hidden">
+                    <div className="flex-[0.8] bg-[#fbf9f1] border-2 border-indigo-900/30 rounded-lg relative p-1 flex flex-col shadow-sm overflow-hidden">
                         <div className="flex-1 relative">
                             <div className="absolute inset-0 flex items-center justify-center p-0">
-                                <ZodiacChart houses={middleHouses} variant="legacy" defaultRect={true} scaleText={1.5} title={selectedMiddleChart === 'd1' ? 'D1 Lagna' : `${selectedMiddleChart.toUpperCase()} Chart`} />
+                                <ZodiacChart houses={middleHouses} variant="legacy" defaultRect={true} scaleText={1.9} title={selectedMiddleChart === 'd1' ? 'D1 Lagna' : `${selectedMiddleChart.toUpperCase()} Chart`} hideOuterRect={true} hideTranslation={true} hideLegend={true} />
                             </div>
                         </div>
                     </div>
 
                     {/* Right: Vimshottari Dashas */}
-                    <div className="flex-[0.8] bg-white border-2 border-indigo-900/30 rounded-lg relative p-1 flex flex-col shadow-sm">
-                        <div className="bg-white border-b border-indigo-900/30 px-3 absolute top-0 left-0 -translate-y-1/2 translate-x-4 text-indigo-900 font-bold text-[10px] uppercase tracking-widest z-10 flex items-center justify-between w-[85%] rounded-full shadow-sm">
-                            <span>Vimshottari Dasha</span>
-                        </div>
-                        <div className="flex-1 mt-3 overflow-y-auto text-[10px] px-2 custom-scrollbar">
-                            <table className="w-full mt-1">
-                                <tbody>
-                                    {(dashaList || []).slice(0, 15).map((d, i) => {
-                                        const lordStr = `Maha: ${d.lord}`;
-                                        let dateStr = d.start_date || d.start || "";
-                                        return (
-                                            <tr key={i} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
-                                                <td className="py-0.5 font-bold w-20" style={{ color: getPlanetColor(d.lord) }}>{lordStr}</td>
-                                                <td className="text-black text-center w-6">→</td>
-                                                <td className="py-0.5 text-right font-mono text-black">{dateStr}</td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* Varga Chart Controls */}
-                        <div className="mt-2 pt-3 border-t border-indigo-900/20 flex flex-wrap gap-2 justify-center shrink-0">
-                            {['d1', 'd2', 'd3', 'd4', 'd7', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60'].map(v => (
-                                <button
-                                    key={v}
-                                    onClick={() => setSelectedMiddleChart(v)}
-                                    className={`px-3 py-1.5 text-[10px] md:text-xs font-black uppercase rounded shadow-sm transition-colors border ${selectedMiddleChart === v ? 'bg-indigo-900 text-white border-indigo-900' : 'bg-slate-100 text-slate-700 hover:bg-indigo-100 border-slate-200'}`}
-                                >
-                                    {v}
-                                </button>
-                            ))}
+                    <div className="flex-1 bg-white border-2 border-indigo-900/30 rounded-lg relative flex flex-col shadow-sm overflow-hidden min-h-0">
+                        <div className="flex-1 overflow-hidden flex flex-col">
+                            <VimshottariTable data={data} hideMarriageDasha={true} />
                         </div>
                     </div>
                 </div>
 
-                {/* Bottom Row: 50% Height */}
-                <div className="flex gap-2 flex-1 min-h-0">
+                {/* Bottom Row: 65% Height */}
+                <div className="flex gap-2 min-h-0" style={{ flex: 0.65 }}>
 
                     {/* Left Table: Nakshatras */}
                     <div className="flex-1 bg-white border-2 border-indigo-900/30 rounded-lg relative p-1 flex flex-col shadow-sm">
@@ -227,7 +198,7 @@ export default function ClassicLayoutViewer({ data }) {
                             Planetary Positions & Nakshatras
                         </div>
                         <div className="mt-3 flex-1 overflow-y-auto px-1 custom-scrollbar">
-                            <table className="w-full text-left text-[12px]">
+                            <table className="w-full text-left text-[14px]" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                                 <thead className="border-b border-indigo-900/10 text-black sticky top-0 bg-white">
                                     <tr>
                                         <th className="font-semibold pb-1">Planet</th>
@@ -269,7 +240,7 @@ export default function ClassicLayoutViewer({ data }) {
                             Dignity & Shadbala
                         </div>
                         <div className="mt-3 flex-1 overflow-y-auto px-1 custom-scrollbar">
-                            <table className="w-full text-left text-[12px]">
+                            <table className="w-full text-left text-[14px]" style={{ fontFamily: "'Times New Roman', Times, serif" }}>
                                 <thead className="border-b border-indigo-900/10 text-black sticky top-0 bg-white">
                                     <tr>
                                         <th className="font-semibold pb-1">Pl</th>

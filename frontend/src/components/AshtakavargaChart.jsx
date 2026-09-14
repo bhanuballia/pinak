@@ -45,7 +45,10 @@ const AshtakavargaChart = ({ title, housesData, defaultRect = false, hideOuterFr
   };
 
   return (
-    <div className={`flex flex-col bg-white h-full w-full ${hideOuterFrame ? '' : 'border-2 border-sky-400 rounded-md overflow-hidden shadow-sm'}`}>
+    <div 
+      className={`flex flex-col bg-white h-full w-full font-serif ${hideOuterFrame ? '' : 'border-2 border-sky-400 rounded-md overflow-hidden shadow-sm'}`}
+      style={{ fontFamily: "'Times New Roman', Times, serif" }}
+    >
       <div className={`font-bold flex justify-between items-center ${hideOuterFrame ? 'bg-[#f0f8fc] text-[#0a4d7a] px-2 py-1 text-[11px] border-b border-[#8ec5e6]' : 'bg-sky-50 text-sky-900 px-3 py-1 text-sm border-b border-sky-200'}`}>
         <span className="truncate flex-1">{title}</span>
         <div className="flex items-center gap-1">
@@ -86,6 +89,7 @@ const AshtakavargaChart = ({ title, housesData, defaultRect = false, hideOuterFr
                   textAnchor="middle"
                   dominantBaseline="middle"
                   fontSize={4 * scaleText}
+                  fontFamily="'Times New Roman', Times, serif"
                   className="font-black fill-slate-800"
                 >
                   {hData.points}
@@ -99,6 +103,7 @@ const AshtakavargaChart = ({ title, housesData, defaultRect = false, hideOuterFr
                     textAnchor="middle"
                     dominantBaseline="middle"
                     fontSize={3.5 * scaleText}
+                    fontFamily="'Times New Roman', Times, serif"
                     className="fill-amber-900 font-bold"
                   >
                     {signNum}

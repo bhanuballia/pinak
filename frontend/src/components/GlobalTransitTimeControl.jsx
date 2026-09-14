@@ -19,7 +19,7 @@ export default function GlobalTransitTimeControl() {
                         setLat(data.basic_details.lat || 28.6139);
                         setLon(data.basic_details.lon || 77.2090);
                     }
-                } catch(e) {}
+                } catch (e) { }
             }
             setIsOpen(true);
         };
@@ -31,7 +31,7 @@ export default function GlobalTransitTimeControl() {
 
     const handleTransitChange = async (positions, newDateObj) => {
         if (!worksheetData || !worksheetData.basic_details) return;
-        
+
         try {
             const dateStr = newDateObj.toISOString().split("T")[0];
             const timeStr = newDateObj.toTimeString().split(" ")[0];
@@ -58,19 +58,19 @@ export default function GlobalTransitTimeControl() {
     };
 
     return (
-        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-[9999] w-[90%] max-w-lg">
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 z-[9999] w-[90%] max-w-xs">
             <div className="bg-white rounded-xl shadow-2xl border-2 border-indigo-500 overflow-hidden relative">
-                <button 
+                <button
                     onClick={() => setIsOpen(false)}
                     className="absolute top-2 right-2 z-[10000] bg-red-100 hover:bg-red-200 text-red-600 rounded-full w-8 h-8 flex items-center justify-center font-bold"
                 >
                     ✕
                 </button>
                 <div className="p-1 pt-6 bg-[#fdfbf7]">
-                    <TransitTimeControl 
-                        lat={lat} 
-                        lon={lon} 
-                        onTransitChange={handleTransitChange} 
+                    <TransitTimeControl
+                        lat={lat}
+                        lon={lon}
+                        onTransitChange={handleTransitChange}
                     />
                 </div>
             </div>

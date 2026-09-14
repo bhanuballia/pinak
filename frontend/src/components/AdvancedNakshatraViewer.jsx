@@ -381,7 +381,17 @@ const AdvancedNakshatraViewer = () => {
     <div className="min-h-screen bg-rose-100 text-black flex flex-col font-sans">
       {!onlyPlanetary && (
         <div className="bg-rose-50 border-b border-[#333] flex justify-between items-center px-4 py-3 text-[18px] font-bold  text-black shadow-md">
-          <span>Cosmic Time Machine Dashboard</span>
+          <div className="flex items-center gap-4">
+            <span>Nakshtra Dashboard</span>
+            <button
+              onClick={() => {
+                document.getElementById('personalized-oracle')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+              className="text-[16px] bg-yellow-100 hover:bg-purple-200 text-black px-3 py-1.5 rounded-lg border border-purple-300 uppercase tracking-widest flex items-center gap-1 shadow-md animate-pulse hover:animate-none hover:scale-105 transform transition-all duration-300 hover:shadow-lg hover:border-purple-400"
+            >
+              <span className="text-[16px]">✨</span> Ask Question
+            </button>
+          </div>
 
           <div className="flex items-center gap-4">
             {!isLive && (
@@ -598,13 +608,13 @@ const AdvancedNakshatraViewer = () => {
             )}
 
             {/* Personalized Transit Oracle */}
-            <div className="bg-[#16213e] rounded-xl shadow-lg border border-[#333] overflow-hidden mt-2">
+            <div id="personalized-oracle" className="bg-[#16213e] rounded-xl shadow-lg border border-[#333] overflow-hidden mt-2 scroll-mt-6">
               <div className="p-6">
                 <h2 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
-                  <span className="text-purple-400">🔮</span> Ask My Personalized Oracle
+                  <span className="text-purple-400">🔮</span> Ask Your Personal Question
                 </h2>
-                <p className="text-gray-300 mb-6 text-sm">
-                  Ask any question to the stars! This Oracle calculates the Tara Bala (Star Strength) between your Birth Nakshatra and the Live Moon Nakshatra for highly personalized answers.
+                <p className="text-gray-300 mb-6 text-[14px]">
+                  Ask any question to the stars! This  calculates the Tara Bala (Star Strength) between your Birth Nakshatra and the Live Moon Nakshatra for highly personalized answers.
                 </p>
 
                 {!userData ? (
@@ -613,11 +623,11 @@ const AdvancedNakshatraViewer = () => {
                   </div>
                 ) : (
                   <div className="flex flex-col gap-4">
-                    <div className="bg-[#0f172a] border border-[#333] p-4 rounded-lg text-sm text-gray-300 flex justify-between items-center">
+                    <div className="bg-[#0f172a] border border-[#333] p-4 rounded-lg text-[16px] text-gray-300 flex justify-between items-center">
                       <div>
                         <span className="text-[#00ffcc] font-semibold">User Profile Loaded:</span> Born on {userData.date} at {userData.time}
                       </div>
-                      <div className="text-xs text-gray-500 italic">(From Saved Kundali)</div>
+                      <div className="text-[16px] text-gray-500 italic">(From Saved Kundali)</div>
                     </div>
 
                     <form onSubmit={handlePersonalOracleSubmit} className="flex gap-4 flex-col sm:flex-row">
@@ -636,7 +646,7 @@ const AdvancedNakshatraViewer = () => {
                           : 'bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-500/20'
                           }`}
                       >
-                        {oracleLoading ? 'Consulting...' : 'Ask Oracle'}
+                        {oracleLoading ? 'Consulting...' : 'Ask Astrologer'}
                       </button>
                     </form>
 
@@ -647,7 +657,7 @@ const AdvancedNakshatraViewer = () => {
                           key={cat.name}
                           type="button"
                           onClick={() => setSelectedCategory(cat.name)}
-                          className={`px-4 py-2 rounded-full text-sm font-semibold transition-all ${selectedCategory === cat.name
+                          className={`px-4 py-2 rounded-full text-[16px] font-semibold transition-all ${selectedCategory === cat.name
                             ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/30'
                             : 'bg-[#1a264a] text-gray-300 hover:bg-[#233566]'
                             }`}
@@ -659,7 +669,7 @@ const AdvancedNakshatraViewer = () => {
 
                     {/* Question Chips */}
                     <div className="bg-[#0f172a] border border-[#333] p-4 rounded-xl mt-2">
-                      <h3 className="text-[#00ffcc] text-xs font-bold uppercase tracking-wider mb-3">
+                      <h3 className="text-[#00ffcc] text-[18px] font-bold uppercase tracking-wider mb-3">
                         Select a question to auto-ask:
                       </h3>
                       <div className="flex flex-wrap gap-2">
@@ -668,7 +678,7 @@ const AdvancedNakshatraViewer = () => {
                             key={i}
                             type="button"
                             onClick={(e) => handlePersonalOracleSubmit(e, q)}
-                            className="bg-[#16213e] hover:bg-[#1f2f5c] border border-[#333] hover:border-purple-500 text-gray-300 hover:text-white text-sm px-3 py-1.5 rounded-lg text-left transition-colors"
+                            className="bg-[#16213e] hover:bg-[#1f2f5c] border border-[#333] hover:border-purple-500 text-gray-300 hover:text-white text-[16px] px-3 py-1.5 rounded-lg text-left transition-colors"
                           >
                             {q}
                           </button>
@@ -683,16 +693,16 @@ const AdvancedNakshatraViewer = () => {
                         }`}>
                         <div className="flex flex-col sm:flex-row gap-6 mb-4 pb-4 border-b border-[#333]">
                           <div className="flex-1">
-                            <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">Your Birth Star</div>
-                            <div className="text-lg text-[#00ffcc] font-bold">{oracleResponse.natal_nakshatra}</div>
+                            <div className="text-[18px] text-white uppercase tracking-widest mb-1">Your Birth Star</div>
+                            <div className="text-[18px] text-[#00ffcc] font-bold">{oracleResponse.natal_nakshatra}</div>
                           </div>
                           <div className="flex-1">
-                            <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">Live Transit Star</div>
-                            <div className="text-lg text-white font-bold">{oracleResponse.live_nakshatra}</div>
+                            <div className="text-[18px] text-white uppercase tracking-widest mb-1">Live Transit Star</div>
+                            <div className="text-[18px] text-white font-bold">{oracleResponse.live_nakshatra}</div>
                           </div>
                           <div className="flex-1">
-                            <div className="text-xs text-gray-500 uppercase tracking-widest mb-1">Active Tara</div>
-                            <div className={`text-lg font-bold ${oracleResponse.quality.includes('Auspicious') ? 'text-green-400' :
+                            <div className="text-[18px] text-white uppercase tracking-widest mb-1">Active Tara</div>
+                            <div className={`text-[18px] font-bold ${oracleResponse.quality.includes('Auspicious') ? 'text-green-400' :
                               oracleResponse.quality === 'Inauspicious' ? 'text-red-400' : 'text-yellow-400'
                               }`}>
                               {oracleResponse.tara_name} Tara
