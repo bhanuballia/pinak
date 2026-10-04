@@ -140,3 +140,62 @@ def compute_vimsopaka_bala(vargas: dict) -> dict:
             result[cat][p] = int(final_score + 0.5)
             
     return result
+
+def compute_vaiseshikamsa(vargas: dict) -> dict:
+    """
+    Computes Vaiseshikamsa for Shadvarga (6), Saptavarga (7), Dasavarga (10), and Shodashvarga (16).
+    Vaiseshikamsa counts the number of vargas where a planet is in a good dignity 
+    (Exalted, Moolatrikona, Own Sign, Great Friend, Friend).
+    """
+    varga_sets = {
+        'shadvarga': ['d1', 'd2', 'd3', 'd9', 'd12', 'd30'],
+        'saptavarga': ['d1', 'd2', 'd3', 'd7', 'd9', 'd12', 'd30'],
+        'dasavarga': ['d1', 'd2', 'd3', 'd7', 'd9', 'd10', 'd12', 'd16', 'd30', 'd60'],
+        'shodashvarga': ['d1', 'd2', 'd3', 'd4', 'd7', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60']
+    }
+    
+    planets = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"]
+    rashi_chart = vargas.get('d1', {})
+    
+    # Precompute dignities for all planets in all needed vargas
+    all_vargas_needed = set()
+    for v_list in varga_sets.values():
+        all_vargas_needed.update(v_list)
+        
+    planet_dignity_good = {p: {v: False for v in all_vargas_needed} for p in planets}
+    
+    for v_id in all_vargas_needed:
+        varga_data = vargas.get(v_id)
+        if not varga_data:
+            continue
+            
+        houses_data = varga_data.get('houses', {})
+        house_list = houses_data.values() if isinstance(houses_data, dict) else houses_data
+        
+        for h in house_list:
+            sign_name = h.get('sign_name')
+            if not sign_name:
+                continue
+                
+            for p in h.get('planets', []):
+                name = p.get('name') if isinstance(p, dict) else p
+                
+                if isinstance(name, str) and name in planets and isinstance(sign_name, str):
+                    dignity = get_compound_dignity(rashi_chart, name, sign_name)
+                    
+                    if dignity == "DEBILITATED" and check_neechabhanga_in_varga(varga_data, name, sign_name):
+                        dignity = "OWN_SIGN"
+                        
+                    # 15.0 corresponds to FRIEND or higher
+                    score = get_vimsopaka_dignity_score(dignity)
+                    if score >= 15.0:
+                        planet_dignity_good[name][v_id] = True
+                        
+    result = {cat: {p: 0 for p in planets} for cat in varga_sets.keys()}
+    
+    for cat, v_list in varga_sets.items():
+        for p in planets:
+            count = sum(1 for v_id in v_list if planet_dignity_good[p].get(v_id, False))
+            result[cat][p] = count
+            
+    return result

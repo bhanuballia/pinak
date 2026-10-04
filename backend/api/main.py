@@ -293,6 +293,29 @@ def api_kundali(payload: Dict = Body(...)):
 
     chart = build_rashi_chart(jd_ut, lat, lon, house_system="W", style="north")
     chart["jd_ut"] = jd_ut
+    
+    # Compute Special Lagnas and Upagrahas
+    try:
+        from api.services.special_points import compute_all_special_points
+        sun_lon = chart.get("planet_positions", {}).get("Sun", {}).get("sidereal", {}).get("lon", 0)
+        moon_lon = chart.get("planet_positions", {}).get("Moon", {}).get("sidereal", {}).get("lon", 0)
+        asc_lon = chart.get("ascendant", 0)
+        rahu_lon = chart.get("planet_positions", {}).get("Rahu", {}).get("sidereal", {}).get("lon", 0)
+        
+        # fallback for flat planet_positions dict
+        if not isinstance(chart.get("planet_positions", {}).get("Sun"), dict):
+            sun_lon = chart.get("planet_positions", {}).get("Sun", 0)
+            moon_lon = chart.get("planet_positions", {}).get("Moon", 0)
+            rahu_lon = chart.get("planet_positions", {}).get("Rahu", 0)
+            
+        sp = compute_all_special_points(dt_local, tz_offset, lat, lon, sun_lon, moon_lon, asc_lon, rahu_lon)
+        chart["special_lagnas"] = sp["special_lagnas"]
+        chart["upagrahas"] = sp["upagrahas"]
+    except Exception as e:
+        print("Error computing special points:", str(e))
+        chart["special_lagnas"] = {}
+        chart["upagrahas"] = {}
+
     return JSONResponse(chart)
 
 @app.post("/api/panchang")

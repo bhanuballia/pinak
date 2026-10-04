@@ -103,18 +103,9 @@ export default function DashaDashboard({ data: worksheetData }) {
             onClick={() => window.open('/?vimshottari_ref=true', 'VimshottariReference', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no')}
             className="dasha-nav-btn px-5 py-2.5 bg-purple-400 border border-slate-200 text-slate-700 rounded-xl font-medium shadow-sm hover:bg-slate-50 focus:ring-4 focus:ring-purple-300 transition-all outline-none"
           >
-            Vimshottari Reference
+            Vimshottari Dasha Analysis
           </button>
-          <button
-            onClick={() => {
-              const qs = window.location.search || "?";
-              const newQs = qs.includes('dasha_analysis') ? qs : qs + (qs === '?' ? '' : '&') + 'dasha_analysis=true';
-              window.open(`/${newQs}`, 'DashaAnalysis', 'width=1200,height=900,menubar=no,toolbar=no,location=no,status=no');
-            }}
-            className="dasha-nav-btn px-5 py-2.5 bg-yellow-400 border border-slate-200 text-slate-700 rounded-xl font-medium shadow-sm hover:bg-slate-50 focus:ring-4 focus:ring-yellow-300 transition-all outline-none"
-          >
-            Dasha Analysis
-          </button>
+
           <button
             onClick={() => {
               const qs = window.location.search || "?";

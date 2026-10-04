@@ -9,6 +9,15 @@ import ShadbalaChart from "./ShadbalaChart";
 import AshtakavargaViewer from "./AshtakavargaViewer";
 import PlanetaryRemediesViewer from "./PlanetaryRemediesViewer";
 import VimsopakaAssessment from "./VimsopakaAssessment";
+import VaiseshikamsaAssessment from "./VaiseshikamsaAssessment";
+import Vaiseshikamsa2Assessment from "./Vaiseshikamsa2Assessment";
+import Vaiseshikamsa3Assessment from "./Vaiseshikamsa3Assessment";
+import Vaiseshikamsa4Assessment from "./Vaiseshikamsa4Assessment";
+import Vaiseshikamsa5Assessment from "./Vaiseshikamsa5Assessment";
+import BasicTransitResults from "./BasicTransitResults";
+import TransitHousesResults from "./TransitHousesResults";
+import TransitAmsaRulers from "./TransitAmsaRulers";
+import TransitKeyInfo from "./TransitKeyInfo";
 import DashaDashboard from "../pages/DashaDashboard";
 import BhavbalaView from "./BhavbalaView";
 import VimshottariTable from "./VimshottariTable";
@@ -58,6 +67,7 @@ import YamakantakaAnalysis from "./worksheet/YamakantakaAnalysis";
 import MandiGulikaAnalysis from "./worksheet/MandiGulikaAnalysis";
 import UpaketuAnalysis from "./worksheet/UpaketuAnalysis";
 import IndrachapaAnalysis from "./worksheet/IndrachapaAnalysis";
+import KPDataTable from "./KPDataTable";
 
 const BulletInterpretation = ({ text, colorClass = "text-slate-600" }) => {
   if (!text) return null;
@@ -727,6 +737,11 @@ const CELL_CONTENTS = [
   { id: "vimshottari", label: "Vimshottari", category: "Dasha" },
   { id: "yogini", label: "Yogini Dasha", category: "Dasha" },
   { id: "vimsopaka", label: "Vimsopaka Bala", category: "Tables" },
+  { id: "vaiseshikamsa", label: "Vaiseshikamsa", category: "Tables" },
+  { id: "vaiseshikamsa2", label: "Vaiseshikamsa 2", category: "Tables" },
+  { id: "vaiseshikamsa3", label: "Vaiseshikamsa 3", category: "Tables" },
+  { id: "vaiseshikamsa4", label: "Vaiseshikamsa 4", category: "Tables" },
+  { id: "vaiseshikamsa5", label: "Vaiseshikamsa 5", category: "Tables" },
   { id: "bhavbala", label: "Bhavbala", category: "Tables" },
   { id: "shodashvarga_summary", label: "Shodashvarga Summary", category: "Tables" },
   { id: "relationships", label: "Relationships", category: "Misc" },
@@ -754,6 +769,11 @@ const CELL_CONTENTS = [
   { id: "krishnamurthy_chart", label: "Krishana Murthy Chart", category: "Charts" },
   { id: "krishnamurthy_significators", label: "KP Significators", category: "Tables" },
   { id: "aspects_summary", label: "Aspects Summary", category: "Tables" },
+  { id: "transit_key_info", label: "Key Info", category: "Transits" },
+  { id: "basic_transit_results", label: "Basic Transit Results", category: "Transits" },
+  { id: "transit_houses_results", label: "Houses", category: "Transits" },
+  { id: "transit_amsa_rulers", label: "Amsa rulers", category: "Transits" },
+  { id: "kp_data_table", label: "KP Data Table", category: "Transits" },
   { id: "gemstones", label: "Ratna", category: "Misc" },
   { id: "transit_gemstones", label: "Gochar Ratna", category: "Misc" },
   { id: "panch_pakshi", label: "Panch Pakshi", category: "Misc" },
@@ -4713,7 +4733,28 @@ const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSele
     if (contentId.startsWith('d') && contentId !== 'dignity' && contentId !== 'dasha') {
       const vData = (contentId === 'd1') ? data.charts : data.vargas?.[contentId];
       const title = CELL_CONTENTS.find(c => c.id === contentId)?.label || contentId.toUpperCase();
-      return <ZodiacChart planetPositions={data?.planet_positions} houses={vData?.houses} onPlanetClick={onPlanetClick} title={title} variant="legacy" planetEffects={planetEffects} scaleText={1.5} defaultRect={isBlankSheet} />;
+      let chartPlanetPositions = data?.planet_positions;
+      let chartTransitHouses = null;
+      if (contentId === 'd1' && transitPositions) {
+          const lagnaSignIndex = data?.charts?.ascendant_sign_index !== undefined ? data.charts.ascendant_sign_index :
+          (data?.charts?.houses?.[1]?.sign_index !== undefined ? data.charts.houses[1].sign_index : Math.floor((data?.charts?.houses?.[1]?.cusp_deg || 0) / 30));
+          chartTransitHouses = {};
+          const valid = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
+          Object.entries(transitPositions).forEach(([planet, pos]) => {
+            if (!valid.includes(planet)) return;
+            const signIdx = pos.sidereal?.sign_index !== undefined ? pos.sidereal.sign_index : Math.floor((pos.sidereal?.lon || pos.lon) / 30);
+            const houseNum = (signIdx - lagnaSignIndex + 12) % 12 + 1;
+            if (!chartTransitHouses[houseNum]) chartTransitHouses[houseNum] = { planets: [] };
+            chartTransitHouses[houseNum].planets.push(planet);
+          });
+          chartPlanetPositions = Object.entries(transitPositions).map(([k, v]) => ({
+            planet: k,
+            degree: v.sidereal?.lon || v.lon,
+            is_retrograde: v.is_retrograde || v.sidereal?.is_retrograde,
+            is_combust: v.is_combust || v.sidereal?.is_combust
+          }));
+      }
+      return <ZodiacChart planetPositions={chartPlanetPositions} houses={vData?.houses} transitHouses={chartTransitHouses} onPlanetClick={onPlanetClick} title={title} variant="legacy" planetEffects={planetEffects} scaleText={1.5} defaultRect={isBlankSheet} />;
     }
 
     switch (contentId) {
@@ -6602,7 +6643,17 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
               if (cid === 'transit_gemstones') return <div className="p-10"><TransitGemstonePanel data={data} transitPositions={transitPositions} /></div>;
               if (cid === 'transit') return <div className="p-10"><TransitPanel data={data} transitPositions={transitPositions} /></div>;
               if (cid === 'vimsopaka') return <div className="p-10 w-full max-w-full mx-auto"><VimsopakaAssessment data={data} /></div>;
+              if (cid === 'vaiseshikamsa') return <div className="p-0 w-full h-full max-w-full mx-auto"><VaiseshikamsaAssessment data={data} /></div>;
+              if (cid === 'vaiseshikamsa2') return <div className="p-0 w-full h-full max-w-full mx-auto"><Vaiseshikamsa2Assessment data={data} /></div>;
+              if (cid === 'vaiseshikamsa3') return <div className="p-0 w-full h-full max-w-full mx-auto"><Vaiseshikamsa3Assessment data={data} /></div>;
+              if (cid === 'vaiseshikamsa4') return <div className="p-0 w-full h-full max-w-full mx-auto"><Vaiseshikamsa4Assessment data={data} /></div>;
+              if (cid === 'vaiseshikamsa5') return <div className="p-0 w-full h-full max-w-full mx-auto"><Vaiseshikamsa5Assessment data={data} /></div>;
               if (cid === 'bhavbala') return <div className="p-10 w-full max-w-full mx-auto"><BhavbalaView data={data} /></div>;
+              if (cid === 'basic_transit_results') return <div className="p-0 w-full h-full max-w-full mx-auto"><BasicTransitResults data={data} transitPositions={transitPositions} /></div>;
+              if (cid === 'transit_houses_results') return <div className="p-0 w-full h-full max-w-full mx-auto"><TransitHousesResults data={data} /></div>;
+              if (cid === 'transit_amsa_rulers') return <div className="p-0 w-full h-full max-w-full mx-auto"><TransitAmsaRulers data={data} /></div>;
+              if (cid === 'transit_key_info') return <div className="p-0 w-full h-full max-w-full mx-auto"><TransitKeyInfo data={data} /></div>;
+              if (cid === 'kp_data_table') return <div className="p-0 w-full h-full max-w-full mx-auto overflow-auto"><KPDataTable formData={data} /></div>;
               if (cid === 'panch_pakshi') return <div className="p-8 w-full max-w-[95%] mx-auto"><PanchPakshiTable data={data} /></div>;
               if (cid === 'kp') return <div className="w-full h-full overflow-y-auto bg-white"><KPChartViewer formData={data} /></div>;
               return null;
@@ -6844,7 +6895,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                   </button>
                   <div className="absolute top-0 left-full ml-1 w-56 bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/evaluation:opacity-100 group-hover/evaluation:visible transition-all duration-200 py-2">
                     <button onClick={() => window.open('/?bala_strengths=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Bala Strengths</button>
-                    {CELL_CONTENTS.filter(c => ["shadbala", "bhavbala", "vimsopaka", "shodashvarga_summary", "dignity", "relationships", "aspects_summary", "ashtakavarga", "ashtakavarga_reduction", "krishnamurthy_chart", "krishnamurthy_significators"].includes(c.id)).map(c => (
+                    {CELL_CONTENTS.filter(c => ["shadbala", "bhavbala", "vimsopaka", "vaiseshikamsa", "vaiseshikamsa2", "vaiseshikamsa3", "vaiseshikamsa4", "vaiseshikamsa5", "shodashvarga_summary", "dignity", "relationships", "aspects_summary", "ashtakavarga", "ashtakavarga_reduction", "krishnamurthy_chart", "krishnamurthy_significators"].includes(c.id)).map(c => (
                       <React.Fragment key={c.id}>
                         <button
                           onClick={() => handleMaximizeInNewWindow(c.id)}
@@ -6929,7 +6980,25 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                   </div>
                 </div>
 
-                {CELL_CONTENTS.filter(c => c.category !== "System" && c.id !== "transit_compare" && !['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60', 'shadbala', 'bhavbala', 'vimsopaka', 'shodashvarga_summary', 'dignity', 'relationships', 'aspects_summary', 'ashtakavarga', 'ashtakavarga_reduction', 'krishnamurthy_chart', 'krishnamurthy_significators', 'planets_table', 'panchang', 'numerical', 'gemstones', 'transit_gemstones', 'vimshottari', 'yogini', 'shodashottari', 'chaturshitisama', 'ashtottari', 'dwisaptatisama', 'dwadashottari', 'panchottari', 'shatabdika', 'shashtihayani', 'chara', 'sthira', 'shoola', 'niryaana_shoola', 'mandooka', 'drig', 'sudasha', 'panch_pakshi', 'advanced_nakshatra', 'd11'].includes(c.id)).map(c => (
+                {/* Transits Subcategory */}
+                <div className="relative group/transits">
+                  <button className="w-full text-left px-4 py-3 text-sm font-bold text-indigo-900 hover:bg-indigo-50 flex items-center justify-between border-b border-indigo-50 transition-colors">
+                    Transits <span className="text-[10px]">▶</span>
+                  </button>
+                  <div className="absolute top-0 left-full ml-1 w-56 bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/transits:opacity-100 group-hover/transits:visible transition-all duration-200 py-2">
+                    {CELL_CONTENTS.filter(c => ["transit_key_info", "basic_transit_results", "transit_houses_results", "transit_amsa_rulers", "kp_data_table"].includes(c.id)).map(c => (
+                      <button
+                        key={c.id}
+                        onClick={() => handleMaximizeInNewWindow(c.id)}
+                        className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight"
+                      >
+                        {c.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                {/* Other standard items */}
+                {CELL_CONTENTS.filter(c => c.category !== "System" && c.id !== "transit_compare" && !['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60', 'shadbala', 'bhavbala', 'vimsopaka', 'shodashvarga_summary', 'dignity', 'relationships', 'aspects_summary', 'ashtakavarga', 'ashtakavarga_reduction', 'krishnamurthy_chart', 'krishnamurthy_significators', 'planets_table', 'panchang', 'numerical', 'gemstones', 'transit_gemstones', 'vimshottari', 'yogini', 'shodashottari', 'chaturshitisama', 'ashtottari', 'dwisaptatisama', 'dwadashottari', 'panchottari', 'shatabdika', 'shashtihayani', 'chara', 'sthira', 'shoola', 'niryaana_shoola', 'mandooka', 'drig', 'sudasha', 'panch_pakshi', 'advanced_nakshatra', 'd11', 'basic_transit_results', 'transit_houses_results', 'transit_amsa_rulers', 'transit_key_info', 'kp_data_table'].includes(c.id)).map(c => (
                   <button
                     key={c.id}
                     onClick={() => {

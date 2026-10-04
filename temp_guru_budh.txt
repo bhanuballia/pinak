@@ -1,0 +1,104 @@
+[
+  {
+    "id": "guru-budh-1",
+    "dasha": "Guru",
+    "antarDasha": "Budh",
+    "verses": "20-21\u00bd",
+    "general": "Effects, like gains of wealth, bodily felicity, acquisition of a kingdom, gain of conveyances, clothes and cattle etc., will be derived in the Antar Dasha of Budh in the Dasha of Guru, if Budh is in his exaltation, in his own R\u0101\u015bi, or in Kendr, in Trikon, or, if Budh is associated with the Lord of the Dasha.",
+    "adverse": "",
+    "deathEffects": "",
+    "remedial": "",
+    "conditions": {
+      "adHouse": [
+        1,
+        4,
+        5,
+        7,
+        9,
+        10
+      ]
+    }
+  },
+  {
+    "id": "guru-budh-2",
+    "dasha": "Guru",
+    "antarDasha": "Budh",
+    "verses": "22-22\u00bd",
+    "general": "",
+    "adverse": "There will be increase in the number of enemies, loss of enjoyment and comforts, loss in business, affliction with fever and dysentery, if Budh receives a Drishti from Mangal.",
+    "deathEffects": "",
+    "remedial": ""
+  },
+  {
+    "id": "guru-budh-3",
+    "dasha": "Guru",
+    "antarDasha": "Budh",
+    "verses": "23-24",
+    "general": "Gains of wealth in his own country, happiness from parents and acquisition of conveyances by the beneficence of the king will result, if Budh is in a Kendr, in the 5th, or 9th from the Lord of the Dasha, or, if Budh is in his exaltation R\u0101\u015bi.",
+    "adverse": "",
+    "deathEffects": "",
+    "remedial": "",
+    "conditions": {
+      "adHouseFromMd": [
+        1,
+        4,
+        7,
+        10
+      ]
+    }
+  },
+  {
+    "id": "guru-budh-4",
+    "dasha": "Guru",
+    "antarDasha": "Budh",
+    "verses": "25-26",
+    "general": "",
+    "adverse": "There will be loss of wealth, journeys to foreign countries, danger from thieves while traveling, wounds, burning sensations, eye troubles, wanderings in foreign lands, if Budh is in the 6th, 8th, or 12th from the Lord of the Dasha, or, if Budh is associated with a malefic without receiving a Drishti from a benefic.",
+    "deathEffects": "",
+    "remedial": "",
+    "conditions": {
+      "adHouseFromMd": [
+        6,
+        8,
+        12
+      ]
+    }
+  },
+  {
+    "id": "guru-budh-5",
+    "dasha": "Guru",
+    "antarDasha": "Budh",
+    "verses": "27-28",
+    "general": "",
+    "adverse": "Distress without reason, anger, loss of cattle, loss in business etc. will be the results, if Budh be associated with a malefic, or malefics in Ari, in Randhr, or in Vyaya.",
+    "deathEffects": "fear of premature death",
+    "remedial": "",
+    "conditions": {
+      "adHouse": [
+        6,
+        8,
+        12
+      ]
+    }
+  },
+  {
+    "id": "guru-budh-6",
+    "dasha": "Guru",
+    "antarDasha": "Budh",
+    "verses": "29-29\u00bd",
+    "general": "There will be enjoyment, gains of wealth, conveyances and clothes at the commencement of the Antar Dasha, even if Budh is associated with a malefic, but receives a Drishti from a benefic.",
+    "adverse": "At the end of the Dasha, however, there will be loss of wealth.",
+    "deathEffects": "bodily distress",
+    "remedial": ""
+  },
+  {
+    "id": "guru-budh-7",
+    "dasha": "Guru",
+    "antarDasha": "Budh",
+    "verses": "30-31",
+    "general": "",
+    "adverse": "",
+    "deathEffects": "Premature death may be expected, if Budh is Dhan's, or Yuvati's Lord.",
+    "remedial": "recitation of Vishnu Sahasranam."
+  }
+]

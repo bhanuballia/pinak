@@ -1,0 +1,23 @@
+{
+  "id": "guru-budh-4",
+  "dasha": "Guru",
+  "antarDasha": "Budh",
+  "verses": "25-26",
+  "general": "",
+  "adverse": "There will be loss of wealth, journeys to foreign countries, danger from thieves while traveling, wounds, burning sensations, eye troubles, wanderings in foreign lands, if Budh is in the 6th, 8th, or 12th from the Lord of the Dasha, or, if Budh is associated with a malefic without receiving a Drishti from a benefic.",
+  "deathEffects": "",
+  "remedial": "",
+  "conditions": {
+    "adHouseFromMd": [
+      6,
+      8,
+      12
+    ],
+    "drishtiFrom": [
+      "Benefic"
+    ],
+    "conjunctWith": [
+      "Malefic"
+    ]
+  }
+}

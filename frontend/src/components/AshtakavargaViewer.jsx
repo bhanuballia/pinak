@@ -3,11 +3,11 @@ import AshtakavargaChart from './AshtakavargaChart';
 import BhinnaTable from './BhinnaTable';
 import SarvaChanchaChakra from './SarvaChanchaChakra';
 
-const AshtakavargaViewer = ({ data: worksheetData }) => {
+const AshtakavargaViewer = ({ data: worksheetData, initialMode = 'summary', hideTabs = false, scaleText = 1.0 }) => {
   const [avData, setAvData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [viewMode, setViewMode] = useState('summary');
+  const [viewMode, setViewMode] = useState(initialMode);
 
   useEffect(() => {
     // Try to get birth details from the passed worksheetData prop first,
@@ -85,7 +85,8 @@ const AshtakavargaViewer = ({ data: worksheetData }) => {
       <div className="flex-1 overflow-y-auto p-5">
 
         {/* Tabs */}
-        <div className="flex gap-6 border-b border-slate-200 mb-6">
+        {!hideTabs && (
+          <div className="flex gap-6 border-b border-slate-200 mb-6">
           <button
             className={`pb-2 px-1 text-sm font-bold border-b-2 transition-colors ${viewMode === 'summary' ? 'text-indigo-600 border-indigo-600' : 'text-slate-400 border-transparent hover:text-slate-600'}`}
             onClick={() => setViewMode('summary')}
@@ -111,6 +112,7 @@ const AshtakavargaViewer = ({ data: worksheetData }) => {
             Sarva Chancha Chakra
           </button>
         </div>
+        )}
 
         {viewMode === 'summary' && (
           <div className="space-y-8">
@@ -197,6 +199,7 @@ const AshtakavargaViewer = ({ data: worksheetData }) => {
                     key={planet}
                     title={`Bhinnashtakavarga for ${planet}`}
                     housesData={housesData}
+                    scaleText={scaleText}
                   />
                 );
               })}
@@ -210,6 +213,7 @@ const AshtakavargaViewer = ({ data: worksheetData }) => {
                     signIndex: ha.sign_index,
                     points: avData.bhinna["Ascendant"][ha.sign_index] || 0
                   }))}
+                  scaleText={scaleText}
                 />
               ) : (
                 <div className="flex flex-col bg-slate-50 border-2 border-dashed border-slate-200 rounded-md items-center justify-center text-slate-400 p-4">
@@ -226,6 +230,7 @@ const AshtakavargaViewer = ({ data: worksheetData }) => {
                   signIndex: ha.sign_index,
                   points: ha.points
                 }))}
+                scaleText={scaleText}
               />
             </div>
           </div>
@@ -262,6 +267,7 @@ const AshtakavargaViewer = ({ data: worksheetData }) => {
                     <AshtakavargaChart
                       title={`${planet} Chart`}
                       housesData={housesData}
+                      scaleText={scaleText}
                     />
                   </div>
                 </div>

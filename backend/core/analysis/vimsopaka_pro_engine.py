@@ -5,10 +5,11 @@ Implements the 12-step methodology for planetary strength, interpretation,
 wealth, career, mental pattern, relationship, and remedies based on Vimsopaka Bala.
 """
 from typing import Dict, Any, List, Optional
-from core.analysis.vimsopaka_engine import compute_vimsopaka_bala
+from core.analysis.vimsopaka_engine import compute_vimsopaka_bala, compute_vaiseshikamsa
 from core.analysis.utils import get_planet_house, get_sign_of_planet
 from core.remedies.gemstone_rules import benefic_planets
 from core.remedies.gemstone_database import GEMSTONE_MAP
+from core.analysis.vargeeya_bala_engine import calculate_pancha_vargeeya, calculate_dwadasa_vargeeya
 
 PLANETS = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"]
 
@@ -113,6 +114,7 @@ def run_vimsopaka_assessment(vargas: Dict[str, Any], chart: Dict[str, Any], dash
     
     # Step 1-5: Calculate Vimsopaka Bala
     vb_results = compute_vimsopaka_bala(vargas)
+    vaiseshikamsa_results = compute_vaiseshikamsa(vargas)
     
     # Step 6: Classification
     classification = {}
@@ -244,6 +246,8 @@ def run_vimsopaka_assessment(vargas: Dict[str, Any], chart: Dict[str, Any], dash
 
     return {
         "vimsopaka_bala": vb_results,
+        "panchavargeeya_bala": calculate_pancha_vargeeya(chart.get("planets", {})),
+        "dwadasavargeeya_bala": calculate_dwadasa_vargeeya(chart.get("planets", {})),
         "classification": classification,
         "interpretations": interpretations,
         "wealth_career": {
@@ -261,5 +265,6 @@ def run_vimsopaka_assessment(vargas: Dict[str, Any], chart: Dict[str, Any], dash
             "status": classify_strength(rel_score)
         },
         "remedies": remedies,
-        "summary": summary
+        "summary": summary,
+        "vaiseshikamsa": vaiseshikamsa_results
     }

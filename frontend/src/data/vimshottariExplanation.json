@@ -8,7 +8,18 @@
       "general": "Good effects, like acquisition of wealth and grains etc., are derived in the Antar Dasha of Sūrya in his own Dasha, if Sūrya is exalted, in his own Bhava, in Labh, in a Kendr, or in a Trikon. Medium effects will be realized, if Sūrya is in other houses.",
       "adverse": "Adverse results will be experienced, if Sūrya is debilitated, or in an inauspicious Bhava, or Rāśi.",
       "deathEffects": "If Sūrya is the Lord of Dhan, or Yuvati, there will be danger of premature death, or death like sufferings.",
-      "remedial": "Mrityunjaya Japa, or the worship of Sūrya (by recitation of appropriate Mantras, charity etc.)."
+      "remedial": "Mrityunjaya Japa, or the worship of Sūrya (by recitation of appropriate Mantras, charity etc.).",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "surya-candr-1",
@@ -18,7 +29,17 @@
       "general": "Functions, like marriage etc., gain of wealth and property, acquisition of a house, of land, cattle and conveyances etc. will be the effects of the Antar Dasha of Candr in the Dasha of Sūrya, if Candr is in a Kendr, or in a Trikon. There will be marriage of the native, birth of children, beneficence of and favours from kings and fulfillment of all ambitions, if Candr is in his restoration Rāśi, or in his own Rāśi.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "surya-candr-2",
@@ -28,7 +49,17 @@
       "general": "",
       "adverse": "Distress to wife and children, failures in ventures, disputes with others, loss of servants, antagonism with the king and destructions of wealth and grains will be the effects, if Candr is waning, or is associated with malefics. Effects, like danger from water, mental agony, imprisonment, danger from diseases, loss of position, journeys to difficult places, disputes with coparceners, bad food, trouble from thieves etc., displeasure of the king, urinary troubles, pains in the body will be experienced, if Candr is in Ari, Randhr, or Vyaya.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "surya-candr-3",
@@ -38,7 +69,17 @@
       "general": "Luxuries, comforts, pleasures, dawn of fortune (Bhagyodaya), increase in the enjoyment from wife and children, acquisition of kingdom, performance of marriage and religious functions, gain of garments, land and conveyance and birth of children and grandchildren will be the auspicious effects, if there are benefics in the 1st, the 9th, or a Kendr from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "surya-candr-4",
@@ -48,7 +89,14 @@
       "general": "",
       "adverse": "Unpalatable food, or course food, exile to outside places etc. will be the effects in the Antar Dasha, if Candr is in the 6th, the 8th, or the 12th from the Lord of the Dasha, or, if Candr is weak.",
       "deathEffects": "There will be premature death, if Candr is the Lord of a Marak Bhava.",
-      "remedial": "To acquire peace and comfort, the remedial measure is giving in charity of a white cow and a female buffalo (Mahishi)."
+      "remedial": "To acquire peace and comfort, the remedial measure is giving in charity of a white cow and a female buffalo (Mahishi).",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "surya-mangal-1",
@@ -58,7 +106,17 @@
       "general": "Auspicious effects, like acquisition of land, gain of wealth and grains, acquisition of a house etc. will be derived in the Antar Dasha of Mangal in the Dasha of Sūrya, if Mangal is in his exaltation Rāśi, in his own Rāśi, in a Kendr, or in a Trikon. All-round gains, attainment of the position of a Commander of the Army, destruction of enemies, peace of mind, family comforts and increase in the number of co-borns will be the effects, if Mangal is yuti with the Lagn's Lord.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "surya-mangal-2",
@@ -68,7 +126,16 @@
       "general": "",
       "adverse": "Brutality, mental ailment, imprisonment, loss of kinsmen, disputes with brothers and failure in ventures will result, if Mangal is in the 8th, or in the 12th from the Lord of the Dasha, if Mangal is associated with malefics, or, if Mangal is without dignity and strength.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "surya-mangal-3",
@@ -88,7 +155,20 @@
       "general": "In the Antar Dasha of Rahu in the Dasha of Sūrya, if Rahu is in a Kendr, or in a Trikon from Lagn, there will be in the first two months loss of wealth, danger from thieves, snakes, infliction of wounds and distress to wife and children. After 2 months inauspicious effects will disappear and enjoyment and comforts, sound health, satisfaction, favours from the king and government etc. will be the favourable effects, if Rahu is yuti with benefics, or, if Rahu is in the Navāńś of a benefic. Recognition from the king, good fortune, name and fame, some distress to wife and children, birth of a son, happiness in the family etc. will be derived, if Rahu is in an Upachaya from Lagn, if Rahu is associated with a Yog Karak, or is placed auspiciously from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ],
+        "conjunctWith": [
+          "Benefic"
+        ]
+      }
     },
     {
       "id": "surya-rahu-2",
@@ -98,7 +178,13 @@
       "general": "Happiness to wife and children (mixed/partial effects contextually).",
       "adverse": "Imprisonment, loss of position, danger from thieves and snakes, inflection of wounds, destruction of cattle, house and agricultural fields, diseases, consumption (Gulma - enlargement of the skin), dysentery etc. will be the results, if Rahu is weak, or is in the 8th, or in the 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "surya-rahu-3",
@@ -118,7 +204,17 @@
       "general": "Marriage of the native, favours by the king, gain of wealth and grains, birth of a son, fulfillment of the ambitions by the beneficence of the sovereign and gain of clothes will be the auspicious effects, derived in the Antar Dasha of Guru in the Dasha of Sūrya, if Guru is in a Kendr, or in a Trikon to Lagn, in his exaltation Rāśi, in his own Rāśi, or in his own Varg.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "surya-guru-2",
@@ -128,7 +224,12 @@
       "general": "Acquisition of a kingdom, comforts of conveyance, like palanquin (motor car in the present times), gain of position etc. will result, if Guru is the Lord of Dharm, or Karm. Better fortune, charities, religious inclinations, worship of deities, devotion to preceptor, fulfillment of ambitions will be the auspicious effects, if Guru is well placed with reference to the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6
+        ]
+      }
     },
     {
       "id": "surya-guru-3",
@@ -138,7 +239,16 @@
       "general": "",
       "adverse": "Distress to wife and children, pains in the body, displeasure of the king, non-achievement of desired goals, loss of wealth, due to sinful deeds, mental worries etc. will result in his Antar Dasha, if Guru is in the 6th, or in the 8th from the Lord of the Dasha, or is associated with malefics.",
       "deathEffects": "",
-      "remedial": "Giving in charity gold, a tawny-coloured cow (Kapila Gaya), worship of Isht Lord (Isht Dev) are the remedial measures to obtain alleviation of the evil effects and to achieve good health and happiness."
+      "remedial": "Giving in charity gold, a tawny-coloured cow (Kapila Gaya), worship of Isht Lord (Isht Dev) are the remedial measures to obtain alleviation of the evil effects and to achieve good health and happiness.",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "surya-sani-1",
@@ -148,7 +258,17 @@
       "general": "Destruction of foes, full enjoyment, some gain of grains, auspicious functions, like marriage etc. at home will be the good effects, derived in the Antar Dasha of Śani in the Dasha of Sūrya, if Śani is in a Kendr, or in a Trikon from Lagn. Well-being, acquisition of more property, recognition by the king, achievement of renown in the country, gain of wealth from many sources will be the effects, if Śani is in his exaltation, in his own, in a friendly Rāśi and, if Śani is yuti with a friendly Grah.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "surya-sani-2",
@@ -158,7 +278,16 @@
       "general": "",
       "adverse": "Rheumatism, pains, fever, dysentery-like disease, imprisonment, loss in ventures, loss of wealth, quarrels, disputes with coparceners, claimants etc. will be the effects in the Antar Dasha, if Śani is in the 8th, or the 12th from the Lord of the Dasha, or is associated with malefics.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "surya-sani-3",
@@ -178,7 +307,17 @@
       "general": "Acquisition of a kingdom, enthusiasm and vivacity, happiness from wife and children, acquisition of conveyance through the beneficence of the sovereign, gain of clothes, ornaments, pilgrimage to holy places, acquisition of a cow etc. will be the good effects in the Antar Dasha of Budh in the Dasha of Sūrya, if Budh is in a Kendr, or in a Trikon from Lagn.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "surya-budh-2",
@@ -188,7 +327,12 @@
       "general": "Budh becomes very beneficial, if he gets associated with the Lord of Dharm. Reverence from and popularity amongst people, performance of pious deeds and religious rites, devotion to the preceptor and deities, increase in wealth and grains and birth of a son, will be the auspicious effects, if Budh is in Dharm, Putr, or Karm.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6
+        ]
+      }
     },
     {
       "id": "surya-budh-3",
@@ -198,7 +342,14 @@
       "general": "Marriage, offering of oblations, charity, performance of religious rites, name and fame, becoming famous by assuming another name, good food, becoming happy, like Indra, by acquiring wealth, robes and ornaments will be the effects, if Budh is in an auspicious Bhava, like a Trikon etc. from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          5,
+          6,
+          9
+        ]
+      }
     },
     {
       "id": "surya-budh-4",
@@ -208,7 +359,14 @@
       "general": "Some good effects in the middle part of the Antar Dasha.",
       "adverse": "Body distress, disturbance of peace of mind, distress to wife and children, will be the evil effects in the Antar Dasha of Budh, if he is in the 6th, the 8th, or the 12th from the Lord of the Dasha (Budh cannot be in the 6th, or the 8th from Sūrya). There will be evil effects at the commencement of the Antar Dasha and the possibility of displeasure of the king and exile to a foreign country at the end of the Dasha.",
       "deathEffects": "If Budh is the Lord of Dhan, or Yuvati, there will be pains in the body and attacks of fever.",
-      "remedial": "For relief from the evil effects and to regain good health and happiness the remedial measures are the recitation of Vishnu Sahasranam and giving in charity grains and an idol, made of silver."
+      "remedial": "For relief from the evil effects and to regain good health and happiness the remedial measures are the recitation of Vishnu Sahasranam and giving in charity grains and an idol, made of silver.",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "surya-ketu-1",
@@ -228,7 +386,13 @@
       "general": "",
       "adverse": "Diseases of teeth, or cheeks, urinary troubles, loss of position, loss of friends and wealth, death of father, foreign journey and troubles from enemies will be the results, if Ketu is in the 8th, or the 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "surya-ketu-3",
@@ -238,7 +402,14 @@
       "general": "Beneficial effects, like happiness from wife and children, satisfaction, increase of friends, gain of clothes etc. and renown will be derived, if Ketu is in Sahaj, Ari, Karm, or Labh.",
       "adverse": "",
       "deathEffects": "If Ketu is Lord of Dhan, or Yuvati (or is in any of those Bhavas), there will be danger of premature death.",
-      "remedial": "The remedial measures for obtaining relief from the evil effects are recitation of Mantras of Goddess Durga (Shat Chandi Path) and giving a goat in charity."
+      "remedial": "The remedial measures for obtaining relief from the evil effects are recitation of Mantras of Goddess Durga (Shat Chandi Path) and giving a goat in charity.",
+      "conditions": {
+        "adHouse": [
+          3,
+          6,
+          11
+        ]
+      }
     },
     {
       "id": "surya-sukr-1",
@@ -248,7 +419,17 @@
       "general": "Marriage and happiness, as desired from wife, gain of property, travels to other places, meeting with Brahmins and the king, acquisition of kingdom, riches, magnanimity and majesty, auspicious functions at the home, availability of sweet preparations, acquisition of pearls and other jewels, clothes, cattle, wealth, grains and conveyances, enthusiasm, good reputation etc. are the auspicious effects of the Antar Dasha of Śukr in the Dasha of Sūrya, if Śukr is placed in a Kendr, or in a Trikon, or, if Śukr is in his exaltation Rāśi, in his own Rāśi, in his own Varg, or in a friendly Rāśi.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "surya-sukr-2",
@@ -258,7 +439,14 @@
       "general": "The effects of the Antar Dasha would be moderate at its commencement, good during the middle portion.",
       "adverse": "Displeasure of the king, mental agony and distress to wife and children will be the effects in the Antar Dasha of Śukr, if he is in the 6th, the 8th, or the 12th from the Lord of the Dasha. Evil effects, like disrepute, loss of position, inimical relations with kinsmen and loss of comforts, will be derived at the end.",
       "deathEffects": "If Śukr is the Lord of Yuvati (and Dhan), there will be pains in the body and the possibility of suffering from diseases. There will be premature death, if Śukr is associated with Ari's, or Randhr's Lord.",
-      "remedial": "The remedial measures for obtaining relief from the evil effects are Mrityunjaya Japa, Rudra Japa and giving in charity a tawny cow, or female buffalo."
+      "remedial": "The remedial measures for obtaining relief from the evil effects are Mrityunjaya Japa, Rudra Japa and giving in charity a tawny cow, or female buffalo.",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "chandra-candr",
@@ -268,7 +456,23 @@
       "general": "Acquisition of horses, elephants and clothes, devotion to deities and preceptor, recitation of religious songs in praise of God, acquisition of a kingdom, extreme happiness and enjoyment and name and fame will be the beneficial results in the Antar Dasha of Candr in her own Dasha, if she is placed in her exaltation Rāśi, her own Rāśi, in a Kendr, or in a Trikon, or is associated with the Lord of Dharm, or Karm.",
       "adverse": "Loss of wealth, loss of position, lethargy, agony, antagonism towards the king and ministers, distress to mother, imprisonment and loss of kinsmen will be the evil effects in her Antar Dasha, if Candr is in her debilitation Rāśi, if Candr is associated with malefics, or, if Candr is in Ari, Randhr, or Vyaya.",
       "deathEffects": "If Candr is the Lord of Dhan, or Yuvati, or is associated with Randhr's, or with Vyaya's Lord, there will be pains in the body and danger of premature death.",
-      "remedial": "Giving in charity of a tawny-coloured cow, or female buffalo."
+      "remedial": "Giving in charity of a tawny-coloured cow, or female buffalo.",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "chandra-mangal-1",
@@ -278,7 +482,17 @@
       "general": "Advancement of fortune, recognition by the government, gain of clothes and ornaments, success in all efforts, increase in agricultural production and prosperity at home and profits in business will be the favourable effects of the Antar Dasha of Mangal in the Dasha of Candr, if Mangal is in a Kendr, or in a Trikon. Great happiness and enjoyment of comforts will be derived, if Mangal is in his exaltation Rāśi, or in his own Rāśi.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "chandra-mangal-2",
@@ -288,7 +502,17 @@
       "general": "",
       "adverse": "Distress to the body, losses at home and in agricultural production, losses in business dealings, antagonism, or adverse relations with servants (employees) and the king, separation from kinsmen and hot temperament will be the evil effects in the Antar Dasha of Mangal, if he is placed in Ari, Randhr, or Vyaya from Lagn, be associated with, or receives a Drishti from malefics in the 6th, the 8th, or the 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ],
+        "drishtiFrom": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "chandra-rahu-1",
@@ -298,7 +522,17 @@
       "general": "There will be some auspicious results at the commencement of the Antar Dasha of Rahu in the Dasha of Candr, if Rahu is placed in a Kendr, or in a Trikon.",
       "adverse": "Later there will be danger from the king, thieves and snakes, distress to cattle, loss of kinsmen and friends, loss of reputation and mental agony.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "chandra-rahu-2",
@@ -308,7 +542,14 @@
       "general": "Success in all ventures, gain of conveyances, garments etc. from the king etc. in the South-West direction will be derived, if Rahu in his Antar Dasha receives a Drishti from benefics, if Rahu is in Sahaj, Ari, Karm, or Labh, or, if Rahu is yuti with a Yog Karak Grah.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          3,
+          6,
+          11
+        ]
+      }
     },
     {
       "id": "chandra-rahu-3",
@@ -318,7 +559,13 @@
       "general": "",
       "adverse": "Loss of position, mental agony, distress to wife and children, danger of diseases, danger from the king, scorpions and snakes etc. will happen, if Rahu is weak and is placed in the 8th, or the 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "chandra-rahu-4",
@@ -328,7 +575,20 @@
       "general": "Pilgrimage to holy places, visits to sacred shrines, beneficence, inclination towards charitable deeds etc. will be the results, if Rahu is in a Kendr, in a Trikon, or in the 3rd, or the 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "There will be body troubles (physical afflictions), if Rahu is in Dhan, or in Yuvati.",
-      "remedial": "Rahu Japa and giving a goat in charity are the remedial measures for obtaining relief from the evil effects in the Antar Dasha of Rahu."
+      "remedial": "Rahu Japa and giving a goat in charity are the remedial measures for obtaining relief from the evil effects in the Antar Dasha of Rahu.",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "chandra-guru-1",
@@ -338,7 +598,17 @@
       "general": "Acquisition of a kingdom, auspicious celebrations at home, gains of clothes and ornaments, recognition from the king beneficence of the Isht Lord (Isht Devata), gains of wealth, land, conveyances, success in all ventures by the beneficence of the king will be the beneficial effects in the Antar Dasha of Guru in the Dasha of Candr, if Guru is placed in a Kendr, or in a Trikon to Lagn, or, if Guru is in his own, or in his exaltation Rāśi.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "chandra-guru-2",
@@ -348,7 +618,19 @@
       "general": "Gains of cattle, grains, clothes and happiness from brothers, acquisition of property, valour, patience, oblations, celebrations, like marriage etc., gain of a kingdom etc. will be the favourable effects, if Guru is in 3rd, or in the 11th from the Lord of the Dasha.",
       "adverse": "Destruction of preceptor (and father etc.) and children, loss of position, mental agony, quarrels, destruction of a house, conveyances and agricultural land will be the evil effects in his Antar Dasha, if Guru is in Ari, Randhr, or Vyaya, if Guru is combust, in his debilitation Rāśi, or be associated with malefics.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          3,
+          6,
+          8,
+          11,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "chandra-guru-3",
@@ -358,7 +640,14 @@
       "general": "There will be good effects at the commencement of the Antar Dasha and distress at its end.",
       "adverse": "Effects, like unpalatable food, journeys to places away from the homeland, will be derived, if Guru is weak and is placed in the 6th, the 8th, or the 12th from Candr.",
       "deathEffects": "There will be premature death, if Guru is Dhan's, or Yuvati's Lord.",
-      "remedial": "recitation of Shiva Sahasranam Japa and giving gold in charity."
+      "remedial": "recitation of Shiva Sahasranam Japa and giving gold in charity.",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "chandra-sani-1",
@@ -368,7 +657,21 @@
       "general": "Effects, like birth of a son, friendship, gain of wealth and property, profits in business with the help of Sudras, increase in agricultural production, gains from son, riches and glory by the beneficence of the king, will be experienced in the Antar Dasha of Śani in the Dasha of Candr, if Śani is in a Kendr, or in a Trikon from Lagn, or, if Śani is in his own Rāśi, in his own Navāńś, in his exaltation Rāśi, if Śani receives a Drishti from, or is associated with benefics, or, if Śani is in Labh with strength.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "conjunctWith": [
+          "Benefic"
+        ]
+      }
     },
     {
       "id": "chandra-sani-2",
@@ -378,7 +681,15 @@
       "general": "",
       "adverse": "Effects, like visits to holy places, bathing in holy rivers etc., the creation of troubles by many people and distress from enemies, will be derived in the Antar Dasha of Śani, if Śani is in Ari, Randhr, Vyaya, or Dhan, or, if Śani is in his debilitation Rāśi.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          2,
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "chandra-sani-3",
@@ -388,7 +699,17 @@
       "general": "Effects, like enjoyments and gains of wealth some times, if Śani is in a Kendr, or in a Trikon from the Lord of that Dasha, or is endowed with strength.",
       "adverse": "while opposition, or quarrels with wife and children at other times, will be realized.",
       "deathEffects": "If Śani is in Dhan, Yuvati, or Randhr, there will be physical distress.",
-      "remedial": "Mrityunjaya Japa, giving in charity a black cow, or female buffalo."
+      "remedial": "Mrityunjaya Japa, giving in charity a black cow, or female buffalo.",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "chandra-budh-1",
@@ -398,7 +719,17 @@
       "general": "Effects, like acquisition of wealth, recognition by the king, gain of clothes etc., discussions on Shastras gain of knowledge from society with learned and holy people, enjoyments, birth of children, satisfaction, profits in business, acquisition of conveyance and ornaments etc. will be experienced in the Antar Dasha of Budh in the Dasha of Candr, if Budh is in a Kendr, or in a Trikon, if Budh is in his own Rāśi, in his own Navāńś, or in his exaltation Rāśi, endowed with strength.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "chandra-budh-2",
@@ -408,7 +739,20 @@
       "general": "Effects, like marriage, oblations (Yagya), charities, performance of religious rites, close relations with the king, social contacts with men of learning, acquisition of pearls, corals, Mani (jewels), conveyances, clothes, ornaments, good health, affections, enjoyments, drinking of Soma Rasa and other tasty syrups etc. will be derived in the Antar Dasha of Budh, if he is in a Kendr, or in a Trikon, or in the 11th, or in the 2nd from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          2,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "chandra-budh-3",
@@ -418,7 +762,14 @@
       "general": "",
       "adverse": "Pains in the body, loss in agricultural ventures, imprisonment, distress to wife and children will be the inauspicious effects, if Budh be in the 6th, the 8th, or the 12th from the Lord of the Dasha, or be in his debilitation Rāśi.",
       "deathEffects": "If Budh is the Lord of Dhan, or Yuvati, there will be fear of fever.",
-      "remedial": "recitation of Vishnu Sahasranam and giving a goat in charity."
+      "remedial": "recitation of Vishnu Sahasranam and giving a goat in charity.",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "chandra-ketu-1",
@@ -428,7 +779,19 @@
       "general": "Effects, like gain of wealth, enjoyment, happiness to wife and children, religious inclination etc., will arise in the Antar Dasha of Ketu in the Dasha of Candr, if Ketu is in a Kendr, in a Trikon, or Sahaj and is endowed with strength. Later all will be well.",
       "adverse": "There will be some loss of wealth at the commencement of the Antar Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "chandra-ketu-2",
@@ -438,7 +801,16 @@
       "general": "Gain of wealth, cattle etc. will be the effects, if Ketu is in a Kendr, in the 9th, the 5th, or the 11th from the Lord of the Dasha and is equipped with strength.",
       "adverse": "There will be loss of wealth at the end of the Antar Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          7,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "chandra-ketu-3",
@@ -448,7 +820,16 @@
       "general": "",
       "adverse": "There will be obstacles in ventures, due to interference by enemies and quarrels, if Ketu be in the 8th, or the 12th from the Lord of the Dasha, or receives a Drishti from, or is associated with malefics.",
       "deathEffects": "If Ketu is in Dhan, or in Yuvati, there will be danger of affliction of the body with diseases.",
-      "remedial": "Mrityunjaya Japa will give relief in all the evil effects and will ensure gain of wealth and property with the beneficence of Lord Shiva."
+      "remedial": "Mrityunjaya Japa will give relief in all the evil effects and will ensure gain of wealth and property with the beneficence of Lord Shiva.",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "chandra-sukr-1",
@@ -458,7 +839,18 @@
       "general": "Effects, like acquisition of a kingdom, gaining of clothes, ornaments, cattle, conveyances etc., happiness to wife and children, construction of a new house, availability of sweet preparations every day, use of perfumes, affairs with beautiful women, sound health etc. will be experienced in the Antar Dasha of Śukr in the Dasha of Candr, if Śukr is in a Kendr, in a Trikon, in Labh, Bandhu, or Dharm, or in his restoration Rāśi, or in his own Rāśi.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "chandra-sukr-2",
@@ -478,7 +870,12 @@
       "general": "",
       "adverse": "There will be loss of landed property, children, wife and cattle and opposition from government, if Śukr is in his debilitation Rāśi, combust, or receives a Drishti from, or is associated with malefics.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "chandra-sukr-4",
@@ -488,7 +885,12 @@
       "general": "acquisition of an underground hidden treasure, gain of land, enjoyment, birth of a son etc. Advancement of good fortune, fulfillment of ambitions with the beneficence of the king, devotion to deities and Brahmins, gain of jewels, like pearls etc. will result, if Śukr is yuti with Dharm's, or Labh's Lord.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          11
+        ]
+      }
     },
     {
       "id": "chandra-sukr-5",
@@ -498,7 +900,17 @@
       "general": "Acquisition of more house property and agricultural land and gain of wealth and enjoyment will be the good effects, if Śukr is in a Kendr, or in a Trikon from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "chandra-sukr-6",
@@ -508,7 +920,14 @@
       "general": "",
       "adverse": "Deportation to foreign lands, sorrows, death and danger from thieves and snakes will be the results, if Śukr is in the 6th, the 8th, or the 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "chandra-sukr-7",
@@ -528,7 +947,18 @@
       "general": "Recovery of a lost kingdom and wealth, happiness in the family, acquisition of villages and land with the kind assistance of one's friends and the king, birth of a son, beneficence of Goddess Lakshmi, will be the beneficial results in the Antar Dasha of Sūrya in the Dasha of Candr, if Sūrya is in his exaltation Rāśi, in his own Rāśi, in a Kendr, or in Putr, or in Dharm, or in Labh, or in Dhan, or in Sahaj.",
       "adverse": "At the end of the Antar Dasha there is the likelihood of attacks of fever and lethargy.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          2,
+          3,
+          4,
+          7,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "chandra-surya-2",
@@ -538,7 +968,13 @@
       "general": "",
       "adverse": "Danger from the government, thieves and snakes, affliction with fever and troubles in foreign journey are the likely results, if Sūrya is in the 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "If Sūrya is the Lord of Dhan, or Yuvati, there will be sufferings from fever in his Antar Dasha.",
-      "remedial": "Worship of Lord Shiva is the remedial measure to obtain relief from the above evil effects."
+      "remedial": "Worship of Lord Shiva is the remedial measure to obtain relief from the above evil effects.",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "mangal-mangal-1",
@@ -548,7 +984,19 @@
       "general": "Effects, like gains of wealth by the beneficence of the king, beneficence of Goddess Lakshmi, recovery of a lost kingdom and of wealth, birth of a son, will arise in the Antar Dasha of Mangal in his own Dasha, if he is in a Kendr, in Putr, in Dharm, in Labh, in Sahaj, or in Dhan, or be associated with the Lord of Lagn.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          2,
+          3,
+          4,
+          6,
+          7,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "mangal-mangal-2",
@@ -568,7 +1016,16 @@
       "general": "",
       "adverse": "Urinary troubles, wounds, danger from snakes and the king will be the results, if Mangal is in Randhr, or Vyaya, or is associated with, or receives a Drishti from malefics.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          8,
+          12
+        ],
+        "drishtiFrom": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "mangal-mangal-4",
@@ -578,7 +1035,12 @@
       "general": "",
       "adverse": "There will be mental agony and body pains, if Mangal is the Lord of Dhan, or Yuvati.",
       "deathEffects": "",
-      "remedial": "Lord Shiva will give relief by restoring health and providing gains of wealth and happiness, if the person concerned performs Rudr Japa and gives a red-coloured bull in charity."
+      "remedial": "Lord Shiva will give relief by restoring health and providing gains of wealth and happiness, if the person concerned performs Rudr Japa and gives a red-coloured bull in charity.",
+      "conditions": {
+        "adHouse": [
+          2
+        ]
+      }
     },
     {
       "id": "mangal-rahu-1",
@@ -588,7 +1050,21 @@
       "general": "Effects, like recognition from government, gain of house, land etc., happiness from son, extraordinary profits in business, bathing in holy rivers, like Ganges and foreign journeys, will be the auspicious effects in the Antar Dasha of Rahu in the Dasha of Mangal, if Rahu is in his Multrikon, in his exaltation Rāśi, in a Kendr, in Labh, Putr, or Dharm and is associated with benefics.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "conjunctWith": [
+          "Benefic"
+        ]
+      }
     },
     {
       "id": "mangal-rahu-2",
@@ -598,7 +1074,17 @@
       "general": "",
       "adverse": "Danger from snakes, wounds, destruction of cattle, danger from animals, diseases, due to imbalance of bile and wind, imprisonment etc. will be the results, if Rahu is in Randhr, or Vyaya, or receives a Drishti from, or is associated with malefics. There will be loss of wealth, if Rahu is in Dhan.",
       "deathEffects": "great danger of premature death, if he is in Yuvati.",
-      "remedial": "Naga Puja, offering food to Brahmins and Mrityunjaya Japa. They will help in the prolongation of longevity."
+      "remedial": "Naga Puja, offering food to Brahmins and Mrityunjaya Japa. They will help in the prolongation of longevity.",
+      "conditions": {
+        "adHouse": [
+          2,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "mangal-guru-1",
@@ -608,7 +1094,17 @@
       "general": "Effects, like good reputation and renown, honours by government, increase in wealth and grains, happiness at home, gain of property, happiness from wife and children etc. will be realized in the Antar Dasha of Guru in the Dasha of Mangal, if Guru is in Dharm, or Putr, in a Kendr, or in Labh, or in Dhan, or, if Guru is in his exalted, or own Navāńś.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          2,
+          4,
+          7,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "mangal-guru-2",
@@ -618,7 +1114,18 @@
       "general": "Acquisition of a house, land, well-being, gain of property, sound health, good reputation, gains of cattle, success in business, happiness to wife and children, reverence from government, gain of wealth etc. will be beneficial effects, if Guru is in a Kendr, in a Trikon, or in the 11th from the Lord of the Dasha, or, if Guru is associated with the Lord of Dharm, Karm, or Bandhu, or Lagn, or, if Guru is in a benefic Navāńś etc.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "mangal-guru-3",
@@ -628,7 +1135,17 @@
       "general": "",
       "adverse": "Danger from thieves, snakes, wrath of the king, bilious diseases, oppression by goblins (Prot), loss of servants and co-borns, will be evil effects, if Guru is in Ari, Randhr, or in Vyaya, or, if Guru is in his debilitation Rāśi, or, if Guru is associated with, or receives a Drishti from malefics, or, if Guru is otherwise weak.",
       "deathEffects": "There will be suffering from fever, or danger of premature death, if Guru is the Lord of Dhan.",
-      "remedial": "recitation of Shiva Sahasranam."
+      "remedial": "recitation of Shiva Sahasranam.",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ],
+        "drishtiFrom": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "mangal-sani-1",
@@ -638,7 +1155,20 @@
       "general": "Effects, like recognition from the king, increase in reputation, gain of wealth and grains, happiness from children and grandchildren, increase in the number of cows etc. will be experienced in the Antar Dasha of Śani in the Dasha of Mangal, if Śani is in a Kendr, in a Trikon, in his Multrikon, in his exalted, or his own Navāńś, or, if Śani is associated with the Lord of Lagn, or, if Śani is associated with benefics. Results will generally fructify on Saturdays in the month of Śani.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ],
+        "conjunctWith": [
+          "Benefic"
+        ]
+      }
     },
     {
       "id": "mangal-sani-2",
@@ -648,7 +1178,14 @@
       "general": "",
       "adverse": "Danger from Yavana kings (foreign dignitaries), loss of wealth, imprisonment, possibility of affliction with diseases, loss in agricultural production will result, if Śani is in his debilitation Rāśi, or in an enemy Rāśi, or, if Śani is in Randhr, or in Vyaya.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "mangal-sani-3",
@@ -668,7 +1205,16 @@
       "general": "",
       "adverse": "There will be journeys to foreign lands, loss of reputation, violent actions, loss from sale of agricultural lands, loss of position, agony, defeat in battle, urinary troubles etc., if Śani is in a Kendr, in the 11th, or in the 5th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          7,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "mangal-sani-5",
@@ -678,7 +1224,16 @@
       "general": "",
       "adverse": "Effects, like death, danger from the king and thieves, rheumatism, pains, danger from the enemy and members of the family, will be experienced, if Śani is in the 8th, or the 12th from the Lord of the Dasha and is associated with malefics.",
       "deathEffects": "",
-      "remedial": "There will be relief from the evil effects by the beneficence of Lord Shiva, if Mrityunjaya is performed in the prescribed manner."
+      "remedial": "There will be relief from the evil effects by the beneficence of Lord Shiva, if Mrityunjaya is performed in the prescribed manner.",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "mangal-budh-1",
@@ -688,7 +1243,18 @@
       "general": "Effects, like association with pious and holy persons, performance of Ajaya Japa, charities, observance of religious rites, gain of reputation, inclination towards diplomacy, availability of sweetish preparations, acquisition of conveyances, clothes and cattle etc., conferment of authority in the king's retinue, success in agricultural projects etc., will be experienced in the Antar Dasha of Budh in the Dasha of Mangal, if Budh is in a Kendr, or in a Trikon from Lagn.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "mangal-budh-2",
@@ -698,7 +1264,14 @@
       "general": "",
       "adverse": "Diseases of heart, imprisonment, loss of kinsmen, distress to wife and children, destruction of wealth and cattle etc. will result, if Budh is in his debilitation Rāśi, if Budh is combust, or, if Budh is in Ari, Randhr, or Vyaya.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "mangal-budh-3",
@@ -718,7 +1291,17 @@
       "general": "Fulfillment of all ambitions, gain of wealth and grains, recognition by the king, acquisition of a kingdom, gain of clothes and ornaments, attachment to many kind of musical instruments, attainment of the position of a Commander of an Army, discussions on Shastras and Puranas, gain of riches to wife and children and beneficence of Goddess Lakshmi will be the very auspicious results, if Budh is in a Kendr, or Trikon from the Lord of the Dasha, or, if Budh is in his wealth/exaltation Rāśi.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "mangal-budh-5",
@@ -728,7 +1311,17 @@
       "general": "",
       "adverse": "Effects, like defamation, sinful thinking, harsh speech, danger from thieves, fire and the king, quarrels without reason, fear of attacks by thieves and dacoits (armed robber bands) during travels, will be derived, if Budh is in the 6th, the 8th, or the 12th from Mangal, or is associated with malefics.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "mangal-budh-6",
@@ -748,7 +1341,19 @@
       "general": "Beneficence of the king, gain of wealth, little gains of land at the commencement of the Dasha and substantial later, birth of a son, conferment of authority by government, gain of cattle etc. will be the results in the Antar Dasha of Ketu in the Dasha of Mangal, if Ketu is in a Kendr, in a Trikon, in Sahaj, or Labh, or, if Ketu is associated with, or receives a Drishti from benefics.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          3,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "mangal-ketu-2",
@@ -758,7 +1363,17 @@
       "general": "Birth of a son, increase in reputation, beneficence of Goddess Lakshmi, gains of wealth from employees, attainment of the position of a Commander of an Army, friendship with the king, performance of oblations, gains of clothes and ornaments etc. will be the beneficial effects, if Ketu is a Yog Karak and is endowed with strength. (Ketu assumes the role of a Yog Karak, if he is yuti with a Yog Karak Grah (Lord of a Kendr and a Trikon)).",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "mangal-ketu-3",
@@ -768,7 +1383,14 @@
       "general": "",
       "adverse": "Effects, like quarrels, tooth trouble, distress from thieves and tigers, fever, dysentery, leprosy and distress to wife and children etc. will be experienced, if Ketu is in the 6th, the 8th, or the 12th from the Lord of the Dasha.",
       "deathEffects": "If Ketu is in Dhan, or in Yuvati, there will be diseases, disgrace, agony and loss of wealth.",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "mangal-sukr-1",
@@ -778,7 +1400,15 @@
       "general": "Effects, like acquisition of a kingdom, great enjoyment and comfort of luxuries, gain of elephants, horses, clothes etc., will be derived in the Antar Dasha of Śukr in the Dasha of Mangal, if Śukr is in a Kendr to Lagn, if Śukr is in his exaltation, or in his own Rāśi, or, if Śukr is Lagn's, Putr's, or Dharm's Lord. If Śukr is related to Lagn's Lord, there will be happiness to wife and children, opulence and glory and increased good fortune.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          7,
+          10
+        ]
+      }
     },
     {
       "id": "mangal-sukr-2",
@@ -788,7 +1418,14 @@
       "general": "Gain of property, celebrations on the birth of a son, gain of wealth from the employer, acquisition of a house, land, villages etc. by the beneficence of the sovereign, will be the results, if Śukr is in the 5th, the 9th, the 11th, or the 2nd from the Lord of the Dasha. In the last part of the Dasha there will be functions of songs and dances and bathing in holy water. If Śukr is connected with, or related to the Lord of Karm, there will be construction of wells, reservoirs etc. and performance of religious, charitable and pious deeds.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          2,
+          6,
+          11
+        ]
+      }
     },
     {
       "id": "mangal-sukr-3",
@@ -798,7 +1435,17 @@
       "general": "",
       "adverse": "There will be sorrows, physical distress, loss of wealth, danger from thieves and the king, dissensions in the family, distress to wife and children and destruction of cattle, if Śukr be in the 6th, the 8th, or the 12th from the Lord of the Dasha, or be associated with malefics.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "mangal-sukr-4",
@@ -818,7 +1465,18 @@
       "general": "Effects, like acquisition of conveyances, gain of reputation, birth of a son, growth of wealth, amicable atmosphere in the family, sound health, potency, recognition by the the king, extraordinary profits in business and audience with the king etc. will be experienced in the Antar Dasha of Sūrya in the Dasha of Mangal, if Sūrya is in his exaltation, in his own Rāśi, or, if Sūrya is in a Kendr, in a Trikon, or in Labh along with Karm's Lord and with Labh's Lord.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "mangal-surya-2",
@@ -828,7 +1486,17 @@
       "general": "",
       "adverse": "Distress to the body, agony, failure in ventures, possibilities of suffering from troubles in the forehead, fever, dysentery etc. will be the effects, if Sūrya is in the 6th, the 8th, or the 12th from the Lord of the Dasha, or, if Sūrya is associated with malefics.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "mangal-surya-3",
@@ -848,7 +1516,15 @@
       "general": "Acquisition of more kingdom, gain of perfumes, clothes, construction of reservoirs, shelters for cows etc., celebrations of auspicious functions, like marriage etc., happiness to wife and children, good relations with parents, acquisition of property by the beneficence of the sovereign, success in the desired projects will be the effects in the Antar Dasha of Candr in the Dasha of Mangal, if Candr is in her exaltation Rāśi, or in her own Rāśi, or in a Kendr, or in Dharm, or in Bandhu, or in Karm, or in Lagn along with the Lords of those Bhavas. The good effects will be realized in full, if Candr is waxing. Waning Candr will reduce the impact of the effects to some extent.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          7,
+          10
+        ]
+      }
     },
     {
       "id": "mangal-candr-2",
@@ -858,7 +1534,14 @@
       "general": "",
       "adverse": "The effects, like death, distress to wife and children, loss of lands, wealth and cattle and danger of a war etc. will be experienced, if Candr is in his debilitation Rāśi, or, if Candr is in his enemy Rāśi, or, if Candr is in Ari, in Randhr, or in Vyaya from Lagn, or from the Lord of the Dasha.",
       "deathEffects": "There will be the possibility of premature death, distress to the body and mental agony, if Candr is Dhan's, or Yuvati's Lord.",
-      "remedial": "recitation of Mantras of the Goddess Durga and the Goddess Lakshmi."
+      "remedial": "recitation of Mantras of the Goddess Durga and the Goddess Lakshmi.",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "rahu-rahu-1",
@@ -868,7 +1551,15 @@
       "general": "Effects, like acquisition of a kingdom, enthusiasm, cordial relations with the king, happiness from wife and children and increase in property, will be derived in the Antar Dasha of Rahu in the Dasha of Rahu, if Rahu is in Kark, Vrischik, Kanya, or Dhanu and is in Sahaj, Ari, Karm, or Labh, or is yuti with a Yog Karak Grah in his exaltation Rāśi.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          2,
+          3,
+          6,
+          11
+        ]
+      }
     },
     {
       "id": "rahu-rahu-2",
@@ -878,7 +1569,16 @@
       "general": "",
       "adverse": "There will be danger from thieves, distress from wounds, antagonism with government officials, destruction of kinsmen, distress to wife and children, if Rahu is in Randhr, or Vyaya, or be associated with malefics.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "rahu-rahu-3",
@@ -898,7 +1598,17 @@
       "general": "Effects, like gain of position, patience, destruction of foes, enjoyment, cordial relations with the king, regular increase in wealth and property, like the growth of Candr of the bright half of the month (Shukla Paksh), gain of conveyance and cows, audience with the king by performing journey to the West, or South-East, success in the desired ventures, return to one's homeland, doing good for Brahmins, visit to holy places, gain of a village, devotion to deities and Brahmins, happiness from wife, children and grand children, availability of sweetish preparations daily etc. will be derived in the Antar Dasha of Guru in the Dasha of Rahu, if Guru is in his exaltation, in his own Rāśi, in his own Navāńś, or in his exalted Navāńś, or, if Guru is in a Kendr, or in a Trikon with reference to Lagn.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "rahu-guru-2",
@@ -908,7 +1618,17 @@
       "general": "",
       "adverse": "Loss of wealth, obstacles in work, defamation, distress to wife and children, heart disease, entrustment of governmental authority etc. will result, if Guru is in his debilitation Rāśi, is combust, is in Ari, Randhr, or Vyaya, is in an enemy Rāśi, or is associated with malefics.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "rahu-guru-3",
@@ -918,7 +1638,21 @@
       "general": "There will be gains of land, good food, gains of cattle etc., inclinations towards charitable and religious work etc., if Guru is in a Kendr, in a Trikon, the 11th, the 2nd, or the 3rd from the Lord of the Dasha and is endowed with strength.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "rahu-guru-4",
@@ -928,7 +1662,17 @@
       "general": "",
       "adverse": "Loss of wealth and distress to body will result, if Guru is in the 6th, the 8th, or the 12th from the Lord of the Dasha, or, if Guru is associated with malefics.",
       "deathEffects": "There will be danger of premature death, if Guru is Dhan's, or Yuvati's Lord.",
-      "remedial": "The person will get relief from the above evil effects and enjoy good health by the beneficence of the Lord Shiva, if he worships his idol, made of gold."
+      "remedial": "The person will get relief from the above evil effects and enjoy good health by the beneficence of the Lord Shiva, if he worships his idol, made of gold.",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "rahu-sani-1",
@@ -938,7 +1682,19 @@
       "general": "Effects, like pleasure of the king for devotion in his service, auspicious functions, like celebration of marriage etc. at home, construction of a garden, reservoir etc., gain of wealth and cattle from well-to-do persons, belonging to the Sudra class, return to homeland, will be derived in the Antar Dasha of Śani in the Dasha of Rahu, if Śani is in a Kendr, in a Trikon, in his exaltation, in his own Rāśi, in his Multrikon, in Sahaj, or in Labh.",
       "adverse": "loss of wealth caused by the king during journey to the West, reduction in income, due to lethargy.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          3,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "rahu-sani-2",
@@ -948,7 +1704,13 @@
       "general": "sudden gain of ornaments.",
       "adverse": "Danger from menials, the king and enemies, distress to wife and children, distress to kinsmen, disputes with the coparceners, disputes in dealings with others will result, if Śani is in his debilitation Rāśi, in his enemy's Rāśi, or in Randhr, or Vyaya.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "rahu-sani-3",
@@ -958,7 +1720,14 @@
       "general": "",
       "adverse": "There will be heart disease, defamation, quarrels, danger from enemies, foreign journeys, affliction with Gulma, unpalatable food and sorrows etc., if Śani is in the 6th, the 8th, or the 12th from the Lord of the Dasha.",
       "deathEffects": "Premature death is likely, if Śani is Dhan's, or Yuvati's Lord.",
-      "remedial": "Remedial measure to obtain relief from the above evil effects and to regain good health is giving a black cow, or a she-buffalo in charity."
+      "remedial": "Remedial measure to obtain relief from the above evil effects and to regain good health is giving a black cow, or a she-buffalo in charity.",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "rahu-budh-1",
@@ -968,7 +1737,15 @@
       "general": "Auspicious effects, like Raj Yog, well being in the family, profits and gain of wealth in business, comforts of conveyances, marriage and other auspicious functions, increase in the number of cattle, gain of perfumes, comforts of bed, women etc., will be derived in the Antar Dasha of Budh in the Dasha of Rahu, if Budh is in his exaltation Rāśi, in a Kendr, or in Putr and, if Budh is endowed with strength. Good results, like Raj Yog, beneficence of the king and gain of wealth and reputation, will be realized particularly on Wednesday in the month of Budh.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          7,
+          10
+        ]
+      }
     },
     {
       "id": "rahu-budh-2",
@@ -978,7 +1755,18 @@
       "general": "Sound health, Isht Siddhi, attending discourse on Puranas and ancient history, marriage, offering of oblations, charities, religious inclination and sympathetic attitude towards others will result, if Budh is in a Kendr, in the 11th, 3rd, 9th, or 10th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          3,
+          4,
+          6,
+          7,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "rahu-budh-3",
@@ -988,7 +1776,14 @@
       "general": "",
       "adverse": "There will be opprobrium (Ninda) of deities and Brahmins by the native, loss of fortune, speaking lies, unwise actions, fear from snakes, thieves and the government, quarrels, distress to wife and children etc., if Budh is in Ari, Randhr, or Vyaya, or, if Budh receives a Drishti from Śani.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "rahu-budh-4",
@@ -1018,7 +1813,17 @@
       "general": "There will be Isht Siddhi, if Ketu is related to the Lord of Lagn. If he is associated with the Lord of Lagn, there will definitely be gain of wealth. There will also definitely be increase in the number of cattle, if Ketu is in a Kendr, or in a Trikon.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "rahu-ketu-3",
@@ -1028,7 +1833,13 @@
       "general": "",
       "adverse": "Effects, like danger from thieves and snakes, distress from wounds, separation from parents, antagonistic relations with kinsmen, mental agony etc. will be derived, if Ketu is without strength in Randhr, or Vyaya.",
       "deathEffects": "If Ketu is Dhan's, or Yuvati's Lord, there will be distress to the body.",
-      "remedial": "giving a goat in charity."
+      "remedial": "giving a goat in charity.",
+      "conditions": {
+        "adHouse": [
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "rahu-sukr-1",
@@ -1038,7 +1849,18 @@
       "general": "Effects, like gains of wealth through Brahmins, increase in the number of cattle, celebrations for the birth of a son, well-being, recognition from government, acquisition of a kingdom, attainment of a high position in government, great enjoyment and comforts etc. will be experienced in the Antar Dasha of Śukr in the Dasha of Rahu, if Śukr is with strength in a Kendr, in a Trikon, or in Labh.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "rahu-sukr-2",
@@ -1048,7 +1870,12 @@
       "general": "Construction of a new house, availability of sweet preparations, happiness from wife and children, association with friends, giving of grains etc. in charity, beneficence of the king, gain of conveyances and clothes, extraordinary profits in business, celebration of Upasayan ceremony of wearing the sacred thread (Janou) etc. will be the auspicious results, if Śukr be in his exaltation, in his own Rāśi, in is exalted, or in his own Navāńś.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6
+        ]
+      }
     },
     {
       "id": "rahu-sukr-3",
@@ -1058,7 +1885,14 @@
       "general": "",
       "adverse": "There will be diseases, quarrels, separation from one's son, or father, distress to kinsmen, disputes with coparceners, unhappiness to wife and children, pain in the stomach etc., if Śukr is in Ari, Randhr, or Vyaya, in his debilitation, or in an enemy's Rāśi, or, if Śukr is associated with Śani, Mangal, or Rahu.",
       "deathEffects": "danger of death to oneself, or to one's employer.",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "rahu-sukr-4",
@@ -1068,7 +1902,18 @@
       "general": "Enjoyments from perfumes, bed, music etc., gain of a desired object, fulfillment of desires will be the results, if Śukr is in a Kendr, in a Trikon, in the 11th, or in the 10th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "rahu-sukr-5",
@@ -1078,7 +1923,17 @@
       "general": "",
       "adverse": "wrath of Brahmins, snakes and the king, possibility of affliction with diseases, like stoppage of urine, diabetes, pollution of blood, anaemia, availability of only coarse food, nervous disorder, nervous breakdown, imprisonment, loss of wealth, as a result of penalties, or fines, imposed by government, will be derived, if Śukr is associated with malefics in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "There will be distress to wife and children, danger of premature death to oneself, if Śukr is Dhan's, or Yuvati's Lord.",
-      "remedial": "Worship of Goddess Durga and Goddess Lakshmi."
+      "remedial": "Worship of Goddess Durga and Goddess Lakshmi.",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "rahu-surya-1",
@@ -1088,7 +1943,19 @@
       "general": "Effects, like cordial relations with the king, increase in wealth and grains, some popularity/respect, some possibility of becoming head of a village etc., will be experienced in the Antar Dasha of Sūrya in the Dasha of Rahu, if Sūrya is in his exaltation, in his own Rāśi, in Labh, in a Kendr, or in a Trikon, or in his exalted, or own Navāńś.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "rahu-surya-2",
@@ -1098,7 +1965,12 @@
       "general": "There will be good reputation and encouragement and assistance by government, journeys to foreign countries, acquisition of the sovereignty of the country, gains of elephants, horses, clothes, ornaments, fulfillment of ambitions, happiness to children etc., if Sūrya is associated with, or receives a Drishti from Lagn's, Dhan's, or Karm's Lord.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          2
+        ]
+      }
     },
     {
       "id": "rahu-surya-3",
@@ -1108,7 +1980,14 @@
       "general": "",
       "adverse": "Fevers, dysentery, other diseases, quarrels, antagonism with the king, travels, danger from foes, thieves, fire etc. will be the results, if Sūrya is in his debilitation Rāśi, or, if Sūrya is in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "rahu-surya-4",
@@ -1118,7 +1997,19 @@
       "general": "Well-being in every way and recognition from kings in foreign countries will be the results, if Sūrya is in a Kendr, in a Trikon, in the 3rd, or in the 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          3,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "rahu-surya-5",
@@ -1138,7 +2029,18 @@
       "general": "Effects, like acquisition of a kingdom, respect from the king, gains of wealth, sound health, gains of garments and ornaments, happiness from children, comforts of conveyances, increase in house and landed property etc., will be derived in the Antar Dasha of Candr in the Dasha of Rahu, if Candr is in his exaltation, in his own Rāśi, in a Kendr, Trikon, or in Labh, or, if Candr is in a friendly Rāśi, receiving a Drishti from benefics.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "rahu-candr-2",
@@ -1148,7 +2050,16 @@
       "general": "Beneficence of the Goddess Lakshmi, all-round success, increase in wealth and grains, good reputation and worship of deities will be the results, if Candr is in the 5th, 9th, in a Kendr, or in the 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          7,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "rahu-candr-3",
@@ -1158,7 +2069,14 @@
       "general": "",
       "adverse": "There will be the creation of disturbances at home and in the agricultural activities by evil spirits, leopards and other wild animals, danger from thieves during journeys and stomach disorders, if Candr is bereft of strength in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "There will the possibility of premature death, if Candr is Dhan's, or Vyaya's Lord.",
-      "remedial": "give in charity a white cow, or a female buffalo."
+      "remedial": "give in charity a white cow, or a female buffalo.",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "rahu-mangal-1",
@@ -1168,7 +2086,16 @@
       "general": "Effects, like the recovery of a lost kingdom and recovery of lost wealth, property at home and increase in agricultural production, gain of wealth, blessings by the household deity (Isht Dev), happiness from children, enjoyment of good food etc., will be derived in the Antar Dasha of Mangal in the Dasha of Rahu, if Mangal is in Labh, Putr, or Dharm, or, if Mangal is in a Kendr, if Mangal receives a Drishti from benefics, or, if Mangal is in his exaltation, or in his own Rāśi.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          7,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "rahu-mangal-2",
@@ -1178,7 +2105,17 @@
       "general": "There will be acquisition of red-coloured garments, journeys, audience with the king, well-being of children and employer, attainment of the position of a Commander of the Army, enthusiasm and gain of wealth through kinsmen, if Mangal is in a Kendr, in the 5th, 9th, 3rd, or in the 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          3,
+          4,
+          7,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "rahu-mangal-3",
@@ -1188,7 +2125,17 @@
       "general": "",
       "adverse": "Distress to wife, children and co-borns, loss of position, antagonistic relations with children, wife and other close relations, danger from thieves, wounds and pain in the body etc. will result, if Mangal is in the 6th, 8th, or 12th from the Lord of the Dasha, receiving a Drishti from malefics.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ],
+        "drishtiFrom": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "rahu-mangal-4",
@@ -1208,7 +2155,17 @@
       "general": "Effects, like sovereignty over many kings, very well endowed with riches, revered by the king, gains of cattle, clothes, ornaments, conveyances, construction of a new house and a decent mansion, opulence and glory, dawn of fortune, success in ventures, meetings with Brahmins and the king, extraordinary profits from the employer and happiness to wife and children, will be experienced in the Antar Dasha of Guru in his own Dasha, if Guru is in his exaltation Rāśi, in his own Rāśi, in a Kendr, or Trikon.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "guru-guru-2",
@@ -1218,7 +2175,14 @@
       "general": "",
       "adverse": "Association with the menials, great distress, slander by coparceners, wrath of the employer, separation from wife and children and loss of wealth and grains will be the results, if Guru is in his debilitation Rāśi, in his debilitated Navāńś, or in Ari, Randhr, or Vyaya.",
       "deathEffects": "danger of premature death",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "guru-guru-3",
@@ -1238,7 +2202,17 @@
       "general": "Effects, like acquisition of a kingdom, gain of clothes, ornaments, wealth, grains, conveyances, cattle and position, happiness from son and friends etc., gains specially of a blue-coloured horse, journey to the West, audience with the king and receipt of wealth from him, will be derived in the Antar Dasha of Śani in the Dasha of Guru, if Śani is in his exaltation, in his own Rāśi, in a Kendr, or Trikon endowed with strength.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "guru-sani-2",
@@ -1248,7 +2222,14 @@
       "general": "",
       "adverse": "Loss of wealth, affliction with fever, mental agony, infliction of wounds to wife and children, inauspicious events at home, loss of cattle and employment, antagonism with kinsmen etc. will be results, if Śani is in Ari, Randhr, or Vyaya, if Śani is combust, or, if Śani is in an enemy's Rāśi.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "guru-sani-3",
@@ -1258,7 +2239,19 @@
       "general": "There will be gain of land, house, son and cattle, acquisition of riches and property through the enemy etc., if Śani is in Kendr, Trikon, the 11th, or in the 2nd from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          2,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "guru-sani-4",
@@ -1268,7 +2261,17 @@
       "general": "",
       "adverse": "Effects, like loss of wealth, antagonistic relations with kinsmen, obstacles in industrial ventures, pains in the body, danger from the members of the family etc. will be realized, if Śani is in the 6th, 8th, or 12th from the Lord of the Dasha, or, if Śani is associated with a malefic.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "guru-sani-5",
@@ -1288,7 +2291,17 @@
       "general": "Effects, like gains of wealth, bodily felicity, acquisition of a kingdom, gain of conveyances, clothes and cattle etc., will be derived in the Antar Dasha of Budh in the Dasha of Guru, if Budh is in his exaltation, in his own Rāśi, or in Kendr, in Trikon, or, if Budh is associated with the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "guru-budh-2",
@@ -1298,7 +2311,12 @@
       "general": "",
       "adverse": "There will be increase in the number of enemies, loss of enjoyment and comforts, loss in business, affliction with fever and dysentery, if Budh receives a Drishti from Mangal.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "drishtiFrom": [
+          "Mars"
+        ]
+      }
     },
     {
       "id": "guru-budh-3",
@@ -1308,7 +2326,15 @@
       "general": "Gains of wealth in his own country, happiness from parents and acquisition of conveyances by the beneficence of the king will result, if Budh is in a Kendr, in the 5th, or 9th from the Lord of the Dasha, or, if Budh is in his exaltation Rāśi.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          7,
+          10
+        ]
+      }
     },
     {
       "id": "guru-budh-4",
@@ -1318,7 +2344,20 @@
       "general": "",
       "adverse": "There will be loss of wealth, journeys to foreign countries, danger from thieves while traveling, wounds, burning sensations, eye troubles, wanderings in foreign lands, if Budh is in the 6th, 8th, or 12th from the Lord of the Dasha, or, if Budh is associated with a malefic without receiving a Drishti from a benefic.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ],
+        "drishtiFrom": [
+          "Benefic"
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "guru-budh-5",
@@ -1328,7 +2367,17 @@
       "general": "",
       "adverse": "Distress without reason, anger, loss of cattle, loss in business etc. will be the results, if Budh be associated with a malefic, or malefics in Ari, in Randhr, or in Vyaya.",
       "deathEffects": "fear of premature death",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "guru-budh-6",
@@ -1338,7 +2387,15 @@
       "general": "There will be enjoyment, gains of wealth, conveyances and clothes at the commencement of the Antar Dasha, even if Budh is associated with a malefic, but receives a Drishti from a benefic.",
       "adverse": "At the end of the Dasha, however, there will be loss of wealth.",
       "deathEffects": "bodily distress",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "drishtiFrom": [
+          "Benefic"
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "guru-budh-7",
@@ -1358,7 +2415,12 @@
       "general": "Moderate enjoyment, moderate gain of wealth, and acquisition of wealth through undesirable means will be the results, in the Antar Dasha of Ketu in the Dasha of Guru, if Ketu is associated with, or receives a Drishti from a benefic.",
       "adverse": "coarse food, or food, given by others, food, given at the time of death ceremonies",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "drishtiFrom": [
+          "Benefic"
+        ]
+      }
     },
     {
       "id": "guru-ketu-2",
@@ -1368,7 +2430,17 @@
       "general": "",
       "adverse": "Loss of wealth by the wrath of the king, imprisonment, diseases, loss of physical strength, antagonism with father and brother and mental agony, if Ketu be in the 6th, 8th, or 12th from the Lord of the Dasha, or be associated with malefics.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "guru-ketu-3",
@@ -1398,7 +2470,22 @@
       "general": "Effects, like acquisition of conveyances, like palanquin, elephants etc., gain of wealth by the beneficence of the king, enjoyment, gain of blue and red articles, extraordinary income from journeys to the East, well-being in the family, happiness from parents, devotion to deities, construction of reservoirs, charities etc., will be derived in the Antar Dasha of Śukr, if Śukr is in a Kendr, Trikon, or in Labh, or, if Śukr is in his own Rāśi and receives a Drishti from a benefic, or from benefics.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ],
+        "drishtiFrom": [
+          "Benefic"
+        ]
+      }
     },
     {
       "id": "guru-sukr-2",
@@ -1408,7 +2495,14 @@
       "general": "",
       "adverse": "quarrels, antagonism with kinsmen, distress to wife and children, if Śukr is in the 6th, 8th, or 12th from the Lord of the Dasha, or Lagn, or, if Śukr is in his debilitation Rāśi. Quarrels, danger from the king, antagonism with the wife, disputes with the father-in-law and with brothers, loss of wealth etc., if Śukr is associated with Śani, or Rahu, or with both.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "guru-sukr-3",
@@ -1418,7 +2512,18 @@
       "general": "There will be gain of wealth, happiness from wife, meeting with the king, increase in the number of children, conveyances and cattle, enjoyment of music, society with men of learning, availability of sweetish preparations, giving help and assistance to kinsmen etc., if Śukr is in a Kendr, Trikon, or in the 2nd from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          2,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "guru-sukr-4",
@@ -1438,7 +2543,20 @@
       "general": "Gain of wealth, reverence, happiness and acquisition of conveyances, clothes, ornaments etc., birth of children, cordial relations with the king, success in ventures etc. will be the auspicious results in the Antar Dasha of Sūrya in the Dasha of Guru, if Sūrya is in his exaltation, in his own Rāśi, in a Kendr, Trikon, or in Sahaj, Labh, or Dhan and be endowed with strength.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "guru-surya-2",
@@ -1448,7 +2566,14 @@
       "general": "",
       "adverse": "nervous disorder, fever, laziness, or reluctance in the performance of good deeds, indulgence in sins, antagonistic attitude towards all, separation from kinsmen and distress without reasons, if Sūrya is in Ari, Randhr, or Vyaya, or, if Sūrya is in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "guru-surya-3",
@@ -1468,7 +2593,19 @@
       "general": "Effects, like reverence from the king, opulence and glory, happiness from wife and children, availability of good food, gain of reputation by performance of good deeds, increase in the number of children and grandchildren, comforts by the beneficence of the king, religious and charitable inclinations etc., will be derived in the Antar Dasha of Candr in the Dasha of Guru, if Candr is in a Kendr, Trikon, or in Labh, or, if Candr is in her exaltation, or in her own Rāśi and, if Candr is full and strong and in an auspicious Bhava from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "guru-candr-2",
@@ -1478,7 +2615,17 @@
       "general": "",
       "adverse": "There will be loss of wealth and kinsmen, wanderings in foreign lands, danger from the king, thieves, quarrels with coparceners, separation from a maternal uncle, distress to mother etc., if Candr is weak, or is associated with malefics, or, if Candr is in Ari, Randhr, or Vyaya, or, if Candr is in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "guru-candr-3",
@@ -1508,7 +2655,19 @@
       "general": "There will be gain of wealth and grains, availability of good sweetish preparations, pleasure of the king, happiness from wife and children and other auspicious effects, if Mangal is in a Kendr, Trikon, in Labh, or Dhan and is associated with, or receives a Drishti from benefics.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          2,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "guru-mangal-3",
@@ -1518,7 +2677,16 @@
       "general": "There will be some mitigation of evil effects later.",
       "adverse": "Loss of wealth and house, eye trouble and other inauspicious effects will be the results, if Mangal is in the 8th, or 12th from the Lord of the Dasha, or, if Mangal is in his debilitation Rāśi, associated with, or receiving a Drishti from malefics. The effects will be particularly adverse at the commencement of the Antar Dasha.",
       "deathEffects": "There will be physical distress and mental agony, if Mangal is the Lord of Dhan, or Yuvati.",
-      "remedial": "give a bull in charity."
+      "remedial": "give a bull in charity.",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ],
+        "drishtiFrom": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "guru-rahu-1",
@@ -1528,7 +2696,20 @@
       "general": "Effects, like attachment to Yog, gain of wealth and grains during the first five months, sovereignty over a village, or country, meeting with a foreign king, well-being in the family, journeys to distant lands, bathing in holy places, will be derived in the Antar Dasha of Rahu in the Dasha of Guru, if Rahu is in his exaltation, in his own Rāśi, in his Multrikon, or, if Rahu is in a Kendr, or Trikon, or, if Rahu receives a Drishti from the Lord of a Kendr, or, if Rahu is associated with, or receives a Drishti from a benefic.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ],
+        "drishtiFrom": [
+          "Benefic"
+        ]
+      }
     },
     {
       "id": "guru-rahu-2",
@@ -1538,7 +2719,16 @@
       "general": "",
       "adverse": "Danger from thieves, snakes, the king, wounds, troubles in domestic affairs, antagonism with co-borns and coparceners, bad dreams, quarrels without reason, danger from diseases etc. will result, if Rahu is associated with a malefic, if Rahu is in the 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "guru-rahu-3",
@@ -1558,7 +2748,17 @@
       "general": "Effects, like acquisition of a kingdom, happiness from wife and children, acquisition of conveyances, like elephants, gain of clothes, attainment of the position of a Commander of the Army by the beneficence of the king, acquisition of cattle, villages and land etc., will be derived in the Antar Dasha of Śani in the Dasha of Śani, if Śani is in his own, in his exaltation Rāśi, or in deep exaltation, or, if Śani is in a Kendr, or Trikon, or, if Śani is a Yog Karak.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "sani-sani-2",
@@ -1568,7 +2768,16 @@
       "general": "The last part of the Dasha will yield beneficial results.",
       "adverse": "Fear, or danger from the king, getting inflicted with injuries with some weapon, bleeding gums, dysentery etc. will be the evil effects at the commencement of the Dasha, if Śani is in Randhr, or Vyaya, or, if Śani is associated with malefics in his debilitation Rāśi. There will be danger from thieves etc., going away from the homeland, mental agony etc. in the middle portion of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "sani-sani-3",
@@ -1588,7 +2797,18 @@
       "general": "Effects, like reverence from the people, good reputation, gain of wealth, comforts of conveyances etc., inclination towards performance of religious sacrifices (Yagyas), Raj Yog, bodily felicity, enthusiasm, well-being in the family, pilgrimage to holy places, performance of religious rites, listening to Puranas, charities, availability of sweetish preparations etc., will be derived in the Antar Dasha of Budh in the Dasha of Śani, if Budh is in a Kendr, or Trikon.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "sani-budh-2",
@@ -1598,7 +2818,14 @@
       "general": "Acquisition of a kingdom, gain of wealth, headship of a village will be the effects at the commencement of the Dasha, if Budh is in Ari, Randhr, or Vyaya from Lagn, or from the Lord of the Dasha, or, if Budh is associated with Sūrya, Mangal and Rahu.",
       "adverse": "Affliction with diseases, failure in all ventures, anxiety and feeling of danger etc. will be experienced in the middle portion and in the last part of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "sani-budh-3",
@@ -1618,7 +2845,17 @@
       "general": "If Ketu is related to the Lagn's Lord, there will be gain of wealth and enjoyment and bathing in holy places and visit to a sacred shrine at the commencement of the Antar Dasha.",
       "adverse": "Evil effects, like loss of position, dangers, poverty, distress, foreign journeys etc., will be derived in the Antar Dasha of Ketu in the Dasha of Śani, even if Ketu is in his exaltation, in his own, in a benefic Rāśi, or in a Kendr, or Trikon, or, if Ketu is associated with, or receives a Drishti from benefics.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "sani-ketu-2",
@@ -1628,7 +2865,20 @@
       "general": "Gain of physical strength and courage, religious thoughts, audience with the king (high dignitaries of government) and all kinds of enjoyments will be experienced, if Ketu is in a Kendr, in a Trikon, in the 3rd, or 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "sani-ketu-3",
@@ -1638,7 +2888,13 @@
       "general": "",
       "adverse": "coarse food, cold fever, dysentery, wounds, danger from thieves, separation from wife and children etc., will be the results, if Ketu is in Randhr, or Vyaya from Lagn, or from the Lord of the Dasha.",
       "deathEffects": "Fear of premature death",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "sani-ketu-4",
@@ -1658,7 +2914,18 @@
       "general": "Effects, like marriage, birth of a son, gain of wealth, sound health, well-being in the family, acquisition of a kingdom, enjoyments by the beneficence of the king, honours, gain of clothes, ornaments, conveyance and other desired objects, will be derived in the Antar Dasha of Śukr in the Dasha of Śani, if Śukr is in a Kendr, Trikon, or in Labh, associated with, or receiving a Drishti from benefics. If during this period Guru is favourable in transit, there will be dawn of fortune and growth of property. If Śani is favourable in transit, there will be Raj Yog effects, or the accomplishment of Yog rites (Yog Triya Siddhi).",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "sani-sukr-2",
@@ -1668,7 +2935,14 @@
       "general": "",
       "adverse": "Distress to wife, loss of position, mental agony, quarrels with close relations etc. will be the results, if Śukr is in his debilitation Rāśi, if Śukr is combust, or, if Śukr is in Ari, Randhr, or Vyaya.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "sani-sukr-3",
@@ -1678,7 +2952,17 @@
       "general": "Fulfillment of ambitions by the beneficence of the king, charities, performance of religious rites, creation of interest in the study of Shastras, composition of poems, interest in Vedanta etc., listening to Puranas, happiness from wife and children will be experienced, if Śukr is in Dharm, Labh, or Kendr from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          6,
+          7,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "sani-sukr-4",
@@ -1688,7 +2972,14 @@
       "general": "",
       "adverse": "There will be eye trouble, fevers, loss of good conduct, dental problems, heart disease, pain in arms, danger from drowning, or falling from a tree, antagonism towards relations with the officials of government and brothers, if Śukr is in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "sani-sukr-5",
@@ -1708,7 +2999,17 @@
       "general": "Effects, like good relations with one's employer, well-being in the family, happiness from children, gain of conveyances and cattle etc., will be derived in the Antar Dasha of Sūrya in the Dasha of Śani, if Sūrya is in his exaltation, in his own Rāśi, or, if Sūrya is associated with Dharm's Lord, or, if Sūrya is in a Kendr, or Trikon, associated with, or receiving a Drishti from benefics.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "sani-surya-2",
@@ -1718,7 +3019,13 @@
       "general": "",
       "adverse": "There will be heart disease, defamation, loss of position, mental agony, separation from close relatives, obstacles in industrial ventures, fevers, fears, loss of kinsmen, loss of articles, dear to the person, if Sūrya is in Randhr, or Vyaya, or, if Sūrya is in the 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "sani-surya-3",
@@ -1738,7 +3045,18 @@
       "general": "Effects, like gains of conveyance, garments, ornaments, improvement of fortune and enjoyments, taking care of brothers, happiness in both maternal and paternal homes, increase in cattle wealth etc., will be derived in the Antar Dasha of Candr in the Dasha of Śani, if Candr is full, in her exaltation, or in her own Rāśi, or in a Kendr, or Trikon, or in the 11th from the Dasha Lord, or, if Candr receives a Drishti from benefics.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "sani-candr-2",
@@ -1748,7 +3066,12 @@
       "general": "There will, however, be good effects and some gain of wealth at the commencement of the Antar Dasha.",
       "adverse": "There will be great distress, wrath, separation from parents, ill health of children, losses in business, irregular meals, administration of medicines, if Candr is waning, if Candr is associated with, or receives Drishti from malefics, or, if Candr is in his debilitation Rāśi, or, if Candr is in malefic Navāńś, or, if Candr is in the Rāśi of a malefic Grah.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "drishtiFrom": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "sani-candr-3",
@@ -1758,7 +3081,18 @@
       "general": "Enjoyment of conveyances and garments, happiness from kinsmen, happiness from parents, wife, employer etc. will be the results, if Candr is in a Kendr, Trikon, or in the 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "sani-candr-4",
@@ -1768,7 +3102,14 @@
       "general": "",
       "adverse": "Effects, like sleepiness, lethargy, loss of position, loss of enjoyments, increase in the number of enemies, antagonism with kinsmen, will be experienced, if Candr is weak and is in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "sani-candr-5",
@@ -1798,7 +3139,16 @@
       "general": "",
       "adverse": "There will be loss of wealth, danger of wounds, danger from thieves, snakes, weapons, gout and other similar diseases, distress to father and brothers, quarrels with copartners, loss of kinsmen, coarse food, going away to foreign lands, unnecessary expenditure etc., if Mangal is in his debilitation Rāśi, or combust, or in Randhr, or Vyaya and associated with, or receiving a Drishti from malefics.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          8,
+          12
+        ],
+        "drishtiFrom": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "sani-mangal-3",
@@ -1828,7 +3178,16 @@
       "general": "Enjoyment, gains of wealth, increase in agricultural production, devotion to deities and Brahmins, pilgrimage to holy places, increase in cattle wealth, well-being in the family will be the results at the commencement of the Antar Dasha, if Rahu is associated with Lagn's Lord, or a Yog Karak Grah, or, if Rahu is in his exaltation, or in his own Rāśi, or, if Rahu is in a Kendr, or Labh from Lagn, or from the Lord of the Dasha. There will be cordiality with the king and happiness from friends in the middle portion of the Antar Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          7,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "sani-rahu-3",
@@ -1838,7 +3197,12 @@
       "general": "There will be acquisition of elephants, opulence and glory, cordial relations with the king, gains of valuable clothes, if Rahu is in Mesh, Kanya, Kark, Vrishabh, Meen, or Dhanu.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          2
+        ]
+      }
     },
     {
       "id": "sani-rahu-4",
@@ -1858,7 +3222,17 @@
       "general": "Effects, like success all-round, well-being in the family, gain of conveyances, ornaments and clothes by the beneficence of the king, reverence, devotion to deities and the preceptor, association with men of learning, happiness from wife and children etc., will be derived in the Antar Dasha of Guru in the Dasha of Śani, if Guru is in a Kendr, or in a Trikon, or, if Guru is associated with Lagn's Lord, or, if Guru is in his own, or in his exaltation Rāśi.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "sani-guru-2",
@@ -1868,7 +3242,17 @@
       "general": "",
       "adverse": "Results, like death of the near relations, loss of wealth, antagonism with the government officials, failure in projects, journeys to foreign lands, affliction with diseases, like leprosy etc., will be experienced, if Guru is in his debilitation Rāśi, or, if Guru is associated with malefics, or, if Guru is in Ari, Sahaj, or Vyaya.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          3,
+          6,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "sani-guru-3",
@@ -1878,7 +3262,18 @@
       "general": "There will be opulence and glory, happiness to wife, gains through the king, comforts of good food and clothes, religious-mindedness, name and fame in the country, interest in Vedas and Vedanta, performance of religious sacrifices, giving grains etc. in charity, if Guru is in the 5th, 9th, 11th, 2nd, or Kendr from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          2,
+          4,
+          6,
+          7,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "sani-guru-4",
@@ -1888,7 +3283,14 @@
       "general": "",
       "adverse": "Antagonism with kinsmen, mental agony, quarrels, loss of position, losses in ventures, loss of wealth, as a result of imposition of fines, or penalties by government, imprisonment distress to wife and son will be the results, if Guru is weak and is in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "sani-guru-5",
@@ -1908,7 +3310,17 @@
       "general": "Gain of jewels, like pearls etc., learning, increase in happiness and performance of pious deeds, success in the educational sphere, acquisition of name and fame, meeting with new kings, gain of wealth and happiness from wife, children and parents will be the effects in the Antar Dasha of Budh in his own Dasha, if Budh is placed in his exaltation Rāśi, or is otherwise well placed.",
       "adverse": "There will be loss of wealth and cattle, antagonism with kinsmen, diseases, like stomach pains, piety in discharging duties, as a government official, if Budh is in his debilitation Rāśi etc., or, if Budh is in Ari, Randhr, or Vyaya, or, if Budh is associated with malefics.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "budh-budh-2",
@@ -1928,7 +3340,21 @@
       "general": "Effects, like physical fitness, little gain of wealth, affectionate relations with kinsmen, increase in cattle wealth, income from industries, success in the educational sphere, acquisition of name and fame, honours, audience with the king and joining a banquet with him, comforts of clothes etc., will be experienced, if Ketu is associated with benefics in a Kendr, or Trikon, or, if Ketu is yuti with Lagn's Lord, or with a Yog Karak. The same will be the results, if Ketu is in a Kendr, or in the 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "conjunctWith": [
+          "Benefic"
+        ]
+      }
     },
     {
       "id": "budh-ketu-2",
@@ -1938,7 +3364,16 @@
       "general": "",
       "adverse": "Fall from a conveyance, distress to son, danger from the king, indulgence in sinful deeds, danger from scorpions etc., quarrels with the menials, sorrow, diseases and association with menials etc. will be the results, if Ketu is yuti with malefics in the 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "budh-ketu-3",
@@ -1958,7 +3393,17 @@
       "general": "Effects, like inclination to perform religious rites, fulfillment of all ambitions through the help of the king and friends, gains of agricultural lands and happiness etc. will be derived in the Antar Dasha of Śukr in the Dasha of Budh, if Śukr is in a Kendr, in Labh, in Putr, or in Dharm. There will be acquisition of a kingdom, gain of wealth and property, construction of a reservoir, readiness to give charities and to perform religious rites, extraordinary gain of wealth and gains in business, if Śukr is in a Kendr, in the 5th, 9th, or 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          6,
+          7,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "budh-sukr-2",
@@ -1968,7 +3413,14 @@
       "general": "",
       "adverse": "Heart disease, defamation, fevers, dysentery, separation from kinsmen, physical distress and agony will result, if Śukr is weak in the 6th, 8th, or 12th from the Lord, or the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "budh-sukr-3",
@@ -1988,7 +3440,22 @@
       "general": "Effects, like dawn of fortune by the beneficence of the king, happiness from friends etc., will be derived in the Antar Dasha of Sūrya in the Dasha of Budh, if Sūrya is in his own, or in his exaltation Rāśi, or in a Kendr, or Trikon, or in Dhan, or Labh, or in his exalted, or own Navāńś. There will be acquisition of land, if Sūrya receives a Drishti from Mangal and comforts of good food and clothes, if such a Sūrya receives a Drishti from Lagn's Lord.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          2,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "drishtiFrom": [
+          "Mars"
+        ]
+      }
     },
     {
       "id": "budh-surya-2",
@@ -1998,7 +3465,14 @@
       "general": "",
       "adverse": "Fear, or danger from thieves, fire and weapons, bilious troubles, headaches, mental agony and separation from friends etc. will be the results, if Sūrya is in Ari, Randhr, or Vyaya from Lagn, or from the Lord of the Dasha and, if Sūrya is weak and associated with Śani, Mangal and Rahu.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "budh-surya-3",
@@ -2018,7 +3492,20 @@
       "general": "The Yog becomes very strong for beneficial effects, if in the Antar Dasha of Candr in the Dasha of Budh Candr is in a Kendr, or Trikon from Lagn, or, if Candr is in her exaltation, or in her own Rāśi, associated with, or receiving a Drishti from Guru, or, if Candr is a Yog Karak herself. Then there will be marriage, birth of a son and gain of clothes and ornaments.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ],
+        "drishtiFrom": [
+          "Jupiter"
+        ]
+      }
     },
     {
       "id": "budh-candr-2",
@@ -2038,7 +3525,19 @@
       "general": "If Candr is in a Kendr, Trikon, in the 3rd, or 11th from the Lord of the Dasha, there will be at the commencement of the Antar Dasha visits to sacred shrines, patience, enthusiasm and gains of wealth from foreign countries.",
       "adverse": "There will be physical distress, if Candr is in her debilitation, or in an enemy's Rāśi.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          3,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "budh-candr-4",
@@ -2048,7 +3547,14 @@
       "general": "",
       "adverse": "Danger from the king, fire and thieves, defamation, or disgrace and loss of wealth on account of wife, destruction of agricultural lands and cattle etc. will be the results, if Candr is weak and is in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "budh-candr-5",
@@ -2068,7 +3574,17 @@
       "general": "Effects, like well-being and enjoyments in the family by the beneficence of the king, increase in property, recovery of a lost kingdom etc., birth of a son, satisfaction, acquisition of cattle, conveyances and agricultural lands, happiness from wife etc., will be derived in the Antar Dasha of Mangal in the Dasha of Budh, if Mangal is in his exaltation, in his own Rāśi, in a Kendr, or Trikon, or, if Mangal is associated with Lagn's Lord.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "budh-mangal-2",
@@ -2078,7 +3594,16 @@
       "general": "",
       "adverse": "Physical distress, mental agony, obstacles in industrial ventures, loss of wealth, gout, distress from wounds and danger from weapons and fever etc. will be the results, if Mangal be associated with, or receives a Drishti from malefics in Randhr, or in Vyaya.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          8,
+          12
+        ],
+        "drishtiFrom": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "budh-mangal-3",
@@ -2088,7 +3613,18 @@
       "general": "There will be gain of wealth, physical felicity, birth of a son, good reputation, affectionate relations etc. with kinsmen etc., if Mangal receives a Drishti from benefics in a Kendr, Trikon, or in the 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "budh-mangal-4",
@@ -2098,7 +3634,16 @@
       "general": "enjoyments and gains of wealth in the middle portion of the Antar Dasha",
       "adverse": "If Mangal be associated with malefics in the 8th, or 12th from the Lord of the Dasha, there will be distress, danger from kinsmen, wrath of the king and fire, antagonism with the son, loss of position at the commencement of the Antar Dasha, danger from the king and loss of position at the end of the Antar Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "budh-mangal-5",
@@ -2118,7 +3663,17 @@
       "general": "Effects, like reverence from the king, good reputation, gain of wealth, visits to sacred shrines, performance of religious sacrifices and oblations, recognition, gain of clothes etc., are derived in the Antar Dasha of Rahu in the Dasha of Budh, if Rahu is in a Kendr, or Trikon, or, if Rahu is in Mesh, Kumbh, Kanya, or Vrishabh. There will be some evil effects at the commencement of the Antar Dasha, but all will be well later.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "budh-rahu-2",
@@ -2128,7 +3683,17 @@
       "general": "There will be an opportunity to have conversation, or a meeting with the king, if Rahu is in Sahaj, Randhr, Karm, or Labh. In this position, if Rahu be associated with a benefic, there will be a visit to a new king.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          3,
+          8,
+          11
+        ],
+        "conjunctWith": [
+          "Benefic"
+        ]
+      }
     },
     {
       "id": "budh-rahu-3",
@@ -2138,7 +3703,16 @@
       "general": "",
       "adverse": "Pressure of hard work, as a government functionary, loss of position, fears, imprisonment, diseases, agony to self and kinsmen, heart disease, loss of reputation and wealth, will be the results, if Rahu is associated with a malefic, or malefics in the 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "budh-rahu-4",
@@ -2158,7 +3732,19 @@
       "general": "Effects, like physical felicity, gain of wealth, beneficence of the king, celebration of auspicious functions, like marriage etc., at home, availability of sweetish preparations, increase in cattle wealth, attending discourses on Puranas etc., devotion to deities and the preceptor, interest in religion, charities etc., worship of Lord Shiva etc., will be derived in the Antar Dasha of Guru in the Dasha of Budh, if Guru is in a Kendr, Trikon, or in Labh, or, if Guru is in his exaltation, or in his own Rāśi.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "budh-guru-2",
@@ -2168,7 +3754,14 @@
       "general": "",
       "adverse": "Discord with king and kinsmen, danger from thieves etc., death of parents, disgrace, punishment from government, loss of wealth, danger from snakes and poison, fever, losses in agricultural production, loss of lands etc., will be the results, if Guru is in his debilitation Rāśi, is combust, or is in Ari, Randhr, or in Vyaya, or, if Guru is associated with, or receives a Drishti from Śani and Mangal.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "budh-guru-3",
@@ -2178,7 +3771,19 @@
       "general": "There will be happiness from kinsmen and from one's son, enthusiasm, increase in wealth and name and fame, giving grains etc. in charity, if Guru is in a Kendr, Trikon, or in the 11th from the Lord of the Dasha and, if Guru is endowed with strength.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "budh-guru-4",
@@ -2188,7 +3793,14 @@
       "general": "",
       "adverse": "Agony, anxiety, danger from diseases, antagonism with wife and kinsmen, wrath of the king, quarrels, loss of wealth, danger from Brahmins will be the results, if Guru is weak and, if Guru is in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "budh-guru-5",
@@ -2208,7 +3820,18 @@
       "general": "Effects, like well-being in the family, acquisition of a kingdom, enthusiasm, increase in cattle wealth, gain of a position, visits to sacred shrines etc., will be derived in the Antar Dasha of Śani in the Dasha of Budh, if Śani is in his exaltation, his in his own Rāśi, or in a Kendr, or Trikon, or in Labh.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "budh-sani-2",
@@ -2218,7 +3841,13 @@
       "general": "",
       "adverse": "Danger from enemies, distress to wife and children, loss of thinking power, loss of kinsmen, loss in ventures, mental agony, journeys to foreign lands and bad dreams will be the results, if Śani is in the 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "budh-sani-3",
@@ -2238,7 +3867,17 @@
       "general": "Effects, like happiness from wife and children, recognition from the king, gain of land, village etc. will be derived in the Antar Dasha of Ketu in his own Dasha, if Ketu is in a Kendr, or Trikon, or, if Ketu is related to Dharm's, Karm's, or Bandhu's Lord.",
       "adverse": "mental agony",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "ketu-ketu-2",
@@ -2248,7 +3887,13 @@
       "general": "",
       "adverse": "Heart disease, defamation, destruction of wealth and cattle, distress to wife and children, instability of mind etc. will we be the results, if Ketu is in his debilitation Rāśi and, if Ketu is in Randhr, or Vyaya along with a combust Grah.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "ketu-ketu-3",
@@ -2268,7 +3913,17 @@
       "general": "Effects, like beneficence from the king, good fortune, gain of clothes etc., recovery of lost kingdom, comforts of conveyances etc., visits to sacred shrines and gain of lands and villages by the beneficence of the king, will be derived in the Antar Dasha of Śukr in the Dasha of Ketu, if Śukr is in his exaltation, in his own Rāśi, or, if Śukr is associated with Karm's Lord in a Kendr, or Trikon. There will be dawn of fortune, if in such position he is associated with Dharm's Lord also.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "ketu-sukr-2",
@@ -2278,7 +3933,19 @@
       "general": "Sound health, well-being in the family and gains of good food and conveyances etc. will be the results, if Śukr is in a Kendr, Trikon, or in the 3rd, or 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          3,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "ketu-sukr-3",
@@ -2288,7 +3955,14 @@
       "general": "",
       "adverse": "quarrels without any cause, loss of wealth, distress to cattle, if Śukr is in the 6th, 8th, or 12th from the Lord of the Dasha. If Śukr is in his debilitation Rāśi, or, if Śukr is associated with a debilitated Grah, or, if Śukr is in Ari, or Randhr, there will be quarrels with kinsmen, headaches, eye troubles, heart disease, defamation, loss of wealth and distress to cattle and wife.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "ketu-sukr-4",
@@ -2308,7 +3982,21 @@
       "general": "The effects, like gains of wealth, beneficence of the king, performance of pious deeds and fulfillment of all ambitions, will be derived in the Antar Dasha of Sūrya in the Dasha Ketu, if Sūrya is in his exaltation, in his own Rāśi, or, if Sūrya is associated with, or receives a Drishti from a benefic in a Kendr, Trikon, or in Labh.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ],
+        "drishtiFrom": [
+          "Benefic"
+        ]
+      }
     },
     {
       "id": "ketu-surya-2",
@@ -2318,7 +4006,16 @@
       "general": "",
       "adverse": "Danger from the king, separation from parents, journeys to foreign lands, distress from thieves, snakes and poison, punishment by government, antagonism with the friends, sorrows, danger from fever etc. will be the results, if Sūrya is associated with a malefic, or malefics in Randhr, or in Vyaya.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "ketu-surya-3",
@@ -2328,7 +4025,19 @@
       "general": "There will be physical fitness, gain of wealth, or the birth of a son, success in performance of pious deeds, headship of a small village etc., if Sūrya is in a Kendr, Trikon, in the 2nd, or 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          2,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "ketu-surya-4",
@@ -2338,7 +4047,13 @@
       "general": "There will be distress at the commencement of the Antar Dasha with some mitigation at its end.",
       "adverse": "Obstacles in availability of food, fears and loss of wealth and cattle will be the results, if Sūrya is associated with evil Grahas in the 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "There will be fear of premature death, if Sūrya is Dhan's, or Yuvati's Lord.",
-      "remedial": "give a cow and gold in charity."
+      "remedial": "give a cow and gold in charity.",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "ketu-candr-1",
@@ -2348,7 +4063,19 @@
       "general": "Effects, like recognition from the king, enthusiasm, well-being, enjoyments, acquisition of a house, lands etc., abnormal gains of food, clothes, conveyances, cattle etc., success in business, construction of reservoirs etc. and happiness to wife and children, will be derived in the Antar Dasha of Candr in the Dasha of Ketu, if Candr is in her exaltation, in her own Rāśi, in a Kendr, Trikon, in Labh, or in Dhan. The beneficial results will be realized fully, if Candr is waxing.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          2,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "ketu-candr-2",
@@ -2358,7 +4085,14 @@
       "general": "",
       "adverse": "Unhappiness and mental agony, obstacles in ventures, separation from parents, losses in business, destruction of cattle etc. will be caused, if Candr is in her debilitation Rāśi, or in Ari, Randhr, or Vyaya.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "ketu-candr-3",
@@ -2368,7 +4102,18 @@
       "general": "There will be the acquisition of a cow, or cows, land, agricultural lands, meeting kinsmen and the achievement of success through them, increase in cows milk and curd, if Candr is in a Kendr, Trikon, or in the 11th from the Lord of the Dasha and, if Candr is endowed with strength. There will be auspicious results at the commencement of the Antar Dasha, cordial relations with the king in the middle portion of the Antar Dasha.",
       "adverse": "danger from the king, foreign journey, or journeys to distant places at its end.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "ketu-candr-4",
@@ -2378,7 +4123,14 @@
       "general": "",
       "adverse": "Loss of wealth, anxiety, enmity with kinsmen and distress to brother, will be the results, if Candr is in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "If Candr is Dhan's, Yuvati's, or Randhr's Lord, there will be fear of premature death.",
-      "remedial": "recitation of Mantras of Candr and giving in charity things, connected with Candr."
+      "remedial": "recitation of Mantras of Candr and giving in charity things, connected with Candr.",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "ketu-mangal-1",
@@ -2398,7 +4150,20 @@
       "general": "There will be recognition from the king, great popularity and reputation and happiness from children and friends, if Mangal is in a Kendr, Trikon, or in the 3rd, or 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "ketu-mangal-3",
@@ -2408,7 +4173,14 @@
       "general": "In the above circumstances amidst evil effects there will be some auspicious effects also.",
       "adverse": "There will be fear of death/disaster during a foreign journey, diabetes, unnecessary troubles, danger from thieves and the king and quarrels, if Mangal is in the 8th, 12th, or 2nd from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          2,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "ketu-mangal-4",
@@ -2428,7 +4200,20 @@
       "general": "Effects, like increase of wealth and gain of wealth, grains, cattle, lands, village from a Yavan king, will be derived in the Antar Dasha of Rahu in the Dasha of Ketu, if Rahu is in his exaltation, his own, in a friends Rāśi, or in a Kendr, or Trikon, or in Labh, or Sahaj, or Dhan. There will be some trouble at the commencement of the Dasha, but all will be well later.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "ketu-rahu-2",
@@ -2438,7 +4223,16 @@
       "general": "",
       "adverse": "Frequent urination, weakness in the body, cold fever, danger from thieves, intermittent fever, opprobrium, quarrels, diabetes, pain in stomach will be the results, if Rahu is associated with a malefic in Randhr, or in Vyaya.",
       "deathEffects": "There will be distress and danger, if Rahu is in Dhan, or in Yuvati.",
-      "remedial": "Durga Saptashati Path."
+      "remedial": "Durga Saptashati Path.",
+      "conditions": {
+        "adHouse": [
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "ketu-guru-1",
@@ -2448,7 +4242,17 @@
       "general": "Effects, like increase in wealth and grains, beneficence of the king, enthusiasm, gain of conveyances etc., celebration, like birth of a son at home, performance of pious deeds, Yagyas, conquest of the enemy and enjoyments, will be derived in the Antar Dasha of Guru in the Dasha of Ketu, if Guru is in his exaltation, in his own Rāśi, or is associated with Lagn's, Dharm's, or Karm's Lord in a Kendr, or Trikon.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "ketu-guru-2",
@@ -2458,7 +4262,14 @@
       "general": "Though some good effects may be felt at the commencement of the Antar Dasha, there will be only adverse results later.",
       "adverse": "Danger from thieves, snakes and wounds, destruction of wealth, separation from wife and children, physical distress etc. will be the results, if Guru is in his debilitation Rāśi, or in Ari, Randhr, or Vyaya.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "ketu-guru-3",
@@ -2468,7 +4279,23 @@
       "general": "There will be gains of many varieties of garments, ornaments by the beneficence of the king, foreign journeys, taking care of kinsmen, availability of decent food, if Guru is associated with a benefic in a Kendr, Trikon, in the 3rd, or 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          3,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10,
+          11
+        ],
+        "conjunctWith": [
+          "Benefic"
+        ]
+      }
     },
     {
       "id": "ketu-guru-4",
@@ -2488,7 +4315,13 @@
       "general": "Effects, like increase in cattle wealth, will be derived.",
       "adverse": "distress to oneself and one's kinsmen, agony, loss of wealth, as a result of imposition of fines by government, resignation from the existing post, journeys to foreign lands and danger of thieves during travelling, will be derived in the Antar Dasha of Śani in the Dasha of Ketu, if Śani is deprived of strength and dignity. There will be loss of wealth and lethargy, if Śani is in Randhr, or Vyaya.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "ketu-sani-2",
@@ -2498,7 +4331,21 @@
       "general": "Success in all ventures, happiness from the employer, comforts during journeys, increase in happiness and property in ones own village, audience with the king etc. will be the results, if Śani is in a Trikon in Meen, in Tula, in his own Rāśi, or, if Śani is in an auspicious Navāńś, or is associated with a benefic in a Kendr, Trikon, or in Sahaj.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          3,
+          4,
+          5,
+          7,
+          9,
+          10
+        ],
+        "conjunctWith": [
+          "Benefic"
+        ]
+      }
     },
     {
       "id": "ketu-sani-3",
@@ -2508,7 +4355,17 @@
       "general": "",
       "adverse": "obstacles in ventures, lethargy, defamation, death of parents, if Śani is associated with a malefic, in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "There will be physical distress, agony, and fear of premature death may be expected, if Śani is Dhan's, or Yuvati's Lord.",
-      "remedial": "performance of Havan with sesame seeds (Til) and giving a black cow, or female buffalo in charity."
+      "remedial": "performance of Havan with sesame seeds (Til) and giving a black cow, or female buffalo in charity.",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "ketu-budh-1",
@@ -2518,7 +4375,18 @@
       "general": "Effects, like acquisition of a kingdom, enjoyments, charities, gain of wealth and land, birth of a son, celebration of religious functions and functions, like marriage suddenly, well-being in the family, gain of clothes, ornaments etc., will be derived in the Antar Dasha of Budh in the Dasha of Ketu, if Budh is in a Kendr, or Trikon, or, if Budh is in his exaltation, or in his own Rāśi.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          6,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "ketu-budh-2",
@@ -2538,7 +4406,14 @@
       "general": "There will be some beneficial effects at the commencement of the Dasha, still better results in the middle, but inauspicious at the end.",
       "adverse": "Antagonism with government officials, residing in other people's houses, destruction of wealth, clothes, conveyances and cattle will be the results, if Budh is associated with Śani, Mangal, or Rahu in Ari, Randhr, or Vyaya.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "ketu-budh-4",
@@ -2548,7 +4423,18 @@
       "general": "There will be good health, happiness from one's son, opulence and glory, availability of good food and clothes and abnormal profits in business, if Budh is in a Kendr, Trikon, or in the 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "ketu-budh-5",
@@ -2558,7 +4444,14 @@
       "general": "There will, however, be visits to sacred places in the middle of the Dasha.",
       "adverse": "Distress, unhappiness and troubles to wife and children and danger from the king may be expected at the commencement of the Antar Dasha, if Budh is weak in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "Fear of premature death will be caused, if Budh is Dhan's, or Yuvati's Lord.",
-      "remedial": "recitation of Vishnu Sahasranam."
+      "remedial": "recitation of Vishnu Sahasranam.",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "sukr-sukr-1",
@@ -2568,7 +4461,18 @@
       "general": "Effects, like gain of wealth, cattle etc. through Brahmins, celebrations in connection with the birth of a son, well-being, recognition from the king, acquisition of a kingdom, will be derived in the Antar Dasha of Śukr in his own Dasha, if Śukr is in a Kendr, Trikon, or in Labh and, if Śukr is endowed with strength.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "sukr-sukr-2",
@@ -2578,7 +4482,12 @@
       "general": "Construction of a new house, availability of sweet preparations, happiness to wife and children, companionship with a friend, giving grains etc. in charity, beneficence of the king, gain of clothes, conveyances and ornaments, success in business, increase in the number of cattle, gain of garments by performing journeys in the western direction etc. will be the results, if Śukr is in his exaltation, in his own Rāśi, or, if Śukr is in his exalted, or own Navāńś.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6
+        ]
+      }
     },
     {
       "id": "sukr-sukr-3",
@@ -2588,7 +4497,17 @@
       "general": "There will be acquisition of a kingdom, enthusiasm, beneficence of the king, well-being in the family, increase in the number of wives, children and wealth etc., if Śukr is associated with, or receives a Drishti from a benefic and is in a friendly Navāńś, in Sahaj, Ari, or Labh.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          3,
+          6,
+          11
+        ],
+        "drishtiFrom": [
+          "Benefic"
+        ]
+      }
     },
     {
       "id": "sukr-sukr-4",
@@ -2598,7 +4517,17 @@
       "general": "",
       "adverse": "Danger from thieves etc., antagonistic relations with government officials, destruction of friends and kinsmen, distress to wife and children may be expected, if Śukr is associated with, or receives a Drishti from a malefic in Ari, Randhr, or Vyaya.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ],
+        "drishtiFrom": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "sukr-sukr-5",
@@ -2628,7 +4557,19 @@
       "general": "Effects, like acquisition of a kingdom and wealth, happiness from wife and children, happiness from employer, meeting with friends, happiness from parents, marriage, name and fame, betterment of fortune, birth of a son etc., will be experienced, if Sūrya is in his exaltation, in his own Rāśi, in a Kendr, Trikon, in Dhan, or Labh, or in Kendr, Trikon, in the 2nd, or 11th from the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          2,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "sukr-surya-3",
@@ -2638,7 +4579,14 @@
       "general": "",
       "adverse": "Distress, agony, distress to members of the family, harsh language, distress to father, loss of kinsmen, wrath of the king, danger at home, many diseases, destruction of agricultural production etc. will be the results, if Sūrya is in Ari, Randhr, or Vyaya, or, if Sūrya is in his debilitation, or in an enemy's Rāśi.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "sukr-surya-4",
@@ -2658,7 +4606,18 @@
       "general": "Effects, like gain of wealth, conveyances, clothes by the beneficence of the king, happiness in the family, great opulence and glory, devotion to deities and Brahmins, will be derived in the Antar Dasha of Candr in the Dasha of Śukr, if Candr is in her exaltation, or in her own Rāśi, or is associated with the Lord of Dharm, benefics, or with Karm's Lord, or, if Candr is in a Kendr, Trikon, or Labh.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "sukr-candr-2",
@@ -2678,7 +4637,14 @@
       "general": "",
       "adverse": "Loss of wealth, fears, physical distress, agony, wrath of the king, journeys to foreign lands, or pilgrimage, distress to wife and children and separation from kinsmen will be the results, if Candr is in her debilitation Rāśi, is combust, or is in Ari, Randhr, or Vyaya, or, if Candr is in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "sukr-candr-4",
@@ -2688,7 +4654,19 @@
       "general": "There will be sovereignty over a province, or village by the beneficence of the king, clothes etc., construction of a reservoir, increase in wealth etc., if Candr is in a Kendr, or Trikon, or in the 3rd, or 11th from the Lord of the Dasha. There will be physical fitness at the commencement of the Antar Dasha.",
       "adverse": "physical distress in its last portion.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          3,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "sukr-mangal-1",
@@ -2698,7 +4676,18 @@
       "general": "Effects, like acquisition of kingdom, property, clothes, ornaments, land and desired objects, will be derived in the Antar Dasha of Mangal in the Dasha of Śukr, if Mangal is in a Kendr, or Trikon, or in Labh, or, if Mangal is in his exaltation Rāśi, or is in one of his own Rāśis, or is associated with the Lagn's, Dharm's, or Karm's Lord.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "sukr-mangal-2",
@@ -2708,7 +4697,14 @@
       "general": "",
       "adverse": "There will be fever from cold, diseases (like fever) to parents, loss of position, quarrels, antagonism with the king and government officials, extravagant expenditure etc., if Mangal is in Ari, Randhr, or Vyaya, or, if Mangal is in the 6th, 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ]
+      }
     },
     {
       "id": "sukr-mangal-3",
@@ -2728,7 +4724,18 @@
       "general": "Effects, like great enjoyment, gain of wealth, visits of friends, successful journeys, gain of cattle and land etc., will be derived in the Antar Dasha of Rahu in the Dasha of Śukr, if Rahu is in a Kendr, or Trikon, or in Labh, or, if Rahu is in his exaltation, or in his own Rāśi, or is associated with, or receives a Drishti from benefics.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "sukr-rahu-2",
@@ -2738,7 +4745,14 @@
       "general": "Enjoyments, destruction of enemy, enthusiasm and beneficence of the king will be the results, if Rahu is in Sahaj, or Ari, or Karm, or Labh. Good effects will be experienced up to 5 months from the commencement of the Antar Dasha.",
       "adverse": "at the end of the Dasha there will be danger from fevers and indigestion.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          3,
+          6,
+          11
+        ]
+      }
     },
     {
       "id": "sukr-rahu-3",
@@ -2758,7 +4772,16 @@
       "general": "",
       "adverse": "There will be inauspicious effects on oneself and one's parents and antagonism with people, if Rahu be associated with a malefic in the 8th, or 12th from the Lord of the Dasha.",
       "deathEffects": "Physical distress will be caused, if Rahu is Dhan's, or Yuvati's Lord.",
-      "remedial": "Mrityunjaya Japa."
+      "remedial": "Mrityunjaya Japa.",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "sukr-guru-1",
@@ -2768,7 +4791,17 @@
       "general": "Effects, like recovery of the lost kingdom, acquisition of desired grains, clothes and property etc., reverence from one's friend and the king and gain of wealth, recognition from the king, good reputation, gain of conveyances, association with an employer and with men of learning, industriousness in the study of Shastras, birth of a son, satisfaction, visits of close friends, happiness to parents and son etc., will be derived in the Antar Dasha of Guru in the Dasha of Śukr, if Guru is in his exaltation, in his own Rāśi, or in a Kendr, or Trikon to Lagn, or to the Lord of the Dasha.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "sukr-guru-2",
@@ -2778,7 +4811,17 @@
       "general": "",
       "adverse": "There will be danger from the king and from thieves, distress to oneself and to kinsmen, quarrels, mental agony, loss of position, going away to foreign lands and danger of many kinds of diseases, if Guru is in the 6th, 8th, or 12th from the Lord of the Dasha and be associated with a malefic.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "sukr-guru-3",
@@ -2798,7 +4841,17 @@
       "general": "Effects, like great enjoyments, visits of friends and kinsmen, recognition from the king, birth of a daughter, visits to holy places and sacred shrines, conferment of authority by the king, will be derived in the Antar Dasha of Śani in the Dasha of Śukr, if Śani is in his exaltation, in his own Rāśi, in a Kendr, Trikon, or in his own Navāńś.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10
+        ]
+      }
     },
     {
       "id": "sukr-sani-2",
@@ -2808,7 +4861,14 @@
       "general": "",
       "adverse": "There will be lethargy and more expenditure than income, if Śani is in his debilitation Rāśi. Many kinds of distresses and troubles at the commencement of the Antar Dasha, like stress to parents, wife and children, going away to foreign lands, losses in profession, destruction of cattle etc., will be the results, if Śani is in Randhr, or Labh, or Vyaya, or, if Śani is in the 8th, 11th, or 12th from the Lord of the Dasha.",
       "deathEffects": "There will be physical distress, if Śani is Dhan's, or Yuvati's Lord.",
-      "remedial": "Havan with sesame seeds (Til), Mrityunjaya Japa, Durga Saptashati Path."
+      "remedial": "Havan with sesame seeds (Til), Mrityunjaya Japa, Durga Saptashati Path.",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          11,
+          12
+        ]
+      }
     },
     {
       "id": "sukr-budh-1",
@@ -2818,7 +4878,18 @@
       "general": "Effects, like dawn of fortune, birth of a son, gain of wealth through judgement of court, listening to stories from the Puranas, association with persons, competent in poetry etc., visits of close friends, happiness from employer, availability of sweetish preparations etc., will be derived in the Antar Dasha of Budh in the Dasha of Śukr, if Budh is in a Kendr, or Trikon, or in Labh (from Lagn, or from the Lord of the Dasha), or is in his exaltation, or in his own Rāśi.",
       "adverse": "",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          1,
+          4,
+          5,
+          7,
+          9,
+          10,
+          11
+        ]
+      }
     },
     {
       "id": "sukr-budh-2",
@@ -2828,7 +4899,17 @@
       "general": "There will be some good effects at the commencement, moderate in the middle portion.",
       "adverse": "If Budh is in the 6th, 8th, or 12th from the Lord of Dasha, or, if Budh is weak, or is associated with a malefic, there will be agony, loss of cattle, residence in other people's houses and losses in business. There will be distress from fever etc. at the end of the Antar Dasha.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouse": [
+          6,
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "sukr-budh-3",
@@ -2868,7 +4949,16 @@
       "general": "",
       "adverse": "There will be danger from snakes, thieves and wounds, loss of power of thinking, headache, agony, quarrels without any cause, or reason, diabetes, excessive expenditure, antagonism with wife and children, going away to foreign land, loss in ventures, if Ketu is in the 8th, or 12th from the Lord of the Dasha, or, if Ketu is associated with a malefic.",
       "deathEffects": "",
-      "remedial": ""
+      "remedial": "",
+      "conditions": {
+        "adHouseFromMd": [
+          8,
+          12
+        ],
+        "conjunctWith": [
+          "Malefic"
+        ]
+      }
     },
     {
       "id": "sukr-ketu-4",

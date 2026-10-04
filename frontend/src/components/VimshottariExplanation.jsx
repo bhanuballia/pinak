@@ -15,6 +15,30 @@ const PLANET_BILINGUAL_MAP = {
   'Śukra': 'Shukra - शुक्र'
 };
 
+const EN_PLANET_MAP = {
+  'Sūrya': 'Sun',
+  'Chandra': 'Moon',
+  'Mangal': 'Mars',
+  'Rahu': 'Rahu',
+  'Guru': 'Jupiter',
+  'Śhani': 'Saturn',
+  'Budh': 'Mercury',
+  'Ketu': 'Ketu',
+  'Śukra': 'Venus'
+};
+
+const EN_TO_HINDI_MAP = {
+  'Sun': 'Sūrya',
+  'Moon': 'Chandra',
+  'Mars': 'Mangal',
+  'Rahu': 'Rahu',
+  'Jupiter': 'Guru',
+  'Saturn': 'Śhani',
+  'Mercury': 'Budh',
+  'Ketu': 'Ketu',
+  'Venus': 'Śukra'
+};
+
 const HINDI_SHORT_CODE_MAP = {
   'सू': 'Sūrya',
   'सु': 'Sūrya',
@@ -78,8 +102,37 @@ const getDisplayPlanetName = (key) => {
 
 const getBilingualName = (planet) => {
   if (planet === 'All') return 'All / सभी';
-  const norm = getDisplayPlanetName(planet);
+  let norm = getDisplayPlanetName(planet);
+  if (EN_TO_HINDI_MAP[norm]) {
+    norm = EN_TO_HINDI_MAP[norm];
+  }
   return PLANET_BILINGUAL_MAP[norm] || planet;
+};
+
+const getAspectingPlanets = (targetHouse, placements) => {
+  const aspectingPlanets = [];
+  placements.forEach(p => {
+    const H = p.house;
+    const aspects = [(H + 6) % 12 || 12]; // 7th aspect is universal
+
+    if (p.planet === 'Mars') {
+      aspects.push((H + 3) % 12 || 12); // 4th
+      aspects.push((H + 7) % 12 || 12); // 8th
+    }
+    if (p.planet === 'Jupiter' || p.planet === 'Rahu' || p.planet === 'Ketu') {
+      aspects.push((H + 4) % 12 || 12); // 5th
+      aspects.push((H + 8) % 12 || 12); // 9th
+    }
+    if (p.planet === 'Saturn') {
+      aspects.push((H + 2) % 12 || 12); // 3rd
+      aspects.push((H + 9) % 12 || 12); // 10th
+    }
+
+    if (aspects.includes(targetHouse)) {
+      aspectingPlanets.push(p.planet);
+    }
+  });
+  return aspectingPlanets;
 };
 
 const VIMSHOTTARI_PLANET_CYCLE = ['Sūrya', 'Chandra', 'Mangal', 'Rahu', 'Guru', 'Śhani', 'Budh', 'Ketu', 'Śukra'];
@@ -104,24 +157,111 @@ export default function VimshottariExplanation({ currentActiveDasha }) {
 
   // Multi-level selection state
   const [multiPath, setMultiPath] = useState(activeDashaPath);
+  const [userPlanetPlacements, setUserPlanetPlacements] = useState([]);
+  const [transitPlacements, setTransitPlacements] = useState(null);
+  const [evalMode, setEvalMode] = useState('birth'); // 'birth' or 'transit'
+  const [lagnaSignIndex, setLagnaSignIndex] = useState(0);
 
   // Auto-detect and sync user's running dasha from saved birth chart data or active table event
+
   useEffect(() => {
     const loadActiveDasha = () => {
       try {
         const activeTableItem = localStorage.getItem('activeVimshottariDasha');
         let activeRow = activeTableItem ? JSON.parse(activeTableItem) : null;
 
-        if (!activeRow) {
-          const saved = localStorage.getItem('worksheetData');
-          if (saved) {
-            const parsed = JSON.parse(saved);
+        const saved = localStorage.getItem('worksheetData');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed.planet_positions && Array.isArray(parsed.planet_positions)) {
+            setUserPlanetPlacements(parsed.planet_positions);
+          }
+          
+          let lsi = 0;
+          if (parsed.charts?.ascendant_sign_index !== undefined) {
+            lsi = parsed.charts.ascendant_sign_index;
+          } else if (parsed.charts?.houses?.[1]?.sign_index !== undefined) {
+            lsi = parsed.charts.houses[1].sign_index;
+          } else if (parsed.charts?.houses?.[1]?.cusp_deg !== undefined) {
+            lsi = Math.floor(parsed.charts.houses[1].cusp_deg / 30);
+          } else if (parsed.planet_positions) {
+            const asc = parsed.planet_positions.find(p => p.planet === 'Ascendant' || p.planet === 'Lagna');
+            if (asc && asc.degree !== undefined) lsi = Math.floor(asc.degree / 30);
+          }
+          setLagnaSignIndex(lsi);
+
+          if (!activeRow) {
             const vims = parsed?.vimshottari_dasha || parsed?.vimsottari_dasha || parsed?.dashas?.vimshottari || parsed?.current_dasha;
             if (Array.isArray(vims)) {
               activeRow = vims.find(r => r.is_current || r.isCurrent);
             } else if (vims && vims.rows && Array.isArray(vims.rows)) {
               activeRow = vims.rows.find(r => r.is_current || r.isCurrent);
             }
+          }
+        }
+
+        // Fetch current transit placements
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          const bd = parsed?.basic_details || {};
+          const meta = parsed?.meta || {};
+          const birthDate = bd.birth_date || meta.date;
+          const birthTime = bd.birth_time || meta.time;
+
+          if (birthDate && birthTime) {
+            const now = new Date();
+            const y = now.getFullYear();
+            const m = String(now.getMonth() + 1).padStart(2, '0');
+            const d = String(now.getDate()).padStart(2, '0');
+            const h = String(now.getHours()).padStart(2, '0');
+            const mi = String(now.getMinutes()).padStart(2, '0');
+
+            fetch('/api/transit/time_machine', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                birth_date: birthDate,
+                birth_time: birthTime,
+                lat: bd.lat || meta.lat || 28.6,
+                lon: bd.lon || meta.lon || 77.2,
+                tz_offset: bd.tz_offset || meta.tz || 5.5,
+                transit_date: `${y}-${m}-${d}`,
+                transit_time: `${h}:${mi}:00`
+              })
+            })
+              .then(res => res.json())
+              .then(data => {
+                if (data.transit_planets) {
+                  let lagnaSignIndex = 0;
+                  if (parsed.charts?.ascendant_sign_index !== undefined) {
+                    lagnaSignIndex = parsed.charts.ascendant_sign_index;
+                  } else if (parsed.charts?.houses?.[1]?.sign_index !== undefined) {
+                    lagnaSignIndex = parsed.charts.houses[1].sign_index;
+                  } else if (parsed.charts?.houses?.[1]?.cusp_deg !== undefined) {
+                    lagnaSignIndex = Math.floor(parsed.charts.houses[1].cusp_deg / 30);
+                  } else if (parsed.planet_positions) {
+                    const asc = parsed.planet_positions.find(p => p.planet === 'Ascendant' || p.planet === 'Lagna');
+                    if (asc && asc.degree !== undefined) lagnaSignIndex = Math.floor(asc.degree / 30);
+                  }
+
+                  const mappedTransits = [];
+                  const ZODIAC_SIGNS = ["Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"];
+
+                  Object.entries(data.transit_planets).forEach(([planet, pos]) => {
+                    if (!pos || !pos.sidereal) return;
+                    const signIdx = Math.floor(pos.sidereal.lon / 30);
+                    const houseNum = (signIdx - lagnaSignIndex + 12) % 12 + 1;
+
+                    mappedTransits.push({
+                      planet: planet,
+                      house: houseNum,
+                      sign: ZODIAC_SIGNS[signIdx]
+                    });
+                  });
+                  setTransitPlacements(mappedTransits);
+                }
+              })
+              .catch(console.error);
           }
         }
 
@@ -680,53 +820,261 @@ export default function VimshottariExplanation({ currentActiveDasha }) {
         <div className="space-y-6">
           {/* Level 1 & 2: Mahadasha & Antardasha Combination (Always shown for depth >= 2) */}
           <div className="border border-slate-100 rounded-3xl p-6 bg-white shadow-sm space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-              <h4 className="text-xl font-bold text-orange-950 flex items-center gap-2">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-yellow-200 text-orange-900 text-[20px] font-bold">1-2</span>
-                Mahadasha & Antardasha Combination
-              </h4>
-              <span className="text-[20px] font-semibold text-slate-900">{getBilingualName(multiPath.mahadasha)} - {getBilingualName(multiPath.antardasha)}</span>
+            <div className="flex flex-col border-b border-slate-100 pb-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 mb-3">
+                <h4 className="text-xl font-bold text-orange-950 flex items-center gap-2">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-yellow-200 text-orange-900 text-[20px] font-bold">1-2</span>
+                  Mahadasha & Antardasha Combination
+                </h4>
+                <span className="text-[20px] font-semibold text-slate-900 text-right md:text-left">{getBilingualName(multiPath.mahadasha)} - {getBilingualName(multiPath.antardasha)}</span>
+              </div>
+
+              {(() => {
+                const mdPlanetEn = EN_PLANET_MAP[multiPath.mahadasha];
+                const adPlanetEn = EN_PLANET_MAP[multiPath.antardasha];
+                const mdPosGlobal = userPlanetPlacements.find(p => p.planet === mdPlanetEn);
+                const adPosGlobal = userPlanetPlacements.find(p => p.planet === adPlanetEn);
+
+                const mdTransit = transitPlacements ? transitPlacements.find(p => p.planet === mdPlanetEn) : null;
+                const adTransit = transitPlacements ? transitPlacements.find(p => p.planet === adPlanetEn) : null;
+
+                if (!mdPosGlobal && !adPosGlobal) return null;
+
+                return (
+                  <div className="flex flex-col md:flex-row gap-4 mt-2">
+                    {mdPosGlobal && (
+                      <div className="flex-1 bg-amber-50/50 border border-amber-100 rounded-xl p-3">
+                        <div className="text-[11px] font-bold uppercase tracking-wider text-amber-800/70 mb-1">Mahadasha Lord ({getBilingualName(multiPath.mahadasha)})</div>
+                        <div className="grid grid-cols-2 gap-2 mt-2">
+                          <div className="bg-white/60 p-2 rounded-lg border border-amber-100/50">
+                            <div className="text-[14px] uppercase font-bold text-slate-900 mb-0.5">Birth Chart</div>
+                            <div className="text-[14px] font-bold text-amber-900">House {mdPosGlobal.house}</div>
+                            <div className="text-[14px] text-amber-700">{mdPosGlobal.sign}</div>
+                          </div>
+                          <div className="bg-white/60 p-2 rounded-lg border border-amber-100/50">
+                            <div className="text-[14px] uppercase font-bold text-slate-900 mb-0.5">Current Transit</div>
+                            {mdTransit ? (
+                              <>
+                                <div className="text-[14px] font-bold text-blue-900">House {mdTransit.house}</div>
+                                <div className="text-[14px] text-blue-700">{mdTransit.sign}</div>
+                              </>
+                            ) : <div className="text-[14px] text-slate-400 mt-1">Loading...</div>}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    {adPosGlobal && (
+                      <div className="flex-1 bg-orange-50/50 border border-orange-100 rounded-xl p-3">
+                        <div className="text-[14px] font-bold uppercase tracking-wider text-orange-800/70 mb-1">Antardasha Lord ({getBilingualName(multiPath.antardasha)})</div>
+                        <div className="grid grid-cols-2 gap-2 mt-2">
+                          <div className="bg-white/60 p-2 rounded-lg border border-orange-100/50">
+                            <div className="text-[14px] uppercase font-bold text-slate-900 mb-0.5">Birth Chart</div>
+                            <div className="text-[14px] font-bold text-orange-900">House {adPosGlobal.house}</div>
+                            <div className="text-[14px] text-orange-700">{adPosGlobal.sign}</div>
+                          </div>
+                          <div className="bg-white/60 p-2 rounded-lg border border-orange-100/50">
+                            <div className="text-[14px] uppercase font-bold text-slate-900 mb-0.5">Current Transit</div>
+                            {adTransit ? (
+                              <>
+                                <div className="text-[14px] font-bold text-blue-900">House {adTransit.house}</div>
+                                <div className="text-[14px] text-blue-700">{adTransit.sign}</div>
+                              </>
+                            ) : <div className="text-[14px] text-slate-900 mt-1">Loading...</div>}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
             </div>
             {multiLevelResults.antar.length === 0 ? (
               <p className="text-slate-400 italic">No specific combination text found in scriptures.</p>
             ) : (
               <div className="space-y-6">
-                {multiLevelResults.antar.map((item, idx) => (
-                  <div key={item.id || idx} className="space-y-3">
-                    {showVerses && item.verses && (
-                      <div className="flex items-center gap-2">
-                        <span className="px-2 py-0.5 rounded-md bg-orange-100 text-orange-900 font-bold text-[18px]">Verses {item.verses}</span>
-                      </div>
-                    )}
-                    {item.general && (
-                      <div>
-                        <h5 className="text-[18px] font-bold uppercase tracking-wider text-emerald-700 mb-1">Auspicious & General Effects</h5>
-                        <p className="text-[18px] text-black leading-relaxed">{item.general}</p>
-                      </div>
-                    )}
-                    {item.adverse && (
-                      <div>
-                        <h5 className="text-[18px] font-bold uppercase tracking-wider text-rose-800 mb-1">Adverse Results</h5>
-                        <p className="text-[18px] text-black leading-relaxed">{item.adverse}</p>
-                      </div>
-                    )}
-                    {item.deathEffects && (
-                      <div>
-                        <h5 className="text-[18px] font-bold uppercase tracking-wider text-purple-900 mb-1">Maraka / Severe Concerns</h5>
-                        <p className="text-[18px] text-black leading-relaxed">{item.deathEffects}</p>
-                      </div>
-                    )}
-                    {item.remedial && (
-                      <div className="p-3 rounded-xl bg-amber-50 border border-amber-100 flex items-start gap-2">
-                        <div className="text-amber-600 text-[18px]">🕉️</div>
-                        <div>
-                          <h5 className="text-[18px] font-bold uppercase text-amber-800">Remedial Measures</h5>
-                          <p className="text-black text-[18px]">{item.remedial}</p>
-                        </div>
-                      </div>
-                    )}
+                <div className="flex flex-col sm:flex-row sm:justify-end gap-2 mb-2">
+                  <div className="inline-flex flex-col sm:flex-row bg-slate-100 p-1 rounded-xl items-center sm:gap-0 gap-1">
+                    <button
+                      onClick={() => setEvalMode('birth')}
+                      className={`w-full sm:w-auto px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${evalMode === 'birth' ? 'bg-white text-orange-900 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                    >
+                      Analyze Birth Chart
+                    </button>
+                    <button
+                      onClick={() => setEvalMode('transit')}
+                      className={`w-full sm:w-auto px-4 py-1.5 rounded-lg text-sm font-bold transition-all ${evalMode === 'transit' ? 'bg-blue-500 text-white shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                      disabled={!transitPlacements}
+                    >
+                      Analyze Transit
+                    </button>
                   </div>
-                ))}
+                </div>
+                {(() => {
+                  const processedAntar = [];
+                  multiLevelResults.antar.forEach((item, idx) => {
+                    let isMatch = false;
+                    let matchReasons = [];
+                    let hasConditions = !!item.conditions;
+
+                    const activePlacements = evalMode === 'transit' && transitPlacements ? transitPlacements : userPlanetPlacements;
+
+                    if (hasConditions && activePlacements.length > 0) {
+                      const adPlanetEn = EN_PLANET_MAP[multiPath.antardasha];
+                      const mdPlanetEn = EN_PLANET_MAP[multiPath.mahadasha];
+                      const adPos = activePlacements.find(p => p.planet === adPlanetEn);
+                      const mdPos = activePlacements.find(p => p.planet === mdPlanetEn);
+
+                      if (adPos) {
+                        if (item.conditions.adHouse && item.conditions.adHouse.includes(adPos.house)) {
+                          isMatch = true;
+                          matchReasons.push(`${getBilingualName(adPos.planet)} is placed in House ${adPos.house}`);
+                        }
+                        if (item.conditions.adHouseFromMd && mdPos) {
+                          let distance = ((adPos.house - mdPos.house + 12) % 12) + 1;
+                          if (item.conditions.adHouseFromMd.includes(distance)) {
+                            isMatch = true;
+                            matchReasons.push(`${getBilingualName(adPos.planet)} is placed ${distance} houses away from ${getBilingualName(mdPos.planet)}`);
+                          }
+                        }
+
+                        const aspectingPlanets = getAspectingPlanets(adPos.house, activePlacements);
+                        const conjunctPlanets = activePlacements.filter(p => p.house === adPos.house && p.planet !== adPos.planet).map(p => p.planet);
+
+                        const isBenefic = (p) => ['Jupiter', 'Venus', 'Mercury', 'Moon'].includes(p);
+                        const isMalefic = (p) => ['Saturn', 'Mars', 'Rahu', 'Ketu', 'Sun'].includes(p);
+
+                        if (item.conditions.drishtiFrom) {
+                          item.conditions.drishtiFrom.forEach(dPlanet => {
+                            if (aspectingPlanets.includes(dPlanet)) {
+                              isMatch = true;
+                              matchReasons.push(`${getBilingualName(adPos.planet)} receives a Drishti (Aspect) from ${getBilingualName(dPlanet)}`);
+                            }
+                            if (dPlanet === 'Benefic' && aspectingPlanets.some(isBenefic)) {
+                              isMatch = true;
+                              const benefics = aspectingPlanets.filter(isBenefic).map(getBilingualName).join(", ");
+                              matchReasons.push(`${getBilingualName(adPos.planet)} receives a Drishti from Benefic planet(s): ${benefics}`);
+                            }
+                            if (dPlanet === 'Malefic' && aspectingPlanets.some(isMalefic)) {
+                              isMatch = true;
+                              const malefics = aspectingPlanets.filter(isMalefic).map(getBilingualName).join(", ");
+                              matchReasons.push(`${getBilingualName(adPos.planet)} receives a Drishti from Malefic planet(s): ${malefics}`);
+                            }
+                          });
+                        }
+
+                        if (item.conditions.conjunctWith) {
+                          item.conditions.conjunctWith.forEach(cPlanet => {
+                            if (conjunctPlanets.includes(cPlanet)) {
+                              isMatch = true;
+                              matchReasons.push(`${getBilingualName(adPos.planet)} is Conjunct with ${getBilingualName(cPlanet)} in House ${adPos.house}`);
+                            }
+                            if (cPlanet === 'Benefic' && conjunctPlanets.some(isBenefic)) {
+                              isMatch = true;
+                              const benefics = conjunctPlanets.filter(isBenefic).map(getBilingualName).join(", ");
+                              matchReasons.push(`${getBilingualName(adPos.planet)} is Conjunct with Benefic planet(s): ${benefics}`);
+                            }
+                            if (cPlanet === 'Malefic' && conjunctPlanets.some(isMalefic)) {
+                              isMatch = true;
+                              const malefics = conjunctPlanets.filter(isMalefic).map(getBilingualName).join(", ");
+                              matchReasons.push(`${getBilingualName(adPos.planet)} is Conjunct with Malefic planet(s): ${malefics}`);
+                            }
+                          });
+                        }
+                      }
+                    }
+
+                    if (hasConditions && !isMatch && activePlacements.length > 0) {
+                      return; // Hide verses that have conditions but don't match the chart
+                    }
+
+                    const adPlanetEn = EN_PLANET_MAP[multiPath.antardasha];
+                    const adPos = activePlacements.find(p => p.planet === adPlanetEn);
+                    const house2Sign = (lagnaSignIndex + 1) % 12;
+                    const house7Sign = (lagnaSignIndex + 6) % 12;
+                    const SIGN_LORDS = {
+                      0: 'Mars', 1: 'Venus', 2: 'Mercury', 3: 'Moon', 
+                      4: 'Sun', 5: 'Mercury', 6: 'Venus', 7: 'Mars', 
+                      8: 'Jupiter', 9: 'Saturn', 10: 'Saturn', 11: 'Jupiter'
+                    };
+                    const isMarakaLord = SIGN_LORDS[house2Sign] === adPlanetEn || SIGN_LORDS[house7Sign] === adPlanetEn;
+                    const isInMarakaHouse = adPos && (adPos.house === 2 || adPos.house === 7);
+                    const isMaraka = isMarakaLord || isInMarakaHouse;
+
+                    const processedItem = { ...item, isMatch, matchReasons, reasonKey: matchReasons.slice().sort().join('|') };
+                    if (!isMaraka && processedItem.deathEffects && (processedItem.deathEffects.includes("Dhan's") || processedItem.deathEffects.includes("Yuvati's") || processedItem.deathEffects.includes("Dhan, or Yuvati"))) {
+                      processedItem.deathEffects = null;
+                      if (!processedItem.general && !processedItem.adverse && processedItem.remedial) {
+                        processedItem.remedial = null; // Remove remedial if it was only for deathEffects
+                      }
+                    }
+
+                    if (processedItem.isMatch && processedItem.reasonKey) {
+                      const existingGroup = processedAntar.find(g => g.isMatch && g.reasonKey === processedItem.reasonKey);
+                      if (existingGroup) {
+                        if (processedItem.verses) existingGroup.verses = existingGroup.verses ? existingGroup.verses + ", " + processedItem.verses : processedItem.verses;
+                        if (processedItem.general) existingGroup.general = (existingGroup.general ? existingGroup.general + "\n\n" : "") + processedItem.general;
+                        if (processedItem.adverse) existingGroup.adverse = (existingGroup.adverse ? existingGroup.adverse + "\n\n" : "") + processedItem.adverse;
+                        if (processedItem.deathEffects) existingGroup.deathEffects = (existingGroup.deathEffects ? existingGroup.deathEffects + "\n\n" : "") + processedItem.deathEffects;
+                        if (processedItem.remedial) existingGroup.remedial = (existingGroup.remedial ? existingGroup.remedial + "\n\n" : "") + processedItem.remedial;
+                        return; // Successfully merged, skip push
+                      }
+                    }
+
+                    processedAntar.push(processedItem);
+                  });
+
+                  return processedAntar.map((item, idx) => (
+                    <div key={item.id || idx} className={`space-y-3 p-4 rounded-xl transition-all ${item.isMatch ? (evalMode === 'transit' ? 'bg-blue-50 border-2 border-blue-300 shadow-sm' : 'bg-green-50 border-2 border-green-300 shadow-sm') : 'border border-transparent'}`}>
+                      {item.isMatch && (
+                        <div className={`mb-4 ${evalMode === 'transit' ? 'bg-blue-50/50 border-blue-200' : 'bg-green-50/50 border-green-200'} border rounded-xl p-3 shadow-sm`}>
+                          <div className={`inline-flex items-center px-3 py-1 ${evalMode === 'transit' ? 'bg-blue-500' : 'bg-green-500'} text-white text-xs font-bold rounded-full shadow-sm uppercase tracking-wider mb-2`}>
+                            ✨ Matches Your {evalMode === 'transit' ? 'Current Transit' : 'Birth Chart'}
+                          </div>
+                          <div className={`text-sm ${evalMode === 'transit' ? 'text-blue-800' : 'text-green-800'} space-y-1`}>
+                            {item.matchReasons.map((reason, reasonIdx) => (
+                              <div key={reasonIdx} className="flex items-start gap-2">
+                                <span className={`${evalMode === 'transit' ? 'text-blue-500' : 'text-green-500'} mt-0.5 font-bold`}>✓</span>
+                                <span className="font-medium">{reason}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {showVerses && item.verses && (
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 rounded-md bg-orange-100 text-orange-900 font-bold text-[18px]">Verses {item.verses}</span>
+                        </div>
+                      )}
+                      {item.general && (
+                        <div>
+                          <h5 className="text-[18px] font-bold uppercase tracking-wider text-emerald-700 mb-1">Auspicious & General Effects</h5>
+                          <p className="text-[18px] text-black leading-relaxed whitespace-pre-line">{item.general}</p>
+                        </div>
+                      )}
+                      {item.adverse && (
+                        <div>
+                          <h5 className="text-[18px] font-bold uppercase tracking-wider text-rose-800 mb-1">Adverse Results</h5>
+                          <p className="text-[18px] text-black leading-relaxed whitespace-pre-line">{item.adverse}</p>
+                        </div>
+                      )}
+                      {item.deathEffects && (
+                        <div>
+                          <h5 className="text-[18px] font-bold uppercase tracking-wider text-purple-900 mb-1">Maraka / Severe Concerns</h5>
+                          <p className="text-[18px] text-black leading-relaxed whitespace-pre-line">{item.deathEffects}</p>
+                        </div>
+                      )}
+                      {item.remedial && (
+                        <div className="p-3 rounded-xl bg-amber-50 border border-amber-100 flex items-start gap-2">
+                          <div className="text-amber-600 text-[18px]">🕉️</div>
+                          <div>
+                            <h5 className="text-[18px] font-bold uppercase text-amber-800">Remedial Measures</h5>
+                            <p className="text-black text-[18px] whitespace-pre-line">{item.remedial}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ));
+                })()}
               </div>
             )}
           </div>
@@ -734,13 +1082,42 @@ export default function VimshottariExplanation({ currentActiveDasha }) {
           {/* Level 3: Pratyantardasha (Shown if dashaDepth >= 3) */}
           {dashaDepth >= 3 && (
             <div className="border border-slate-100 rounded-3xl p-6 bg-white shadow-sm space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                 <h4 className="text-[20px] font-bold text-orange-950 flex items-center gap-2">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-yellow-200 text-black text-[20px] font-medium">3</span>
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-yellow-200 text-black text-[20px] font-medium">3</span>
                   Pratyantar Dasha Effects
                 </h4>
-                <span className="text-[20px] font-semibold text-slate-900">{getBilingualName(multiPath.mahadasha)} - {getBilingualName(multiPath.pratyantar)}</span>
+                <span className="text-[20px] font-semibold text-slate-900 text-right md:text-left">{getBilingualName(multiPath.mahadasha)} - {getBilingualName(multiPath.pratyantar)}</span>
               </div>
+              {(() => {
+                const pPlanetEn = EN_PLANET_MAP[multiPath.pratyantar];
+                const pPosGlobal = userPlanetPlacements.find(p => p.planet === pPlanetEn);
+                const pTransit = transitPlacements ? transitPlacements.find(p => p.planet === pPlanetEn) : null;
+                if (!pPosGlobal) return null;
+                return (
+                  <div className="flex flex-col md:flex-row gap-4 mt-2 mb-4">
+                    <div className="flex-1 bg-yellow-50/50 border border-yellow-100 rounded-xl p-3">
+                      <div className="text-[14px] font-bold uppercase tracking-wider text-yellow-800/70 mb-1">Pratyantar Lord ({getBilingualName(multiPath.pratyantar)})</div>
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        <div className="bg-white/60 p-2 rounded-lg border border-yellow-100/50">
+                          <div className="text-[14px] uppercase font-bold text-slate-900 mb-0.5">Birth Chart</div>
+                          <div className="text-[14px] font-bold text-yellow-900">House {pPosGlobal.house}</div>
+                          <div className="text-[14px] text-yellow-700">{pPosGlobal.sign}</div>
+                        </div>
+                        <div className="bg-white/60 p-2 rounded-lg border border-yellow-100/50">
+                          <div className="text-[14px] uppercase font-bold text-slate-900 mb-0.5">Current Transit</div>
+                          {pTransit ? (
+                            <>
+                              <div className="text-[14px] font-bold text-blue-900">House {pTransit.house}</div>
+                              <div className="text-[14px] text-blue-700">{pTransit.sign}</div>
+                            </>
+                          ) : <div className="text-[14px] text-slate-900 mt-1">Loading...</div>}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
               {multiLevelResults.pratyantar.length === 0 ? (
                 <p className=" text-[18px] text-slate-900 italic">No specific combination text found in scriptures.</p>
               ) : (
@@ -763,13 +1140,42 @@ export default function VimshottariExplanation({ currentActiveDasha }) {
           {/* Level 4: Sookshmadasha (Shown if dashaDepth >= 4) */}
           {dashaDepth >= 4 && (
             <div className="border border-slate-100 rounded-3xl p-6 bg-white shadow-sm space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                 <h4 className="text-[20px] font-bold text-orange-950 flex items-center gap-2">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-yellow-200 text-black text-[20px] font-medium">4</span>
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-yellow-200 text-black text-[20px] font-medium">4</span>
                   Sookshma Dasha Effects
                 </h4>
-                <span className="text-[20px] font-semibold text-slate-900">{getBilingualName(multiPath.mahadasha)} - {getBilingualName(multiPath.sookshma)}</span>
+                <span className="text-[20px] font-semibold text-slate-900 text-right md:text-left">{getBilingualName(multiPath.mahadasha)} - {getBilingualName(multiPath.sookshma)}</span>
               </div>
+              {(() => {
+                const sPlanetEn = EN_PLANET_MAP[multiPath.sookshma];
+                const sPosGlobal = userPlanetPlacements.find(p => p.planet === sPlanetEn);
+                const sTransit = transitPlacements ? transitPlacements.find(p => p.planet === sPlanetEn) : null;
+                if (!sPosGlobal) return null;
+                return (
+                  <div className="flex flex-col md:flex-row gap-4 mt-2 mb-4">
+                    <div className="flex-1 bg-emerald-50/50 border border-emerald-100 rounded-xl p-3">
+                      <div className="text-[14px] font-bold uppercase tracking-wider text-emerald-800/70 mb-1">Sookshma Lord ({getBilingualName(multiPath.sookshma)})</div>
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        <div className="bg-white/60 p-2 rounded-lg border border-emerald-100/50">
+                          <div className="text-[14px] uppercase font-bold text-slate-900 mb-0.5">Birth Chart</div>
+                          <div className="text-[14px] font-bold text-emerald-900">House {sPosGlobal.house}</div>
+                          <div className="text-[14px] text-emerald-700">{sPosGlobal.sign}</div>
+                        </div>
+                        <div className="bg-white/60 p-2 rounded-lg border border-emerald-100/50">
+                          <div className="text-[14px] uppercase font-bold text-slate-900 mb-0.5">Current Transit</div>
+                          {sTransit ? (
+                            <>
+                              <div className="text-[14px] font-bold text-blue-900">House {sTransit.house}</div>
+                              <div className="text-[14px] text-blue-700">{sTransit.sign}</div>
+                            </>
+                          ) : <div className="text-[14px] text-slate-900 mt-1">Loading...</div>}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
               {multiLevelResults.sookshma.length === 0 ? (
                 <p className="text-[18px] text-slate-900 italic">No specific combination text found in scriptures.</p>
               ) : (
@@ -792,13 +1198,42 @@ export default function VimshottariExplanation({ currentActiveDasha }) {
           {/* Level 5: Pranadasha (Shown if dashaDepth >= 5) */}
           {dashaDepth >= 5 && (
             <div className="border border-slate-100 rounded-3xl p-6 bg-white shadow-sm space-y-4">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 border-b border-slate-100 pb-3">
                 <h4 className="text-[20px] font-bold text-orange-950 flex items-center gap-2">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-yellow-200 text-orange-900 text-[20px] font-black">5</span>
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-yellow-200 text-orange-900 text-[20px] font-black">5</span>
                   Prana Dasha Effects
                 </h4>
-                <span className="text-[20px] font-semibold text-slate-900">{getBilingualName(multiPath.mahadasha)} - {getBilingualName(multiPath.prana)}</span>
+                <span className="text-[20px] font-semibold text-slate-900 text-right md:text-left">{getBilingualName(multiPath.mahadasha)} - {getBilingualName(multiPath.prana)}</span>
               </div>
+              {(() => {
+                const prPlanetEn = EN_PLANET_MAP[multiPath.prana];
+                const prPosGlobal = userPlanetPlacements.find(p => p.planet === prPlanetEn);
+                const prTransit = transitPlacements ? transitPlacements.find(p => p.planet === prPlanetEn) : null;
+                if (!prPosGlobal) return null;
+                return (
+                  <div className="flex flex-col md:flex-row gap-4 mt-2 mb-4">
+                    <div className="flex-1 bg-purple-50/50 border border-purple-100 rounded-xl p-3">
+                      <div className="text-[14px] font-bold uppercase tracking-wider text-purple-800/70 mb-1">Prana Lord ({getBilingualName(multiPath.prana)})</div>
+                      <div className="grid grid-cols-2 gap-2 mt-2">
+                        <div className="bg-white/60 p-2 rounded-lg border border-purple-100/50">
+                          <div className="text-[14px] uppercase font-bold text-slate-900 mb-0.5">Birth Chart</div>
+                          <div className="text-[14px] font-bold text-purple-900">House {prPosGlobal.house}</div>
+                          <div className="text-[14px] text-purple-700">{prPosGlobal.sign}</div>
+                        </div>
+                        <div className="bg-white/60 p-2 rounded-lg border border-purple-100/50">
+                          <div className="text-[14px] uppercase font-bold text-slate-900 mb-0.5">Current Transit</div>
+                          {prTransit ? (
+                            <>
+                              <div className="text-[14px] font-bold text-blue-900">House {prTransit.house}</div>
+                              <div className="text-[14px] text-blue-700">{prTransit.sign}</div>
+                            </>
+                          ) : <div className="text-[14px] text-slate-900 mt-1">Loading...</div>}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
               {multiLevelResults.prana.length === 0 ? (
                 <p className="text-[18px] text-slate-900 italic">No specific combination text found in scriptures.</p>
               ) : (

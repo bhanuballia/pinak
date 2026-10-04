@@ -212,6 +212,16 @@ def compute_detailed_strength(chart):
     results = {}
     engine = ShadbalaEngine()
     
+    # Import Harsha Bala engine locally to avoid circular imports
+    from core.analysis.vargeeya_bala_engine import calculate_tajaka_harsha_bala
+    
+    # Calculate Harsha Bala
+    asc_deg = chart.get('ascendant', 0)
+    # Check if daytime birth (Sun above horizon roughly)
+    sun_house = get_planet_house(chart, "Sun")
+    is_day = sun_house in [7, 8, 9, 10, 11, 12] if sun_house else True
+    harsha_scores = calculate_tajaka_harsha_bala(chart.get('planets', {}), asc_deg, is_day)
+    
     # Calculate using the new rich Shadbala engine
     engine_results = engine.compute(chart)
     
@@ -267,6 +277,7 @@ def compute_detailed_strength(chart):
             "dignity": dignity,
             "ishta_phala": ishta,
             "kashta_phala": kashta,
+            "harsha_bala": harsha_scores.get(planet, 0),
             "dik_bala": dig,
             "sthana": sthana,
             "dig": dig,

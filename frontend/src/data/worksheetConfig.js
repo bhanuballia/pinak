@@ -39,6 +39,7 @@ export const CELL_CONTENTS = [
   { id: "transit", label: "Today-Gochar", category: "Charts" },
   { id: "current_positions", label: "Current Planet Position", category: "Charts" },
   { id: "vimsopaka", label: "Vimsopaka Bala", category: "Tables" },
+  { id: "vaiseshikamsa", label: "Vaiseshikamsa", category: "Tables" },
   { id: "empty", label: "Empty Cell", category: "System" }
 ];
 
