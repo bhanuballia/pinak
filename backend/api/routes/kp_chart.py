@@ -41,7 +41,7 @@ TOTAL_YEARS = 120
 NAKSHATRA_DEG = 13.333333333333
 
 def get_kp_lords(longitude: float) -> Dict[str, str]:
-    """Calculates Sign Lord, Star (Nakshatra) Lord, Sub Lord, and Sub-Sub Lord for a given degree."""
+    """Calculates Sign Lord, Star (Nakshatra) Lord, Sub Lord, Sub-Sub Lord, Sookshma, Praana, and Deha Lords for a given degree."""
     
     # 1. Sign Lord
     sign_idx = get_sign_index(longitude)
@@ -52,48 +52,40 @@ def get_kp_lords(longitude: float) -> Dict[str, str]:
     nak_idx = nak_info["nakshatra_index"]
     star_lord = KP_LORD_SEQUENCE[nak_idx % 9]
     
-    # 3. Sub Lord
     degrees_inside_nak = nak_info["degrees_completed"]
-    start_lord_idx = nak_idx % 9
+    current_idx = nak_idx % 9
+    current_span = NAKSHATRA_DEG
+    deg_rem = degrees_inside_nak
     
-    sub_lord = ""
-    sub_sub_lord = ""
-    
-    cumulative_deg = 0.0
-    for i in range(9):
-        current_lord_idx = (start_lord_idx + i) % 9
-        lord = KP_LORD_SEQUENCE[current_lord_idx]
-        portion = (DASHA_YEARS[lord] / TOTAL_YEARS) * NAKSHATRA_DEG
-        
-        if cumulative_deg + portion >= degrees_inside_nak:
-            sub_lord = lord
+    sub_lords = []
+    # We need 5 levels: Sub, Sub-Sub, Sookshma, Praana, Deha
+    for _ in range(5):
+        found_lord = ""
+        cumulative = 0.0
+        for i in range(9):
+            lord_idx = (current_idx + i) % 9
+            lord = KP_LORD_SEQUENCE[lord_idx]
+            portion = (DASHA_YEARS[lord] / TOTAL_YEARS) * current_span
             
-            # 4. Sub-Sub Lord
-            degrees_inside_sub = degrees_inside_nak - cumulative_deg
-            ss_cumulative = 0.0
+            # Use small epsilon for float precision issues
+            if cumulative + portion >= deg_rem - 1e-9:
+                found_lord = lord
+                current_idx = lord_idx
+                deg_rem -= cumulative
+                current_span = portion
+                break
+            cumulative += portion
             
-            for j in range(9):
-                ss_lord_idx = (current_lord_idx + j) % 9
-                ss_lord = KP_LORD_SEQUENCE[ss_lord_idx]
-                ss_portion = (DASHA_YEARS[ss_lord] / TOTAL_YEARS) * portion
-                
-                if ss_cumulative + ss_portion >= degrees_inside_sub:
-                    sub_sub_lord = ss_lord
-                    break
-                ss_cumulative += ss_portion
-                
-            break
-            
-        cumulative_deg += portion
-        
-    if not sub_lord: sub_lord = KP_LORD_SEQUENCE[-1]
-    if not sub_sub_lord: sub_sub_lord = KP_LORD_SEQUENCE[-1]
-    
+        sub_lords.append(found_lord or KP_LORD_SEQUENCE[-1])
+
     return {
         "sign_lord": sign_lord,
         "star_lord": star_lord,
-        "sub_lord": sub_lord,
-        "sub_sub_lord": sub_sub_lord,
+        "sub_lord": sub_lords[0],
+        "sub_sub_lord": sub_lords[1],
+        "sookshma_lord": sub_lords[2],
+        "praana_lord": sub_lords[3],
+        "deha_lord": sub_lords[4],
         "nak_name": nak_info["nakshatra_name"]
     }
 
@@ -176,7 +168,10 @@ def calculate_kp_chart(payload: Dict[str, Any] = Body(...)):
                 "sign_lord": lords["sign_lord"],
                 "star_lord": lords["star_lord"],
                 "sub_lord": lords["sub_lord"],
-                "sub_sub_lord": lords["sub_sub_lord"]
+                "sub_sub_lord": lords["sub_sub_lord"],
+                "sookshma_lord": lords["sookshma_lord"],
+                "praana_lord": lords["praana_lord"],
+                "deha_lord": lords["deha_lord"]
             })
             
         # Add Ascendant to planets list (often used in KP as a node)
@@ -191,7 +186,10 @@ def calculate_kp_chart(payload: Dict[str, Any] = Body(...)):
             "sign_lord": asc_lords["sign_lord"],
             "star_lord": asc_lords["star_lord"],
             "sub_lord": asc_lords["sub_lord"],
-            "sub_sub_lord": asc_lords["sub_sub_lord"]
+            "sub_sub_lord": asc_lords["sub_sub_lord"],
+            "sookshma_lord": asc_lords["sookshma_lord"],
+            "praana_lord": asc_lords["praana_lord"],
+            "deha_lord": asc_lords["deha_lord"]
         })
 
         # Add Uranus, Neptune, Pluto
@@ -211,7 +209,10 @@ def calculate_kp_chart(payload: Dict[str, Any] = Body(...)):
                     "sign_lord": lords["sign_lord"],
                     "star_lord": lords["star_lord"],
                     "sub_lord": lords["sub_lord"],
-                    "sub_sub_lord": lords["sub_sub_lord"]
+                    "sub_sub_lord": lords["sub_sub_lord"],
+                    "sookshma_lord": lords["sookshma_lord"],
+                    "praana_lord": lords["praana_lord"],
+                    "deha_lord": lords["deha_lord"]
                 })
             except Exception as e:
                 print(f"[API WARN] Failed to add outer planet {p_name} to KP chart: {e}")
@@ -229,7 +230,10 @@ def calculate_kp_chart(payload: Dict[str, Any] = Body(...)):
                 "sign_lord": lords["sign_lord"],
                 "star_lord": lords["star_lord"],
                 "sub_lord": lords["sub_lord"],
-                "sub_sub_lord": lords["sub_sub_lord"]
+                "sub_sub_lord": lords["sub_sub_lord"],
+                "sookshma_lord": lords["sookshma_lord"],
+                "praana_lord": lords["praana_lord"],
+                "deha_lord": lords["deha_lord"]
             })
             
         # Determine KP Significators (Simplified Occupants and Owners logic)
