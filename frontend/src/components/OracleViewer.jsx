@@ -49,7 +49,6 @@ const ORACLE_ITEMS = [
     { id: "sadesati", label: "Sade Sati", icon: "⚖️", color: "linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%)" },
     { id: "rahu", label: "Rahu Dosha", icon: "🌑", color: "linear-gradient(135deg, #115e59 0%, #064e3b 100%)" },
     { id: "ketu", label: "Ketu Dosha", icon: "💥", color: "linear-gradient(135deg, #9a3412 0%, #7f1d1d 100%)" },
-    { id: "loshu", label: "Lo Shu Grid", icon: "🔢", color: "linear-gradient(135deg, #6366f1 0%, #1d4ed8 100%)" },
 ];
 
 const KALSARP_INTRO = "Rahu and Ketu are always positioned 7th houses away from each other. When all the planets fall within these 7 houses and rest of the 5 houses are vacant, it is called a Kaal Sarpa Dosha. This is considered a very inauspicious dosha in Vedic astrology. When assessing a horoscope, it is important to consider the degree of planets to see if a planet actually falls within the 7 houses range between Rahu and Ketu. This Dosha causes a lot of struggle in life in all aspects including marriage, career, finance, health, children etc.";

@@ -2,6 +2,22 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getSearchOptions } from '../utils/searchConfig';
 
 export default function GlobalSearchModal() {
+  const searchParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
+  const referrer = typeof document !== 'undefined' ? document.referrer : '';
+
+  // Check if opened from frontend1 or requested to hide search
+  const isFromFrontend1 = 
+    searchParams.get('hide_search') === 'true' ||
+    searchParams.get('from_app') === 'frontend1' ||
+    referrer.includes('5174') ||
+    referrer.includes('3000') ||
+    referrer.toLowerCase().includes('astro consult') ||
+    referrer.includes('frontend1');
+
+  if (isFromFrontend1) {
+    return null;
+  }
+
   const [isOpen, setIsOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showError, setShowError] = useState("");

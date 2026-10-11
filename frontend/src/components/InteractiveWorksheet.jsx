@@ -722,7 +722,6 @@ const CELL_CONTENTS = [
   { id: "d8", label: "D8 - Ashtamsha Chart", category: "Charts" },
   { id: "d9", label: "D9 - Navamsha Chart", category: "Charts" },
   { id: "d10", label: "D10 - Dashamsha Chart", category: "Charts" },
-  { id: "d11", label: "D11 - Rudramsha Chart", category: "Charts" },
   { id: "d12", label: "D12 - Dwadashamsha", category: "Charts" },
   { id: "d16", label: "D16 - Shodashamsha", category: "Charts" },
   { id: "d20", label: "D20 - Vimsamsa Chart", category: "Charts" },
@@ -4736,23 +4735,23 @@ const WorksheetCell = ({ contentId, data, transitPositions, dashaSimDate, onSele
       let chartPlanetPositions = data?.planet_positions;
       let chartTransitHouses = null;
       if (contentId === 'd1' && transitPositions) {
-          const lagnaSignIndex = data?.charts?.ascendant_sign_index !== undefined ? data.charts.ascendant_sign_index :
+        const lagnaSignIndex = data?.charts?.ascendant_sign_index !== undefined ? data.charts.ascendant_sign_index :
           (data?.charts?.houses?.[1]?.sign_index !== undefined ? data.charts.houses[1].sign_index : Math.floor((data?.charts?.houses?.[1]?.cusp_deg || 0) / 30));
-          chartTransitHouses = {};
-          const valid = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
-          Object.entries(transitPositions).forEach(([planet, pos]) => {
-            if (!valid.includes(planet)) return;
-            const signIdx = pos.sidereal?.sign_index !== undefined ? pos.sidereal.sign_index : Math.floor((pos.sidereal?.lon || pos.lon) / 30);
-            const houseNum = (signIdx - lagnaSignIndex + 12) % 12 + 1;
-            if (!chartTransitHouses[houseNum]) chartTransitHouses[houseNum] = { planets: [] };
-            chartTransitHouses[houseNum].planets.push(planet);
-          });
-          chartPlanetPositions = Object.entries(transitPositions).map(([k, v]) => ({
-            planet: k,
-            degree: v.sidereal?.lon || v.lon,
-            is_retrograde: v.is_retrograde || v.sidereal?.is_retrograde,
-            is_combust: v.is_combust || v.sidereal?.is_combust
-          }));
+        chartTransitHouses = {};
+        const valid = ["Sun", "Moon", "Mars", "Mercury", "Jupiter", "Venus", "Saturn", "Rahu", "Ketu"];
+        Object.entries(transitPositions).forEach(([planet, pos]) => {
+          if (!valid.includes(planet)) return;
+          const signIdx = pos.sidereal?.sign_index !== undefined ? pos.sidereal.sign_index : Math.floor((pos.sidereal?.lon || pos.lon) / 30);
+          const houseNum = (signIdx - lagnaSignIndex + 12) % 12 + 1;
+          if (!chartTransitHouses[houseNum]) chartTransitHouses[houseNum] = { planets: [] };
+          chartTransitHouses[houseNum].planets.push(planet);
+        });
+        chartPlanetPositions = Object.entries(transitPositions).map(([k, v]) => ({
+          planet: k,
+          degree: v.sidereal?.lon || v.lon,
+          is_retrograde: v.is_retrograde || v.sidereal?.is_retrograde,
+          is_combust: v.is_combust || v.sidereal?.is_combust
+        }));
       }
       return <ZodiacChart planetPositions={chartPlanetPositions} houses={vData?.houses} transitHouses={chartTransitHouses} onPlanetClick={onPlanetClick} title={title} variant="legacy" planetEffects={planetEffects} scaleText={1.5} defaultRect={isBlankSheet} />;
     }
@@ -6782,13 +6781,13 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
               <div className="absolute top-full left-0 mt-2 w-72 max-h-[75vh] overflow-y-auto custom-scrollbar bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/varga:opacity-100 group-hover/varga:visible transition-all duration-200 py-2 divide-y divide-slate-100">
                 <div className="pb-1">
                   <button onClick={() => window.open('/?chart_view_1=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight flex items-center gap-2">
-                    <span>📐</span> Chart View 1
+                    <span></span> Chart View 1
                   </button>
                   <button onClick={() => window.open('/?chart_view_2=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight flex items-center gap-2">
-                    <span>📐</span> Chart View 2
+                    <span></span> Chart View 2
                   </button>
                   <button onClick={() => window.open('/?chart_view_3=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight flex items-center gap-2">
-                    <span>📐</span> Chart View 3
+                    <span></span> Chart View 3
                   </button>
                 </div>
 
@@ -6876,7 +6875,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                       <span>AI Oracle</span>
                       <span className="text-pink-500 animate-bounce">✨</span>
                     </button>
-                    {CELL_CONTENTS.filter(c => ["planets_table", "panchang", "numerical", "gemstones", "transit_gemstones", "d11"].includes(c.id)).map(c => (
+                    {CELL_CONTENTS.filter(c => ["planets_table"].includes(c.id)).map(c => (
                       <button
                         key={c.id}
                         onClick={() => handleMaximizeInNewWindow(c.id)}
@@ -6895,7 +6894,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                   </button>
                   <div className="absolute top-0 left-full ml-1 w-56 bg-white border border-indigo-100 rounded-xl shadow-2xl opacity-0 invisible group-hover/evaluation:opacity-100 group-hover/evaluation:visible transition-all duration-200 py-2">
                     <button onClick={() => window.open('/?bala_strengths=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Bala Strengths</button>
-                    {CELL_CONTENTS.filter(c => ["shadbala", "bhavbala", "vimsopaka", "vaiseshikamsa", "vaiseshikamsa2", "vaiseshikamsa3", "vaiseshikamsa4", "vaiseshikamsa5", "shodashvarga_summary", "dignity", "relationships", "aspects_summary", "ashtakavarga", "ashtakavarga_reduction", "krishnamurthy_chart", "krishnamurthy_significators"].includes(c.id)).map(c => (
+                    {CELL_CONTENTS.filter(c => ["shadbala", "bhavbala", "vimsopaka", "shodashvarga_summary", "dignity", "relationships", "aspects_summary", "ashtakavarga", "ashtakavarga_reduction", "krishnamurthy_chart", "krishnamurthy_significators"].includes(c.id)).map(c => (
                       <React.Fragment key={c.id}>
                         <button
                           onClick={() => handleMaximizeInNewWindow(c.id)}
@@ -6998,7 +6997,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                   </div>
                 </div>
                 {/* Other standard items */}
-                {CELL_CONTENTS.filter(c => c.category !== "System" && c.id !== "transit_compare" && !['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60', 'shadbala', 'bhavbala', 'vimsopaka', 'shodashvarga_summary', 'dignity', 'relationships', 'aspects_summary', 'ashtakavarga', 'ashtakavarga_reduction', 'krishnamurthy_chart', 'krishnamurthy_significators', 'planets_table', 'panchang', 'numerical', 'gemstones', 'transit_gemstones', 'vimshottari', 'yogini', 'shodashottari', 'chaturshitisama', 'ashtottari', 'dwisaptatisama', 'dwadashottari', 'panchottari', 'shatabdika', 'shashtihayani', 'chara', 'sthira', 'shoola', 'niryaana_shoola', 'mandooka', 'drig', 'sudasha', 'panch_pakshi', 'advanced_nakshatra', 'd11', 'basic_transit_results', 'transit_houses_results', 'transit_amsa_rulers', 'transit_key_info', 'kp_data_table'].includes(c.id)).map(c => (
+                {CELL_CONTENTS.filter(c => c.category !== "System" && c.id !== "transit_compare" && !['d1', 'd2', 'd3', 'd4', 'd5', 'd6', 'd7', 'd8', 'd9', 'd10', 'd12', 'd16', 'd20', 'd24', 'd27', 'd30', 'd40', 'd45', 'd60', 'shadbala', 'bhavbala', 'vimsopaka', 'shodashvarga_summary', 'dignity', 'relationships', 'aspects_summary', 'ashtakavarga', 'ashtakavarga_reduction', 'krishnamurthy_chart', 'krishnamurthy_significators', 'planets_table', 'panchang', 'numerical', 'gemstones', 'transit_gemstones', 'vimshottari', 'yogini', 'shodashottari', 'chaturshitisama', 'ashtottari', 'dwisaptatisama', 'dwadashottari', 'panchottari', 'shatabdika', 'shashtihayani', 'chara', 'sthira', 'shoola', 'niryaana_shoola', 'mandooka', 'drig', 'sudasha', 'panch_pakshi', 'advanced_nakshatra', 'basic_transit_results', 'transit_houses_results', 'transit_amsa_rulers', 'transit_key_info', 'kp_data_table'].includes(c.id)).map(c => (
                   <button
                     key={c.id}
                     onClick={() => {
@@ -7025,7 +7024,6 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                 <button onClick={() => handleMaximizeInNewWindow('lagna')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Lagna</button>
                 <button onClick={() => window.open('/?classic_layout=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View</button>
                 <button onClick={() => window.open('/?classic_layout_2=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View 2</button>
-                <button onClick={() => window.open('/?kalachakra=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Kalachakra Diagram</button>
                 <button onClick={() => window.open('/?classic_layout_3=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View 3</button>
                 <button onClick={() => window.open('/?classic_layout_4=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Classic View 4</button>
                 <button onClick={() => window.open('/?transit_compare=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Compare Transit</button>
@@ -7039,6 +7037,7 @@ const InteractiveWorksheet = ({ data: incomingData, fullScreenInitial = null, is
                 <button onClick={() => handleMaximizeInNewWindow('current_positions')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Current Planet Position</button>
                 <button onClick={() => handleMaximizeInNewWindow('bhinnastavarga')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Bhinnashtavarga</button>
                 <button onClick={() => window.open('/?lordships=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Lordships</button>
+                <button onClick={() => window.open('/?kalachakra=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Kalachakra Diagram</button>
                 <button onClick={() => window.open('/?varga_sign_chart=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Varga Sign Chart</button>
                 <button onClick={() => window.open('/?gochara_wheel=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Gochar Wheel</button>
                 <button onClick={() => window.open('/?gochara_wheel_1=true', '_blank')} className="w-full text-left px-4 py-2 text-xs font-bold text-slate-700 hover:bg-indigo-50 hover:text-indigo-900 transition-colors uppercase tracking-tight">Gochar Wheel 1</button>

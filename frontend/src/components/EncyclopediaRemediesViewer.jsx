@@ -452,8 +452,12 @@ export default function EncyclopediaRemediesViewer() {
 
               {/* TAB: Gemstone Activation & Compatibility Wizard */}
               {selectedTab === 'gemWizard' && (() => {
-                const comp = getGemCompatibility(selectedGemTest);
-                const gemData = gemDetailsMaster[selectedGemTest];
+                const lifeStonePlanet = getPlanetFromGem(lagnaInfo?.lifeStone);
+                const lifeStoneKey = Object.keys(gemDetailsMaster).find(k => gemDetailsMaster[k].planet === lifeStonePlanet) || 'Ruby';
+                const effectiveGemTest = lifeStoneKey;
+                
+                const comp = getGemCompatibility(effectiveGemTest);
+                const gemData = gemDetailsMaster[effectiveGemTest];
                 const calculatedMainCarat = (bodyWeightKg / gemData.ratio).toFixed(2);
                 const calculatedUpratnaCarat = ((bodyWeightKg / gemData.ratio) * 1.5).toFixed(2);
 
@@ -466,7 +470,7 @@ export default function EncyclopediaRemediesViewer() {
                           <Gem className="w-7 h-7 text-rose-700" /> Interactive Gemstone Compatibility & Consecration Wizard
                         </h2>
                         <p className="text-[15px] text-rose-900 mt-1">
-                          Evaluate gemstone compatibility against your <strong className="text-rose-950">{selectedLagna} Lagna</strong>, calculate exact carat weights by body weight, and view step-by-step Pran Pratishta rituals.
+                          Evaluate your <strong className="text-rose-950">Life Stone ({gemData.mainGem})</strong> compatibility against your <strong className="text-rose-950">{selectedLagna} Lagna</strong>, calculate exact carat weights by body weight, and view step-by-step Pran Pratishta rituals.
                         </p>
                       </div>
 
@@ -483,15 +487,13 @@ export default function EncyclopediaRemediesViewer() {
                         </div>
 
                         <select
-                          value={selectedGemTest}
-                          onChange={(e) => setSelectedGemTest(e.target.value)}
-                          className="bg-rose-700 text-white font-bold px-4 py-2.5 rounded-xl border border-rose-800 focus:outline-none focus:ring-2 focus:ring-rose-500 shadow-sm text-[16px]"
+                          value={effectiveGemTest}
+                          disabled={true}
+                          className="bg-rose-700 text-white font-bold px-4 py-2.5 rounded-xl border border-rose-800 focus:outline-none focus:ring-2 focus:ring-rose-500 shadow-sm text-[16px] opacity-90 cursor-not-allowed"
                         >
-                          {Object.keys(gemDetailsMaster).map(gKey => (
-                            <option key={gKey} value={gKey} className="text-slate-900 bg-white">
-                              {gemDetailsMaster[gKey].mainGem} ({gemDetailsMaster[gKey].planet})
-                            </option>
-                          ))}
+                          <option value={effectiveGemTest} className="text-slate-900 bg-white">
+                            {gemData.mainGem} ({gemData.planet} - Life Stone)
+                          </option>
                         </select>
                       </div>
                     </div>
@@ -518,7 +520,7 @@ export default function EncyclopediaRemediesViewer() {
                           <p><strong>Affordable Upratna (उपरत्न):</strong> <span className="text-rose-900 font-bold">{gemData.upratna}</span></p>
                           <p><strong>Prescribed Metal:</strong> {gemData.metal}</p>
                           <p><strong>Target Finger:</strong> {gemData.finger}</p>
-                          <p><strong>Optimal Day & Time:</strong> {gemData.day}</p>
+                          <p><strong>Optimal Day & Time:</strong> It is traditionally worn on a {gemData.day} (during {gemData.planet}'s hora, typically between 5:00 AM and 7:00 AM or before 9:00 AM) during the Shukla Paksha phase.</p>
                         </div>
                       </div>
 
@@ -2081,7 +2083,6 @@ export default function EncyclopediaRemediesViewer() {
                       };
 
                       const activeDoshas = detectDoshas();
-                      if (activeDoshas.length === 0) return null;
 
                       return (
                         <div className="space-y-6 pt-4 border-t border-slate-800">
@@ -2089,10 +2090,44 @@ export default function EncyclopediaRemediesViewer() {
                             <ShieldAlert className="w-5 h-5 text-amber-400" /> 14. Kundali Dosha Remedies (कुण्डली दोष निवारण उपाय)
                           </h3>
                           <p className="text-[18px] text-slate-900">
-                            Astrological analysis of your Lagna Kundali reveals the presence of specific doshas. Below are the scriptural and modern remedies from the Vedic Encyclopedia to neutralize their adverse effects:
+                            Astrological analysis of your Lagna Kundali reveals the presence of specific doshas. Below is your Dosha status summary, followed by scriptural remedies from the Vedic Encyclopedia for any active doshas:
                           </p>
 
+                          {/* DOSHA SUMMARY SECTION */}
+                          <div className="bg-slate-50 border border-slate-200 p-6 rounded-2xl shadow-sm mb-6 mt-4">
+                            <h4 className="text-[18px] font-bold text-slate-900 mb-4 border-b border-slate-200 pb-2">Dosha Status Summary</h4>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                              {(() => {
+                                const activeIds = activeDoshas.map(d => d.id);
+                                const allDoshasList = [
+                                  { id: 'manglik', label: 'Manglik Dosha (मांगलिक दोष)' },
+                                  { id: 'sadesati', label: 'Sade Sati (साढ़ेसाती)' },
+                                  { id: 'kalsarp', label: 'Kaal Sarp Dosha (कालसर्प दोष)' },
+                                  { id: 'pitra', label: 'Pitra Dosha (पितृ दोष)' },
+                                  { id: 'rahu', label: 'Rahu Dosha (राहू दोष)' },
+                                  { id: 'ketu', label: 'Ketu Dosha (केतु दोष)' }
+                                ];
+                                return allDoshasList.map(dosha => {
+                                  const isActive = activeIds.includes(dosha.id);
+                                  return (
+                                    <div key={dosha.id} className="flex justify-between items-center bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
+                                      <span className="text-[16px] font-semibold text-slate-800">{dosha.label}</span>
+                                      <span className={`px-3 py-1 rounded-full text-[14px] font-bold border ${isActive ? 'bg-red-100 text-red-800 border-red-300' : 'bg-green-100 text-green-800 border-green-300'}`}>
+                                        {isActive ? 'Active' : 'Not Active'}
+                                      </span>
+                                    </div>
+                                  );
+                                });
+                              })()}
+                            </div>
+                          </div>
+
                           <div className="space-y-6">
+                            {activeDoshas.length === 0 && (
+                              <div className="bg-green-50 border border-green-200 p-6 rounded-2xl text-green-900 text-[18px] font-bold text-center shadow-sm">
+                                ✅ Congratulations! No major negative Doshas are active in your Kundali.
+                              </div>
+                            )}
                             {activeDoshas.map(dosha => {
                               const data = remediesData[dosha.key];
                               if (!data) return null;
