@@ -397,3 +397,37 @@ async def ask_choghadiya_oracle(request: ChoghadiyaOracleRequest):
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/monthly-sheet")
+def get_monthly_panchang_sheet(
+    year: int = Query(2026, description="Gregorian Year e.g. 2026"),
+    month: int = Query(10, ge=1, le=12, description="Month (1-12)"),
+    lat: float = Query(28.6139, description="Latitude (default Delhi)"),
+    lon: float = Query(77.2090, description="Longitude (default Delhi)"),
+    rashi: str = Query("मकर", description="Focus Zodiac sign in Hindi e.g. मकर, मेष, वृषभ"),
+    tz_offset: float = Query(5.5, description="Timezone offset in hours")
+):
+    """
+    Returns complete monthly Vedic Panchang sheet matching physical Panchang format:
+    - 01st and 15th Sunrise Gochar Kundali charts
+    - Graha Sthiti table (Planetary motions and degrees)
+    - Vrat, Parva & Tyohar (Fasts & Festivals)
+    - Shubh Muhurats (Vyapar, Vivah, Vahan, etc.)
+    - Kaal-Ganana (Amrit Siddhi, Ravi Yoga, Bhadra/Vishti, Panchak, Moon sign entries)
+    - Monthly Rashi Phal (Horoscope)
+    """
+    try:
+        from panchang.monthly_panchang_service import generate_monthly_panchang_sheet_data
+        data = generate_monthly_panchang_sheet_data(
+            year=year,
+            month=month,
+            lat=lat,
+            lon=lon,
+            rashi=rashi,
+            tz_offset=tz_offset
+        )
+        return data
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+

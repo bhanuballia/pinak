@@ -222,6 +222,9 @@ app.include_router(chaitra_routes.router, prefix="/api", tags=["Chaitra Chart"])
 app.include_router(jaimini.router, prefix="/api/jaimini_advanced", tags=["Advanced Jaimini"])
 app.include_router(btr.router, prefix="/api/btr", tags=["BTR Wizard"])
 app.include_router(ayurdaya.router, prefix="/api/ayurdaya", tags=["ayurdaya"])
+from api.routes import hundred_page_bridge
+app.include_router(hundred_page_bridge.router, prefix="/api/kundali-100", tags=["100-Page Kundali Engine"])
+
 
 from fastapi import WebSocket, WebSocketDisconnect
 @app.websocket("/ws")
