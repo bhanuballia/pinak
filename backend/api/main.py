@@ -46,7 +46,7 @@ from api.routes import karaka_routes
 from api.routes import tithi_routes
 from api.routes.astro import router as astro_router
 from api.matchmaking_routes import router as matchmaking_router
-from matchmaking.websocket.websocket_server import router as websocket_router
+from matchmaking.websocket.websocket_server import router as matchmaking_websocket_router
 from api.routes import decision
 from api.routes import oracle
 from api.routes import horoscope
@@ -176,7 +176,7 @@ async def get_yantras():
 app.include_router(oracle_router, prefix="/api") # This seems to be the old one?
 app.include_router(oracle.router, prefix="/api", tags=["Oracle"])
 app.include_router(matchmaking_router)
-app.include_router(websocket_router)
+app.include_router(matchmaking_websocket_router)
 app.include_router(astro_router, prefix="/api")
 app.include_router(decision.router, prefix="/api", tags=["Decision"])
 app.include_router(horoscope.router, prefix="/api/horoscope", tags=["Horoscope"])

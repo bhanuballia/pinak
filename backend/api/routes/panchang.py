@@ -5,7 +5,15 @@ import datetime
 import calendar
 from astronomy.julian import datetime_to_julian, julian_to_datetime
 from astronomy.sun_calculations import calculate_noaa_sunrise_sunset
-from panchang.tithi_yoga_karana import compute_tithi, compute_nakshatra, compute_yoga, compute_karana, get_tithi_boundaries, get_nakshatra_boundaries
+from panchang.tithi_yoga_karana import (
+    compute_tithi,
+    compute_nakshatra,
+    compute_yoga,
+    compute_karana,
+    get_tithi_boundaries,
+    get_nakshatra_boundaries,
+    get_yoga_boundaries
+)
 from panchang.adhik_maas import check_adhik_maas, find_next_adhik_maas
 from panchang.ekadashi_rules import check_ekadashi_vrat, check_smarta_ekadashi_vrat
 from panchang.choghadiya import calculate_choghadiya
@@ -106,17 +114,7 @@ async def get_daily_panchang(
         else:
             dt_local = datetime.datetime.now()
 
-        dt_utc = dt_local - datetime.timedelta(hours=tz)
-        jd_ut = datetime_to_julian(dt_utc)
-
-        # Basic 5 Limbs
-        tithi = compute_tithi(jd_ut)
-        nakshatra = compute_nakshatra(jd_ut)
-        yoga = compute_yoga(jd_ut)
-        karana = compute_karana(jd_ut)
-        day = get_day_name(dt_local)
-
-        # Calculate precise Sunrise/Sunset for Muhurta calculations using NOAA algorithm
+        # Calculate precise Sunrise/Sunset for Udaya Panchang and Muhurta calculations using NOAA algorithm
         rise_time, set_time = calculate_noaa_sunrise_sunset(dt_local.date(), lat, lon, tz)
         if rise_time and set_time:
             sunrise_dt = rise_time
@@ -125,6 +123,50 @@ async def get_daily_panchang(
             # Fallback for polar day/night where the sun doesn't rise/set
             sunrise_dt = datetime.datetime.combine(dt_local.date(), datetime.time(6, 0))
             sunset_dt = datetime.datetime.combine(dt_local.date(), datetime.time(18, 0))
+
+        # In Vedic Astrology, Panchang limbs (Tithi, Nakshatra, Yoga, Karana) of the day
+        # are traditionally determined at Sunrise (उदयातिथि / सूर्योदय काल).
+        # We compute primary limbs at sunrise, while also providing exact transition boundaries.
+        dt_utc_sunrise = sunrise_dt - datetime.timedelta(hours=tz)
+        jd_ut_sunrise = datetime_to_julian(dt_utc_sunrise)
+
+        # Basic 5 Limbs at Sunrise (Udaya)
+        tithi = compute_tithi(jd_ut_sunrise)
+        nakshatra = compute_nakshatra(jd_ut_sunrise)
+        yoga = compute_yoga(jd_ut_sunrise)
+        karana = compute_karana(jd_ut_sunrise)
+        day = get_day_name(dt_local)
+
+        # Compute exact transition timings for Tithi, Yoga & Nakshatra
+        try:
+            t_start_jd, t_end_jd = get_tithi_boundaries(jd_ut_sunrise)
+            t_start_local = julian_to_datetime(t_start_jd) + datetime.timedelta(hours=tz)
+            t_end_local = julian_to_datetime(t_end_jd) + datetime.timedelta(hours=tz)
+            tithi["start_time"] = t_start_local.strftime("%I:%M %p, %d %b")
+            tithi["end_time"] = t_end_local.strftime("%I:%M %p, %d %b")
+            tithi["end_time_short"] = t_end_local.strftime("%I:%M %p")
+        except Exception:
+            pass
+
+        try:
+            y_start_jd, y_end_jd = get_yoga_boundaries(jd_ut_sunrise)
+            y_start_local = julian_to_datetime(y_start_jd) + datetime.timedelta(hours=tz)
+            y_end_local = julian_to_datetime(y_end_jd) + datetime.timedelta(hours=tz)
+            yoga["start_time"] = y_start_local.strftime("%I:%M %p, %d %b")
+            yoga["end_time"] = y_end_local.strftime("%I:%M %p, %d %b")
+            yoga["end_time_short"] = y_end_local.strftime("%I:%M %p")
+        except Exception:
+            pass
+
+        try:
+            n_start_jd, n_end_jd = get_nakshatra_boundaries(jd_ut_sunrise)
+            n_start_local = julian_to_datetime(n_start_jd) + datetime.timedelta(hours=tz)
+            n_end_local = julian_to_datetime(n_end_jd) + datetime.timedelta(hours=tz)
+            nakshatra["start_time"] = n_start_local.strftime("%I:%M %p, %d %b")
+            nakshatra["end_time"] = n_end_local.strftime("%I:%M %p, %d %b")
+            nakshatra["end_time_short"] = n_end_local.strftime("%I:%M %p")
+        except Exception:
+            pass
         
         # Calculate Next Sunrise for Choghadiya Night calculations
         next_dt_local = dt_local + datetime.timedelta(days=1)
@@ -137,7 +179,7 @@ async def get_daily_panchang(
         
         vedic_time = calculate_vedic_time(dt_local, sunrise_dt)
         choghadiya = calculate_choghadiya(sunrise_dt, sunset_dt, next_sunrise_dt)
-        is_adhik = check_adhik_maas(jd_ut)
+        is_adhik = check_adhik_maas(jd_ut_sunrise)
         sankranti = check_daily_sankranti(dt_local, tz)
         monthly_sankranti = get_sankranti_for_month(dt_local.year, dt_local.month, tz)
 

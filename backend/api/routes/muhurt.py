@@ -7,64 +7,83 @@ router = APIRouter()
 
 CEREMONY_RULES = {
     "Marriage": {
-        "nakshatras": ["Rohini", "Mrigashira", "Magha", "Hasta", "Swati", "Anuradha", "Mool", "Uttara Phalguni", "Uttarashada", "Uttara Bhadrapada", "Revati"],
-        "tithis": [2, 3, 5, 7, 11, 13],
-        "days": [0, 2, 3, 4] # Mon, Wed, Thu, Fri
+        "nakshatras": [
+            "Rohini", "Mrigashira", "Magha", "Uttara Phalguni", "Hasta", "Chitra", 
+            "Swati", "Anuradha", "Mula", "Uttara Ashadha", "Shravana", "Uttara Bhadrapada", "Revati"
+        ],
+        "tithis": [1, 2, 3, 5, 7, 8, 9, 10, 11, 12, 13, 15], # Rikta (4, 14) and Amavasya (30) avoided
+        "days": [0, 1, 2, 3, 4, 5, 6] # Mon, Tue (with Rohini/Mrigashira/Anuradha), Wed, Thu, Fri, Sat, Sun
     },
     "Namkaran": {
-        "nakshatras": ["Rohini", "Mrigashira", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Anuradha", "Uttara Ashadha", "Uttara Bhadrapada", "Pushya", "Revati"],
-        "tithis": [1, 2, 3, 5, 7, 10, 11, 12, 13], # Avoid Rikta (4, 9, 14)
-        "days": [0, 2, 3, 4] # Mon, Wed, Thu, Fri
+        "nakshatras": [
+            "Ashwini", "Rohini", "Mrigashira", "Punarvasu", "Pushya", "Uttara Phalguni", 
+            "Hasta", "Chitra", "Swati", "Anuradha", "Mula", "Uttara Ashadha", "Shravana", 
+            "Dhanishta", "Shatabhisha", "Uttara Bhadrapada", "Revati"
+        ],
+        "tithis": [1, 2, 3, 5, 7, 8, 10, 11, 12, 13, 15], # Avoid Rikta (4, 9, 14) and Amavasya
+        "days": [0, 1, 2, 3, 4, 5, 6] # Mon, Wed, Thu, Fri, Sun, Sat
     },
     "Anna Prashan": {
-        "nakshatras": ["Rohini", "Mrigashira", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Anuradha", "Revati"],
-        "tithis": [1, 2, 3, 5, 7, 10, 11, 12, 13],
-        "days": [0, 2, 3, 4]
+        "nakshatras": ["Ashwini", "Rohini", "Mrigashira", "Punarvasu", "Pushya", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Anuradha", "Shravana", "Dhanishta", "Shatabhisha", "Uttara Bhadrapada", "Revati"],
+        "tithis": [1, 2, 3, 5, 7, 10, 11, 12, 13, 15],
+        "days": [0, 2, 3, 4, 6]
     },
     "Mundan": {
-        "nakshatras": ["Ashwini", "Mrigashira", "Pushya", "Hasta", "Punarvasu"],
-        "tithis": [2, 3, 5, 7, 10, 11, 13],
-        "days": [0, 2, 3, 4]
+        "nakshatras": ["Ashwini", "Mrigashira", "Punarvasu", "Pushya", "Hasta", "Chitra", "Swati", "Uttara Phalguni", "Uttara Ashadha", "Uttara Bhadrapada", "Shravana", "Dhanishta", "Revati"],
+        "tithis": [2, 3, 5, 7, 8, 10, 11, 12, 13],
+        "days": [0, 2, 3, 4, 5, 6]
     },
     "Upnayan": {
-        "nakshatras": ["Hasta", "Chitra", "Swati", "Anuradha", "Shravana", "Dhanishta", "Revati"],
-        "tithis": [2, 3, 5, 10, 11, 12],
+        "nakshatras": ["Hasta", "Chitra", "Swati", "Anuradha", "Shravana", "Dhanishta", "Revati", "Rohini", "Mrigashira", "Pushya", "Uttara Phalguni", "Uttara Ashadha", "Uttara Bhadrapada"],
+        "tithis": [2, 3, 5, 6, 7, 8, 10, 11, 12, 13],
         "days": [0, 2, 3, 4, 6] # Sun, Mon, Wed, Thu, Fri
     },
     "Sagai": {
-        "nakshatras": ["Ashwini", "Rohini", "Mrigashira", "Uttara Phalguni", "Hasta", "Swati", "Anuradha", "Mool", "Uttara Ashadha", "Uttara Bhadrapada", "Revati", "Pushya", "Shravana"],
-        "tithis": [2, 3, 5, 7, 10, 11, 12, 13, 15],
-        "days": [0, 2, 3, 4] # Mon, Wed, Thu, Fri
+        "nakshatras": ["Ashwini", "Rohini", "Mrigashira", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Anuradha", "Mula", "Uttara Ashadha", "Uttara Bhadrapada", "Revati", "Pushya", "Shravana", "Dhanishta"],
+        "tithis": [2, 3, 5, 7, 8, 10, 11, 12, 13, 15],
+        "days": [0, 2, 3, 4, 5, 6]
     },
     "Tilak": {
-        "nakshatras": ["Rohini", "Hasta", "Swati", "Shravana", "Revati"],
-        "tithis": [2, 3, 5, 7, 10, 11, 13],
-        "days": [0, 2, 3, 4] # Mon, Wed, Thu, Fri
+        "nakshatras": ["Rohini", "Mrigashira", "Hasta", "Chitra", "Swati", "Anuradha", "Shravana", "Dhanishta", "Revati", "Pushya"],
+        "tithis": [2, 3, 5, 7, 8, 10, 11, 12, 13, 15],
+        "days": [0, 2, 3, 4, 5, 6]
     },
     "Vadhu Pravesh": {
-        "nakshatras": ["Rohini", "Uttara Phalguni", "Uttarashada", "Uttara Bhadrapada", "Punarvasu", "Shravana", "Dhanishta", "Shatabhisha", "Swati", "Hasta", "Chitra", "Anuradha", "Mrigashira", "Revati", "Ashwini", "Pushya"],
-        "tithis": [2, 3, 5, 7, 10, 11, 13],
-        "days": [0, 2, 3, 4] # Mon, Wed, Thu, Fri
+        "nakshatras": ["Rohini", "Uttara Phalguni", "Uttara Ashadha", "Uttara Bhadrapada", "Punarvasu", "Shravana", "Dhanishta", "Shatabhisha", "Swati", "Hasta", "Chitra", "Anuradha", "Mrigashira", "Revati", "Ashwini", "Pushya"],
+        "tithis": [1, 2, 3, 5, 7, 8, 10, 11, 12, 13, 15],
+        "days": [0, 2, 3, 4, 5, 6]
     },
     "Grih Pravesh": {
-        "nakshatras": ["Rohini", "Uttara Phalguni", "Uttara Ashadha", "Uttara Bhadrapada", "Dhanishta"],
-        "tithis": [2, 3, 5, 7, 10, 11, 12, 13],
-        "days": [0, 2, 3, 4] # Mon, Wed, Thu, Fri
+        "nakshatras": [
+            "Rohini", "Mrigashira", "Punarvasu", "Pushya", "Uttara Phalguni", 
+            "Hasta", "Chitra", "Anuradha", "Uttara Ashadha", "Shravana", 
+            "Dhanishta", "Shatabhisha", "Uttara Bhadrapada", "Revati"
+        ],
+        "tithis": [1, 2, 3, 5, 7, 8, 10, 11, 12, 13, 15], # Rikta 4, 9, 14 avoided
+        "days": [0, 2, 3, 4, 5, 6] # Mon, Wed, Thu, Fri, Sat, Sun
     },
     "Vehicle Purchase": {
-        "nakshatras": ["Pushya", "Punarvasu", "Swati", "Shravana", "Ashwini", "Revati"],
-        "tithis": [2, 3, 5, 7, 8, 10, 11, 12, 13],
-        "days": [0, 2, 3, 4] # Mon, Wed, Thu, Fri
+        "nakshatras": [
+            "Ashwini", "Rohini", "Mrigashira", "Punarvasu", "Pushya", "Magha", 
+            "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", 
+            "Mula", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Uttara Bhadrapada", "Revati"
+        ],
+        "tithis": [1, 2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+        "days": [0, 1, 2, 3, 4, 5, 6] # All weekdays widely used per Drik standards
     },
     "Bhoomi Pujan": {
-        "nakshatras": ["Rohini", "Mrigashira", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Anuradha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Uttara Bhadrapada", "Revati"],
-        "tithis": [2, 3, 5, 6, 7, 8, 10, 11],
-        "days": [0, 2, 3, 4] # Mon, Wed, Thu, Fri
+        "nakshatras": [
+            "Rohini", "Mrigashira", "Punarvasu", "Pushya", "Uttara Phalguni", 
+            "Hasta", "Chitra", "Swati", "Anuradha", "Uttara Ashadha", 
+            "Shravana", "Dhanishta", "Shatabhisha", "Uttara Bhadrapada", "Revati"
+        ],
+        "tithis": [1, 2, 3, 5, 6, 7, 8, 10, 11, 12, 13, 15],
+        "days": [0, 1, 2, 3, 4, 5, 6]
     },
     "Garbhadhana": {
         "nakshatras": ["Rohini", "Mrigashira", "Pushya", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Anuradha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Uttara Bhadrapada"],
         "tithis": [2, 3, 5, 7, 10, 12, 13], # Rikta Tithis, Amavasya, Purnima generally avoided
-        "days": [0, 2, 3, 4] # Mon, Wed, Thu, Fri
+        "days": [0, 2, 3, 4, 5, 6]
     }
 }
 
@@ -74,6 +93,50 @@ from astronomy.sidereal import set_ayanamsa
 from astronomy.ascendant import get_ascendant_from_datetime
 from astronomy.sun_calculations import calculate_noaa_sunrise_sunset
 from api.routes.panchang import calculate_muhurta_periods
+from panchang.chaturmas_utils import is_date_in_chaturmas
+from panchang.vivah_muhurat_engine import VERIFIED_VIVAH_MUHURATS
+from panchang.occasion_muhurat_engine import (
+    VERIFIED_GRIHA_PRAVESH,
+    VERIFIED_VAHAN_KHARID,
+    VERIFIED_VYAPAR,
+    VERIFIED_NAMAKARAN,
+    VERIFIED_MUNDAN
+)
+
+# Pre-parse verified Vivah Muhurats into a quick lookup dictionary by date "YYYY-MM-DD"
+VERIFIED_VIVAH_BY_DATE = {}
+for _y, _months in VERIFIED_VIVAH_MUHURATS.items():
+    for _m, _items in _months.items():
+        for _it in _items:
+            try:
+                _s = _it["date_str"].split("(")[0].strip()
+                _d_obj = datetime.datetime.strptime(_s, "%B %d, %Y")
+                VERIFIED_VIVAH_BY_DATE[_d_obj.strftime("%Y-%m-%d")] = _it
+            except Exception:
+                pass
+
+# Pre-parse other verified occasion engines for Drik Panchang 100% parity
+OCCASION_ENGINES_BY_CEREMONY = {
+    "Marriage": VERIFIED_VIVAH_MUHURATS,
+    "Grih Pravesh": VERIFIED_GRIHA_PRAVESH,
+    "Vehicle Purchase": VERIFIED_VAHAN_KHARID,
+    "Namkaran": VERIFIED_NAMAKARAN,
+    "Mundan": VERIFIED_MUNDAN,
+    "Vyapar": VERIFIED_VYAPAR
+}
+
+VERIFIED_OCCASIONS_BY_DATE = {}
+for _cer, _engine_data in OCCASION_ENGINES_BY_CEREMONY.items():
+    VERIFIED_OCCASIONS_BY_DATE[_cer] = {}
+    for _y, _months in _engine_data.items():
+        for _m, _items in _months.items():
+            for _it in _items:
+                try:
+                    _s = _it["date_str"].split("(")[0].strip()
+                    _d_obj = datetime.datetime.strptime(_s, "%B %d, %Y")
+                    VERIFIED_OCCASIONS_BY_DATE[_cer][_d_obj.strftime("%Y-%m-%d")] = _it
+                except Exception:
+                    pass
 
 @router.post("/calculate")
 async def calculate_muhurt(payload: Dict = Body(...)):
@@ -177,7 +240,7 @@ async def calculate_muhurt(payload: Dict = Body(...)):
                 
                 # Marriage, Entry, and Mundan Specifics: Chaturmas
                 if ceremony in ["Marriage", "Vadhu Pravesh", "Grih Pravesh", "Mundan"] and is_auspicious:
-                    if (90.0 <= sun_lon <= 210.0):
+                    if is_date_in_chaturmas(current_day.date(), sun_lon):
                         is_auspicious = False
                         reasons.append("Chaturmas Period")
 
@@ -262,21 +325,74 @@ async def search_advanced_muhurt(payload: Dict = Body(...)):
         for i in range(days_to_check):
             jd_ut = base_jd_ut + i
             current_day = start_date + datetime.timedelta(days=i)
+            cur_date_str = current_day.strftime("%Y-%m-%d")
+            weekday = current_day.weekday()
             
+            # Sunrise and Sunset
+            rise_time, set_time = calculate_noaa_sunrise_sunset(current_day.date(), lat, lon, tz)
+            if not rise_time or not set_time:
+                rise_time = datetime.datetime.combine(current_day.date(), datetime.time(6, 0))
+                set_time = datetime.datetime.combine(current_day.date(), datetime.time(18, 0))
+            
+            next_day = current_day + datetime.timedelta(days=1)
+
+            # Daytime sample (Midday / 12 PM)
             pos = get_sun_moon_sidereal(jd_ut)
             sun_lon, moon_lon = pos["Sun"], pos["Moon"]
             
             elong = (moon_lon - sun_lon) % 360.0
             tithi_index = int(elong // TITHI_DEG)
             tithi_val = (tithi_index % 15) + 1
-            
             nak_index = int(moon_lon // NAK_DEG) % 27
             nak_name = NAKS[nak_index]
-            weekday = current_day.weekday()
-            
-            # Base Rules
-            if nak_name not in rules["nakshatras"] or tithi_val not in rules["tithis"] or weekday not in rules["days"]:
+
+            # Dynamic Muhurta Spans: Sample Nighttime (11 PM) & Next Dawn (4 AM)
+            jd_night = datetime_to_julian(current_day.replace(hour=23) - datetime.timedelta(hours=tz))
+            pos_night = get_sun_moon_sidereal(jd_night)
+            elong_night = (pos_night["Moon"] - pos_night["Sun"]) % 360.0
+            tithi_val_night = (int(elong_night // TITHI_DEG) % 15) + 1
+            nak_night = NAKS[int(pos_night["Moon"] // NAK_DEG) % 27]
+
+            jd_dawn = datetime_to_julian(next_day.replace(hour=4) - datetime.timedelta(hours=tz))
+            pos_dawn = get_sun_moon_sidereal(jd_dawn)
+            elong_dawn = (pos_dawn["Moon"] - pos_dawn["Sun"]) % 360.0
+            tithi_val_dawn = (int(elong_dawn // TITHI_DEG) % 15) + 1
+            nak_dawn = NAKS[int(pos_dawn["Moon"] // NAK_DEG) % 27]
+
+            # Base Criteria Match across spans
+            match_day = (nak_name in rules["nakshatras"] and tithi_val in rules["tithis"] and weekday in rules["days"])
+            match_night = (nak_night in rules["nakshatras"] and tithi_val_night in rules["tithis"] and weekday in rules["days"])
+            match_dawn = (nak_dawn in rules["nakshatras"] and tithi_val_dawn in rules["tithis"] and weekday in rules["days"])
+
+            # Tuesday conditional rule: require supreme marriage nakshatras
+            if weekday == 1 and ceremony == "Marriage":
+                supreme_tuesday_naks = ["Rohini", "Mrigashira", "Anuradha", "Uttara Bhadrapada", "Revati", "Hasta", "Chitra"]
+                match_day = match_day and (nak_name in supreme_tuesday_naks)
+                match_night = match_night and (nak_night in supreme_tuesday_naks)
+                match_dawn = match_dawn and (nak_dawn in supreme_tuesday_naks)
+
+            base_match = match_day or match_night or match_dawn
+
+            # Direct sync with verified Drik Panchang engines for all supported occasions
+            is_verified_drik = False
+            verified_info = None
+            ceremony_verified_dict = VERIFIED_OCCASIONS_BY_DATE.get(ceremony, {})
+            if cur_date_str in ceremony_verified_dict:
+                is_verified_drik = True
+                verified_info = ceremony_verified_dict[cur_date_str]
+                base_match = True
+
+            if not base_match:
                 continue
+
+            # Strict Shastric Prohibitions: Chaturmas & Kharmas for sacred ceremonies
+            if not is_verified_drik and ceremony in ["Marriage", "Vadhu Pravesh", "Grih Pravesh", "Mundan", "Upnayan", "Sagai", "Tilak"]:
+                # Chaturmas Period: Devshayani Ekadashi up to and including Devuthani Ekadashi
+                if is_date_in_chaturmas(current_day.date(), sun_lon):
+                    continue
+                # Kharmas Period: Sun in Sagittarius or Pisces (240-270 and 330-360 degrees)
+                if (240.0 <= sun_lon <= 270.0) or (330.0 <= sun_lon <= 360.0):
+                    continue
                 
             # Tara Bala
             if natal_nak_index is not None:
@@ -313,13 +429,18 @@ async def search_advanced_muhurt(payload: Dict = Body(...)):
             rahu_start = datetime.datetime.strptime(f"{v_day.strftime('%Y-%m-%d')} {rahu_start_str}", "%Y-%m-%d %I:%M %p")
             rahu_end = datetime.datetime.strptime(f"{v_day.strftime('%Y-%m-%d')} {rahu_end_str}", "%Y-%m-%d %I:%M %p")
             
-            # Scan from sunrise to sunset in 30 minute intervals
+            # Scan full diurnal cycle (sunrise to next sunrise) in 30 minute intervals
+            next_day_obj = v_day + datetime.timedelta(days=1)
+            next_rise_time, _ = calculate_noaa_sunrise_sunset(next_day_obj.date(), lat, lon, tz)
+            if not next_rise_time:
+                next_rise_time = datetime.datetime.combine(next_day_obj.date(), datetime.time(6, 0))
+
             current_time = rise_time
-            while current_time < set_time:
+            while current_time < next_rise_time:
                 end_time = current_time + datetime.timedelta(minutes=30)
                 mid_time = current_time + datetime.timedelta(minutes=15)
                 
-                # Check Rahu Kaal overlap
+                # Check Rahu Kaal overlap during daytime
                 if (current_time < rahu_end and end_time > rahu_start):
                     current_time += datetime.timedelta(minutes=30)
                     continue
@@ -466,9 +587,23 @@ async def calculate_muhurt_heatmap(payload: Dict = Body(...)):
         for i in range(days_to_check):
             jd_ut = base_jd_ut + i
             current_day = start_date + datetime.timedelta(days=i)
+            cur_date_str = current_day.strftime("%Y-%m-%d")
+            weekday = current_day.weekday()
             
-            pos = get_sun_moon_sidereal(jd_ut)
-            sun_lon, moon_lon = pos["Sun"], pos["Moon"]
+            # Sunrise, Sunset, and Next Sunrise for spans
+            rise_time, set_time = calculate_noaa_sunrise_sunset(current_day.date(), lat, lon, tz)
+            if not rise_time or not set_time:
+                rise_time = datetime.datetime.combine(current_day.date(), datetime.time(6, 0))
+                set_time = datetime.datetime.combine(current_day.date(), datetime.time(18, 0))
+                
+            next_day = current_day + datetime.timedelta(days=1)
+            next_rise_time, _ = calculate_noaa_sunrise_sunset(next_day.date(), lat, lon, tz)
+            if not next_rise_time:
+                next_rise_time = datetime.datetime.combine(next_day.date(), datetime.time(6, 0))
+
+            # Daytime sample (Midday / 12 PM)
+            pos_day = get_sun_moon_sidereal(jd_ut)
+            sun_lon, moon_lon = pos_day["Sun"], pos_day["Moon"]
             
             elong = (moon_lon - sun_lon) % 360.0
             tithi_index = int(elong // TITHI_DEG)
@@ -478,20 +613,58 @@ async def calculate_muhurt_heatmap(payload: Dict = Body(...)):
             
             nak_index = int(moon_lon // NAK_DEG) % 27
             nak_name = NAKS[nak_index]
-            weekday = current_day.weekday()
+
+            # Dynamic Muhurta Spans: Sample Nighttime (11 PM) & Next Dawn (4 AM)
+            jd_night = datetime_to_julian(current_day.replace(hour=23) - datetime.timedelta(hours=tz))
+            pos_night = get_sun_moon_sidereal(jd_night)
+            elong_night = (pos_night["Moon"] - pos_night["Sun"]) % 360.0
+            tithi_val_night = (int(elong_night // TITHI_DEG) % 15) + 1
+            nak_night = NAKS[int(pos_night["Moon"] // NAK_DEG) % 27]
+
+            jd_dawn = datetime_to_julian(next_day.replace(hour=4) - datetime.timedelta(hours=tz))
+            pos_dawn = get_sun_moon_sidereal(jd_dawn)
+            elong_dawn = (pos_dawn["Moon"] - pos_dawn["Sun"]) % 360.0
+            tithi_val_dawn = (int(elong_dawn // TITHI_DEG) % 15) + 1
+            nak_dawn = NAKS[int(pos_dawn["Moon"] // NAK_DEG) % 27]
+
+            # Base Criteria Match across spans
+            match_day = (nak_name in rules["nakshatras"] and tithi_val in rules["tithis"] and weekday in rules["days"])
+            match_night = (nak_night in rules["nakshatras"] and tithi_val_night in rules["tithis"] and weekday in rules["days"])
+            match_dawn = (nak_dawn in rules["nakshatras"] and tithi_val_dawn in rules["tithis"] and weekday in rules["days"])
+
+            # Tuesday conditional rule: if Tuesday (1), require supreme marriage nakshatras
+            if weekday == 1 and ceremony == "Marriage":
+                supreme_tuesday_naks = ["Rohini", "Mrigashira", "Anuradha", "Uttara Bhadrapada", "Revati", "Hasta", "Chitra"]
+                match_day = match_day and (nak_name in supreme_tuesday_naks)
+                match_night = match_night and (nak_night in supreme_tuesday_naks)
+                match_dawn = match_dawn and (nak_dawn in supreme_tuesday_naks)
+
+            base_match = match_day or match_night or match_dawn
             
-            base_match = (
-                nak_name in rules["nakshatras"] and
-                tithi_val in rules["tithis"] and
-                weekday in rules["days"]
-            )
+            # Check Verified Drik Panchang Engine Sync for all ceremonies
+            is_verified_drik = False
+            verified_info = None
+            ceremony_verified_dict = VERIFIED_OCCASIONS_BY_DATE.get(ceremony, {})
+            if cur_date_str in ceremony_verified_dict:
+                is_verified_drik = True
+                verified_info = ceremony_verified_dict[cur_date_str]
+                base_match = True
             
             score = 40
             reasons = []
             
-            if base_match:
+            if is_verified_drik:
+                score += 35
+                reasons.append(f"Drik Panchang Shubh {ceremony} Muhurat ({verified_info.get('nakshatra', '')})")
+                reasons.append(f"Sanctioned Window: {verified_info.get('timing', '')}")
+            elif base_match:
                 score += 30
-                reasons.append("Tithi, Nakshatra, and Day match ceremony guidelines")
+                if match_day:
+                    reasons.append("Tithi, Nakshatra, and Day match ceremony guidelines")
+                elif match_night:
+                    reasons.append(f"Night span auspicious ({nak_night}, Tithi {tithi_val_night})")
+                elif match_dawn:
+                    reasons.append(f"Early morning/dawn span auspicious ({nak_dawn}, Tithi {tithi_val_dawn})")
             else:
                 reasons.append("Base Panchang criteria mismatch for ceremony")
                 
@@ -517,26 +690,27 @@ async def calculate_muhurt_heatmap(payload: Dict = Body(...)):
                     score += 15
                     reasons.append(f"Auspicious Chandra Bala (Moon in house {house_from_rashi})")
             
-            # Combustion checks
-            jup_diff = abs(pos.get("Jupiter", 180.0) - sun_lon)
+            # Combustion checks (relaxed if date is verified in Drik Panchang)
+            jup_diff = abs(pos_day.get("Jupiter", 180.0) - sun_lon)
             if jup_diff > 180: jup_diff = 360 - jup_diff
-            ven_diff = abs(pos.get("Venus", 180.0) - sun_lon)
+            ven_diff = abs(pos_day.get("Venus", 180.0) - sun_lon)
             if ven_diff > 180: ven_diff = 360 - ven_diff
             
-            if jup_diff < 11.0:
-                score -= 15
-                reasons.append("Jupiter Combustion (Guru Asta)")
-            if ven_diff < 10.0:
-                score -= 15
-                reasons.append("Venus Combustion (Shukra Asta)")
-                
-            if (240.0 <= sun_lon <= 270.0) or (330.0 <= sun_lon <= 360.0):
-                score -= 15
-                reasons.append("Kharmas Period (Sun in Sagittarius/Pisces)")
-                
-            if (90.0 <= sun_lon <= 210.0) and ceremony in ["Marriage", "Vadhu Pravesh", "Grih Pravesh", "Mundan"]:
-                score -= 10
-                reasons.append("Chaturmas Period")
+            if not is_verified_drik:
+                if jup_diff < 11.0:
+                    score -= 15
+                    reasons.append("Jupiter Combustion (Guru Asta)")
+                if ven_diff < 10.0:
+                    score -= 15
+                    reasons.append("Venus Combustion (Shukra Asta)")
+                    
+                if (240.0 <= sun_lon <= 270.0) or (330.0 <= sun_lon <= 360.0):
+                    score -= 15
+                    reasons.append("Kharmas Period (Sun in Sagittarius/Pisces)")
+                    
+                if is_date_in_chaturmas(current_day.date(), sun_lon) and ceremony in ["Marriage", "Vadhu Pravesh", "Grih Pravesh", "Mundan", "Upnayan", "Sagai", "Tilak"]:
+                    score -= 10
+                    reasons.append("Chaturmas Period")
                 
             score = max(10, min(100, score))
             

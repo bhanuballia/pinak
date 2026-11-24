@@ -184,6 +184,9 @@ const getChoghadiyaColor = (name) => {
 };
 
 export default function DailyPanchangViewer() {
+    const urlParams = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
+    const hideWatch = urlParams.get('hide_watch') === 'true';
+
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -414,8 +417,9 @@ export default function DailyPanchangViewer() {
 
                     </button>
                 </div>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '60px', alignItems: 'flex-start', paddingTop: '60px' }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '60px', alignItems: 'flex-start', paddingTop: hideWatch ? '20px' : '60px' }}>
 
+                    {!hideWatch && (
                     <div style={{ flex: '1 1 400px', textAlign: 'center' }}>
                         <div style={{ padding: '50px 20px', background: theme.cardBg, borderRadius: '40px', border: `1px solid ${theme.borderColor}`, boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)' }}>
                             <h4 style={{ color: '#be123c', fontSize: '14px', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '4px', marginBottom: '10px' }}>Ujjain Royal Observatory</h4>
@@ -457,9 +461,10 @@ export default function DailyPanchangViewer() {
                             </div>
                         </div>
                     </div>
+                    )}
                 </div>
 
-                <div style={{ flex: '2 1 600px', display: 'flex', flexDirection: 'column', gap: '40px', marginTop: '40px' }}>
+                <div style={{ flex: hideWatch ? '1 1 100%' : '2 1 600px', width: hideWatch ? '100%' : 'auto', display: 'flex', flexDirection: 'column', gap: '40px', marginTop: hideWatch ? '10px' : '40px' }}>
                     <div style={{ background: theme.headerGradient, padding: '45px 35px', borderRadius: '40px', border: `1px solid ${theme.borderColor}`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '30px', boxShadow: '0 10px 30px rgba(136, 19, 55, 0.05)' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
                             <button onClick={() => handleDateChange(-1)} style={{ background: 'transparent', border: 'none', color: '#881337', fontSize: '32px', cursor: 'pointer', transition: 'transform 0.2s', padding: '10px' }} onMouseOver={(e) => e.target.style.transform = 'scale(1.2)'} onMouseOut={(e) => e.target.style.transform = 'scale(1)'}>◀</button>

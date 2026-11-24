@@ -354,6 +354,13 @@ def generate_monthly_panchang_sheet_data(
     # Dynamic Astronomical Kaal Ganana for month using Swiss Ephemeris
     from panchang.kaal_ganana_engine import compute_monthly_kaal_ganana
     from panchang.vivah_muhurat_engine import get_vivah_muhurats
+    from panchang.occasion_muhurat_engine import (
+        get_griha_pravesh_muhurats,
+        get_vahan_muhurats,
+        get_vyapar_muhurats,
+        get_namakaran_muhurats,
+        get_mundan_muhurats
+    )
 
     # Traditional Kaal Ganana (Matching Sheet for October 2026)
     if year == 2026 and month == 10:
@@ -434,25 +441,36 @@ def generate_monthly_panchang_sheet_data(
     else:
         kaal_ganana = compute_monthly_kaal_ganana(year, month, lat, lon, tz_offset)
 
-    # Compute comprehensive Vivah Muhurat details
+    # Compute comprehensive Vivah & Occasion Muhurat details
     vivah_details = get_vivah_muhurats(year, month)
     vivah_quick_list = [f"{d['date_str'].split('(')[0].strip()}: {d['timing']}" for d in vivah_details.get("dates", [])]
     if not vivah_quick_list:
         vivah_quick_list = [vivah_details.get("summary", "शुभ मुहूर्त उपलब्ध नहीं")]
 
+    griha_pravesh_details = get_griha_pravesh_muhurats(year, month)
+    vahan_details = get_vahan_muhurats(year, month)
+    vyapar_details = get_vyapar_muhurats(year, month)
+    namakaran_details = get_namakaran_muhurats(year, month)
+    mundan_details = get_mundan_muhurats(year, month)
+
+    vahan_quick_list = [f"{d['date_str'].split('(')[0].strip()}: {d['timing']}" for d in vahan_details.get("dates", [])]
+    if not vahan_quick_list:
+        vahan_quick_list = [vahan_details.get("summary", "शुभ मुहूर्त उपलब्ध नहीं")]
+
+    vyapar_quick_list = [f"{d['date_str'].split('(')[0].strip()}: {d['timing']}" for d in vyapar_details.get("dates", [])]
+    if not vyapar_quick_list:
+        vyapar_quick_list = [vyapar_details.get("summary", "शुभ मुहूर्त उपलब्ध नहीं")]
+
     muhurats = {
-        "vyapar_muhurat": [
-            f"01 {month_name[:3]} रोहिणी में",
-            f"05 {month_name[:3]} पुष्य नक्षत्र अनुकूल",
-            f"19 {month_name[:3]} उत्तराषाढ़ा में",
-            f"26 {month_name[:3]} अश्विनी नक्षत्र"
-        ],
+        "vyapar_muhurat": vyapar_quick_list,
+        "vyapar_details": vyapar_details,
         "vivah_muhurat": vivah_quick_list,
         "vivah_details": vivah_details,
-        "vahan_machinery_muhurat": [
-            f"01 {month_name[:3]} रोहिणी में 06:03 के बाद",
-            f"05 {month_name[:3]} सोम पुष्य में 15:00 के पूर्व"
-        ]
+        "griha_pravesh_details": griha_pravesh_details,
+        "vahan_machinery_muhurat": vahan_quick_list,
+        "vahan_details": vahan_details,
+        "namakaran_details": namakaran_details,
+        "mundan_details": mundan_details
     }
 
     # Dynamic Gemini Rashi Phal analysis

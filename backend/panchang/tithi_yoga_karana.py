@@ -41,7 +41,7 @@ NAKS = [
 ]
 
 YOGA_NAMES = [
-    "Vishkambha", "Priti", "Ayushman", "Saubhagya", "Shobhana", "Atiganda", "Sukarma", "Dhrsti", "Shula",
+    "Vishkambha", "Priti", "Ayushman", "Saubhagya", "Shobhana", "Atiganda", "Sukarma", "Dhriti", "Shula",
     "Ganda", "Vriddhi", "Dhruva", "Vyaghata", "Harshana", "Vajra", "Siddhi", "Vyatipata", "Variyana",
     "Parigha", "Shiva", "Siddha", "Sadhya", "Shubha", "Shukla", "Brahma", "Indra", "Vaidhriti"
 ]
@@ -170,9 +170,44 @@ def compute_yoga(jd_ut: float) -> Dict[str, Any]:
     moon = float(pos["Moon"]["sidereal"]["lon"])
     s = _normalize_angle(sun + moon)
     yoga_idx = int(s // NAK_DEG) % 27
-    s = _normalize_angle(sun + moon)
-    yoga_idx = int(s // NAK_DEG) % 27
-    return {"yoga_index": yoga_idx, "yoga_name": YOGA_NAMES[yoga_idx], "value_deg": s}
+    deg_in_yoga = s % NAK_DEG
+    frac = deg_in_yoga / NAK_DEG
+    return {
+        "yoga_index": yoga_idx,
+        "yoga_name": YOGA_NAMES[yoga_idx],
+        "value_deg": s,
+        "fraction": float(frac)
+    }
+
+def get_yoga_boundaries(jd_ut: float) -> Tuple[float, float]:
+    """Given a jd_ut, finds the exact start and end jd of the active yoga."""
+    current = compute_yoga(jd_ut)
+    idx = current["yoga_index"]
+    deg_in_yoga = current["value_deg"] % NAK_DEG
+    frac = deg_in_yoga / NAK_DEG
+    
+    guess_start = jd_ut - (frac * 0.95)
+    low = guess_start - 0.35
+    high = guess_start + 0.35
+    for _ in range(18):
+        mid = (low + high) / 2
+        if compute_yoga(mid)["yoga_index"] == idx:
+            high = mid
+        else:
+            low = mid
+    start_jd = high
+    
+    guess_end = jd_ut + ((1.0 - frac) * 0.95)
+    low = guess_end - 0.35
+    high = guess_end + 0.35
+    for _ in range(18):
+        mid = (low + high) / 2
+        if compute_yoga(mid)["yoga_index"] == idx:
+            low = mid
+        else:
+            high = mid
+    end_jd = low
+    return start_jd, end_jd
 
 def compute_karana(jd_ut: float) -> Dict[str, Any]:
     """
