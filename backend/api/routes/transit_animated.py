@@ -118,17 +118,12 @@ def get_animated_transits(payload: Dict[str, Any] = Body(...)):
         t_time = payload["transit_time"]
         t_tz = float(payload.get("transit_tz_offset", b_tz))
         
-        # Calculate Birth JD
-        by, bm, bd = [int(x) for x in b_date.split("-")]
-        btp = [int(x) for x in b_time.split(":")]
-        b_dt_local = datetime.datetime(by, bm, bd, btp[0], btp[1], btp[2] if len(btp) > 2 else 0)
+        from api.routes.flexible_date import parse_flexible_datetime
+        b_dt_local = parse_flexible_datetime(b_date, b_time, (12, 0, 0))
         b_dt_utc = b_dt_local - datetime.timedelta(hours=b_tz)
         b_jd_ut = datetime_to_julian(b_dt_utc)
         
-        # Calculate Transit JD
-        ty, tm, td = [int(x) for x in t_date.split("-")]
-        ttp = [int(x) for x in t_time.split(":")]
-        t_dt_local = datetime.datetime(ty, tm, td, ttp[0], ttp[1], ttp[2] if len(ttp) > 2 else 0)
+        t_dt_local = parse_flexible_datetime(t_date, t_time, (12, 0, 0))
         t_dt_utc = t_dt_local - datetime.timedelta(hours=t_tz)
         t_jd_ut = datetime_to_julian(t_dt_utc)
         
